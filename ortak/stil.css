@@ -1,0 +1,25 @@
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#23272b; --muted:#70757c; --line:#e0dcd2;
+  --acc:#1f6f5c; --acc-soft:rgba(31,111,92,.1); --vurgu:#c8743c; --shadow:rgba(35,39,43,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;min-height:100vh;font-size:17px}
+.wrap{max-width:880px;margin:0 auto;padding:28px 20px 70px}
+header.site a{color:var(--ink);text-decoration:none}
+header.site h1{font-size:30px;font-weight:normal}
+header.site h1 b{color:var(--acc);font-weight:normal}
+header.site .alt{color:var(--muted);font-size:14.5px;font-style:italic;margin-top:4px}
+nav.araclar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+nav.araclar a{font-size:14px;color:var(--acc);border:1px solid var(--line);border-radius:18px;padding:4px 13px;text-decoration:none;background:var(--card)}
+nav.araclar a:hover,nav.araclar a.burada{border-color:var(--acc);background:var(--acc-soft)}
+main{margin-top:26px}
+.kartlar{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.kartlar{grid-template-columns:1fr}}
+.kart{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 3px 12px var(--shadow);text-decoration:none;color:var(--ink);display:block}
+.kart:hover{border-color:var(--acc)}
+.kart h2{font-size:20px;font-weight:normal;color:var(--acc)}
+.kart p{font-size:14.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+.kart .yakinda{font-size:11.5px;color:var(--vurgu);border:1px solid var(--vurgu);border-radius:12px;padding:1px 9px;margin-left:8px;vertical-align:middle}
+footer{margin-top:60px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px;text-align:center;line-height:1.7}
+button{font:inherit;cursor:pointer}
+input{font:inherit}

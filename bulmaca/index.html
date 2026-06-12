@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bulmaca yardımcısı</title>
+<link rel="stylesheet" href="../ortak/stil.css">
+<style>
+.arac{max-width:560px;margin:0 auto}
+.arac label{font-size:14px;color:var(--muted);display:block;margin:14px 0 4px;font-style:italic}
+.arac input{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:18px;letter-spacing:2px}
+.arac input:focus{outline:none;border-color:var(--acc)}
+.arac .kucuk{font-size:15px;letter-spacing:1px}
+.sonuclar{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.kelime{border:1px solid var(--acc);color:var(--acc);border-radius:18px;padding:5px 13px;font-size:16px;background:var(--card)}
+.bilgi{color:var(--muted);font-size:13.5px;font-style:italic;margin-top:12px}
+.iki{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.iki{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="site">
+  <a href="../"><h1>veranda <b>araçları</b></h1></a>
+  <nav class="araclar">
+    <a href="../sozluk/">dilimin ucunda</a>
+    <a href="../wordle/">kelimece</a>
+    <a href="./" class="burada">bulmaca yardımcısı</a>
+  </nav>
+</header>
+<main class="arac">
+  <h2 style="font-weight:normal;font-size:24px">bulmaca yardımcısı</h2>
+  <p style="color:var(--muted);font-size:14.5px;margin-top:6px">
+    Bilmediğin harfler yerine nokta ya da alt çizgi koy: <i>k.t.p</i> yazınca beş harfli uyanlar gelir.
+  </p>
+  <label for="desen">desen</label>
+  <input id="desen" placeholder="k.t.p" autocomplete="off" autofocus>
+  <div class="iki">
+    <div>
+      <label for="iceren">şu harfleri içersin (sırasız)</label>
+      <input id="iceren" class="kucuk" placeholder="örn: ae" autocomplete="off">
+    </div>
+    <div>
+      <label for="icermeyen">şu harfler olmasın</label>
+      <input id="icermeyen" class="kucuk" placeholder="örn: rs" autocomplete="off">
+    </div>
+  </div>
+  <div class="bilgi" id="bilgi">desen yaz, sonuçlar anında gelir</div>
+  <div class="sonuclar" id="sonuclar"></div>
+</main>
+<footer>47 bin kelimelik sözlükten arar · dilimin ucunda ile aynı dağarcık</footer>
+</div>
+<script src="../ortak/kelimeler.js"></script>
+<script>
+const TRMAP = {"İ":"i","I":"ı","Ş":"ş","Ğ":"ğ","Ü":"ü","Ö":"ö","Ç":"ç"};
+const trLower = s => s.replace(/[İIŞĞÜÖÇ]/g,c=>TRMAP[c]).toLowerCase();
+const desenK = document.getElementById('desen');
+const icerenK = document.getElementById('iceren');
+const icermeyenK = document.getElementById('icermeyen');
+const sonucK = document.getElementById('sonuclar');
+const bilgiK = document.getElementById('bilgi');
+
+function ara(){
+  const ham = trLower(desenK.value.trim()).replace(/[_?*]/g, '.');
+  const iceren = trLower(icerenK.value.trim());
+  const icermeyen = trLower(icermeyenK.value.trim());
+  sonucK.innerHTML = '';
+  if(!ham){ bilgiK.textContent = 'desen yaz, sonuçlar anında gelir'; return; }
+  if(!/^[a-zçğıöşü.]+$/.test(ham)){ bilgiK.textContent = 'yalnız harf ve nokta kullan'; return; }
+  let rx;
+  try{ rx = new RegExp('^' + ham + '$'); }catch(e){ return; }
+  const bulunan = [];
+  for(const w of KELIMELER){
+    if(w.length !== ham.length) continue;
+    if(!rx.test(w)) continue;
+    let uygun = true;
+    for(const h of iceren) if(!w.includes(h)){ uygun = false; break; }
+    if(uygun) for(const h of icermeyen) if(w.includes(h)){ uygun = false; break; }
+    if(uygun){ bulunan.push(w); if(bulunan.length >= 300) break; }
+  }
+  bilgiK.textContent = bulunan.length
+    ? bulunan.length + (bulunan.length >= 300 ? '+ sonuç (ilk 300)' : ' sonuç')
+    : 'eşleşen kelime yok';
+  sonucK.innerHTML = bulunan.slice(0,300).map(w=>
+    `<a class="kelime" href="../sozluk/#${encodeURIComponent(w)}" title="sözlükte aç">${w}</a>`).join('');
+}
+[desenK, icerenK, icermeyenK].forEach(k=>k.addEventListener('input', ara));
+</script>
+</body>
+</html>
