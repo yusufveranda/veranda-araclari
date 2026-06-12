@@ -40,6 +40,8 @@ body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman'
 
 /* ================= vitrin (afiş sayfası) ================= */
 body.vitrin{background:var(--alan);color:var(--kagit-ink);font-family:'Libre Baskerville',Georgia,serif;transition:background 1s}
+body.vitrin, body.vitrin *{-webkit-tap-highlight-color:transparent}
+.kposz:focus:not(:focus-visible),.kapi:focus:not(:focus-visible){outline:none}
 
 .afis{position:relative}
 .poster{display:block;width:100%;height:clamp(330px,46vw,540px)}

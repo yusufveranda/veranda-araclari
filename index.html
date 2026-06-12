@@ -31,7 +31,7 @@
     </defs>
 
     <!-- gök -->
-    <rect width="1200" height="520" fill="var(--gok)"/>
+    <rect x="-500" width="2700" height="520" fill="var(--gok)"/>
 
     <!-- yıldızlar -->
     <g class="yildizlar" fill="#F2E6CE">
@@ -96,10 +96,10 @@
     </g>
 
     <!-- dağlar -->
-    <path d="M0,400 L90,372 L170,396 L290,340 L400,392 L520,352 L640,398 L760,330 L880,390 L990,358 L1100,396 L1200,376 V520 H0 Z" fill="var(--dag)"/>
+    <path d="M-500,386 L-380,360 L-260,398 L-140,366 L0,400 L90,372 L170,396 L290,340 L400,392 L520,352 L640,398 L760,330 L880,390 L990,358 L1100,396 L1200,376 L1320,348 L1440,394 L1560,362 L1700,392 V520 H-500 Z" fill="var(--dag)"/>
 
     <!-- deniz / alan -->
-    <rect y="400" width="1200" height="120" fill="var(--alan)"/>
+    <rect x="-500" y="400" width="2700" height="120" fill="var(--alan)"/>
 
     <!-- asma lamba -->
     <g class="lamba">
@@ -112,14 +112,21 @@
 
     <!-- saçak -->
     <g>
-      <rect x="0" y="0" width="1200" height="16" fill="var(--siluet)"/>
-      <rect x="0" y="16" width="1200" height="5" fill="var(--dag)"/>
+      <rect x="-500" y="0" width="2700" height="16" fill="var(--siluet)"/>
+      <rect x="-500" y="16" width="2700" height="5" fill="var(--dag)"/>
     </g>
 
     <!-- korkuluk (sağda aralık kapı) -->
     <g fill="var(--siluet)">
-      <rect x="0" y="432" width="763" height="11"/>
-      <rect x="838" y="432" width="362" height="11"/>
+      <rect x="-500" y="432" width="1263" height="11"/>
+      <rect x="838" y="432" width="862" height="11"/>
+      <rect x="-428" y="443" width="9" height="77"/><rect x="-353" y="443" width="9" height="77"/>
+      <rect x="-278" y="443" width="9" height="77"/><rect x="-203" y="443" width="9" height="77"/>
+      <rect x="-128" y="443" width="9" height="77"/><rect x="-53" y="443" width="9" height="77"/>
+      <rect x="1222" y="443" width="9" height="77"/><rect x="1297" y="443" width="9" height="77"/>
+      <rect x="1372" y="443" width="9" height="77"/><rect x="1447" y="443" width="9" height="77"/>
+      <rect x="1522" y="443" width="9" height="77"/><rect x="1597" y="443" width="9" height="77"/>
+      <rect x="1672" y="443" width="9" height="77"/>
       <rect x="22" y="443" width="9" height="77"/><rect x="97" y="443" width="9" height="77"/>
       <rect x="172" y="443" width="9" height="77"/><rect x="247" y="443" width="9" height="77"/>
       <rect x="322" y="443" width="9" height="77"/><rect x="397" y="443" width="9" height="77"/>
@@ -173,6 +180,15 @@
       <path d="M629,419 L624,432 L630,432 L634,420 Z" fill="var(--kedi)"/>
       <path d="M640,420 L646,431 L651,431 L646,419 Z" fill="var(--kedi)"/>
       <path d="M616,410 C607,398 611,386 621,380 C627,377 632,380 631,385" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="kp6" class="kposz" transform="translate(640,83)" tabindex="0" role="button" aria-label="saksının dibinde uyuyan kedi">
+      <path d="M302,432 C298,421 305,411 319,410 C333,409 342,417 340,426 C338,431 334,432 330,432 Z" fill="var(--kedi)"/>
+      <circle cx="307" cy="424" r="7.5" fill="var(--kedi)"/>
+      <path d="M302,419 L300,411 L307,414 Z" fill="var(--kedi)"/>
+      <path d="M337,428 C345,433 331,437 317,434" stroke="var(--kedi)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="kp7" class="kposz" transform="translate(-806,83)" tabindex="0" role="button" aria-label="çalının yanında oturan kedi">
+      <path d="M926,432 C926,418 934,409 947,408 C951,403 951,398 954,394 L952,384 L959,390 C961,388.5 964,388.5 966,390 L970,383 L972,392 C975,396 976,402 974,407 C972,412 968,415 964,416 C970,420 972,426 972,432 Z" fill="var(--kedi)"/>
     </g>
 
     <!-- korkulukta çay -->
@@ -328,7 +344,9 @@
     {id:'kp2', bx:950, by:372, uyku:false},
     {id:'kp3', bx:322, by:398, uyku:true},
     {id:'kp4', bx:200, by:368, uyku:false},
-    {id:'kp5', bx:658, by:368, uyku:false}
+    {id:'kp5', bx:658, by:368, uyku:false},
+    {id:'kp6', bx:962, by:481, uyku:true},
+    {id:'kp7', bx:144, by:455, uyku:false}
   ];
   var SESLER = ['miyav', 'mrnav', 'mırnav'];
   var kediIdx = 0, kediKilit = false;
@@ -348,9 +366,7 @@
     balon.style.display = '';
     setTimeout(function(){
       balon.style.display = 'none';
-      var y;
-      do { y = Math.floor(Math.random() * KEDI.length); } while(y === kediIdx);
-      kediIdx = y;
+      kediIdx = rastgeleKedi(kediIdx);
       kediCiz();
       kediKilit = false;
     }, 950);
@@ -362,6 +378,31 @@
       if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); kediTik(); }
     });
   });
+
+  /* afiş ekran oranına uyar: geniş ekranda üstü kırpmak yerine sahne yanlara uzar,
+     dar ekranda görünür aralık bilinir ve kedi hep görünür bir yere konar */
+  var poster = document.querySelector('.poster');
+  function kediGorunur(k){
+    var vb = poster.getAttribute('viewBox').split(' ');
+    var x0 = +vb[0] + 30, x1 = +vb[0] + +vb[2] - 30;
+    return k.bx >= x0 && k.bx <= x1;
+  }
+  function rastgeleKedi(haric){
+    var uygun = [];
+    KEDI.forEach(function(k, i){ if(i !== haric && kediGorunur(k)) uygun.push(i); });
+    if(!uygun.length) KEDI.forEach(function(k, i){ if(i !== haric) uygun.push(i); });
+    return uygun[Math.floor(Math.random() * uygun.length)];
+  }
+  function posterUyarla(){
+    var r = poster.getBoundingClientRect();
+    if(!r.width || !r.height) return;
+    var vbW = Math.max(380, Math.min(2200, Math.round(520 * r.width / r.height)));
+    poster.setAttribute('viewBox', Math.round(600 - vbW / 2) + ' 0 ' + vbW + ' 520');
+    if(!kediGorunur(KEDI[kediIdx])){ kediIdx = rastgeleKedi(kediIdx); kediCiz(); }
+  }
+  window.addEventListener('resize', posterUyarla);
+  posterUyarla();
+  kediIdx = rastgeleKedi(-1);
   kediCiz();
 
   /* kedi arada kendi kendine konuşur */
