@@ -12,7 +12,7 @@
   --baslik-ink:#1C1510; --alan-ink:#F7E9D2;
   --kedi:#5C2F17; --cay:#6B3318; --cay-buhar:#C49A6A;
   --bitki2:#A82D17; --sakso2:#3E2414;
-  --sehir:#4F3A26; --pencere-op:0;
+  --sehir:#4F3A26; --pencere:#E8472E; --pencere-op:0;
 }
 body.t-sabah{
   --gok:#F4AC4C; --alan:#C8502C; --gunes:#D7261D;
@@ -20,7 +20,7 @@ body.t-sabah{
 body.t-aksam{
   --gok:#DE6E2E; --alan:#9E3A20; --gunes:#C61E16;
   --yildiz-op:.35; --lamba-op:.9; --ampul:#FFC76B;
-  --sehir:#3A2A1A; --pencere-op:.6;
+  --sehir:#3A2A1A; --pencere:#E04A2C; --pencere-op:.6;
 }
 body.t-gece{
   --gok:#15110D; --alan:#1D1713; --dag:#231B13; --siluet:#2B2117;
@@ -29,7 +29,7 @@ body.t-gece{
   --baslik-ink:#F2E6CE; --alan-ink:#CDC1A8;
   --kedi:#6E3F20; --cay:#7E3E1D; --cay-buhar:#8A6B4A;
   --bitki2:#742A18; --sakso2:#332015;
-  --sehir:#261D13; --pencere-op:.95;
+  --sehir:#261D13; --pencere:#FF4A2C; --pencere-op:.95;
 }
 body.lamba-acik{--lamba-op:.95;--ampul:#FFC76B}
 body.lamba-kapali{--lamba-op:0;--ampul:#3A2E22}
@@ -63,7 +63,16 @@ body.t-gece .gunes-k{transform:translate(0,215px)}
 .kayan{opacity:0}
 body.t-gece .kayan{animation:kayan 31s linear infinite}
 @keyframes kayan{0%,84%{opacity:0;transform:translate(0,0)}87%{opacity:1}93%{opacity:0;transform:translate(-310px,150px)}100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){.kirp,.buhar,.kayan{animation:none}.gunes-k{transition:none}}
+.kapi{cursor:pointer;outline:none;transform-box:fill-box;transform-origin:left center;transition:transform .8s cubic-bezier(.34,1.25,.45,1)}
+.kapi.acik{transform:rotate(-3deg) scaleX(.16)}
+.kapi:focus-visible{outline:2px dashed #F2E6CE;outline-offset:4px}
+.pervane{opacity:0}
+body.t-gece .pervane{opacity:1;animation:pervane 5.5s ease-in-out infinite}
+body.t-gece.lamba-kapali .pervane{opacity:0;animation:none}
+@keyframes pervane{0%{transform:translate(-13px,5px)}25%{transform:translate(7px,-9px)}50%{transform:translate(15px,7px)}75%{transform:translate(-5px,-13px)}100%{transform:translate(-13px,5px)}}
+.kus-ucan{animation:ucus 42s linear infinite}
+@keyframes ucus{0%,55%{transform:translate(0,0)}100%{transform:translate(-1480px,-40px)}}
+@media(prefers-reduced-motion:reduce){.kirp,.buhar,.kayan,.pervane,.kus-ucan{animation:none}.gunes-k,.kapi{transition:none}}
 
 .afis-yazi{position:absolute;top:0;left:0;width:100%;padding:clamp(22px,4.5vw,52px) clamp(20px,5vw,56px);pointer-events:none}
 .afis-yazi a{color:var(--baslik-ink);text-decoration:none;pointer-events:auto;transition:color 1s}
