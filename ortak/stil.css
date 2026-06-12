@@ -98,6 +98,7 @@ body.vitrin .kart:nth-child(2){transform:rotate(.9deg)}
 body.vitrin .kart:nth-child(3){transform:rotate(.7deg)}
 body.vitrin .kart:nth-child(4){transform:rotate(-.8deg)}
 body.vitrin .kart:nth-child(5){transform:rotate(-.5deg)}
+body.vitrin .kart:nth-child(6){transform:rotate(.8deg)}
 body.vitrin .kart:hover,body.vitrin .kart:focus-visible{transform:rotate(0) translateY(-4px);box-shadow:7px 9px 0 rgba(15,8,4,.3)}
 body.vitrin .kart:focus-visible{outline:3px solid var(--kagit);outline-offset:3px}
 body.vitrin .kart .ikon{width:46px;height:46px;border-radius:50%;background:var(--gunes);color:var(--kagit);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
@@ -105,6 +106,14 @@ body.vitrin .kart .ikon svg{width:24px;height:24px}
 body.vitrin .kart h2{font-family:'Playfair Display',Georgia,serif;font-size:21px;font-weight:600;color:var(--kagit-ink)}
 body.vitrin .kart p{font-size:14.5px;color:var(--kagit-soluk);margin-top:7px;line-height:1.55}
 body.vitrin .kart .yakinda{font-family:'Libre Baskerville',Georgia,serif;font-size:11px;color:var(--kirmizi);border:1px solid var(--kirmizi);border-radius:12px;padding:1px 9px;margin-left:8px;vertical-align:middle;font-weight:400}
+
+/* kara kaplı: kilitli defter kartı */
+body.vitrin .kart-kilitli{background:#221C16;position:relative;overflow:hidden}
+body.vitrin .kart-kilitli::after{content:"";position:absolute;top:0;bottom:0;right:20px;width:9px;background:#C2331F}
+body.vitrin .kart-kilitli h2{color:#F2E6CE}
+body.vitrin .kart-kilitli p{color:#B5A485}
+body.vitrin .kart-kilitli .ikon{background:#C2331F;color:#F2E6CE}
+body.vitrin .kart-kilitli .kilit-rozet{color:#F2E6CE;border-color:#C2331F;background:#C2331F}
 
 body.vitrin footer{margin-top:64px;border:none;color:var(--alan-ink);font-size:12.5px;text-align:center;line-height:1.7;transition:color 1s}
 body.vitrin footer .kilim{width:200px;height:13px;color:var(--alan-ink);opacity:.8;margin-bottom:10px}
