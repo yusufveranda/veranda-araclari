@@ -10,8 +10,9 @@
   --kagit:#F2E6CE; --kagit-ink:#221C16; --kagit-soluk:#6E6353;
   --kirmizi:#C2331F;
   --baslik-ink:#1C1510; --alan-ink:#F7E9D2;
-  --kedi:#6F4528; --cay:#A4622F; --cay-buhar:#E8CDA0;
-  --lotus:#EFAD89; --bitki2:#C03A22; --sakso2:#8E4824;
+  --kedi:#5C2F17; --cay:#6B3318; --cay-buhar:#C49A6A;
+  --bitki2:#A82D17; --sakso2:#3E2414;
+  --sehir:#4F3A26; --pencere-op:0;
 }
 body.t-sabah{
   --gok:#F4AC4C; --alan:#C8502C; --gunes:#D7261D;
@@ -19,14 +20,16 @@ body.t-sabah{
 body.t-aksam{
   --gok:#DE6E2E; --alan:#9E3A20; --gunes:#C61E16;
   --yildiz-op:.35; --lamba-op:.9; --ampul:#FFC76B;
+  --sehir:#3A2A1A; --pencere-op:.6;
 }
 body.t-gece{
   --gok:#15110D; --alan:#1D1713; --dag:#231B13; --siluet:#2B2117;
   --gunes-op:0; --ay-op:1; --yildiz-op:1; --kus-op:0;
   --lamba-op:1; --ampul:#FFC76B;
   --baslik-ink:#F2E6CE; --alan-ink:#CDC1A8;
-  --kedi:#96693C; --cay:#B5743C; --cay-buhar:#8A6B4A;
-  --lotus:#C08263; --bitki2:#84402C; --sakso2:#6E3A1F;
+  --kedi:#6E3F20; --cay:#7E3E1D; --cay-buhar:#8A6B4A;
+  --bitki2:#742A18; --sakso2:#332015;
+  --sehir:#261D13; --pencere-op:.95;
 }
 body.lamba-acik{--lamba-op:.95;--ampul:#FFC76B}
 body.lamba-kapali{--lamba-op:0;--ampul:#3A2E22}

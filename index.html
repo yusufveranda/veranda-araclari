@@ -64,6 +64,33 @@
       <path d="M800,250 q7,-8 14,0 q7,-8 14,0"/>
     </g>
 
+    <!-- uzakta şehir -->
+    <g fill="var(--sehir)">
+      <rect x="70" y="358" width="26" height="42"/>
+      <rect x="102" y="346" width="18" height="54"/>
+      <rect x="126" y="366" width="30" height="34"/>
+      <rect x="162" y="338" width="22" height="62"/>
+      <rect x="190" y="356" width="16" height="44"/>
+      <rect x="216" y="336" width="8" height="64"/>
+      <path d="M212,336 L220,316 L228,336 Z"/>
+      <rect x="212" y="344" width="16" height="4"/>
+      <rect x="940" y="360" width="24" height="40"/>
+      <rect x="970" y="348" width="18" height="52"/>
+      <rect x="994" y="364" width="26" height="36"/>
+      <rect x="1026" y="342" width="20" height="58"/>
+      <rect x="1052" y="360" width="14" height="40"/>
+    </g>
+    <g fill="var(--ampul)" opacity="var(--pencere-op)">
+      <rect x="107" y="354" width="4" height="5"/>
+      <rect x="168" y="348" width="4" height="5"/>
+      <rect x="168" y="360" width="4" height="5"/>
+      <rect x="76" y="366" width="4" height="5"/>
+      <rect x="976" y="356" width="4" height="5"/>
+      <rect x="1032" y="350" width="4" height="5"/>
+      <rect x="1032" y="362" width="4" height="5"/>
+      <rect x="946" y="368" width="4" height="5"/>
+    </g>
+
     <!-- dağlar -->
     <path d="M0,400 L90,372 L170,396 L290,340 L400,392 L520,352 L640,398 L760,330 L880,390 L990,358 L1100,396 L1200,376 V520 H0 Z" fill="var(--dag)"/>
 
@@ -84,66 +111,61 @@
       <rect x="0" y="16" width="1200" height="5" fill="var(--dag)"/>
     </g>
 
-    <!-- korkuluk (sağda merdiven boşluğu) -->
+    <!-- korkuluk (sağda aralık kapı) -->
     <g fill="var(--siluet)">
       <rect x="0" y="432" width="763" height="11"/>
-      <rect x="884" y="432" width="316" height="11"/>
+      <rect x="838" y="432" width="362" height="11"/>
       <rect x="22" y="443" width="9" height="77"/><rect x="97" y="443" width="9" height="77"/>
       <rect x="172" y="443" width="9" height="77"/><rect x="247" y="443" width="9" height="77"/>
       <rect x="322" y="443" width="9" height="77"/><rect x="397" y="443" width="9" height="77"/>
       <rect x="472" y="443" width="9" height="77"/><rect x="547" y="443" width="9" height="77"/>
       <rect x="622" y="443" width="9" height="77"/><rect x="697" y="443" width="9" height="77"/>
-      <rect x="922" y="443" width="9" height="77"/><rect x="997" y="443" width="9" height="77"/>
+      <rect x="862" y="443" width="9" height="77"/><rect x="922" y="443" width="9" height="77"/>
+      <rect x="997" y="443" width="9" height="77"/>
       <rect x="1072" y="443" width="9" height="77"/><rect x="1147" y="443" width="9" height="77"/>
-      <!-- merdiven babaları -->
-      <rect x="752" y="416" width="11" height="104"/>
-      <circle cx="757.5" cy="412" r="7"/>
-      <rect x="884" y="416" width="11" height="104"/>
-      <circle cx="889.5" cy="412" r="7"/>
-      <!-- inen basamaklar -->
-      <rect x="770" y="458" width="108" height="9"/>
-      <rect x="778" y="478" width="92" height="9"/>
-      <rect x="786" y="498" width="76" height="9"/>
-      <rect x="793" y="515" width="62" height="5"/>
+      <!-- kapı babaları -->
+      <rect x="752" y="414" width="11" height="106"/>
+      <circle cx="757.5" cy="410" r="7"/>
+      <rect x="838" y="414" width="11" height="106"/>
+      <circle cx="843.5" cy="410" r="7"/>
+      <!-- bahçe kapısı -->
+      <rect x="766" y="442" width="69" height="7"/>
+      <rect x="766" y="499" width="69" height="6"/>
+      <rect x="768" y="442" width="6" height="63"/>
+      <rect x="797" y="442" width="6" height="63"/>
+      <rect x="826" y="442" width="6" height="63"/>
+      <line x1="771" y1="501" x2="830" y2="447" stroke="var(--siluet)" stroke-width="5"/>
     </g>
 
     <!-- kedi: 5 poz, tıklayınca yer değiştirir -->
     <g id="kp1" class="kposz" tabindex="0" role="button" aria-label="kedi">
-      <path d="M438,432 C438,412 444,396 456,388 C466,382 474,388 476,398 C480,410 478,422 478,432 Z" fill="var(--kedi)"/>
-      <circle cx="466" cy="378" r="11" fill="var(--kedi)"/>
-      <path d="M457,372 L454,357 L465,364 Z" fill="var(--kedi)"/>
-      <path d="M470,370 L476,356 L481,367 Z" fill="var(--kedi)"/>
-      <path d="M442,434 C436,452 444,462 434,474" stroke="var(--kedi)" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+      <path d="M444,432 C441,414 445,397 456,388 C457,381 457,375 459,370 L456,359 L464,366 C466,364.5 469,364.5 471,366 L476,358 L478,367 C481,372 482,378 480,384 C478,390 474,393 470,395 C475,405 477,418 476,432 Z" fill="var(--kedi)"/>
+      <path d="M447,433 C439,448 448,458 437,470" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
     </g>
     <g id="kp2" class="kposz" tabindex="0" role="button" aria-label="kedi">
-      <path d="M926,432 C926,415 934,407 950,407 C966,407 974,415 974,432 Z" fill="var(--kedi)"/>
-      <circle cx="970" cy="404" r="10" fill="var(--kedi)"/>
-      <path d="M963,398 L961,386 L970,392 Z" fill="var(--kedi)"/>
-      <path d="M975,396 L980,385 L984,395 Z" fill="var(--kedi)"/>
+      <path d="M926,432 C926,418 934,409 947,408 C951,403 951,398 954,394 L952,384 L959,390 C961,388.5 964,388.5 966,390 L970,383 L972,392 C975,396 976,402 974,407 C972,412 968,415 964,416 C970,420 972,426 972,432 Z" fill="var(--kedi)"/>
     </g>
     <g id="kp3" class="kposz" tabindex="0" role="button" aria-label="uyuyan kedi">
-      <ellipse cx="826" cy="449" rx="17" ry="10" fill="var(--kedi)"/>
-      <circle cx="812" cy="451" r="7.5" fill="var(--kedi)"/>
-      <path d="M808,446 L806,439 L813,442 Z" fill="var(--kedi)"/>
-      <path d="M841,453 C849,459 839,464 827,461" stroke="var(--kedi)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <path d="M302,432 C298,421 305,411 319,410 C333,409 342,417 340,426 C338,431 334,432 330,432 Z" fill="var(--kedi)"/>
+      <circle cx="307" cy="424" r="7.5" fill="var(--kedi)"/>
+      <path d="M302,419 L300,411 L307,414 Z" fill="var(--kedi)"/>
+      <path d="M337,428 C345,433 331,437 317,434" stroke="var(--kedi)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
     </g>
     <g id="kp4" class="kposz" tabindex="0" role="button" aria-label="gerinen kedi">
-      <path d="M174,432 C176,420 184,410 196,408 C210,404 222,410 226,420 C228,426 226,432 Z" fill="var(--kedi)"/>
-      <circle cx="172" cy="422" r="9.5" fill="var(--kedi)"/>
-      <path d="M166,415 L162,404 L171,410 Z" fill="var(--kedi)"/>
-      <path d="M176,413 L181,403 L185,412 Z" fill="var(--kedi)"/>
-      <path d="M226,420 C236,406 232,396 240,388" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M172,432 C174,423 179,416 187,412 C197,406 212,405 220,412 C226,417 228,424 226,432 Z" fill="var(--kedi)"/>
+      <circle cx="176" cy="420" r="9" fill="var(--kedi)"/>
+      <path d="M170,414 L168,404 L175,409 Z" fill="var(--kedi)"/>
+      <path d="M180,411 L184,402 L187,410 Z" fill="var(--kedi)"/>
+      <path d="M225,414 C233,401 228,392 236,383" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
     </g>
     <g id="kp5" class="kposz" tabindex="0" role="button" aria-label="yürüyen kedi">
-      <path d="M616,420 C618,408 630,402 644,402 C658,402 668,408 668,418 C668,424 662,427 656,427 L626,427 C620,427 616,424 616,420 Z" fill="var(--kedi)"/>
-      <rect x="621" y="424" width="5" height="8" fill="var(--kedi)"/>
-      <rect x="633" y="425" width="5" height="7" fill="var(--kedi)"/>
-      <rect x="648" y="425" width="5" height="7" fill="var(--kedi)"/>
-      <rect x="658" y="424" width="5" height="8" fill="var(--kedi)"/>
-      <circle cx="674" cy="404" r="9.5" fill="var(--kedi)"/>
-      <path d="M668,397 L665,386 L674,392 Z" fill="var(--kedi)"/>
-      <path d="M679,395 L684,385 L688,395 Z" fill="var(--kedi)"/>
-      <path d="M617,415 C606,402 612,392 604,384" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M618,425 C618,412 628,406 643,406 C656,406 666,411 667,419 C667,424 663,427 658,427 L627,427 C621,427 618,427 618,425 Z" fill="var(--kedi)"/>
+      <rect x="624" y="426" width="5" height="6" fill="var(--kedi)"/>
+      <rect x="636" y="426" width="5" height="6" fill="var(--kedi)"/>
+      <rect x="649" y="426" width="5" height="6" fill="var(--kedi)"/>
+      <rect x="659" y="426" width="5" height="6" fill="var(--kedi)"/>
+      <path d="M664,415 C664,408 668,402 673,400 C674,396 674,393 676,390 L674,381 L681,387 C683,385.5 686,385.5 688,387 L692,380 L694,389 C696,393 697,398 695,402 C693,407 688,410 683,411 C680,414 676,416 672,416 Z" fill="var(--kedi)"/>
+      <path d="M619,420 C609,408 615,397 607,389" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
     </g>
 
     <!-- korkulukta çay -->
@@ -189,24 +211,6 @@
       </g>
       <rect x="50" y="472" width="64" height="11" rx="3" fill="var(--sakso2)"/>
       <path d="M56,483 h52 l-8,37 h-36 Z" fill="var(--sakso2)"/>
-    </g>
-
-    <!-- merdivenin dibinde su: nilüferler -->
-    <g>
-      <ellipse cx="858" cy="513" rx="13" ry="4" fill="var(--siluet)"/>
-      <ellipse cx="905" cy="516" rx="16" ry="4.5" fill="var(--siluet)"/>
-      <g transform="translate(885,511) scale(1.35)" fill="var(--lotus)">
-        <path d="M0,0 C-4,-8 -4,-15 0,-21 C4,-15 4,-8 0,0 Z"/>
-        <path d="M-3,0 C-10,-5 -13,-11 -12,-17 C-6,-13 -3,-7 -3,0 Z"/>
-        <path d="M3,0 C10,-5 13,-11 12,-17 C6,-13 3,-7 3,0 Z"/>
-      </g>
-      <ellipse cx="296" cy="423" rx="12" ry="3.5" fill="var(--siluet)"/>
-      <ellipse cx="330" cy="427" rx="9" ry="3" fill="var(--siluet)"/>
-      <g transform="translate(313,421) scale(.62)" fill="var(--lotus)">
-        <path d="M0,0 C-4,-8 -4,-15 0,-21 C4,-15 4,-8 0,0 Z"/>
-        <path d="M-3,0 C-10,-5 -13,-11 -12,-17 C-6,-13 -3,-7 -3,0 Z"/>
-        <path d="M3,0 C10,-5 13,-11 12,-17 C6,-13 3,-7 3,0 Z"/>
-      </g>
     </g>
 
     <!-- konuşma balonu -->
@@ -309,11 +313,12 @@
   /* kedi: tıklayınca konuşur, sonra başka pozda başka yere geçer */
   var KEDI = [
     {id:'kp1', bx:466, by:348, uyku:false},
-    {id:'kp2', bx:950, by:368, uyku:false},
-    {id:'kp3', bx:826, by:418, uyku:true},
+    {id:'kp2', bx:950, by:372, uyku:false},
+    {id:'kp3', bx:322, by:398, uyku:true},
     {id:'kp4', bx:200, by:368, uyku:false},
-    {id:'kp5', bx:648, by:362, uyku:false}
+    {id:'kp5', bx:658, by:368, uyku:false}
   ];
+  var SESLER = ['miyav', 'mrnav', 'mırnav'];
   var kediIdx = 0, kediKilit = false;
   function kediCiz(){
     KEDI.forEach(function(k,j){
@@ -326,7 +331,7 @@
     kediKilit = true;
     var k = KEDI[kediIdx];
     var balon = document.getElementById('balon');
-    document.getElementById('balonYazi').textContent = k.uyku ? 'prrr' : 'miyav';
+    document.getElementById('balonYazi').textContent = k.uyku ? 'prrr' : SESLER[Math.floor(Math.random() * SESLER.length)];
     balon.setAttribute('transform', 'translate(' + k.bx + ',' + k.by + ')');
     balon.style.display = '';
     setTimeout(function(){
