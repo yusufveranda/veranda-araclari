@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sayfa bulunamadı — veranda araçları</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f6f5c'/%3E%3Cpath d='M32 52 C32 35 39 21 52 14 C50 32 43 46 32 52 Z' fill='%23f6f4ef'/%3E%3Cpath d='M32 52 C30 40 24 30 15 25 C17 38 23 48 32 52 Z' fill='%23cfe3da'/%3E%3C/svg%3E">
+<style>
+body{background:#f6f4ef;color:#23272b;font-family:Georgia,'Times New Roman',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0}
+.kutu{text-align:center;padding:24px;max-width:440px}
+h1{font-weight:normal;font-size:26px;color:#1f6f5c}
+p{color:#70757c;margin:12px 0 22px;line-height:1.6;font-style:italic}
+a{color:#c8743c;text-decoration:none;border:1px solid #c8743c;border-radius:18px;padding:7px 18px;font-size:15px}
+a:hover{background:rgba(200,116,60,.08)}
+svg{width:64px;height:64px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="kutu">
+  <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f6f5c"/><path d="M32 52 C32 35 39 21 52 14 C50 32 43 46 32 52 Z" fill="#f6f4ef"/><path d="M32 52 C30 40 24 30 15 25 C17 38 23 48 32 52 Z" fill="#cfe3da"/></svg>
+  <h1>bu yaprak burada değil</h1>
+  <p>Aradığın sayfa taşınmış, silinmiş ya da hiç var olmamış olabilir. Verandaya dönüp oradan bakmak en iyisi.</p>
+  <a id="eve" href="/">verandaya dön</a>
+</div>
+<script>
+(function(){
+  var parca = location.pathname.split('/').filter(Boolean);
+  document.getElementById('eve').href = parca.length && parca[0] === 'veranda-araclari' ? '/veranda-araclari/' : '/';
+})();
+</script>
+</body>
+</html>
