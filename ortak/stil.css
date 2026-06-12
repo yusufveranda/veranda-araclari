@@ -30,7 +30,7 @@ body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman'
 .wrap{max-width:880px;margin:0 auto;padding:28px 20px 70px}
 
 /* ================= vitrin (afiş sayfası) ================= */
-body.vitrin{background:var(--alan);color:var(--kagit-ink);font-family:Literata,Georgia,serif;transition:background 1s}
+body.vitrin{background:var(--alan);color:var(--kagit-ink);font-family:'Libre Baskerville',Georgia,serif;transition:background 1s}
 
 .afis{position:relative}
 .poster{display:block;width:100%;height:clamp(330px,46vw,540px)}
@@ -52,7 +52,7 @@ body.t-gece .gunes-k{transform:translate(0,215px)}
 
 .afis-yazi{position:absolute;top:0;left:0;width:100%;padding:clamp(22px,4.5vw,52px) clamp(20px,5vw,56px);pointer-events:none}
 .afis-yazi a{color:var(--baslik-ink);text-decoration:none;pointer-events:auto;transition:color 1s}
-.afis-yazi h1{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(30px,5.4vw,58px);line-height:1.04;letter-spacing:-.5px;max-width:7em}
+.afis-yazi h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(38px,6.4vw,72px);line-height:1.02;letter-spacing:-.5px}
 .afis-yazi .alt{color:var(--baslik-ink);opacity:.82;font-style:italic;font-size:clamp(13px,1.6vw,17px);margin-top:10px;transition:color 1s}
 
 /* günün kelimesi — yapıştırılmış kâğıt şerit */
@@ -60,7 +60,7 @@ body.vitrin .gunun{display:flex;gap:14px;align-items:flex-start;margin-top:26px;
 body.vitrin .gunun .nokta{flex:none;width:18px;height:18px;border-radius:50%;background:var(--gunes);margin-top:4px}
 body.vitrin .gunun .selam{color:var(--kagit-soluk);font-size:13.5px;font-style:italic}
 body.vitrin .gunun .gk{margin-top:5px;font-size:16.5px;line-height:1.55}
-body.vitrin .gunun .gk b{font-family:Fraunces,Georgia,serif;color:var(--kirmizi);font-size:19px;font-weight:600}
+body.vitrin .gunun .gk b{font-family:'Playfair Display',Georgia,serif;color:var(--kirmizi);font-size:19px;font-weight:600}
 body.vitrin .gunun .gk .anlam{color:var(--kagit-soluk)}
 body.vitrin .gunun .gk a{color:var(--kirmizi);text-decoration:none;white-space:nowrap;font-size:14.5px;border-bottom:1px solid currentColor}
 
@@ -78,9 +78,9 @@ body.vitrin .kart:hover,body.vitrin .kart:focus-visible{transform:rotate(0) tran
 body.vitrin .kart:focus-visible{outline:3px solid var(--kagit);outline-offset:3px}
 body.vitrin .kart .ikon{width:46px;height:46px;border-radius:50%;background:var(--gunes);color:var(--kagit);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
 body.vitrin .kart .ikon svg{width:24px;height:24px}
-body.vitrin .kart h2{font-family:Fraunces,Georgia,serif;font-size:21px;font-weight:600;color:var(--kagit-ink)}
+body.vitrin .kart h2{font-family:'Playfair Display',Georgia,serif;font-size:21px;font-weight:600;color:var(--kagit-ink)}
 body.vitrin .kart p{font-size:14.5px;color:var(--kagit-soluk);margin-top:7px;line-height:1.55}
-body.vitrin .kart .yakinda{font-family:Literata,Georgia,serif;font-size:11px;color:var(--kirmizi);border:1px solid var(--kirmizi);border-radius:12px;padding:1px 9px;margin-left:8px;vertical-align:middle;font-weight:400}
+body.vitrin .kart .yakinda{font-family:'Libre Baskerville',Georgia,serif;font-size:11px;color:var(--kirmizi);border:1px solid var(--kirmizi);border-radius:12px;padding:1px 9px;margin-left:8px;vertical-align:middle;font-weight:400}
 
 body.vitrin footer{margin-top:64px;border:none;color:var(--alan-ink);font-size:12.5px;text-align:center;line-height:1.7;transition:color 1s}
 body.vitrin footer .kilim{width:200px;height:13px;color:var(--alan-ink);opacity:.8;margin-bottom:10px}
@@ -92,7 +92,7 @@ body.vitrin footer .kilim{width:200px;height:13px;color:var(--alan-ink);opacity:
 
 /* ================= alt sayfalar (araçlar) ================= */
 header.site a{color:var(--ink);text-decoration:none}
-header.site h1{font-size:30px;font-weight:normal}
+header.site h1{font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:600}
 header.site h1 b{color:var(--acc);font-weight:normal}
 header.site .alt{color:var(--muted);font-size:14.5px;font-style:italic;margin-top:4px}
 nav.araclar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
