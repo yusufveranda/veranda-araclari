@@ -42,6 +42,9 @@
       <circle cx="370" cy="230" r="1.2" class="kirp"/><circle cx="640" cy="250" r="1.2"/>
     </g>
 
+    <!-- kayan yıldız (yalnız gece) -->
+    <line class="kayan" x1="1150" y1="48" x2="1085" y2="80" stroke="#F2E6CE" stroke-width="2" stroke-linecap="round"/>
+
     <!-- ay -->
     <g class="ay">
       <circle cx="700" cy="148" r="34" fill="#F2E6CE"/>
@@ -104,20 +107,50 @@
       <rect x="793" y="515" width="62" height="5"/>
     </g>
 
-    <!-- korkulukta oturan krem kedi -->
-    <g fill="#F2E6CE">
-      <path d="M447,432 C447,406 452,393 462,393 C472,393 477,406 477,432 Z"/>
-      <circle cx="462" cy="385" r="11.5"/>
-      <path d="M452,378 L448,366 L458,371 Z"/>
-      <path d="M466,377 L469,365 L476,373 Z"/>
-      <path d="M476,427 C492,422 494,400 485,391" stroke="#F2E6CE" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+    <!-- kedi: 5 poz, tıklayınca yer değiştirir -->
+    <g id="kp1" class="kposz" tabindex="0" role="button" aria-label="kedi">
+      <path d="M438,432 C438,412 444,396 456,388 C466,382 474,388 476,398 C480,410 478,422 478,432 Z" fill="var(--kedi)"/>
+      <circle cx="466" cy="378" r="11" fill="var(--kedi)"/>
+      <path d="M457,372 L454,357 L465,364 Z" fill="var(--kedi)"/>
+      <path d="M470,370 L476,356 L481,367 Z" fill="var(--kedi)"/>
+      <path d="M442,434 C436,452 444,462 434,474" stroke="var(--kedi)" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="kp2" class="kposz" tabindex="0" role="button" aria-label="kedi">
+      <path d="M926,432 C926,415 934,407 950,407 C966,407 974,415 974,432 Z" fill="var(--kedi)"/>
+      <circle cx="970" cy="404" r="10" fill="var(--kedi)"/>
+      <path d="M963,398 L961,386 L970,392 Z" fill="var(--kedi)"/>
+      <path d="M975,396 L980,385 L984,395 Z" fill="var(--kedi)"/>
+    </g>
+    <g id="kp3" class="kposz" tabindex="0" role="button" aria-label="uyuyan kedi">
+      <ellipse cx="826" cy="449" rx="17" ry="10" fill="var(--kedi)"/>
+      <circle cx="812" cy="451" r="7.5" fill="var(--kedi)"/>
+      <path d="M808,446 L806,439 L813,442 Z" fill="var(--kedi)"/>
+      <path d="M841,453 C849,459 839,464 827,461" stroke="var(--kedi)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="kp4" class="kposz" tabindex="0" role="button" aria-label="gerinen kedi">
+      <path d="M174,432 C176,420 184,410 196,408 C210,404 222,410 226,420 C228,426 226,432 Z" fill="var(--kedi)"/>
+      <circle cx="172" cy="422" r="9.5" fill="var(--kedi)"/>
+      <path d="M166,415 L162,404 L171,410 Z" fill="var(--kedi)"/>
+      <path d="M176,413 L181,403 L185,412 Z" fill="var(--kedi)"/>
+      <path d="M226,420 C236,406 232,396 240,388" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="kp5" class="kposz" tabindex="0" role="button" aria-label="yürüyen kedi">
+      <path d="M616,420 C618,408 630,402 644,402 C658,402 668,408 668,418 C668,424 662,427 656,427 L626,427 C620,427 616,424 616,420 Z" fill="var(--kedi)"/>
+      <rect x="621" y="424" width="5" height="8" fill="var(--kedi)"/>
+      <rect x="633" y="425" width="5" height="7" fill="var(--kedi)"/>
+      <rect x="648" y="425" width="5" height="7" fill="var(--kedi)"/>
+      <rect x="658" y="424" width="5" height="8" fill="var(--kedi)"/>
+      <circle cx="674" cy="404" r="9.5" fill="var(--kedi)"/>
+      <path d="M668,397 L665,386 L674,392 Z" fill="var(--kedi)"/>
+      <path d="M679,395 L684,385 L688,395 Z" fill="var(--kedi)"/>
+      <path d="M617,415 C606,402 612,392 604,384" stroke="var(--kedi)" stroke-width="5" fill="none" stroke-linecap="round"/>
     </g>
 
     <!-- korkulukta çay -->
     <g>
-      <ellipse cx="540" cy="431" rx="15" ry="3.5" fill="#F2E6CE"/>
-      <path d="M531,408 C532,416 531,420 534,428 L546,428 C549,420 548,416 549,408 Z" fill="#F2E6CE"/>
-      <path class="buhar" d="M540,402 q3,-5 0,-10 q-3,-5 0,-9" stroke="#F2E6CE" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>
+      <ellipse cx="540" cy="431" rx="15" ry="3.5" fill="var(--cay)"/>
+      <path d="M531,408 C532,416 531,420 534,428 L546,428 C549,420 548,416 549,408 Z" fill="var(--cay)"/>
+      <path class="buhar" d="M540,402 q3,-5 0,-10 q-3,-5 0,-9" stroke="var(--cay-buhar)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>
     </g>
 
     <!-- saksı bitkisi -->
@@ -129,6 +162,58 @@
       <ellipse cx="1094" cy="400" rx="12" ry="62" transform="rotate(30 1094 400)"/>
       <rect x="996" y="448" width="108" height="14" rx="4"/>
       <path d="M1004,462 H1096 L1084,520 H1016 Z"/>
+    </g>
+
+    <!-- korkulukta mini saksı: kırmızı dallar -->
+    <g>
+      <g stroke="var(--bitki2)" stroke-width="2.2" fill="none" stroke-linecap="round">
+        <path d="M151,418 C147,408 143,402 142,394"/>
+        <path d="M151,418 C151,406 151,399 152,391"/>
+        <path d="M151,418 C155,408 158,403 161,396"/>
+      </g>
+      <g fill="var(--bitki2)">
+        <circle cx="141" cy="392" r="4.5"/>
+        <circle cx="152" cy="388" r="5"/>
+        <circle cx="162" cy="394" r="4.5"/>
+      </g>
+      <path d="M139,418 h24 l-3,14 h-18 Z" fill="var(--sakso2)"/>
+    </g>
+
+    <!-- solda kırmızı çalı -->
+    <g>
+      <g fill="var(--bitki2)">
+        <circle cx="82" cy="446" r="20"/>
+        <circle cx="62" cy="460" r="14"/>
+        <circle cx="100" cy="458" r="13"/>
+        <circle cx="82" cy="464" r="11"/>
+      </g>
+      <rect x="50" y="472" width="64" height="11" rx="3" fill="var(--sakso2)"/>
+      <path d="M56,483 h52 l-8,37 h-36 Z" fill="var(--sakso2)"/>
+    </g>
+
+    <!-- merdivenin dibinde su: nilüferler -->
+    <g>
+      <ellipse cx="858" cy="513" rx="13" ry="4" fill="var(--siluet)"/>
+      <ellipse cx="905" cy="516" rx="16" ry="4.5" fill="var(--siluet)"/>
+      <g transform="translate(885,511) scale(1.35)" fill="var(--lotus)">
+        <path d="M0,0 C-4,-8 -4,-15 0,-21 C4,-15 4,-8 0,0 Z"/>
+        <path d="M-3,0 C-10,-5 -13,-11 -12,-17 C-6,-13 -3,-7 -3,0 Z"/>
+        <path d="M3,0 C10,-5 13,-11 12,-17 C6,-13 3,-7 3,0 Z"/>
+      </g>
+      <ellipse cx="296" cy="423" rx="12" ry="3.5" fill="var(--siluet)"/>
+      <ellipse cx="330" cy="427" rx="9" ry="3" fill="var(--siluet)"/>
+      <g transform="translate(313,421) scale(.62)" fill="var(--lotus)">
+        <path d="M0,0 C-4,-8 -4,-15 0,-21 C4,-15 4,-8 0,0 Z"/>
+        <path d="M-3,0 C-10,-5 -13,-11 -12,-17 C-6,-13 -3,-7 -3,0 Z"/>
+        <path d="M3,0 C10,-5 13,-11 12,-17 C6,-13 3,-7 3,0 Z"/>
+      </g>
+    </g>
+
+    <!-- konuşma balonu -->
+    <g id="balon" style="display:none" pointer-events="none">
+      <path d="M-6,-2 L1,11 L7,-2 Z" fill="#F9F1DE"/>
+      <rect x="-36" y="-32" width="72" height="31" rx="9" fill="#F9F1DE" stroke="#221C16" stroke-width="1.3"/>
+      <text id="balonYazi" x="0" y="-11" text-anchor="middle" font-size="15" fill="#221C16">miyav</text>
     </g>
   </svg>
 
@@ -195,23 +280,95 @@
 <script src="ortak/gunluk.js"></script>
 <script>
 (function(){
+  var DILIMLER = ['t-sabah','t-gunduz','t-aksam','t-gece'];
+  var SELAMLAR = {'t-sabah':'günaydın.','t-gunduz':'iyi günler.','t-aksam':'iyi akşamlar.','t-gece':'iyi geceler.'};
+  var tarih = new Date().toLocaleDateString('tr-TR', {day:'numeric', month:'long', weekday:'long'});
+
+  function dilimKur(d){
+    DILIMLER.forEach(function(x){ document.body.classList.remove(x); });
+    document.body.classList.remove('lamba-acik','lamba-kapali');
+    document.body.classList.add(d);
+    document.getElementById('selam').textContent = SELAMLAR[d] + ' bugün ' + tarih + '.';
+  }
+
   /* ?saat=22 ile deneme yapılabilir */
   var p = new URLSearchParams(location.search).get('saat');
   var saat = p !== null ? +p : new Date().getHours();
-  var dilim, selam;
-  if(saat >= 6 && saat < 11){ dilim = 't-sabah'; selam = 'günaydın.'; }
-  else if(saat >= 11 && saat < 17){ dilim = 't-gunduz'; selam = 'iyi günler.'; }
-  else if(saat >= 17 && saat < 21){ dilim = 't-aksam'; selam = 'iyi akşamlar.'; }
-  else { dilim = 't-gece'; selam = 'iyi geceler.'; }
-  document.body.classList.add(dilim);
-
-  var tarih = new Date().toLocaleDateString('tr-TR', {day:'numeric', month:'long', weekday:'long'});
-  document.getElementById('selam').textContent = selam + ' bugün ' + tarih + '.';
+  var dilim;
+  if(saat >= 6 && saat < 11) dilim = 't-sabah';
+  else if(saat >= 11 && saat < 17) dilim = 't-gunduz';
+  else if(saat >= 17 && saat < 21) dilim = 't-aksam';
+  else dilim = 't-gece';
+  dilimKur(dilim);
 
   var g = gununKelimesi();
   document.getElementById('gununKelimesi').innerHTML =
     'günün kelimesi: <b>' + g.k + '</b> <span class="anlam">· ' + g.a + '</span> ' +
     '<a href="sozluk/?q=' + encodeURIComponent(g.k) + '">sözlükte aç →</a>';
+
+  /* kedi: tıklayınca konuşur, sonra başka pozda başka yere geçer */
+  var KEDI = [
+    {id:'kp1', bx:466, by:348, uyku:false},
+    {id:'kp2', bx:950, by:368, uyku:false},
+    {id:'kp3', bx:826, by:418, uyku:true},
+    {id:'kp4', bx:200, by:368, uyku:false},
+    {id:'kp5', bx:648, by:362, uyku:false}
+  ];
+  var kediIdx = 0, kediKilit = false;
+  function kediCiz(){
+    KEDI.forEach(function(k,j){
+      var el = document.getElementById(k.id);
+      if(el) el.style.display = (j === kediIdx) ? '' : 'none';
+    });
+  }
+  function kediTik(){
+    if(kediKilit) return;
+    kediKilit = true;
+    var k = KEDI[kediIdx];
+    var balon = document.getElementById('balon');
+    document.getElementById('balonYazi').textContent = k.uyku ? 'prrr' : 'miyav';
+    balon.setAttribute('transform', 'translate(' + k.bx + ',' + k.by + ')');
+    balon.style.display = '';
+    setTimeout(function(){
+      balon.style.display = 'none';
+      var y;
+      do { y = Math.floor(Math.random() * KEDI.length); } while(y === kediIdx);
+      kediIdx = y;
+      kediCiz();
+      kediKilit = false;
+    }, 950);
+  }
+  KEDI.forEach(function(k){
+    var el = document.getElementById(k.id);
+    el.addEventListener('click', kediTik);
+    el.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); kediTik(); }
+    });
+  });
+  kediCiz();
+
+  /* güneşe ya da aya tıkla: vakit ilerler */
+  function suanki(){
+    for(var i = 0; i < DILIMLER.length; i++)
+      if(document.body.classList.contains(DILIMLER[i])) return i;
+    return 1;
+  }
+  ['.gunes-k','.ay'].forEach(function(s){
+    var el = document.querySelector(s);
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function(){ dilimKur(DILIMLER[(suanki() + 1) % 4]); });
+  });
+
+  /* lambaya tıkla: yanar ya da söner */
+  var lamba = document.querySelector('.lamba');
+  lamba.style.cursor = 'pointer';
+  lamba.addEventListener('click', function(){
+    var b = document.body;
+    if(b.classList.contains('lamba-acik')){ b.classList.replace('lamba-acik','lamba-kapali'); return; }
+    if(b.classList.contains('lamba-kapali')){ b.classList.replace('lamba-kapali','lamba-acik'); return; }
+    var acik = parseFloat(getComputedStyle(b).getPropertyValue('--lamba-op')) > 0;
+    b.classList.add(acik ? 'lamba-kapali' : 'lamba-acik');
+  });
 })();
 </script>
 </body>

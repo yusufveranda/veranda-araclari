@@ -10,6 +10,8 @@
   --kagit:#F2E6CE; --kagit-ink:#221C16; --kagit-soluk:#6E6353;
   --kirmizi:#C2331F;
   --baslik-ink:#1C1510; --alan-ink:#F7E9D2;
+  --kedi:#6F4528; --cay:#A4622F; --cay-buhar:#E8CDA0;
+  --lotus:#EFAD89; --bitki2:#C03A22; --sakso2:#8E4824;
 }
 body.t-sabah{
   --gok:#F4AC4C; --alan:#C8502C; --gunes:#D7261D;
@@ -23,7 +25,11 @@ body.t-gece{
   --gunes-op:0; --ay-op:1; --yildiz-op:1; --kus-op:0;
   --lamba-op:1; --ampul:#FFC76B;
   --baslik-ink:#F2E6CE; --alan-ink:#CDC1A8;
+  --kedi:#96693C; --cay:#B5743C; --cay-buhar:#8A6B4A;
+  --lotus:#C08263; --bitki2:#84402C; --sakso2:#6E3A1F;
 }
+body.lamba-acik{--lamba-op:.95;--ampul:#FFC76B}
+body.lamba-kapali{--lamba-op:0;--ampul:#3A2E22}
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;min-height:100vh;font-size:17px}
@@ -48,7 +54,13 @@ body.t-gece .gunes-k{transform:translate(0,215px)}
 @keyframes kirp{0%,100%{opacity:1}50%{opacity:.25}}
 .buhar{animation:buhar 4s ease-in-out infinite}
 @keyframes buhar{0%,100%{opacity:.8}50%{opacity:.2}}
-@media(prefers-reduced-motion:reduce){.kirp,.buhar{animation:none}.gunes-k{transition:none}}
+.kposz{cursor:pointer;outline:none}
+.kposz:focus-visible{outline:2px dashed #F2E6CE;outline-offset:4px}
+#balon text{font-family:'Libre Baskerville',Georgia,serif;font-style:italic}
+.kayan{opacity:0}
+body.t-gece .kayan{animation:kayan 31s linear infinite}
+@keyframes kayan{0%,84%{opacity:0;transform:translate(0,0)}87%{opacity:1}93%{opacity:0;transform:translate(-310px,150px)}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.kirp,.buhar,.kayan{animation:none}.gunes-k{transition:none}}
 
 .afis-yazi{position:absolute;top:0;left:0;width:100%;padding:clamp(22px,4.5vw,52px) clamp(20px,5vw,56px);pointer-events:none}
 .afis-yazi a{color:var(--baslik-ink);text-decoration:none;pointer-events:auto;transition:color 1s}
