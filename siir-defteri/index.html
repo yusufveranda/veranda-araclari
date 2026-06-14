@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>şiir defteri</title>
+<meta name="description" content="Bir şair defteri: not gibi yaz, bir sözcüğün başka hâlini kenara not et, dizeleri sürükle. Birden çok şiir, sürümler, hiçbir şey kaybolmaz. Her şey tarayıcında.">
+<meta name="theme-color" content="#2A2018">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232A2018'/%3E%3Crect x='15' y='13' width='6' height='38' rx='2' fill='%23C2331F'/%3E%3Crect x='26' y='20' width='22' height='2.6' rx='1.3' fill='%23F4EDDD'/%3E%3Crect x='26' y='28' width='22' height='2.6' rx='1.3' fill='%23F4EDDD'/%3E%3Crect x='26' y='36' width='14' height='2.6' rx='1.3' fill='%231F6F5C'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../ortak/stil.css">
+<style>
+:root{
+  --kagit:#F4EDDD; --kagit2:#EBE1CB; --kenar:#DED2B6;
+  --murekkep:#2A2018; --soluk:#8C7C63; --cok-soluk:#B6A988;
+  --kirmizi:#C2331F; --kirmizi-yum:rgba(194,51,31,.10);
+  --yesil:#1F6F5C; --yesil-yum:rgba(31,111,92,.12);
+}
+body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Georgia,serif}
+.wrap{max-width:1080px}
+.eve-don{background:var(--kirmizi);color:#F4EDDD}
+::selection{background:var(--kirmizi-yum)}
+
+/* başlık şeridi */
+.tepe{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1.5px solid var(--kenar);padding-bottom:14px;margin-bottom:18px}
+.tepe .marka{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:27px;color:var(--murekkep);letter-spacing:-.3px}
+.tepe .alt{font-style:italic;color:var(--soluk);font-size:14px}
+.tepe nav{margin-left:auto;display:flex;gap:14px;font-size:13.5px}
+.tepe nav a{color:var(--soluk);text-decoration:none;border-bottom:1px solid transparent}
+.tepe nav a:hover{color:var(--kirmizi);border-bottom-color:var(--kirmizi)}
+
+/* iki sütun */
+.duzlem{display:grid;grid-template-columns:236px 1fr;gap:26px;align-items:start}
+@media(max-width:780px){.duzlem{grid-template-columns:1fr;gap:16px}}
+
+/* ---- sol: defter sırtı ---- */
+.sirt{position:sticky;top:18px}
+@media(max-width:780px){.sirt{position:static}}
+.sirt-bas{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--soluk);margin:0 0 10px 2px}
+.defter-oge{border-left:2px solid transparent;padding:2px 0}
+.defter-oge .ad-satir{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:15px;color:var(--murekkep)}
+.defter-oge .ad-satir:hover{background:var(--kagit)}
+.defter-oge.acik{border-left-color:var(--kirmizi)}
+.defter-oge.acik .ad-satir{background:var(--kagit);font-weight:700}
+.defter-oge .ad-satir .ad{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.defter-oge .ad-satir .nokta{flex:none;width:7px;height:7px;border-radius:50%;background:var(--cok-soluk)}
+.defter-oge.acik .ad-satir .nokta{background:var(--kirmizi)}
+.defter-oge .ad-satir .sil{border:none;background:none;color:var(--cok-soluk);font-size:15px;padding:0 3px;border-radius:5px;opacity:0}
+.defter-oge:hover .ad-satir .sil{opacity:1}
+.defter-oge .ad-satir .sil:hover{color:var(--kirmizi)}
+.icerik{padding:2px 0 10px 12px;margin-left:8px;border-left:1px dotted var(--kenar)}
+.kucuk-bas{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--cok-soluk);margin:8px 0 5px}
+.surum-oge{display:flex;align-items:baseline;gap:7px;padding:6px 8px;border-radius:7px;cursor:pointer;font-size:13.5px}
+.surum-oge:hover{background:var(--kagit)}
+.surum-oge.bu{background:var(--kagit)}
+.surum-oge .im{flex:none;font-size:10px;color:var(--cok-soluk);align-self:center;width:11px}
+.surum-oge.bu .im{color:var(--yesil)}
+.surum-oge.bu .sad{font-weight:700}
+.surum-oge .sad{flex:1;color:var(--murekkep);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.surum-oge .szm{font-size:11px;color:var(--cok-soluk);font-style:italic}
+.surum-oge .vsil{border:none;background:none;color:var(--cok-soluk);font-size:14px;padding:0 3px;border-radius:5px;opacity:0;align-self:center}
+.surum-oge:hover .vsil{opacity:1}
+.surum-oge .vsil:hover{color:var(--kirmizi)}
+.bos-kucuk{font-size:12.5px;color:var(--cok-soluk);font-style:italic;padding:3px 8px}
+.sirt-tus{display:inline-flex;align-items:center;gap:6px;width:100%;justify-content:flex-start;border:1px solid var(--kenar);background:var(--kagit);color:var(--murekkep);border-radius:9px;padding:7px 11px;font-size:13.5px;margin-top:5px;font-family:'Libre Baskerville',serif}
+.sirt-tus:hover{border-color:var(--kirmizi);color:var(--kirmizi)}
+.sirt-tus.kucuktus{font-size:12.5px;padding:5px 9px;color:var(--soluk);width:auto}
+.yeni-siir{margin-top:14px;border-style:dashed;color:var(--kirmizi);justify-content:center;font-weight:700}
+
+/* ---- sağ: sayfa ---- */
+.sayfa{background:var(--kagit);border:1px solid var(--kenar);border-radius:6px;box-shadow:0 1px 0 var(--kenar),0 14px 34px rgba(42,32,24,.10);padding:30px 30px 40px;min-height:440px;position:relative}
+.sayfa::after{content:'';position:absolute;inset:0;border-radius:6px;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+.sayfa-bas{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.baslik-giris{flex:1;min-width:0;font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:27px;color:var(--murekkep);background:none;border:none;border-bottom:1.5px solid transparent;padding:2px 0;letter-spacing:-.2px}
+.baslik-giris::placeholder{color:var(--cok-soluk)}
+.baslik-giris:hover{border-bottom-color:var(--kenar)}
+.baslik-giris:focus{outline:none;border-bottom-color:var(--kirmizi)}
+.bas-tus{flex:none;border:none;background:none;color:var(--soluk);width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
+.bas-tus:hover{background:var(--kagit2);color:var(--kirmizi)}
+.bas-tus:disabled{opacity:.35;background:none;color:var(--cok-soluk)}
+.bas-tus svg{width:18px;height:18px}
+.tarih{font-size:11.5px;color:var(--cok-soluk);font-style:italic;margin:0 0 18px}
+
+/* el yazması alanı: kırmızı kenar payı */
+.kagit-alan{position:relative;padding-left:30px;min-height:240px}
+.kagit-alan::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:1.5px;background:var(--kirmizi);opacity:.42;border-radius:2px}
+.kita{padding:1px 0}
+.kita + .kita{margin-top:1.15em}
+.dize{position:relative;display:flex;align-items:flex-start}
+.tut{position:absolute;left:-30px;top:0;width:24px;height:1.95em;display:flex;align-items:center;justify-content:center;color:var(--cok-soluk);cursor:grab;font-size:13px;border-radius:5px;user-select:none;opacity:.55;touch-action:none}
+.tut:hover{opacity:1;color:var(--kirmizi);background:var(--kirmizi-yum)}
+.dize.us{box-shadow:inset 0 2px 0 var(--kirmizi)}
+.dize.as{box-shadow:inset 0 -2px 0 var(--kirmizi)}
+.yazi{flex:1;font-size:18px;line-height:1.95;color:var(--murekkep);padding:0 3px;min-height:1.95em;white-space:pre-wrap;word-break:break-word;outline:none;border-radius:4px}
+.yazi:focus{background:#FBF6EA;box-shadow:0 0 0 1px var(--kenar)}
+.yazi[data-edit="1"]:empty::before{content:'…';color:var(--cok-soluk)}
+.yazi .var{border-bottom:2px dotted var(--kirmizi);cursor:pointer}
+.rozet{flex:none;align-self:center;font-family:'Libre Baskerville',serif;font-size:10.5px;letter-spacing:.04em;color:var(--kirmizi);border:1px solid rgba(194,51,31,.4);border-radius:9px;padding:0 7px;margin-left:8px;cursor:pointer;white-space:nowrap}
+.rozet:hover{background:var(--kirmizi-yum)}
+.ipuc{font-size:12px;color:var(--soluk);font-style:italic;margin:20px 0 0;line-height:1.7;padding-left:30px}
+.ipuc b{color:var(--kirmizi);font-weight:400;font-style:normal}
+
+/* ---- bağlam menüsü ---- */
+.menu{position:fixed;z-index:200;background:var(--kagit);border:1px solid var(--kenar);border-radius:10px;box-shadow:0 14px 40px rgba(42,32,24,.28);padding:6px;min-width:212px;max-width:280px}
+.menu .mbas{font-family:'Libre Baskerville',serif;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--soluk);font-weight:700;padding:7px 9px 4px}
+.menu .moge{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:7px;cursor:pointer;font-size:14.5px;color:var(--murekkep)}
+.menu .moge:hover{background:var(--kagit2)}
+.menu .moge.aktif{color:var(--yesil);font-weight:700}
+.menu .moge .im{flex:none;width:15px;text-align:center;color:var(--cok-soluk);font-size:13px}
+.menu .moge.aktif .im{color:var(--yesil)}
+.menu .moge .met{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.menu .moge .sil{border:none;background:none;color:var(--cok-soluk);font-size:14px;padding:0 3px;border-radius:50%}
+.menu .moge .sil:hover{color:var(--kirmizi)}
+.menu .moge.uyari{color:var(--kirmizi)}.menu .moge.uyari .im{color:var(--kirmizi)}
+.menu hr{border:none;border-top:1px solid var(--kenar);margin:5px 4px}
+.menu .mgir{display:flex;gap:6px;padding:6px 7px}
+.menu .mgir input{flex:1;border:1px solid var(--kenar);border-radius:8px;padding:7px 9px;font-size:14px;font-family:'Libre Baskerville',serif;background:#fff}
+.menu .mgir input:focus{outline:none;border-color:var(--kirmizi)}
+.menu .mgir button{border:none;background:var(--kirmizi);color:#F4EDDD;border-radius:8px;padding:0 12px;font-size:13px}
+
+/* ---- satıriçi dize paneli ---- */
+.dize-panel{margin:3px 0 10px 30px;background:#FBF6EA;border:1px solid var(--kenar);border-radius:10px;padding:9px 11px;box-shadow:0 4px 14px rgba(42,32,24,.07)}
+.dp-bas{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--cok-soluk);font-weight:700;margin:2px 2px 6px}
+.dp-hal{display:flex;align-items:flex-start;gap:9px;padding:8px 9px;border-radius:8px;cursor:pointer;border-left:2px solid transparent}
+.dp-hal:hover{background:var(--kagit)}
+.dp-hal.bu{background:var(--kagit);border-left-color:var(--yesil)}
+.dp-hal .dp-im{flex:none;font-size:10px;color:var(--cok-soluk);margin-top:6px}
+.dp-hal.bu .dp-im{color:var(--yesil)}
+.dp-hal .dp-met{flex:1;font-size:16.5px;line-height:1.55;color:var(--murekkep);white-space:pre-wrap;word-break:break-word}
+.dp-hal.bu .dp-met{font-weight:700}
+.dp-hal .dp-sil{flex:none;border:none;background:none;color:var(--cok-soluk);font-size:15px;padding:0 4px;border-radius:6px;align-self:center}
+.dp-hal .dp-sil:hover{color:var(--kirmizi)}
+.dp-ops{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;padding-top:9px;border-top:1px dashed var(--kenar)}
+.dp-ops button{border:1px solid var(--kenar);background:var(--kagit);color:var(--murekkep);border-radius:14px;padding:5px 12px;font-size:12.5px;font-family:'Libre Baskerville',serif}
+.dp-ops button:hover{border-color:var(--kirmizi);color:var(--kirmizi)}
+.dp-ops button.uy{color:var(--kirmizi)}
+@media(max-width:560px){.dize-panel{margin-left:24px}}
+
+/* ---- modal (fark / çıkanlar) ---- */
+.kapak{position:fixed;inset:0;background:rgba(42,32,24,.42);z-index:150;display:flex;align-items:flex-start;justify-content:center;padding:48px 16px;overflow:auto}
+.modal{background:var(--kagit);border:1px solid var(--kenar);border-radius:10px;box-shadow:0 24px 60px rgba(42,32,24,.4);max-width:560px;width:100%;padding:22px 24px}
+.modal h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;color:var(--murekkep);display:flex;align-items:center;gap:10px}
+.modal h3 .kapat{margin-left:auto;border:none;background:none;color:var(--soluk);font-size:22px;line-height:1;padding:0 6px;border-radius:6px}
+.modal h3 .kapat:hover{color:var(--kirmizi)}
+.modal .not{font-size:12.5px;color:var(--soluk);font-style:italic;margin:4px 0 14px}
+.fr{font-size:15.5px;line-height:1.6;padding:3px 10px;border-radius:6px;border-left:3px solid transparent;margin:1px 0}
+.fr.ayni{color:var(--soluk);opacity:.75}
+.fr.degis{background:var(--yesil-yum);border-left-color:var(--yesil)}
+.fr.cikar{background:var(--kirmizi-yum);border-left-color:var(--kirmizi);text-decoration:line-through;opacity:.8}
+.fr.kbas{font-style:italic;color:var(--soluk);border:none;background:none;font-size:12.5px;margin-top:6px}
+.modal-tus{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.dugme{border:1px solid var(--kenar);background:var(--kagit);color:var(--murekkep);border-radius:9px;padding:8px 15px;font-size:14px;font-family:'Libre Baskerville',serif}
+.dugme:hover{border-color:var(--kirmizi);color:var(--kirmizi)}
+.dugme.dol{background:var(--kirmizi);border-color:var(--kirmizi);color:#F4EDDD}
+.dugme.dol:hover{filter:brightness(1.08);color:#F4EDDD}
+.raf-oge{display:flex;align-items:center;gap:10px;border:1px solid var(--kenar);border-radius:9px;padding:9px 12px;margin-bottom:8px;background:#FBF6EA}
+.raf-oge .ic{flex:1;font-size:14.5px;line-height:1.45;color:var(--murekkep);white-space:pre-line}
+.raf-oge .ic .ufak{display:block;font-size:11px;color:var(--cok-soluk);font-style:italic;margin-top:2px}
+.raf-oge .rm{border:none;background:none;color:var(--soluk);font-size:16px;width:30px;height:30px;border-radius:7px}
+.raf-oge .rm:hover{background:var(--kagit2);color:var(--kirmizi)}
+.raf-grup .gb{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--cok-soluk);margin:12px 0 7px}
+.bos-orta{text-align:center;color:var(--soluk);font-style:italic;padding:22px;font-size:14px}
+
+@media(max-width:560px){.sayfa{padding:22px 16px 30px}.yazi,.baslik-giris{font-size:17px}.kagit-alan{padding-left:24px}.tut{left:-24px;width:20px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="eve-don" href="../">veranda</a>
+
+<div class="wrap">
+<header class="tepe">
+  <a href="../" style="text-decoration:none"><span class="marka">veranda</span></a>
+  <span class="alt">şiir defteri</span>
+  <nav>
+    <a href="../sozluk/">sözlük</a>
+    <a href="../wordle/">kelimece</a>
+    <a href="../bulmaca/">bulmaca</a>
+  </nav>
+</header>
+
+<div class="duzlem">
+  <aside class="sirt">
+    <div class="sirt-bas">defterim</div>
+    <div id="defterler"></div>
+    <button class="sirt-tus yeni-siir" id="yeniSiir">＋ yeni şiir</button>
+  </aside>
+
+  <section class="sayfa">
+    <div class="sayfa-bas">
+      <input id="baslik" class="baslik-giris" placeholder="başlıksız şiir" aria-label="şiir başlığı">
+      <button class="bas-tus" id="geriAl" title="Geri al (Ctrl+Z)" aria-label="Geri al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7 4 12l5 5"/><path d="M4 12h11a5 5 0 0 1 0 10h-1"/></svg></button>
+    </div>
+    <p class="tarih" id="tarih"></p>
+    <div class="kagit-alan"><div id="kagit"></div></div>
+    <p class="ipuc">Yaz ya da bütün şiiri yapıştır. <b>Bir dizeyi değiştirince</b> eski hâli kendiliğinden saklanır — sağdaki “N hâl”e ya da soldaki <b>⠿</b>’e dokun, hâller arasında gez. Tutamağı sürükle: dizeyi taşı.</p>
+  </section>
+</div>
+
+<footer style="margin-top:46px;border-top:1px solid var(--kenar);padding-top:14px;color:var(--soluk);font-size:12px;text-align:center">veranda · yusuf veranda</footer>
+</div>
+
+<div id="kapakKok"></div>
+
+<script>
+"use strict";
+(function(){
+/* =========================================================================
+   şiir defteri — el yazması defter
+     taslak = { id, baslik, surumler:[siirSurum], aktif, raf:{dizeler,kitalar} }
+     siirSurum = { id, ad, zaman, kitalar:[kita] }   // şiirin tam, düzenlenebilir hâli
+     kita={id,dizeler:[dize]}  dize={id,surumler:["metin", ...],aktif}   // sürüm = düz metin; düzenleyince kendiliğinden çoğalır
+   ========================================================================= */
+  var $=function(id){ return document.getElementById(id); };
+  var el=function(t,c,h){ var e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e; };
+  var esc=function(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function norm(s){ return (s||'').trim().replace(/\s+/g,' '); }
+
+  var ANAHTAR='siir_defteri_v1';
+  function tumYukle(){ try{ var d=JSON.parse(localStorage.getItem(ANAHTAR)); if(d&&d.taslaklar&&d.taslaklar.length) return goc(d); }catch(e){} var t=yeniTaslak('başlıksız şiir'); return {aktif:t.id,taslaklar:[t]}; }
+  function goc(d){ d.taslaklar.forEach(function(t){
+    if(!t.surumler || !t.surumler.length){
+      var base=(t.kitalar&&t.kitalar.length)?t.kitalar:[yeniKita('')]; base.forEach(kg);
+      var sl=[ {id:uid(),ad:'çalışma',zaman:Date.now(),kitalar:base} ];
+      (t.kayitlar||[]).forEach(function(kay){
+        var kl=[],son=-1,cur=null; (kay.dizeler||[]).forEach(function(x){ if(x.k!==son){ cur={id:uid(),dizeler:[]}; kl.push(cur); son=x.k; } cur.dizeler.push(yeniDize(x.m)); });
+        if(!kl.length) kl.push(yeniKita(''));
+        sl.push({id:uid(),ad:kay.ad||kisaZaman(kay.zaman),zaman:kay.zaman||Date.now(),kitalar:kl});
+      });
+      t.surumler=sl; t.aktif=0; delete t.kitalar; delete t.kayitlar;
+    } else { t.surumler.forEach(function(sv){ (sv.kitalar||[]).forEach(kg); }); }
+    if(typeof t.aktif!=='number') t.aktif=0;
+    if(t.raf&&t.raf.kitalar) t.raf.kitalar.forEach(kg);
+    if(t.raf&&t.raf.dizeler) t.raf.dizeler.forEach(dizeGoc);
+  }); return d; }
+  function kg(k){ if(k.surumler&&!k.dizeler){ k.dizeler=k.surumler[k.aktif||0].dizeler; delete k.surumler; delete k.aktif; } (k.dizeler||[]).forEach(dizeGoc); }
+  /* eski dize (sözcük-yuvalı sürümler) -> düz metin sürümlerine taşı */
+  function dizeGoc(d){ if(d.surumler&&d.surumler.length&&typeof d.surumler[0]==='object'&&d.surumler[0]&&d.surumler[0].yuvalar){ d.surumler=d.surumler.map(function(s){ return (s.yuvalar||[]).map(function(y){ return y.sec[y.aktif]||''; }).join(' '); }); } if(typeof d.aktif!=='number') d.aktif=0; }
+  function kaydet(){ try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} }
+
+  function yeniDize(m){ return {id:uid(),surumler:[m||''],aktif:0}; }
+  function yeniKita(m){ return {id:uid(),dizeler:[yeniDize(m||'')]}; }
+  function yeniSurum(ad,kl){ return {id:uid(),ad:ad||'çalışma',zaman:Date.now(),kitalar:kl||[yeniKita('')]}; }
+  function yeniTaslak(b){ return {id:uid(),baslik:b||'başlıksız şiir',surumler:[yeniSurum('çalışma')],aktif:0,raf:{dizeler:[],kitalar:[]}}; }
+
+  var durum=tumYukle();
+  var ui={ edit:null, editOrijinal:null, caret:0, acikSurumler:true, acikDize:null, modal:null };
+
+  function tas(){ for(var i=0;i<durum.taslaklar.length;i++) if(durum.taslaklar[i].id===durum.aktif) return durum.taslaklar[i]; durum.aktif=durum.taslaklar[0].id; return durum.taslaklar[0]; }
+  function aktifSurum(){ var t=tas(); if(!t.surumler||!t.surumler.length){ t.surumler=[yeniSurum('çalışma')]; t.aktif=0; } if(typeof t.aktif!=='number'||t.aktif>=t.surumler.length) t.aktif=0; return t.surumler[t.aktif]; }
+  function kitalar(){ return aktifSurum().kitalar; }
+  function K(ki){ return kitalar()[ki]; }
+  function dizeler(ki){ return K(ki).dizeler; }
+  function D(ki,di){ return dizeler(ki)[di]; }
+  function dizeMetni(d){ return d.surumler[d.aktif]||''; }
+  function dizeYeri(id){ var kl=kitalar(); for(var ki=0;ki<kl.length;ki++){ var ds=kl[ki].dizeler; for(var di=0;di<ds.length;di++) if(ds[di].id===id) return {ki:ki,di:di,d:ds[di]}; } return null; }
+
+  /* geçmiş */
+  var gecmis=[], ileri=[];
+  function snap(){ return JSON.stringify(tas()); }
+  function gecmiseYaz(){ gecmis.push(snap()); if(gecmis.length>120) gecmis.shift(); ileri=[]; }
+  function koy(j){ var s=JSON.parse(j); var i=durum.taslaklar.findIndex(function(x){return x.id===durum.aktif;}); if(i>=0) durum.taslaklar[i]=s; }
+  function geriAl(){ commitEdit(); if(!gecmis.length) return; ileri.push(snap()); koy(gecmis.pop()); ui.edit=null; kaydet(); ciz(); }
+  function ileriAl(){ commitEdit(); if(!ileri.length) return; gecmis.push(snap()); koy(ileri.pop()); ui.edit=null; kaydet(); ciz(); }
+
+  /* ===================== ÇİZİM ===================== */
+  function ciz(){ cizSirt(); cizSayfa(); }
+
+  function cizSirt(){
+    var kok=$('defterler'); kok.innerHTML='';
+    durum.taslaklar.forEach(function(t){
+      var acik=t.id===durum.aktif;
+      var oge=el('div','defter-oge'+(acik?' acik':''));
+      var satir=el('div','ad-satir');
+      satir.appendChild(el('span','nokta'));
+      satir.appendChild(el('span','ad', esc(t.baslik||'başlıksız şiir')));
+      if(durum.taslaklar.length>1){ var s=el('button','sil','×'); s.title='Şiiri sil'; s.onclick=function(e){ e.stopPropagation(); if(!confirm('“'+(t.baslik||'başlıksız')+'” silinsin mi?')) return; durum.taslaklar=durum.taslaklar.filter(function(x){return x.id!==t.id;}); if(durum.aktif===t.id) durum.aktif=durum.taslaklar[0].id; gecmis=[];ileri=[]; kaydet(); ciz(); }; satir.appendChild(s); }
+      satir.onclick=function(e){ if(e.target.classList.contains('sil')) return; if(acik){ ui.acikSurumler=!ui.acikSurumler; cizSirt(); } else taslakGec(t.id); };
+      oge.appendChild(satir);
+      if(acik && ui.acikSurumler){
+        var ic=el('div','icerik');
+        ic.appendChild(el('div','kucuk-bas','sürümler — tıkla, geç'));
+        t.surumler.forEach(function(sv,si){
+          var so=el('div','surum-oge'+(si===t.aktif?' bu':''));
+          so.appendChild(el('span','im', si===t.aktif?'●':'○'));
+          so.appendChild(el('span','sad', esc(sv.ad)));
+          so.appendChild(el('span','szm', kisaZaman(sv.zaman)));
+          so.onclick=function(e){ if(e.target.classList.contains('vsil')) return; surumGec(si); };
+          so.title='Tıkla: bu sürüme geç · çift tık: yeniden adlandır';
+          so.ondblclick=function(e){ e.preventDefault(); surumAdi(si); };
+          if(t.surumler.length>1){ var x=el('button','vsil','×'); x.title='Sürümü sil'; x.onclick=function(e){ e.stopPropagation(); surumSil(si); }; so.appendChild(x); }
+          ic.appendChild(so);
+        });
+        var ftus=el('button','sirt-tus kucuktus','⎘ bu hâlden çoğalt'); ftus.style.marginTop='6px'; ftus.onclick=forkla; ic.appendChild(ftus);
+        var rs=t.raf.dizeler.length+t.raf.kitalar.length;
+        if(rs){ var rtus=el('button','sirt-tus kucuktus','↺ çıkanlar ('+rs+')'); rtus.style.marginTop='6px'; rtus.onclick=rafModal; ic.appendChild(rtus); }
+        oge.appendChild(ic);
+      }
+      kok.appendChild(oge);
+    });
+  }
+
+  function cizSayfa(){
+    if(document.activeElement!==$('baslik')) $('baslik').value=tas().baslik;
+    $('geriAl').disabled=!gecmis.length;
+    $('tarih').textContent = sonKayitYazi();
+    cizKagit();
+  }
+  function sonKayitYazi(){
+    var sayi=kitalar().reduce(function(a,kt){return a+kt.dizeler.filter(function(d){return dizeMetni(d).trim();}).length;},0);
+    var par=sayi?(sayi+' dize'):'boş sayfa';
+    var t=tas(); if(t.surumler.length>1) par+=' · sürüm: '+esc(aktifSurum().ad);
+    return par;
+  }
+
+  function lineHTML(d){ return esc(dizeMetni(d)); }
+  function rozetYap(d){ var rz=el('span','rozet', d.surumler.length+' hâl'); rz.title='Dizenin hâlleri'; rz.onclick=function(e){ e.stopPropagation(); dizePanelAc(d.id); }; return rz; }
+
+  function cizKagit(){
+    var kok=$('kagit'); kok.innerHTML='';
+    kitalar().forEach(function(k,ki){ var kdiv=el('div','kita'); kdiv.dataset.ki=ki; k.dizeler.forEach(function(d,di){ kdiv.appendChild(dizeEl(ki,di,d)); if(ui.acikDize===d.id) kdiv.appendChild(dizePanel(d)); }); kok.appendChild(kdiv); });
+    if(ui.edit){ var ye=document.querySelector('.yazi[data-id="'+ui.edit+'"]'); if(ye){ var yer=dizeYeri(ui.edit); if(yer){ ye.setAttribute('data-edit','1'); ye.textContent=dizeMetni(yer.d); setCaret(ye,ui.caret); } } }
+  }
+  function dizeEl(ki,di,d){
+    var row=el('div','dize'); row.dataset.ki=ki; row.dataset.di=di; row.dataset.id=d.id;
+    var tut=el('div','tut','⠿'); tut.title='Dokun: dize hâlleri ve işlemleri · sürükle: taşı'; tut.draggable=true;
+    surukleBagla(tut,row,d.id);
+    tut.addEventListener('click', function(e){ e.preventDefault(); dizePanelAc(d.id); });
+    tut.addEventListener('contextmenu', function(e){ e.preventDefault(); dizePanelAc(d.id); });
+    row.appendChild(tut);
+    var ya=el('div','yazi'); ya.dataset.id=d.id; ya.contentEditable='true'; ya.spellcheck=false;
+    ya.innerHTML=(ui.edit===d.id)?'':lineHTML(d);
+    bagla(ya,d.id); row.appendChild(ya);
+    if(d.surumler.length>1) row.appendChild(rozetYap(d));
+    return row;
+  }
+
+  /* ---- satır düzenleme ---- */
+  function bagla(ya,id){
+    ya.addEventListener('focus', function(){ if(ui.acikDize){ ui.acikDize=null; var pp=document.querySelector('.dize-panel'); if(pp) pp.remove(); } if(ui.edit!==id){ commitEdit(); var yer=dizeYeri(id); ui.edit=id; ui.editOrijinal=yer?dizeMetni(yer.d):''; ya.setAttribute('data-edit','1'); ya.textContent=yer?dizeMetni(yer.d):''; } });
+    ya.addEventListener('input', function(){ if(!ya._kirli){ ya._kirli=true; gecmiseYaz(); } kgz(); });
+    ya.addEventListener('blur', function(){ commitEdit(); });
+    ya.addEventListener('paste', function(e){ pasteYakala(e,id); });
+    ya.addEventListener('keydown', function(e){ tusYakala(e,id,ya); });
+    ya.addEventListener('contextmenu', function(e){ e.preventDefault(); dizePanelAc(id); });
+    var bt=null;
+    ya.addEventListener('touchstart', function(e){ bt=setTimeout(function(){ dizePanelAc(id); },480); }, {passive:true});
+    ya.addEventListener('touchmove', function(){ clearTimeout(bt); }, {passive:true});
+    ya.addEventListener('touchend', function(){ clearTimeout(bt); });
+  }
+  var kgzZ=null; function kgz(){ clearTimeout(kgzZ); kgzZ=setTimeout(function(){ commitEdit(true); cizSayfaHafif(); },600); }
+  function cizSayfaHafif(){ $('tarih').textContent=sonKayitYazi(); $('geriAl').disabled=!gecmis.length; }
+
+  /* satır düzenlemesini modele yaz. SERT commit (yumusak değil): metin değiştiyse
+     ESKİ hâli koru + yeni hâli sürüm yap (dize kendiliğinden çoğalır). */
+  function commitEdit(yumusak){
+    if(!ui.edit) return;
+    var ya=document.querySelector('.yazi[data-id="'+ui.edit+'"][data-edit="1"]'); if(!ya){ if(!yumusak){ ui.edit=null; ui.editOrijinal=null; } return; }
+    var yer=dizeYeri(ui.edit); if(!yer){ ui.edit=null; ui.editOrijinal=null; return; }
+    var d=yer.d, metin=ya.textContent, yeni=norm(metin), orj=norm(ui.editOrijinal||'');
+    if(yumusak){ d.surumler[d.aktif]=metin; ya._kirli=false; kaydet(); return; }
+    if(yeni!==orj && orj!==''){
+      d.surumler[d.aktif]=ui.editOrijinal;                 /* eski hâli geri koy */
+      var ex=-1; for(var i=0;i<d.surumler.length;i++){ if(norm(d.surumler[i])===yeni){ ex=i; break; } }
+      if(ex>=0) d.aktif=ex; else { d.surumler.push(metin); d.aktif=d.surumler.length-1; }   /* yeni hâl: hep sona ekle (sıra sabit) */
+    } else { d.surumler[d.aktif]=metin; }
+    ya._kirli=false; ya.removeAttribute('data-edit'); ya.innerHTML=lineHTML(d); ui.edit=null; ui.editOrijinal=null;
+    var row=ya.closest('.dize'); var e=row.querySelector('.rozet'); if(e) e.remove(); if(d.surumler.length>1) row.appendChild(rozetYap(d));
+    kaydet();
+  }
+
+  function tusYakala(e,id,ya){
+    if(e.key==='Enter'){ e.preventDefault(); enterBas(id,ya); return; }
+    if(e.key==='Backspace'){ if(caretOffset(ya)===0 && geriSil(id,ya)) e.preventDefault(); return; }
+    if(e.key==='ArrowUp'){ if(caretOffset(ya)===0 && komsu(id,-1)) e.preventDefault(); return; }
+    if(e.key==='ArrowDown'){ if(caretOffset(ya)===ya.textContent.length && komsu(id,1)) e.preventDefault(); return; }
+  }
+  function enterBas(id,ya){
+    var off=caretOffset(ya), metin=ya.textContent, yer=dizeYeri(id), d=yer.d, ki=yer.ki, di=yer.di;
+    if(norm(metin)===''){ gecmiseYaz(); d.surumler[d.aktif]=''; ui.edit=null; ui.editOrijinal=null; var sonra=dizeler(ki).splice(di); sonra.shift(); var nk={id:uid(),dizeler:sonra.length?sonra:[yeniDize('')]}; kitalar().splice(ki+1,0,nk); if(!dizeler(ki).length) dizeler(ki).push(yeniDize('')); odak(nk.dizeler[0].id,0); return; }
+    if(off>=metin.length){ gecmiseYaz(); commitEdit(); var yd=yeniDize(''); dizeler(ki).splice(di+1,0,yd); odak(yd.id,0); return; }
+    gecmiseYaz(); var on=metin.slice(0,off), arka=metin.slice(off); d.surumler[d.aktif]=on; ui.edit=null; ui.editOrijinal=null; var yd2=yeniDize(arka); dizeler(ki).splice(di+1,0,yd2); odak(yd2.id,0);
+  }
+  function geriSil(id,ya){
+    var yer=dizeYeri(id), ki=yer.ki, di=yer.di, d=yer.d;
+    d.surumler[d.aktif]=ya.textContent; ui.edit=null; ui.editOrijinal=null;
+    if(di>0){ gecmiseYaz(); var onc=D(ki,di-1); var t1=dizeMetni(onc),t2=dizeMetni(d),kav=t1.length; onc.surumler[onc.aktif]=norm(t1+(t1&&t2?' ':'')+t2); dizeler(ki).splice(di,1); odak(onc.id,kav); return true; }
+    if(ki>0){ gecmiseYaz(); var oK=K(ki-1), sD=oK.dizeler[oK.dizeler.length-1]; var a=dizeMetni(sD),b=dizeMetni(d),kv=a.length; sD.surumler[sD.aktif]=norm(a+(a&&b?' ':'')+b); dizeler(ki).splice(di,1); dizeler(ki).forEach(function(x){oK.dizeler.push(x);}); kitalar().splice(ki,1); odak(sD.id,kv); return true; }
+    return false;
+  }
+  function komsu(id,yon){ var duz=[]; kitalar().forEach(function(k){ k.dizeler.forEach(function(d){ duz.push(d.id); }); }); var i=duz.indexOf(id)+yon; if(i<0||i>=duz.length) return false; odak(duz[i], yon>0?0:99999); return true; }
+  function odak(id,caret){ commitEdit(); ui.edit=id; ui.caret=caret; var y=dizeYeri(id); ui.editOrijinal=y?dizeMetni(y.d):''; kaydet(); ciz(); }
+
+  function pasteYakala(e,id){
+    var t=(e.clipboardData||window.clipboardData).getData('text'); if(t==null) return; e.preventDefault();
+    var ya=e.currentTarget, off=caretOffset(ya), metin=ya.textContent;
+    var blok=metin.slice(0,off)+t+metin.slice(off);
+    var yer=dizeYeri(id), ki=yer.ki, di=yer.di; gecmiseYaz();
+    var gruplar=blok.replace(/\r/g,'').split(/\n[ \t]*\n+/).map(function(b){ return b.split('\n').map(function(s){return s.replace(/[ \t]+$/,'');}).filter(function(s){return s.trim()!=='';}); }).filter(function(g){return g.length;});
+    if(!gruplar.length) gruplar=[['']];
+    var onc=dizeler(ki).slice(0,di), son=dizeler(ki).slice(di+1);
+    var yk=gruplar.map(function(g){ return {id:uid(),dizeler:g.map(function(x){return yeniDize(x);})}; });
+    yk[0].dizeler=onc.concat(yk[0].dizeler); var sg=yk[yk.length-1]; sg.dizeler=sg.dizeler.concat(son);
+    Array.prototype.splice.apply(kitalar(), [ki,1].concat(yk));
+    kitalar().forEach(function(k){ if(!k.dizeler.length) k.dizeler.push(yeniDize('')); });
+    var hedef=sg.dizeler[Math.max(0,sg.dizeler.length-son.length-1)]||sg.dizeler[0];
+    ui.edit=hedef.id; ui.caret=dizeMetni(hedef).length; ui.editOrijinal=dizeMetni(hedef); kaydet(); ciz();
+  }
+
+  /* caret */
+  function caretOffset(e){ var s=getSelection(); if(!s.rangeCount) return 0; var r=s.getRangeAt(0); var p=r.cloneRange(); p.selectNodeContents(e); p.setEnd(r.endContainer,r.endOffset); return p.toString().length; }
+  function setCaret(e,off){ e.focus(); try{ var s=getSelection(),r=document.createRange(),n=e.firstChild; if(!n){ r.setStart(e,0);} else { r.setStart(n,Math.min(off,(n.textContent||'').length)); } r.collapse(true); s.removeAllRanges(); s.addRange(r); }catch(x){} }
+  function offsetFromPoint(e,x,y){ var rng=null; if(document.caretRangeFromPoint) rng=document.caretRangeFromPoint(x,y); else if(document.caretPositionFromPoint){ var p=document.caretPositionFromPoint(x,y); if(p){ rng=document.createRange(); rng.setStart(p.offsetNode,p.offset);} } if(!rng) return e.textContent.length; var q=rng.cloneRange(); q.selectNodeContents(e); try{ q.setEnd(rng.endContainer,rng.endOffset);}catch(z){ return e.textContent.length;} return q.toString().length; }
+  function sozIndex(m,off){ var re=/\S+/g,x,i=0; while((x=re.exec(m))){ if(off>=x.index&&off<=x.index+x[0].length) return i; i++; } return Math.max(0,i-1); }
+
+  /* ===================== DİZE PANELİ (satıriçi, tam genişlik) ===================== */
+  function dizePanelAc(id){ commitEdit(); ui.acikDize=(ui.acikDize===id?null:id); kaydet(); ciz(); }
+  function dizePanelKapat(){ if(ui.acikDize){ ui.acikDize=null; ciz(); } }
+  function opBtn(t,fn,uy){ var b=el('button',uy?'uy':null,t); b.onclick=function(){ fn(); }; return b; }
+  function dizePanel(d){
+    var p=el('div','dize-panel');
+    if(d.surumler.length>1){
+      p.appendChild(el('div','dp-bas','bu dizenin hâlleri — birine dokun, ona geç'));
+      d.surumler.forEach(function(s,i){
+        var r=el('div','dp-hal'+(i===d.aktif?' bu':''));
+        r.appendChild(el('span','dp-im', i===d.aktif?'●':'○'));
+        r.appendChild(el('span','dp-met', esc(s)||'(boş)'));
+        r.onclick=function(e){ if(e.target.classList.contains('dp-sil')) return; if(i!==d.aktif){ gecmiseYaz(); d.aktif=i; kaydet(); } ciz(); };
+        var x=el('button','dp-sil','×'); x.title='Bu hâli sil'; x.onclick=function(e){ e.stopPropagation(); if(d.surumler.length<=1) return; gecmiseYaz(); d.surumler.splice(i,1); if(d.aktif>=d.surumler.length) d.aktif=d.surumler.length-1; kaydet(); ciz(); }; r.appendChild(x);
+        p.appendChild(r);
+      });
+    } else { p.appendChild(el('div','dp-bas','dize')); }
+    var ops=el('div','dp-ops');
+    ops.appendChild(opBtn('↑ yukarı', function(){ dizeTasi(d.id,-1); }));
+    ops.appendChild(opBtn('↓ aşağı', function(){ dizeTasi(d.id,1); }));
+    ops.appendChild(opBtn('¶ kıtayı böl', function(){ kitaBol(d.id); }));
+    ops.appendChild(opBtn('⌫ dizeyi çıkar', function(){ dizeSil(d.id); }, true));
+    p.appendChild(ops);
+    return p;
+  }
+
+  /* dize/kıta işlemleri */
+  function dizeTasi(id,yon){ var yer=dizeYeri(id); var ki=yer.ki,di=yer.di; gecmiseYaz(); var ds=dizeler(ki);
+    if(yon<0){ if(di>0){ var t=ds[di]; ds[di]=ds[di-1]; ds[di-1]=t; } else if(ki>0){ ds.splice(di,1); K(ki-1).dizeler.push(yer.d); if(!ds.length) ds.push(yeniDize('')); } }
+    else { if(di<ds.length-1){ var u=ds[di]; ds[di]=ds[di+1]; ds[di+1]=u; } else if(ki<kitalar().length-1){ ds.splice(di,1); K(ki+1).dizeler.unshift(yer.d); if(!ds.length) ds.push(yeniDize('')); } }
+    ui.edit=null; kaydet(); ciz(); }
+  function kitaBol(id){ var yer=dizeYeri(id); if(yer.di===0) return; gecmiseYaz(); var sonra=dizeler(yer.ki).splice(yer.di); kitalar().splice(yer.ki+1,0,{id:uid(),dizeler:sonra}); ui.edit=null; kaydet(); ciz(); }
+  function dizeSil(id){ var yer=dizeYeri(id); gecmiseYaz(); tas().raf.dizeler.unshift(yer.d); dizeler(yer.ki).splice(yer.di,1); if(!dizeler(yer.ki).length){ if(kitalar().length>1) kitalar().splice(yer.ki,1); else dizeler(yer.ki).push(yeniDize('')); } ui.edit=null; ui.acikDize=null; kaydet(); ciz(); }
+
+  /* sürükle-bırak */
+  var suru=null;
+  function surukleBagla(tut,row,id){
+    tut.addEventListener('dragstart', function(e){ commitEdit(); suru=id; e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setDragImage(row,12,12);}catch(_){} });
+    tut.addEventListener('dragend', function(){ suru=null; isaretTemiz(); });
+    row.addEventListener('dragover', function(e){ if(!suru||suru===id) return; e.preventDefault(); var r=row.getBoundingClientRect(); var us=e.clientY<r.top+r.height/2; row.classList.toggle('us',us); row.classList.toggle('as',!us); });
+    row.addEventListener('dragleave', function(){ row.classList.remove('us','as'); });
+    row.addEventListener('drop', function(e){ if(!suru) return; e.preventDefault(); var r=row.getBoundingClientRect(); var us=e.clientY<r.top+r.height/2; row.classList.remove('us','as'); birak(id,us); });
+  }
+  function isaretTemiz(){ [].forEach.call(document.querySelectorAll('.us,.as'), function(n){ n.classList.remove('us','as'); }); }
+  function birak(hedefId,oncesine){ if(!suru||suru===hedefId){ suru=null; return; } var kay=dizeYeri(suru); gecmiseYaz(); var d=kay.d; dizeler(kay.ki).splice(kay.di,1); if(!dizeler(kay.ki).length && kitalar().length>1) dizeler(kay.ki).push(yeniDize('')); var hed=dizeYeri(hedefId); var di=hed.di+(oncesine?0:1); dizeler(hed.ki).splice(di,0,d); suru=null; ui.edit=null; kaydet(); ciz(); }
+
+  /* ===================== SÜRÜMLER + ÇIKANLAR ===================== */
+  /* sürümler arası hızlı geçiş — tıkla, editöre yükle */
+  function surumGec(si){ if(si===tas().aktif){ return; } commitEdit(); tas().aktif=si; ui.edit=null; kaydet(); ciz(); }
+  function forkla(){ commitEdit(); var t=tas(); var ad=prompt('Yeni sürüme ad ver:', (t.surumler.length+1)+'. hâl'); if(ad===null) return; gecmiseYaz();
+    var kop=JSON.parse(JSON.stringify(aktifSurum().kitalar)); kop.forEach(function(k){ k.id=uid(); k.dizeler.forEach(function(d){ d.id=uid(); }); });
+    t.surumler.splice(t.aktif+1,0,{id:uid(),ad:ad||((t.surumler.length+1)+'. hâl'),zaman:Date.now(),kitalar:kop}); t.aktif=t.aktif+1; ui.edit=null; kaydet(); ciz(); }
+  function surumSil(si){ var t=tas(); if(t.surumler.length<=1) return; if(!confirm('“'+(t.surumler[si].ad)+'” sürümü silinsin mi?')) return; gecmiseYaz(); t.surumler.splice(si,1); if(t.aktif>=t.surumler.length) t.aktif=t.surumler.length-1; else if(t.aktif>si) t.aktif--; ui.edit=null; kaydet(); ciz(); }
+  function surumAdi(si){ var sv=tas().surumler[si]; var ad=prompt('Sürüm adı:', sv.ad); if(ad===null) return; gecmiseYaz(); sv.ad=ad||sv.ad; kaydet(); ciz(); }
+  function kisaZaman(t){ try{ return new Date(t).toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+
+  function modalAc(node){ var k=el('div','kapak'); k.appendChild(node); k.addEventListener('mousedown', function(e){ if(e.target===k) modalKapat(); }); $('kapakKok').innerHTML=''; $('kapakKok').appendChild(k); }
+  function modalKapat(){ $('kapakKok').innerHTML=''; }
+
+  function rafModal(){
+    var raf=tas().raf; var mo=el('div','modal');
+    mo.appendChild(el('h3',null,'çıkanlar<button class="kapat" aria-label="Kapat">×</button>'));
+    mo.querySelector('.kapat').onclick=modalKapat;
+    mo.appendChild(el('div','not','Çıkardıkların burada bekler, kaybolmaz. ↺ ile şiire geri koy.'));
+    if(!raf.dizeler.length && !raf.kitalar.length) mo.appendChild(el('div','bos-orta','Henüz bir şey çıkarmadın.'));
+    if(raf.dizeler.length){ var g=el('div','raf-grup'); g.appendChild(el('div','gb','dizeler')); raf.dizeler.forEach(function(d,i){ var o=el('div','raf-oge'); o.appendChild(el('div','ic',esc(dizeMetni(d))||'(boş)')); var b=el('button','rm','↺'); b.title='Son kıtaya geri koy'; b.onclick=function(){ gecmiseYaz(); var ki=kitalar().length-1; dizeler(ki).push(d); raf.dizeler.splice(i,1); kaydet(); modalKapat(); ciz(); rafModal(); }; o.appendChild(b); var x=el('button','rm','×'); x.title='Kalıcı sil'; x.onclick=function(){ gecmiseYaz(); raf.dizeler.splice(i,1); kaydet(); modalKapat(); ciz(); rafModal(); }; o.appendChild(x); g.appendChild(o); }); mo.appendChild(g); }
+    if(raf.kitalar.length){ var g2=el('div','raf-grup'); g2.appendChild(el('div','gb','kıtalar')); raf.kitalar.forEach(function(k,i){ var oz=k.dizeler.map(dizeMetni).filter(Boolean).slice(0,2).join('\n')||'(boş)'; var o=el('div','raf-oge'); var ic=el('div','ic',esc(oz)); ic.appendChild(el('span','ufak',k.dizeler.length+' dize')); o.appendChild(ic); var b=el('button','rm','↺'); b.title='Sona geri koy'; b.onclick=function(){ gecmiseYaz(); kitalar().push(k); raf.kitalar.splice(i,1); kaydet(); modalKapat(); ciz(); rafModal(); }; o.appendChild(b); var x=el('button','rm','×'); x.onclick=function(){ gecmiseYaz(); raf.kitalar.splice(i,1); kaydet(); modalKapat(); ciz(); rafModal(); }; o.appendChild(x); g2.appendChild(o); }); mo.appendChild(g2); }
+    modalAc(mo);
+  }
+
+  /* taslaklar */
+  function taslakGec(id){ commitEdit(); durum.aktif=id; ui.edit=null; ui.acikSurumler=true; gecmis=[]; ileri=[]; kaydet(); ciz(); }
+
+  /* olaylar */
+  $('baslik').addEventListener('input', function(){ tas().baslik=$('baslik').value; kaydet(); cizSirt(); });
+  $('geriAl').onclick=geriAl;
+  $('yeniSiir').onclick=function(){ commitEdit(); var t=yeniTaslak('başlıksız şiir'); durum.taslaklar.push(t); taslakGec(t.id); setTimeout(function(){ $('baslik').focus(); $('baslik').select(); },0); };
+  document.addEventListener('keydown', function(e){
+    if((e.metaKey||e.ctrlKey)&&(e.key==='z'||e.key==='Z')){ e.preventDefault(); if(e.shiftKey) ileriAl(); else geriAl(); return; }
+    if((e.metaKey||e.ctrlKey)&&(e.key==='y'||e.key==='Y')){ e.preventDefault(); ileriAl(); return; }
+    if(e.key==='Escape'){ if(ui.acikDize) dizePanelKapat(); else if($('kapakKok').firstChild) modalKapat(); else if(ui.edit) commitEdit(); }
+  });
+
+  ciz();
+})();
+</script>
+</body>
+</html>
