@@ -101,6 +101,7 @@ body.vitrin .kart:nth-child(3){transform:rotate(.7deg)}
 body.vitrin .kart:nth-child(4){transform:rotate(-.8deg)}
 body.vitrin .kart:nth-child(5){transform:rotate(-.5deg)}
 body.vitrin .kart:nth-child(6){transform:rotate(.8deg)}
+body.vitrin .kart:nth-child(7){transform:rotate(-.6deg)}
 body.vitrin .kart:hover,body.vitrin .kart:focus-visible{transform:rotate(0) translateY(-4px);box-shadow:7px 9px 0 rgba(15,8,4,.3)}
 body.vitrin .kart:focus-visible{outline:3px solid var(--kagit);outline-offset:3px}
 body.vitrin .kart .ikon{width:46px;height:46px;border-radius:50%;background:var(--gunes);color:var(--kagit);display:flex;align-items:center;justify-content:center;margin-bottom:14px}

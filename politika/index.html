@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>politics revision</title>
+<meta name="description" content="PhD exam revision: flashcards, multiple-choice tests, essay drills and spaced repetition over your comparative-politics, IR and political-theory notes.">
+<meta name="theme-color" content="#1f6f5c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f6f5c'/%3E%3Crect x='16' y='14' width='32' height='40' rx='3' fill='%23f6f4ef'/%3E%3Crect x='22' y='22' width='20' height='3' rx='1.5' fill='%231f6f5c'/%3E%3Crect x='22' y='30' width='20' height='3' rx='1.5' fill='%23c8743c'/%3E%3Crect x='22' y='38' width='13' height='3' rx='1.5' fill='%231f6f5c'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../ortak/stil.css">
+<style>
+.arac{max-width:720px;margin:0 auto}
+.lead{color:var(--muted);font-size:14.5px;margin-top:6px;line-height:1.55}
+
+/* mode tabs */
+.modlar{display:flex;gap:7px;flex-wrap:wrap;margin:20px 0 6px}
+.modlar button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:7px 16px;font-size:14.5px;transition:.15s}
+.modlar button:hover{border-color:var(--acc)}
+.modlar button.aktif{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* topic filter */
+.konular{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.konular button{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:14px;padding:3px 11px;font-size:12.5px;font-style:italic}
+.konular button.aktif{background:var(--acc-soft);border-color:var(--acc);color:var(--acc);font-style:normal}
+
+.satir{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;color:var(--muted);font-size:13px;font-style:italic}
+.satir .sayac b{color:var(--acc);font-style:normal}
+
+/* generic panel */
+.panel{margin-top:14px}
+
+/* ---- flashcard ---- */
+.fc{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 4px 16px var(--shadow);padding:30px 26px;min-height:230px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;position:relative}
+.fc .rozet{position:absolute;top:14px;left:18px;font-size:11px;font-style:italic;color:var(--vurgu);text-transform:lowercase}
+.fc .yuz{font-family:'Playfair Display',Georgia,serif}
+.fc .on{font-size:23px;line-height:1.3;color:var(--ink)}
+.fc .arka{font-size:16px;line-height:1.62;color:var(--ink);white-space:pre-line;font-family:Georgia,serif;margin-top:2px}
+.fc hr{border:none;border-top:1px solid var(--line);margin:16px 0}
+.fc .ipucu{position:absolute;bottom:13px;right:18px;font-size:11.5px;color:var(--muted);font-style:italic}
+.oyla{display:flex;gap:10px;margin-top:14px}
+.oyla button{flex:1;border-radius:12px;padding:12px;font-size:15px;border:1px solid var(--line);background:var(--card)}
+.oyla .miss{color:#b03a2e;border-color:#e3b9b3}
+.oyla .miss:hover{background:#fbeae8}
+.oyla .got{color:var(--acc);border-color:#bcdcd3}
+.oyla .got:hover{background:var(--acc-soft)}
+.oyla.srs button{flex:1}
+.oyla .b-again{color:#b03a2e;border-color:#e3b9b3}
+.oyla .b-hard{color:#9a6a1f;border-color:#e6cfa6}
+.oyla .b-good{color:var(--acc);border-color:#bcdcd3}
+.oyla .b-easy{color:#2f6f3f;border-color:#bcd9c2}
+.alt-don{display:flex;justify-content:space-between;margin-top:12px}
+.alt-don button{background:none;border:none;color:var(--acc);font-size:13.5px;text-decoration:underline;padding:4px}
+
+/* ---- mcq ---- */
+.mcq .stem{font-family:'Playfair Display',Georgia,serif;font-size:20px;line-height:1.34;color:var(--ink)}
+.mcq .rozet{font-size:11px;font-style:italic;color:var(--vurgu);margin-bottom:6px}
+.secenekler{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.secenekler button{text-align:left;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 15px;font-size:15.5px;line-height:1.4;transition:.12s}
+.secenekler button:hover:not(:disabled){border-color:var(--acc)}
+.secenekler button .h{font-weight:bold;color:var(--muted);margin-right:9px}
+.secenekler button.dogru{background:var(--acc-soft);border-color:var(--acc)}
+.secenekler button.yanlis{background:#fbeae8;border-color:#e3b9b3}
+.secenekler button:disabled{cursor:default}
+.nicin{margin-top:14px;background:var(--acc-soft);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:11px 14px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.nicin b{color:var(--acc)}
+.devam{margin-top:14px;width:100%;border-radius:12px;padding:13px;font-size:15.5px;background:var(--acc);color:#fff;border:none}
+
+/* ---- essay ---- */
+.eListe{display:flex;flex-direction:column;gap:11px}
+.eListe button{text-align:left;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:15px 17px;box-shadow:0 3px 12px var(--shadow)}
+.eListe button:hover{border-color:var(--acc)}
+.eListe .ek{font-size:12px;font-style:italic;color:var(--vurgu);display:block;margin-bottom:4px}
+.eListe .pr{font-family:'Playfair Display',Georgia,serif;font-size:16.5px;line-height:1.4;color:var(--ink)}
+.eListe .durum{font-size:12px;color:var(--acc);font-style:italic;margin-top:6px;display:inline-block}
+.eBox .pr{font-family:'Playfair Display',Georgia,serif;font-size:20px;line-height:1.35;color:var(--ink)}
+.eBox textarea{width:100%;margin-top:14px;min-height:200px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px;font-size:15.5px;line-height:1.6;font-family:Georgia,serif;resize:vertical}
+.eBox textarea:focus{outline:none;border-color:var(--acc)}
+.eBtnsira{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.eBtnsira button{border-radius:12px;padding:11px 18px;font-size:15px;border:1px solid var(--acc);background:var(--card);color:var(--acc)}
+.eBtnsira button.primer{background:var(--acc);color:#fff}
+.anahtar{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.anahtar h3{font-family:'Playfair Display',Georgia,serif;font-size:15px;color:var(--acc);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.anahtar ul{margin:0;padding-left:20px}
+.anahtar li{font-size:15px;line-height:1.6;margin-bottom:7px;color:var(--ink)}
+.kayit{font-size:12px;color:var(--muted);font-style:italic;margin-top:8px}
+
+/* empty / done states */
+.bos{text-align:center;color:var(--muted);padding:46px 20px;font-size:16px;line-height:1.6}
+.bos .buyuk{font-size:34px;margin-bottom:10px}
+.bos button{margin-top:16px;border:1px solid var(--acc);background:var(--card);color:var(--acc);border-radius:20px;padding:9px 18px;font-size:14.5px}
+
+.mini{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);font-style:italic;margin-top:4px}
+.mini b{color:var(--acc);font-style:normal}
+.satir-don{display:flex;justify-content:flex-end;margin-top:10px}
+.satir-don button{background:none;border:none;color:var(--muted);font-size:12.5px;text-decoration:underline}
+/* ---- read / study ---- */
+.oku-ara{width:100%;padding:12px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:15.5px;margin:2px 0 4px}
+.oku-ara:focus{outline:none;border-color:var(--acc)}
+.oku-konu{font-family:'Playfair Display',Georgia,serif;font-size:14px;color:var(--acc);text-transform:uppercase;letter-spacing:.7px;font-weight:600;margin:26px 0 6px;padding-bottom:7px;border-bottom:2px solid var(--acc-soft)}
+.oku-konu:first-child{margin-top:12px}
+.oku-girdi{padding:13px 2px;border-bottom:1px solid var(--line)}
+.oku-girdi h4{font-family:'Playfair Display',Georgia,serif;font-size:17.5px;color:var(--ink);font-weight:600;margin-bottom:5px}
+.oku-tanim{font-size:15px;line-height:1.62;color:var(--ink);white-space:pre-line}
+.oku-tanim mark{background:#fde9a9;color:inherit;border-radius:2px;padding:0 1px}
+@media(max-width:560px){.fc .on{font-size:20px}.mcq .stem{font-size:18px}}
+</style>
+</head>
+<body>
+<a class="eve-don" href="../">veranda</a>
+
+<div class="wrap">
+<header class="site">
+  <a href="../"><h1>veranda</h1></a>
+  <nav class="araclar">
+    <a href="../sozluk/">dilimin ucunda</a>
+    <a href="../wordle/">kelimece</a>
+    <a href="../bulmaca/">bulmaca yardımcısı</a>
+    <a href="./" class="burada">politics revision</a>
+  </nav>
+</header>
+
+<main class="arac">
+  <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:26px">Politics revision</h2>
+  <p class="lead" id="altyazi"></p>
+
+  <div class="modlar" id="modlar"></div>
+  <div class="konular" id="konular"></div>
+  <div class="satir">
+    <span class="sayac" id="sayac"></span>
+    <span class="mini" id="durum"></span>
+  </div>
+
+  <div class="panel" id="panel"></div>
+</main>
+
+<footer id="ayak"></footer>
+</div>
+
+<script src="veri.js?v=20260613d"></script>
+<script>
+(function(){
+"use strict";
+var V = window.VERI || {cards:[],essays:[],topics:[]};
+var $ = function(id){ return document.getElementById(id); };
+var el = function(tag, cls, html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
+var esc = function(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+var topicName = function(id){ for(var i=0;i<V.topics.length;i++) if(V.topics[i].id===id) return V.topics[i].name; return id; };
+
+/* ---------- storage ---------- */
+var SRS_KEY='politika_srs_v1', ESSAY_KEY='politika_essay_v1';
+function load(k){ try{ return JSON.parse(localStorage.getItem(k))||{}; }catch(e){ return {}; } }
+function save(k,o){ try{ localStorage.setItem(k, JSON.stringify(o)); }catch(e){} }
+var srs = load(SRS_KEY);
+var drafts = load(ESSAY_KEY);
+
+var DAY = 86400000;
+function today(){ return Math.floor(Date.now()/DAY); }
+/* Leitner intervals by box (days) */
+var INT = [0,1,3,7,16,35];
+function rec(id){ return srs[id] || {box:0, due:0, seen:0}; }
+function schedule(id, box){
+  box = Math.max(0, Math.min(5, box));
+  var r = rec(id);
+  r.box = box; r.seen = (r.seen||0)+1;
+  r.due = today() + INT[box];
+  srs[id] = r; save(SRS_KEY, srs);
+}
+function isDue(id){ var r=srs[id]; return !r || r.due <= today(); }
+function masteredCount(){ var n=0; for(var k in srs){ if(srs[k].box>=4) n++; } return n; }
+
+/* ---------- state ---------- */
+var mode='read';                  // read | cards | test | essay | review
+var topic='all';
+var modes=[['read','Read'],['cards','Cards'],['test','Test'],['essay','Essay'],['review','Review']];
+var readQuery='';
+
+/* deck helpers */
+function cardsFor(t){ return V.cards.filter(function(c){ return t==='all' || c.topic===t; }); }
+function mcqFor(t){ return cardsFor(t).filter(function(c){ return c.mcq; }); }
+function essaysFor(t){ return V.essays.filter(function(e){ return t==='all' || e.topic===t; }); }
+function dueFor(t){ return cardsFor(t).filter(function(c){ return isDue(c.id); }); }
+
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var x=a[i];a[i]=a[j];a[j]=x; } return a; }
+
+/* ---------- chrome ---------- */
+function buildChrome(){
+  $('altyazi').textContent = V.meta.subtitle + ' — ' + V.meta.note;
+  var mb=$('modlar'); mb.innerHTML='';
+  modes.forEach(function(m){
+    var b=el('button',null,m[1]); if(m[0]===mode) b.className='aktif';
+    b.onclick=function(){ mode=m[0]; render(); };
+    mb.appendChild(b);
+  });
+  var kb=$('konular'); kb.innerHTML='';
+  var list=[['all','All']].concat(V.topics.map(function(t){return [t.id,t.name];}));
+  list.forEach(function(t){
+    var b=el('button',null,esc(t[1])); if(t[0]===topic) b.className='aktif';
+    b.onclick=function(){ topic=t[0]; render(); };
+    kb.appendChild(b);
+  });
+  var due=dueFor('all').length, mast=masteredCount(), seen=Object.keys(srs).length;
+  $('durum').innerHTML='<span>due today <b>'+due+'</b></span><span>studied <b>'+seen+'</b></span><span>mastered <b>'+mast+'</b></span>';
+}
+
+/* ---------- CARDS ---------- */
+var ci=0, flipped=false, cdeck=[];
+function renderCards(){
+  var p=$('panel'); p.innerHTML='';
+  cdeck = cdeck.length? cdeck : shuffle(cardsFor(topic));
+  if(!cdeck.length){ p.appendChild(emptyMsg('No cards in this topic.')); return; }
+  if(ci>=cdeck.length){ return doneCards(p); }
+  $('sayac').innerHTML='<b>'+(ci+1)+'</b> / '+cdeck.length+' · '+topicName(cdeck[ci].topic);
+  var c=cdeck[ci];
+  var card=el('div','fc');
+  card.appendChild(el('span','rozet', esc(topicName(c.topic))));
+  if(!flipped){
+    card.appendChild(el('div','yuz on', esc(c.front)));
+    card.appendChild(el('span','ipucu','tap to reveal'));
+    card.onclick=function(){ flipped=true; renderCards(); };
+    p.appendChild(card);
+  } else {
+    card.appendChild(el('div','yuz on', esc(c.front)));
+    card.appendChild(el('hr'));
+    card.appendChild(el('div','arka', esc(c.back)));
+    p.appendChild(card);
+    var ov=el('div','oyla');
+    var miss=el('button','miss','Missed'); miss.onclick=function(){ schedule(c.id,0); next(); };
+    var got=el('button','got','Got it'); got.onclick=function(){ schedule(c.id, rec(c.id).box+1); next(); };
+    ov.appendChild(miss); ov.appendChild(got);
+    p.appendChild(ov);
+  }
+  var nav=el('div','alt-don');
+  var re=el('button',null,'shuffle deck'); re.onclick=function(){ cdeck=shuffle(cardsFor(topic)); ci=0; flipped=false; renderCards(); buildChrome(); };
+  var sk=el('button',null,'skip →'); sk.onclick=function(){ next(); };
+  nav.appendChild(re); nav.appendChild(sk);
+  p.appendChild(nav);
+  function next(){ ci++; flipped=false; renderCards(); buildChrome(); }
+}
+function doneCards(p){
+  p.innerHTML='';
+  var b=el('div','bos'); b.innerHTML='<div class="buyuk">✓</div>Deck finished — '+cdeck.length+' cards.<br>Your ratings fed the Review schedule.';
+  var again=el('button',null,'Go again'); again.onclick=function(){ cdeck=shuffle(cardsFor(topic)); ci=0; flipped=false; renderCards(); buildChrome(); };
+  b.appendChild(again); p.appendChild(b);
+  $('sayac').innerHTML='';
+}
+
+/* ---------- TEST (MCQ) ---------- */
+var qi=0, qdeck=[], answered=false, score=0, wrongPool=[];
+function renderTest(){
+  var p=$('panel'); p.innerHTML='';
+  if(!qdeck.length){ qdeck=shuffle(mcqFor(topic)); qi=0; score=0; wrongPool=[]; }
+  if(!qdeck.length){ p.appendChild(emptyMsg('No multiple-choice questions in this topic.')); return; }
+  if(qi>=qdeck.length){ return doneTest(p); }
+  var c=qdeck[qi], m=c.mcq;
+  $('sayac').innerHTML='<b>'+(qi+1)+'</b> / '+qdeck.length+' · score <b>'+score+'</b>';
+  var box=el('div','mcq');
+  box.appendChild(el('div','rozet', esc(topicName(c.topic))));
+  box.appendChild(el('div','stem', esc(m.stem)));
+  /* shuffle options but track the correct one */
+  var opts=m.options.map(function(o,idx){ return {t:o, ok: idx===m.answer}; });
+  opts=shuffle(opts);
+  var letters='ABCD';
+  var wrap=el('div','secenekler');
+  var btns=[];
+  opts.forEach(function(o,idx){
+    var b=el('button',null,'<span class="h">'+letters[idx]+'</span>'+esc(o.t));
+    b.onclick=function(){ if(answered) return; answered=true;
+      btns.forEach(function(bb,j){ bb.disabled=true; if(opts[j].ok) bb.classList.add('dogru'); });
+      if(o.ok){ score++; schedule(c.id, rec(c.id).box+1); }
+      else { b.classList.add('yanlis'); wrongPool.push(c); schedule(c.id,0); }
+      var why=el('div','nicin','<b>'+(o.ok?'Correct.':'Not quite.')+'</b> '+esc(m.why));
+      box.appendChild(why);
+      var nx=el('button','devam', qi+1<qdeck.length?'Next question →':'See results →');
+      nx.onclick=function(){ qi++; answered=false; renderTest(); buildChrome(); };
+      box.appendChild(nx);
+      nx.focus();
+    };
+    btns.push(b); wrap.appendChild(b);
+  });
+  box.appendChild(wrap);
+  p.appendChild(box);
+  answered=false;
+}
+function doneTest(p){
+  p.innerHTML='';
+  var pct=Math.round(score/qdeck.length*100);
+  var b=el('div','bos');
+  b.innerHTML='<div class="buyuk">'+pct+'%</div>'+score+' / '+qdeck.length+' correct.';
+  if(wrongPool.length){
+    var redo=el('button',null,'Retry '+wrongPool.length+' missed');
+    redo.onclick=function(){ qdeck=shuffle(wrongPool); qi=0; score=0; wrongPool=[]; renderTest(); buildChrome(); };
+    b.appendChild(redo);
+  }
+  var fresh=el('button',null,'New test'); fresh.style.marginLeft='8px';
+  fresh.onclick=function(){ qdeck=[]; renderTest(); buildChrome(); };
+  b.appendChild(fresh);
+  p.appendChild(b);
+  $('sayac').innerHTML='';
+}
+
+/* ---------- ESSAY ---------- */
+var eOpen=null, eRevealed=false;
+function renderEssay(){
+  var p=$('panel'); p.innerHTML='';
+  var list=essaysFor(topic);
+  if(!list.length){ p.appendChild(emptyMsg('No essay prompts in this topic.')); return; }
+  if(!eOpen){
+    $('sayac').innerHTML=list.length+' prompts';
+    var wrap=el('div','eListe');
+    list.forEach(function(e){
+      var b=el('button');
+      var has = drafts[e.id] && drafts[e.id].trim().length;
+      b.innerHTML='<span class="ek">'+esc(topicName(e.topic))+'</span><span class="pr">'+esc(e.prompt)+'</span>'+(has?'<span class="durum">· draft saved</span>':'');
+      b.onclick=function(){ eOpen=e; eRevealed=false; renderEssay(); };
+      wrap.appendChild(b);
+    });
+    p.appendChild(wrap);
+    return;
+  }
+  var e=eOpen;
+  $('sayac').innerHTML=topicName(e.topic);
+  var box=el('div','eBox');
+  box.appendChild(el('div','pr', esc(e.prompt)));
+  var ta=el('textarea'); ta.placeholder='Write your answer here — it saves automatically as you type.'; ta.value=drafts[e.id]||'';
+  ta.oninput=function(){ drafts[e.id]=ta.value; save(ESSAY_KEY,drafts); };
+  box.appendChild(ta);
+  var row=el('div','eBtnsira');
+  var rev=el('button','primer', eRevealed?'Hide model points':'Reveal model points');
+  rev.onclick=function(){ eRevealed=!eRevealed; renderEssay(); };
+  var back=el('button',null,'← All prompts'); back.onclick=function(){ eOpen=null; renderEssay(); };
+  row.appendChild(rev); row.appendChild(back);
+  box.appendChild(row);
+  if(eRevealed){
+    var a=el('div','anahtar');
+    a.appendChild(el('h3',null,'Answer key — points to hit'));
+    var ul=el('ul');
+    e.key.forEach(function(k){ ul.appendChild(el('li',null, esc(k))); });
+    a.appendChild(ul);
+    box.appendChild(a);
+    /* self-rating feeds SRS under the essay id */
+    var ov=el('div','oyla srs'); ov.style.marginTop='16px';
+    var again=el('button','b-again','Shaky'); again.onclick=function(){ schedule('e:'+e.id,0); eOpen=null; renderEssay(); buildChrome(); };
+    var good=el('button','b-good','Solid'); good.onclick=function(){ schedule('e:'+e.id, rec('e:'+e.id).box+1); eOpen=null; renderEssay(); buildChrome(); };
+    box.appendChild(el('div','kayit','Rate yourself against the points above:'));
+    box.appendChild(ov); ov.appendChild(again); ov.appendChild(good);
+  }
+  p.appendChild(box);
+}
+
+/* ---------- REVIEW (SRS) ---------- */
+var rdeck=[], rrev=false;
+function renderReview(){
+  var p=$('panel'); p.innerHTML='';
+  if(!rdeck.length){ rdeck=shuffle(dueFor(topic)); }
+  if(!rdeck.length){
+    var b=el('div','bos');
+    b.innerHTML='<div class="buyuk">☕</div>Nothing due right now'+(topic!=='all'?' in '+esc(topicName(topic)):'')+'.<br>Spaced repetition surfaces cards as they come due.';
+    var ahead=el('button',null,'Study ahead anyway'); ahead.onclick=function(){ rdeck=shuffle(cardsFor(topic)); rrev=false; renderReview(); };
+    b.appendChild(ahead); p.appendChild(b); $('sayac').innerHTML=''; return;
+  }
+  var c=rdeck[0];
+  $('sayac').innerHTML='<b>'+rdeck.length+'</b> due · '+topicName(c.topic);
+  var card=el('div','fc');
+  card.appendChild(el('span','rozet','box '+rec(c.id).box+' · '+esc(topicName(c.topic))));
+  card.appendChild(el('div','yuz on', esc(c.front)));
+  if(!rrev){
+    card.appendChild(el('span','ipucu','tap to reveal'));
+    card.onclick=function(){ rrev=true; renderReview(); };
+    p.appendChild(card);
+  } else {
+    card.appendChild(el('hr'));
+    card.appendChild(el('div','arka', esc(c.back)));
+    p.appendChild(card);
+    var ov=el('div','oyla srs');
+    function btn(cls,label,boxfn){ var b=el('button',cls,label); b.onclick=function(){ schedule(c.id, boxfn(rec(c.id).box)); rdeck.shift(); rrev=false; renderReview(); buildChrome(); }; return b; }
+    ov.appendChild(btn('b-again','Again', function(){return 0;}));
+    ov.appendChild(btn('b-hard','Hard', function(b){return Math.max(1,b);}));
+    ov.appendChild(btn('b-good','Good', function(b){return b+1;}));
+    ov.appendChild(btn('b-easy','Easy', function(b){return b+2;}));
+    p.appendChild(ov);
+  }
+}
+
+/* ---------- READ / STUDY ---------- */
+function renderRead(){
+  var p=$('panel'); p.innerHTML='';
+  var sb=el('input','oku-ara'); sb.type='search'; sb.placeholder='Search concepts, paradigms, definitions…'; sb.value=readQuery;
+  var host=el('div','oku-liste');
+  p.appendChild(sb); p.appendChild(host);
+  function hl(text,q){
+    var t=esc(text);
+    if(q){ try{ t=t.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>'); }catch(e){} }
+    return t;
+  }
+  function build(){
+    host.innerHTML='';
+    var q=readQuery.trim();
+    var ql=q.toLowerCase();
+    var groups = topic==='all' ? V.topics.map(function(t){return t.id;}) : [topic];
+    var total=0;
+    groups.forEach(function(tid){
+      var items=V.cards.filter(function(c){ return c.topic===tid && (!ql || (c.front+' '+c.back).toLowerCase().indexOf(ql)>=0); });
+      if(!items.length) return;
+      host.appendChild(el('div','oku-konu', esc(topicName(tid))+' · '+items.length));
+      items.forEach(function(c){
+        var g=el('div','oku-girdi');
+        g.appendChild(el('h4',null, hl(c.front,q)));
+        g.appendChild(el('div','oku-tanim', hl(c.back,q)));
+        host.appendChild(g);
+      });
+      total+=items.length;
+    });
+    $('sayac').innerHTML='<b>'+total+'</b> '+(total===1?'entry':'entries')+(q?' · matching “'+esc(q)+'”':'');
+    if(!total) host.appendChild(emptyMsg('No matches — try another word.'));
+  }
+  sb.oninput=function(){ readQuery=sb.value; build(); };
+  build();
+}
+
+/* ---------- helpers ---------- */
+function emptyMsg(t){ var b=el('div','bos'); b.textContent=t; return b; }
+
+/* ---------- router ---------- */
+function render(){
+  buildChrome();
+  /* reset per-mode decks when topic/mode changes is handled by clearing on entry */
+  if(mode==='read'){ renderRead(); }
+  else if(mode==='cards'){ cdeck=[]; ci=0; flipped=false; renderCards(); }
+  else if(mode==='test'){ qdeck=[]; renderTest(); }
+  else if(mode==='essay'){ eOpen=null; renderEssay(); }
+  else if(mode==='review'){ rdeck=[]; rrev=false; renderReview(); }
+}
+
+/* keyboard: space/enter flips or advances in cards/review */
+document.addEventListener('keydown', function(ev){
+  if(ev.target && (ev.target.tagName==='TEXTAREA'||ev.target.tagName==='INPUT')) return;
+  if((ev.key===' '||ev.key==='Enter')){
+    if(mode==='cards' && !flipped && cdeck[ci]){ ev.preventDefault(); flipped=true; renderCards(); }
+    else if(mode==='review' && !rrev && rdeck[0]){ ev.preventDefault(); rrev=true; renderReview(); }
+  }
+});
+
+$('ayak').innerHTML = 'Built from your own notes · '+esc(V.meta.updated)+' · '+V.cards.length+' cards, '+V.cards.filter(function(c){return c.mcq;}).length+' MCQs, '+V.essays.length+' essay prompts. Progress is saved on this device only.';
+
+render();
+})();
+</script>
+</body>
+</html>
