@@ -67,6 +67,10 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
 .sirt-tus{display:flex;align-items:center;gap:6px;width:100%;justify-content:center;border:1px solid var(--kenar);background:var(--kagit);color:var(--murekkep);border-radius:9px;padding:7px 11px;font-size:13px;margin-top:6px;font-family:'Libre Baskerville',serif}
 .sirt-tus:hover{border-color:var(--kirmizi);color:var(--kirmizi)}
 .yeni-siir{margin-top:14px;border-style:dashed;color:var(--kirmizi);font-weight:700}
+.yeni-hal{margin-top:10px;border-style:dashed;color:var(--kirmizi)}
+.yeni-hal:disabled{opacity:.5;color:var(--cok-soluk);cursor:default;border-color:var(--kenar)}
+.yeni-hal:disabled:hover{color:var(--cok-soluk);border-color:var(--kenar)}
+.hal-not{font-size:11px;color:var(--yesil);font-style:italic;min-height:1em;text-align:center;margin-top:4px}
 .drive-tus.on{border-color:var(--yesil);color:var(--yesil);background:var(--yesil-yum)}
 .yedek{display:flex;gap:6px;margin-top:10px;padding-top:12px;border-top:1px solid var(--kenar)}
 .yedek-tus{flex:1;border:1px solid var(--kenar);background:none;color:var(--soluk);border-radius:8px;padding:6px 8px;font-size:11.5px;font-family:'Libre Baskerville',serif}
@@ -115,25 +119,32 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
 .drive-giris{display:flex;gap:8px;flex-wrap:wrap}
 .drive-giris input{flex:1;min-width:180px;border:1px solid var(--kenar);border-radius:8px;padding:9px 11px;font-size:14px;font-family:Menlo,monospace;background:#fff}
 .drive-giris input:focus{outline:none;border-color:var(--kirmizi)}
+/* hâl karşılaştırma (satır farkı) */
+.diff-kutu{background:#FBF6EA;border:1px solid var(--kenar);border-radius:9px;padding:14px 16px;max-height:48vh;overflow:auto}
+.diff-satir{font-family:Georgia,serif;font-size:15px;line-height:1.66;white-space:pre-wrap}
+.diff-satir.eksi{color:var(--kirmizi);text-decoration:line-through;text-decoration-thickness:1px;opacity:.82}
+.diff-satir.arti{color:var(--yesil)}
+.diff-satir.bos{height:.7em;line-height:.7em}
+.diff-bos{color:var(--soluk);font-style:italic;font-size:14px}
 
 /* ---- kitap önizlemesi ---- */
 .kagit-alan.onizleme::before{display:none}.kagit-alan.onizleme{padding-left:0}
 .kitap-spread{display:flex;justify-content:center}
-.kitap-sayfa{flex:1 1 0;min-width:0;background:#FCFBF6;min-height:600px;padding:64px 30px 52px;position:relative;cursor:pointer;font-family:'Times New Roman',Times,Georgia,serif;color:#1a1611}
+.kitap-sayfa{flex:1 1 0;min-width:0;width:50%;height:600px;box-sizing:border-box;background:#FCFBF6;padding:76px 42px 46px;position:relative;cursor:pointer;font-family:'Times New Roman',Times,Georgia,serif;color:#1a1611;overflow:hidden}
 .kitap-sayfa:first-child{border-right:1px solid #e7dec9;border-radius:3px 0 0 3px;box-shadow:inset -16px 0 26px -20px rgba(42,32,24,.28)}
 .kitap-sayfa:last-child{border-radius:0 3px 3px 0;box-shadow:inset 16px 0 26px -20px rgba(42,32,24,.28)}
 .kitap-sayfa.bos{background:#F8F5EE;cursor:default}
-.kitap-ic{max-width:23em;margin:0 auto}
-.k-baslik{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:20px;text-align:center;margin:10px 0 18px;color:#1a1611;letter-spacing:.2px}
-.k-dize{font-size:16.5px;line-height:1.85;padding-left:1.5em;text-indent:-1.5em;color:#1a1611}
-.k-bosluk{height:1.5em}.k-bosbas{height:.5em}.k-ara{height:3.2em}
-.k-sayfano{position:absolute;bottom:22px;left:0;right:0;text-align:center;font-size:12.5px;color:#a99e86;font-family:'Times New Roman',serif}
+.kitap-ic{max-width:21em;margin:0 auto}
+.k-baslik{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:15px;text-align:center;margin:0 0 16px;color:#1a1611;letter-spacing:.3px}
+.k-dize{font-size:13px;line-height:1.62;padding-left:1.3em;text-indent:-1.3em;color:#1a1611}
+.k-bosluk{height:1.62em}.k-bosbas{height:.4em}
+.k-sayfano{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:11.5px;color:#a99e86;font-family:'Times New Roman',serif}
 .kitap-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
 .knav{border:1px solid var(--kenar);background:var(--kagit);color:var(--murekkep);border-radius:18px;padding:6px 16px;font-size:14px;font-family:'Libre Baskerville',serif}
 .knav:hover:not(:disabled){border-color:var(--kirmizi);color:var(--kirmizi)}
 .knav:disabled{opacity:.35}
 .knav-no{font-size:12.5px;color:var(--soluk);font-style:italic;min-width:56px;text-align:center}
-@media(max-width:600px){.kitap-sayfa{min-height:auto;box-shadow:none!important;border:1px solid #e7dec9!important;border-radius:3px!important;padding:40px 22px 44px}.kitap-spread{flex-direction:column;gap:14px}.kitap-sayfa.bos{display:none}.kitap-ic{max-width:none}}
+@media(max-width:600px){.kitap-sayfa{height:auto;min-height:440px;box-shadow:none!important;border:1px solid #e7dec9!important;border-radius:3px!important;padding:48px 24px 44px}.kitap-spread{flex-direction:column;gap:14px}.kitap-sayfa.bos{display:none}.kitap-ic{max-width:none}}
 @media(max-width:560px){.sayfa{padding:22px 16px 30px}.kagit-yazi,.baslik-giris{font-size:17px}.kagit-alan{padding-left:24px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -164,7 +175,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     </div>
     <p class="durum" id="durum"></p>
     <div class="kagit-alan" id="kagitAlan"></div>
-    <p class="ipuc" id="ipuc">Not defteri gibi yaz. Her hâli <b>kendiliğinden saklanır</b> — soldan eski hâllere dönebilirsin, hiçbir şey kaybolmaz.</p>
+    <p class="ipuc" id="ipuc">Not defteri gibi yaz. Özgün hâlin <b>kendiliğinden korunur</b>. Yeni bir hâl denemek istediğinde soldan <b>＋ yeni hâl</b>’e bas — eskiler hep durur, ⇄ ile dize dize karşılaştırabilirsin.</p>
   </section>
 </div>
 
@@ -216,27 +227,63 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   function kaydet(){ try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} try{ driveKaydetGecikmeli(); }catch(e){} }
 
   var durum=tumYukle();
-  var ui={ onizleme:false, sayfaIdx:0, halDuzen:null };
+  var ui={ onizleme:false, sayfaIdx:0, halDuzen:null, odakMetin:'' };
 
   function tas(){ for(var i=0;i<durum.taslaklar.length;i++) if(durum.taslaklar[i].id===durum.aktif) return durum.taslaklar[i]; durum.aktif=durum.taslaklar[0].id; return durum.taslaklar[0]; }
   function metinAl(){ return tas().metin||''; }
   function dolu(d){ return d&&d.taslaklar&&d.taslaklar.some(function(t){ return (t.metin||'').trim(); }); }
 
-  /* ---------- otomatik hâl geçmişi ---------- */
-  /* mevcut metni bir hâl olarak sakla — yalnız boş değilse ve hiçbir hâlle aynı değilse */
-  function otoSakla(){
-    var m=norm(metinAl()); if(!m) return false;
-    var hl=tas().haller;
-    for(var i=0;i<hl.length;i++) if(norm(hl[i].metin)===m) return false;
-    hl.unshift({ id:uid(), ad: hl.length? kisaZaman(Date.now()) : 'ilk hâl', zaman:Date.now(), oto:true, metin:m });
-    if(hl.length>200) hl.length=200;
-    return true;
+  /* ---------- hâller (sürümler) ----------
+     Kendiliğinden sürüm ÜRETİLMEZ — "her yazdığımda yeni sürüm" derdi bitti.
+     Tek otomatik dondurma: bir şiiri ilk kez değiştirince özgün hâli "ilk hâl"
+     olarak bir kez saklarız (ana versiyon her zaman durur). Onun dışında yeni
+     hâl yalnızca "＋ yeni hâl" düğmesiyle, kasıtlı olarak yaratılır.            */
+  function halVar(m){ var hl=tas().haller; for(var i=0;i<hl.length;i++) if(norm(hl[i].metin)===m) return true; return false; }
+  /* şimdiki hâli kasıtlı olarak dondur: eskisi korunur, yazmaya devam edince yeni hâl olur */
+  function yeniHal(){
+    if(yaziEl) tas().metin=yaziEl.value;
+    var m=norm(metinAl()); if(!m) return;
+    if(halVar(m)){ var e=$('halNot'); if(e){ e.textContent='bu hâl zaten saklı'; setTimeout(function(){ if(e.parentNode) e.textContent=''; },1800); } return; }
+    tas().haller.push({ id:uid(), ad:'hâl '+(tas().haller.length+1), zaman:Date.now(), oto:false, metin:m });
+    if(tas().haller.length>200) tas().haller.shift();
+    kaydet(); cizSirt();
   }
-  var otoZaman=null;
-  function otoGecikmeli(){ clearTimeout(otoZaman); otoZaman=setTimeout(function(){ if(otoSakla()){ kaydet(); cizSirt(); } }, 14000); }
+  function halYukle(id){
+    if(yaziEl) tas().metin=yaziEl.value;
+    var h=tas().haller.filter(function(x){return x.id===id;})[0]; if(!h) return;
+    /* mevcut iş hiçbir hâle eşit değilse güvenlik için sakla — açıkken iş kaybı olmasın */
+    var m=norm(metinAl()); if(m && !halVar(m)) tas().haller.push({ id:uid(), ad:kisaZaman(Date.now()), zaman:Date.now(), oto:true, metin:m });
+    tas().metin=h.metin; kaydet(); yaziTazele(); cizSirt();
+  }
+  function halSil(id){ tas().haller=tas().haller.filter(function(x){return x.id!==id;}); kaydet(); cizSirt(); }
 
-  function halYukle(id){ otoSakla(); var h=tas().haller.filter(function(x){return x.id===id;})[0]; if(!h) return; tas().metin=h.metin; kaydet(); yaziTazele(); cizSirt(); }
-  function halSil(id){ var h=tas().haller.filter(function(x){return x.id===id;})[0]; if(!h) return; if(!confirm('“'+h.ad+'” hâli silinsin mi?')) return; tas().haller=tas().haller.filter(function(x){return x.id!==id;}); kaydet(); cizSirt(); }
+  /* ---------- iki hâl arasında satır (dize) farkı ---------- */
+  function satirDiff(a,b){
+    var A=(a||'').split('\n'), B=(b||'').split('\n'), n=A.length, m=B.length, dp=[],i,j;
+    for(i=0;i<=n;i++){ dp[i]=[]; for(j=0;j<=m;j++) dp[i][j]=0; }
+    for(i=n-1;i>=0;i--) for(j=m-1;j>=0;j--) dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+    var out=[]; i=0; j=0;
+    while(i<n&&j<m){ if(A[i]===B[j]){ out.push({t:'esit',m:A[i]}); i++; j++; } else if(dp[i+1][j]>=dp[i][j+1]){ out.push({t:'eksi',m:A[i]}); i++; } else { out.push({t:'arti',m:B[j]}); j++; } }
+    while(i<n) out.push({t:'eksi',m:A[i++]});
+    while(j<m) out.push({t:'arti',m:B[j++]});
+    return out;
+  }
+  function halKarsilastir(id){
+    if(yaziEl) tas().metin=yaziEl.value;
+    var h=tas().haller.filter(function(x){return x.id===id;})[0]; if(!h) return;
+    var d=satirDiff(norm(h.metin), norm(metinAl()));
+    var mo=el('div','modal');
+    mo.appendChild(el('h3',null,esc(h.ad)+' → şimdiki hâl<button class="kapat">×</button>')); mo.querySelector('.kapat').onclick=modalKapat;
+    mo.appendChild(el('div','not','<span style="color:var(--kirmizi)">üstü çizili</span> = o hâlden çıkan dize · <span style="color:var(--yesil)">yeşil</span> = şimdi gelen dize'));
+    var kut=el('div','diff-kutu');
+    if(d.every(function(x){return x.t==='esit';})) kut.appendChild(el('div','diff-bos','İki hâl birebir aynı.'));
+    else d.forEach(function(x){ if(x.m==='') kut.appendChild(el('div','diff-satir bos')); else kut.appendChild(el('div','diff-satir '+x.t, (x.t==='eksi'?'– ':x.t==='arti'?'＋ ':'   ')+esc(x.m))); });
+    mo.appendChild(kut);
+    var t=el('div','modal-tus');
+    var g=el('button','dugme dol','bu hâle dön'); g.onclick=function(){ modalKapat(); halYukle(id); }; t.appendChild(g);
+    var c=el('button','dugme','kapat'); c.onclick=modalKapat; t.appendChild(c);
+    mo.appendChild(t); modalAc(mo);
+  }
 
   /* ---------- çizim ---------- */
   function ciz(){ cizSirt(); cizSayfa(); }
@@ -258,10 +305,9 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
       oge.appendChild(satir);
       if(acik){
         var ic=el('div','icerik');
-        ic.appendChild(el('div','kucuk-bas','hâller — tıkla, dön'));
+        ic.appendChild(el('div','kucuk-bas','hâller — eski hâllere dön'));
         var kayitli = simdi && t.haller.some(function(h){return norm(h.metin)===simdi;});
-        if(simdi && !kayitli) ic.appendChild(el('div','bos-kucuk','şu an: yazılıyor (birazdan kendiliğinden saklanır)'));
-        if(!t.haller.length && !simdi) ic.appendChild(el('div','bos-kucuk','yazınca hâller burada birikir'));
+        if(!t.haller.length) ic.appendChild(el('div','bos-kucuk', simdi?'henüz tek hâl var. ＋ yeni hâl ile şimdikini dondurabilirsin.':'yaz, sonra ＋ yeni hâl ile sakla'));
         yildizSirala(t.haller).forEach(function(ho){
           var h=ho.x;
           var hg=el('div','hal-oge'+(norm(h.metin)===simdi?' bu':''));
@@ -272,15 +318,18 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
             inp.onkeydown=function(e){ if(e.key==='Enter'){e.preventDefault();bitir();} if(e.key==='Escape'){ bitti=true; ui.halDuzen=null; cizSirt(); } };
             inp.onblur=bitir; setTimeout(function(){ inp.focus(); inp.select(); },0);
           } else {
-            hg.appendChild(el('span','sad', esc(h.ad)));
+            var sad=el('span','sad', esc(h.ad)); if(norm(h.metin)===simdi) sad.title='şu an ekranda olan hâl'; hg.appendChild(sad);
             hg.appendChild(el('span','szm', kisaZaman(h.zaman)));
             hg.onclick=function(e){ if(e.target.classList.contains('vsil')||e.target.classList.contains('p-yil')) return; halYukle(h.id); };
             hg.title='Tıkla: bu hâle dön · çift tık: adlandır';
             hg.ondblclick=function(e){ e.preventDefault(); ui.halDuzen=h.id; cizSirt(); };
+            var cmp=el('button','vsil','⇄'); cmp.title='Şimdiki hâlle karşılaştır (dize farkı)'; cmp.onclick=function(e){ e.stopPropagation(); halKarsilastir(h.id); }; hg.appendChild(cmp);
             var x=el('button','vsil','×'); x.title='Hâli sil'; x.onclick=function(e){ e.stopPropagation(); halSil(h.id); }; hg.appendChild(x);
           }
           ic.appendChild(hg);
         });
+        var yh=el('button','sirt-tus yeni-hal','＋ yeni hâl'); yh.title='Şimdiki hâli dondurup sakla; yazmaya devam ettiğinde eskisi korunur'; yh.disabled=(!simdi||kayitli); yh.onclick=yeniHal; ic.appendChild(yh);
+        var hn=el('div','hal-not'); hn.id='halNot'; ic.appendChild(hn);
         oge.appendChild(ic);
       }
       kok.appendChild(oge);
@@ -316,15 +365,25 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     }
   }
   function yaziTazele(){ if(yaziEl){ yaziEl.value=tas().metin||''; autoBoy(yaziEl); } else cizYazi(); }
-  function autoBoy(ta){ ta.style.height='auto'; ta.style.height=Math.max(340, ta.scrollHeight)+'px'; }
+  /* yükseklik otomatik büyür ama sayfa KAYMAZ — 'auto' sıfırlaması sırasında kaydırmayı koru */
+  function autoBoy(ta){ var sc=window.pageYOffset; ta.style.height='auto'; ta.style.height=Math.max(340, ta.scrollHeight)+'px'; if(window.pageYOffset!==sc) window.scrollTo(0,sc); }
   var kaydZaman=null;
   function baglaYazi(ta){
-    ta.addEventListener('input', function(){ tas().metin=ta.value; autoBoy(ta); clearTimeout(kaydZaman); kaydZaman=setTimeout(kaydet,500); otoGecikmeli(); });
-    ta.addEventListener('blur', function(){ tas().metin=ta.value; kaydet(); if(otoSakla()){ kaydet(); cizSirt(); } });
+    ta.addEventListener('focus', function(){ ui.odakMetin=norm(ta.value); });
+    ta.addEventListener('input', function(){
+      tas().metin=ta.value; autoBoy(ta);
+      /* bir şiiri İLK kez değiştirince özgün hâli bir kez koru (tek otomatik dondurma) */
+      if(ui.odakMetin && tas().haller.length===0 && norm(ta.value)!==ui.odakMetin){
+        tas().haller.push({ id:uid(), ad:'ilk hâl', zaman:Date.now(), oto:true, metin:ui.odakMetin });
+        ui.odakMetin=''; cizSirt();
+      }
+      clearTimeout(kaydZaman); kaydZaman=setTimeout(kaydet,500);
+    });
+    ta.addEventListener('blur', function(){ tas().metin=ta.value; kaydet(); });
   }
 
   /* ---------- şiir (taslak) ---------- */
-  function taslakGec(id){ if(yaziEl){ tas().metin=yaziEl.value; } otoSakla(); durum.aktif=id; ui.halDuzen=null; ui.onizleme=false; kaydet(); yaziEl=null; ciz(); }
+  function taslakGec(id){ if(yaziEl){ tas().metin=yaziEl.value; } durum.aktif=id; ui.halDuzen=null; ui.onizleme=false; ui.odakMetin=''; kaydet(); yaziEl=null; ciz(); }
   var psuru=null;
   function poemSurukle(grip,oge,id){
     grip.addEventListener('dragstart', function(e){ psuru=id; e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setDragImage(oge,10,10); }catch(_){} });
@@ -343,26 +402,28 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
 
   /* ---------- kitap önizlemesi ---------- */
   function stanzalar(metin){ return norm(metin).split(/\n[ \t]*\n+/).map(function(b){ return b.split('\n').map(function(l){return l.replace(/\s+$/,'');}).filter(function(l){return l.trim()!=='';}); }).filter(function(s){return s.length;}); }
-  function kitapBloklari(){
-    var b=[];
-    durum.taslaklar.forEach(function(t){
-      var m = (t.id===durum.aktif && yaziEl)?yaziEl.value:t.metin;
-      var st=stanzalar(m); if(!st.length) return;
-      if(b.length) b.push({tip:'ara'});
-      b.push({tip:'baslik',metin:t.baslik||'başlıksız şiir'}); b.push({tip:'bosbas'});
-      st.forEach(function(dz,i){ if(i>0) b.push({tip:'bosluk'}); dz.forEach(function(l){ b.push({tip:'dize',metin:l}); }); });
-    });
-    return b;
-  }
+  /* her şiir KENDİ sayfasında başlar (şiirler birbirine taşmaz); sayfalar eşit boyda */
   function kitapSayfalar(){
-    var BUTCE=13, b=kitapBloklari(), sf=[[]], dolu2=0;
-    function mal(x){ return x.tip==='baslik'?3:(x.tip==='ara'?2:1); }
-    b.forEach(function(x){ var m=mal(x);
-      if(x.tip==='baslik' && dolu2>0 && dolu2>BUTCE-5){ sf.push([]); dolu2=0; }
-      if(dolu2+m>BUTCE && dolu2>0){ sf.push([]); dolu2=0; if(x.tip==='bosluk'||x.tip==='ara'||x.tip==='bosbas') return; }
-      sf[sf.length-1].push(x); dolu2+=m;
+    var BUDGET=17, sayfalar=[], cur=[], used=0;
+    function bitir(){ if(cur.length){ sayfalar.push(cur); cur=[]; used=0; } }
+    function ekle(b,c){ cur.push(b); used+=c; }
+    durum.taslaklar.forEach(function(t){
+      var m=(t.id===durum.aktif&&yaziEl)?yaziEl.value:t.metin;
+      var st=stanzalar(m); if(!st.length) return;
+      bitir();
+      ekle({tip:'baslik',metin:t.baslik||'başlıksız şiir'},2);
+      ekle({tip:'bosbas'},1);
+      st.forEach(function(dz,si){
+        if(si>0){
+          if(used+1+Math.min(2,dz.length)>BUDGET) bitir();   /* kıtayı tek dizeyle öksüz bırakma */
+          else ekle({tip:'bosluk'},1);
+        }
+        dz.forEach(function(l){ if(used>=BUDGET) bitir(); ekle({tip:'dize',metin:l},1); });
+      });
     });
-    return sf;
+    bitir();
+    if(!sayfalar.length) sayfalar=[[]];
+    return sayfalar;
   }
   function kitapSayfaEl(bloklar,no){
     var s=el('div','kitap-sayfa'); if(!bloklar){ s.classList.add('bos'); return s; }
@@ -484,14 +545,14 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   /* ---------- olaylar ---------- */
   $('baslik').addEventListener('input', function(){ tas().baslik=$('baslik').value; kaydet(); cizSirt(); });
   $('kopyala').onclick=tumKopyala;
-  $('onizle').onclick=function(){ if(yaziEl) tas().metin=yaziEl.value; if(!ui.onizleme){ otoSakla(); kaydet(); cizSirt(); ui.sayfaIdx=0; } ui.onizleme=!ui.onizleme; yaziEl=null; cizSayfa(); };
-  $('yeniSiir').onclick=function(){ if(yaziEl) tas().metin=yaziEl.value; otoSakla(); var t=yeniTaslak(); durum.taslaklar.push(t); durum.aktif=t.id; ui.onizleme=false; yaziEl=null; kaydet(); ciz(); setTimeout(function(){ $('baslik').focus(); $('baslik').select(); },0); };
+  $('onizle').onclick=function(){ if(yaziEl) tas().metin=yaziEl.value; if(!ui.onizleme){ kaydet(); ui.sayfaIdx=0; } ui.onizleme=!ui.onizleme; yaziEl=null; cizSayfa(); };
+  $('yeniSiir').onclick=function(){ if(yaziEl) tas().metin=yaziEl.value; var t=yeniTaslak(); durum.taslaklar.push(t); durum.aktif=t.id; ui.onizleme=false; ui.odakMetin=''; yaziEl=null; kaydet(); ciz(); setTimeout(function(){ $('baslik').focus(); $('baslik').select(); },0); };
   $('iceDosya').onchange=function(e){ if(e.target.files&&e.target.files[0]) iceAktar(e.target.files[0]); e.target.value=''; };
   document.addEventListener('keydown', function(e){
     if(ui.onizleme && (e.key==='ArrowLeft'||e.key==='ArrowRight') && !/^(textarea|input)$/i.test((e.target.tagName||''))){ var sf=kitapSayfalar(),ss=Math.max(1,Math.ceil(sf.length/2)); if(e.key==='ArrowLeft'&&ui.sayfaIdx>0){ ui.sayfaIdx--; cizSayfa(); } else if(e.key==='ArrowRight'&&ui.sayfaIdx<ss-1){ ui.sayfaIdx++; cizSayfa(); } return; }
     if(e.key==='Escape'){ if($('kapakKok').firstChild) modalKapat(); else if(ui.onizleme){ ui.onizleme=false; yaziEl=null; cizSayfa(); } }
   });
-  window.addEventListener('beforeunload', function(){ if(yaziEl) tas().metin=yaziEl.value; otoSakla(); try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} });
+  window.addEventListener('beforeunload', function(){ if(yaziEl) tas().metin=yaziEl.value; try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} });
 
   try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
   ciz();
