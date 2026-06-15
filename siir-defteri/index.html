@@ -668,6 +668,8 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     if(e.key==='Escape'){ if(ui.acikDize) dizePanelKapat(); else if($('kapakKok').firstChild) modalKapat(); else if(ui.edit) commitEdit(); }
   });
 
+  /* tarayıcıya: bu defteri kendiliğinden silme (kalıcı depolama) */
+  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
   ciz();
 })();
 </script>
