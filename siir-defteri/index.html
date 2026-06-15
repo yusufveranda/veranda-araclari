@@ -9,6 +9,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232A2018'/%3E%3Crect x='15' y='13' width='6' height='38' rx='2' fill='%23C2331F'/%3E%3Crect x='26' y='20' width='22' height='2.6' rx='1.3' fill='%23F4EDDD'/%3E%3Crect x='26' y='28' width='22' height='2.6' rx='1.3' fill='%23F4EDDD'/%3E%3Crect x='26' y='36' width='14' height='2.6' rx='1.3' fill='%231F6F5C'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css">
+<script src="https://accounts.google.com/gsi/client" async></script>
 <style>
 :root{
   --kagit:#F4EDDD; --kagit2:#EBE1CB; --kenar:#DED2B6;
@@ -116,6 +117,13 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
 .yedek{display:flex;gap:6px;margin-top:18px;padding-top:12px;border-top:1px solid var(--kenar)}
 .yedek-tus{flex:1;border:1px solid var(--kenar);background:none;color:var(--soluk);border-radius:8px;padding:6px 8px;font-size:11.5px;font-family:'Libre Baskerville',serif}
 .yedek-tus:hover{border-color:var(--kirmizi);color:var(--kirmizi)}
+.drive-tus.on{border-color:var(--yesil);color:var(--yesil);background:var(--yesil-yum)}
+.drive-adim{font-size:13px;line-height:1.85;color:var(--murekkep);background:#FBF6EA;border:1px solid var(--kenar);border-radius:9px;padding:12px 14px;margin-bottom:12px}
+.drive-adim a{color:var(--kirmizi)}
+.drive-adim code{display:inline-block;background:var(--kagit2);border-radius:5px;padding:2px 7px;font-size:12.5px;margin:3px 0;user-select:all}
+.drive-giris{display:flex;gap:8px;flex-wrap:wrap}
+.drive-giris input{flex:1;min-width:180px;border:1px solid var(--kenar);border-radius:8px;padding:9px 11px;font-size:14px;font-family:Menlo,monospace;background:#fff}
+.drive-giris input:focus{outline:none;border-color:var(--kirmizi)}
 
 /* kitap önizlemesi: iki sayfa yan yana, sayfalı */
 .kagit-alan.onizleme::before{display:none}
@@ -275,7 +283,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   function kg(k){ if(k.surumler&&!k.dizeler){ k.dizeler=k.surumler[k.aktif||0].dizeler; delete k.surumler; delete k.aktif; } (k.dizeler||[]).forEach(dizeGoc); }
   /* eski dize (sözcük-yuvalı sürümler) -> düz metin sürümlerine taşı */
   function dizeGoc(d){ if(d.surumler&&d.surumler.length&&typeof d.surumler[0]==='object'&&d.surumler[0]&&d.surumler[0].yuvalar){ d.surumler=d.surumler.map(function(s){ return (s.yuvalar||[]).map(function(y){ return y.sec[y.aktif]||''; }).join(' '); }); } if(typeof d.aktif!=='number') d.aktif=0; }
-  function kaydet(){ try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} }
+  function kaydet(){ try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} try{ driveKaydetGecikmeli(); }catch(e){} }
 
   function yeniDize(m){ return {id:uid(),surumler:[m||''],aktif:0}; }
   function yeniKita(m){ return {id:uid(),dizeler:[yeniDize(m||'')]}; }
@@ -349,6 +357,9 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
       }
       kok.appendChild(oge);
     });
+    /* Google Drive */
+    var dlbl = driveDurum==='bagli'?'☁ Drive: bağlı':(driveDurum==='baglaniyor'?'☁ bağlanıyor…':'☁ Drive’a kaydet');
+    var db=el('button','sirt-tus drive-tus'+(driveDurum==='bagli'?' on':'')); db.textContent=dlbl; db.style.marginTop='14px'; db.onclick=driveTikla; kok.appendChild(db);
     /* yedek al / geri yükle */
     var yed=el('div','yedek');
     var ya=el('button','yedek-tus','⤓ yedekle'); ya.title='Tüm defterini bir dosyaya indir'; ya.onclick=disaAktar; yed.appendChild(ya);
@@ -635,6 +646,84 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   /* yedek: dışa aktar / içe aktar */
   function disaAktar(){ commitEdit(); var veri=JSON.stringify(durum); var blob=new Blob([veri],{type:'application/json'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='siir-defteri-yedek.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){ URL.revokeObjectURL(url); },800); }
   function iceAktar(file){ var r=new FileReader(); r.onload=function(){ try{ var d=JSON.parse(r.result); if(d&&d.taslaklar&&d.taslaklar.length){ if(!confirm('Yedek yüklenecek ve şu anki defterinin yerine geçecek. Devam?')) return; durum=goc(d); gecmis=[];ileri=[]; ui.edit=null; ui.acikDize=null; kaydet(); ciz(); } else alert('Bu bir şiir defteri yedeği değil.'); }catch(e){ alert('Dosya okunamadı.'); } }; r.readAsText(file); }
+
+  /* ===================== GOOGLE DRIVE EŞİTLEME (özel appDataFolder) ===================== */
+  var driveToken=null, driveFileId=null, driveDurum='kapali', driveIstemci=null, driveZaman=null;
+  function driveCid(){ return (localStorage.getItem('siir_drive_cid')||'').trim(); }
+  function driveHazir(){ return window.google && google.accounts && google.accounts.oauth2; }
+  function dolu(d){ return d && d.taslaklar && d.taslaklar.some(function(t){ return (t.kitalar||[]).some(function(k){ return (k.dizeler||[]).some(function(dz){ var s=(dz.surumler||[])[dz.aktif||0]; return s && s.toString().trim(); }); }); }); }
+  function driveBaslik(){ return {'Authorization':'Bearer '+driveToken}; }
+
+  function driveTikla(){ if(driveDurum==='bagli') driveDurumModal(); else if(driveCid()) driveBaglan(false); else driveKurModal(); }
+  function driveBaglan(force){
+    var cid=driveCid(); if(!cid){ driveKurModal(); return; }
+    if(!driveHazir()){ driveDurum='baglaniyor'; cizSirt(); setTimeout(function(){ driveBaglan(force); }, 400); return; }
+    if(!driveIstemci || driveIstemci._cid!==cid){
+      driveIstemci=google.accounts.oauth2.initTokenClient({ client_id:cid, scope:'https://www.googleapis.com/auth/drive.appdata',
+        callback:function(resp){ if(resp&&resp.access_token){ driveToken=resp.access_token; localStorage.setItem('siir_drive_on','1'); driveIlkEsit(); } else { driveDurum='kapali'; cizSirt(); } } });
+      driveIstemci._cid=cid;
+    }
+    driveDurum='baglaniyor'; cizSirt();
+    try{ driveIstemci.requestAccessToken({prompt: force?'consent':''}); }catch(e){ driveDurum='kapali'; cizSirt(); }
+  }
+  function driveIlkEsit(){
+    driveDurum='bagli'; cizSirt();
+    fetch("https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q="+encodeURIComponent("name='siir-defteri.json'")+"&fields=files(id)", {headers:driveBaslik()})
+      .then(function(r){ return r.json(); }).then(function(res){
+        if(res.error){ driveTokenHata(res.error); return; }
+        var f=res.files&&res.files[0];
+        if(f){ driveFileId=f.id;
+          fetch('https://www.googleapis.com/drive/v3/files/'+f.id+'?alt=media',{headers:driveBaslik()}).then(function(r){return r.text();}).then(function(txt){
+            var uzak=null; try{ uzak=JSON.parse(txt); }catch(e){}
+            var yd=dolu(durum), ud=uzak&&uzak.taslaklar&&dolu(goc(JSON.parse(JSON.stringify(uzak))));
+            if(ud && !yd){ durum=goc(uzak); gecmis=[];ileri=[]; kaydet(); ciz(); driveNot('Drive’dan yüklendi'); }
+            else if(ud && yd && txt!==JSON.stringify(durum)){ driveCakisma(uzak); }
+            else { driveYukleHemen(); }
+          });
+        } else { driveYukleHemen(); }
+      }).catch(function(){ driveNot('Drive’a ulaşılamadı'); });
+  }
+  function driveYukleHemen(){
+    if(driveDurum!=='bagli'||!driveToken) return;
+    var metin=JSON.stringify(durum), p;
+    if(driveFileId){ p=fetch('https://www.googleapis.com/upload/drive/v3/files/'+driveFileId+'?uploadType=media',{method:'PATCH',headers:Object.assign({'Content-Type':'application/json'},driveBaslik()),body:metin}); }
+    else { var b='----sd771'; var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name:'siir-defteri.json',parents:['appDataFolder']})+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+metin+'\r\n--'+b+'--'; p=fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:Object.assign({'Content-Type':'multipart/related; boundary='+b},driveBaslik()),body:body}); }
+    p.then(function(r){return r.json();}).then(function(res){ if(res.error){ driveTokenHata(res.error); return; } if(res.id) driveFileId=res.id; driveNot('eşitlendi'); }).catch(function(){ driveNot('eşitlenemedi'); });
+  }
+  function driveKaydetGecikmeli(){ if(driveDurum!=='bagli') return; clearTimeout(driveZaman); driveZaman=setTimeout(driveYukleHemen, 1500); }
+  function driveTokenHata(err){ if(err && (err.code===401||err.code===403)){ driveToken=null; driveBaglan(false); } else driveNot('Drive hatası'); }
+  function driveNot(msg){ var e=$('driveNot'); if(e) e.textContent=msg; }
+  function driveCakisma(uzak){
+    var mo=el('div','modal'); mo.appendChild(el('h3',null,'İki yerde de şiir var<button class="kapat">×</button>')); mo.querySelector('.kapat').onclick=modalKapat;
+    mo.appendChild(el('div','not','Drive’daki defter ile bu cihazdaki farklı. Hangisini tutalım?'));
+    var t=el('div','modal-tus');
+    var a=el('button','dugme dol','Drive’dakini kullan'); a.onclick=function(){ durum=goc(uzak); gecmis=[];ileri=[]; ui.edit=null; kaydet(); ciz(); modalKapat(); driveNot('Drive’dan yüklendi'); }; t.appendChild(a);
+    var c=el('button','dugme','Bu cihazdakini kullan'); c.onclick=function(){ modalKapat(); driveYukleHemen(); }; t.appendChild(c);
+    mo.appendChild(t); modalAc(mo);
+  }
+  function driveKurModal(){
+    var mo=el('div','modal'); mo.appendChild(el('h3',null,'Google Drive’a bağla<button class="kapat">×</button>')); mo.querySelector('.kapat').onclick=modalKapat;
+    mo.appendChild(el('div','not','Şiirlerin kendi Drive’ına otomatik kaydolur; yalnız sen görürsün. Bir kerelik bir “Client ID” alman gerekiyor:'));
+    var ad=el('div','drive-adim');
+    ad.innerHTML='<b>1.</b> <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a>’a gir, yeni bir proje oluştur.<br>'+
+      '<b>2.</b> “APIs &amp; Services → Enabled APIs → + Enable APIs” → <b>Google Drive API</b>’yi aç.<br>'+
+      '<b>3.</b> “OAuth consent screen” → <b>External</b> → uygulama adı + e-postanı yaz → <b>Test users</b>’a kendi Gmail’ini ekle.<br>'+
+      '<b>4.</b> “Credentials → Create credentials → OAuth client ID” → tür: <b>Web application</b>. <b>Authorized JavaScript origins</b>’e şunu ekle:<br><code>https://yusufveranda.github.io</code><br>Create de, çıkan <b>Client ID</b>’yi kopyala.<br>'+
+      '<b>5.</b> Aşağıya yapıştır:';
+    mo.appendChild(ad);
+    var g=el('div','drive-giris'); var inp=el('input'); inp.placeholder='….apps.googleusercontent.com'; inp.value=driveCid(); g.appendChild(inp);
+    var kb=el('button','dugme dol','kaydet ve bağlan'); kb.onclick=function(){ var v=inp.value.trim(); if(!v) return; localStorage.setItem('siir_drive_cid',v); modalKapat(); driveBaglan(true); }; g.appendChild(kb);
+    mo.appendChild(g); modalAc(mo);
+  }
+  function driveDurumModal(){
+    var mo=el('div','modal'); mo.appendChild(el('h3',null,'Google Drive<button class="kapat">×</button>')); mo.querySelector('.kapat').onclick=modalKapat;
+    mo.appendChild(el('div','not','<b id="driveNot">bağlı</b> — şiirlerin Drive’ında, her değişiklikte otomatik eşitleniyor.'));
+    var t=el('div','modal-tus');
+    var s=el('button','dugme dol','şimdi eşitle'); s.onclick=driveYukleHemen; t.appendChild(s);
+    var i=el('button','dugme','Drive’dan getir'); i.onclick=function(){ modalKapat(); if(driveToken) driveIlkEsit(); }; t.appendChild(i);
+    var k=el('button','dugme','bağlantıyı kes'); k.onclick=function(){ localStorage.removeItem('siir_drive_on'); driveDurum='kapali'; driveToken=null; modalKapat(); cizSirt(); }; t.appendChild(k);
+    mo.appendChild(t); modalAc(mo);
+  }
   function kisaZaman(t){ try{ return new Date(t).toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
 
   function modalAc(node){ var k=el('div','kapak'); k.appendChild(node); k.addEventListener('mousedown', function(e){ if(e.target===k) modalKapat(); }); $('kapakKok').innerHTML=''; $('kapakKok').appendChild(k); }
@@ -671,6 +760,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   /* tarayıcıya: bu defteri kendiliğinden silme (kalıcı depolama) */
   try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
   ciz();
+  if(localStorage.getItem('siir_drive_on') && driveCid()){ setTimeout(function(){ driveBaglan(false); }, 900); }
 })();
 </script>
 </body>
