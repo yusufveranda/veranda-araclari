@@ -415,7 +415,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     var cid=driveCid(); if(!cid){ driveKurModal(); return; }
     if(!driveHazir()){ driveDurum='baglaniyor'; cizSirt(); setTimeout(function(){ driveBaglan(force); },400); return; }
     if(!driveIstemci || driveIstemci._cid!==cid){
-      driveIstemci=google.accounts.oauth2.initTokenClient({ client_id:cid, scope:'https://www.googleapis.com/auth/drive.appdata',
+      driveIstemci=google.accounts.oauth2.initTokenClient({ client_id:cid, scope:'https://www.googleapis.com/auth/drive.file',
         callback:function(resp){ if(resp&&resp.access_token){ driveToken=resp.access_token; localStorage.setItem('siir_drive_on','1'); driveIlkEsit(); } else { driveDurum='kapali'; cizSirt(); } } });
       driveIstemci._cid=cid;
     }
@@ -424,7 +424,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   }
   function driveIlkEsit(){
     driveDurum='bagli'; cizSirt();
-    fetch("https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q="+encodeURIComponent("name='siir-defteri.json'")+"&fields=files(id)", {headers:driveBaslik()})
+    fetch("https://www.googleapis.com/drive/v3/files?q="+encodeURIComponent("name='siir-defteri.json' and trashed=false")+"&fields=files(id)", {headers:driveBaslik()})
       .then(function(r){return r.json();}).then(function(res){
         if(res.error){ driveTokenHata(res.error); return; }
         var f=res.files&&res.files[0];
@@ -443,7 +443,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     if(driveDurum!=='bagli'||!driveToken) return; if(yaziEl) tas().metin=yaziEl.value;
     var metin=JSON.stringify(durum), p;
     if(driveFileId){ p=fetch('https://www.googleapis.com/upload/drive/v3/files/'+driveFileId+'?uploadType=media',{method:'PATCH',headers:Object.assign({'Content-Type':'application/json'},driveBaslik()),body:metin}); }
-    else { var b='----sd771'; var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name:'siir-defteri.json',parents:['appDataFolder']})+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+metin+'\r\n--'+b+'--'; p=fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:Object.assign({'Content-Type':'multipart/related; boundary='+b},driveBaslik()),body:body}); }
+    else { var b='----sd771'; var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name:'siir-defteri.json'})+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+metin+'\r\n--'+b+'--'; p=fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:Object.assign({'Content-Type':'multipart/related; boundary='+b},driveBaslik()),body:body}); }
     p.then(function(r){return r.json();}).then(function(res){ if(res.error){ driveTokenHata(res.error); return; } if(res.id) driveFileId=res.id; driveNot('eşitlendi'); }).catch(function(){ driveNot('eşitlenemedi'); });
   }
   function driveKaydetGecikmeli(){ if(driveDurum!=='bagli') return; clearTimeout(driveZaman); driveZaman=setTimeout(driveYukleHemen,1500); }
