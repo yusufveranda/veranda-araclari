@@ -262,7 +262,9 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     var hl=[];
     (t.kayitlar||[]).forEach(function(k){ var mm=(k.metin!=null)?k.metin:(k.kitalar?kitalarMetin(k.kitalar):flatMetin(k.dizeler)); hl.push({id:k.id||uid(),ad:k.ad||'hâl',zaman:k.zaman||Date.now(),metin:norm(mm),oto:!!k.oto,yildiz:!!k.yildiz}); });
     if(t.surumler) t.surumler.forEach(function(s,i){ if(i!==(t.aktif||0)) hl.push({id:uid(),ad:s.ad||'hâl',zaman:s.zaman||Date.now(),metin:norm(kitalarMetin(s.kitalar)),oto:false,yildiz:false}); });
-    if(Array.isArray(t.haller)) t.haller.forEach(function(h){ hl.push({id:h.id||uid(),ad:h.ad||'hâl',zaman:h.zaman||Date.now(),metin:typeof h.metin==='string'?h.metin:'',oto:!!h.oto,yildiz:!!h.yildiz}); });
+    /* haller dizi DEĞİL nesne olarak gelmişse de topla (kayıp olmasın) */
+    var hk = Array.isArray(t.haller)? t.haller : (t.haller&&typeof t.haller==='object'? Object.keys(t.haller).map(function(k){return t.haller[k];}) : []);
+    hk.forEach(function(h){ if(h&&typeof h==='object') hl.push({id:h.id||uid(),ad:h.ad||'hâl',zaman:h.zaman||Date.now(),metin:typeof h.metin==='string'?h.metin:'',oto:!!h.oto,yildiz:!!h.yildiz}); });
     t.metin=m; t.haller=hl;
     delete t.kitalar; delete t.kayitlar; delete t.surumler; delete t.aktif; delete t.raf; delete t.ilkAlindi;
   }
@@ -305,9 +307,21 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     t.yildiz=!!t.yildiz;
     delete t.metin; delete t.haller;
   }
+  /* gocYeni istisna atarsa: metni ve hâlleri kaybetmeden, hizalama yapmadan basitçe taşı (her satır kendi yuvası) */
+  function gocBasit(t){
+    var wm = (typeof t.metin==='string') ? t.metin : '';
+    if(!wm){ try{ wm = norm(kitalarMetin((t.kitalar&&t.kitalar.length)?t.kitalar:(t.surumler&&t.surumler[t.aktif||0]&&t.surumler[t.aktif||0].kitalar)||[])); }catch(e){ wm=''; } }
+    var hk = Array.isArray(t.haller)? t.haller : (t.haller&&typeof t.haller==='object'? Object.keys(t.haller).map(function(k){return t.haller[k];}) : []);
+    t.satirlar={}; t.kombinasyonlar=[]; t.dayanak=null;
+    hk.forEach(function(h,idx){ var hm=(h&&typeof h.metin==='string')?h.metin:''; var yapi=String(hm).split('\n').map(function(line){ var nl=yuvaMetin(t,line); return {satirId:nl.satirId,altId:nl.altId}; }); t.kombinasyonlar.push({ id:(h&&h.id)||uid(), ad: idx===0?'temel hâl':((h&&h.ad)||('hâl '+(idx+1))), zaman:(h&&h.zaman)||Date.now(), temel:idx===0, yildiz:!!(h&&h.yildiz), yapi:yapi }); });
+    t.calisma = String(wm).split('\n').map(function(line){ var nl=yuvaBos(t,line); return {satirId:nl.satirId,altId:nl.altId,metin:line}; });
+    if(!t.calisma.length) t.calisma=[yuvaBos(t,'')];
+    t.yildiz=!!t.yildiz;
+    delete t.metin; delete t.haller; delete t.kitalar; delete t.kayitlar; delete t.surumler; delete t.aktif; delete t.raf; delete t.ilkAlindi;
+  }
   function goc(d){
     if(!d || !d.taslaklar || !d.taslaklar.length) { var t=yeniTaslak(); return {aktif:t.id,taslaklar:[t]}; }
-    d.taslaklar.forEach(function(t){ try{ gocYeni(t); }catch(e){ if(!t.calisma){ t.satirlar={}; t.calisma=[yuvaBos(t,'')]; t.kombinasyonlar=[]; t.dayanak=null; } } if(typeof t.baslik!=='string') t.baslik='başlıksız şiir'; });
+    d.taslaklar.forEach(function(t){ try{ gocYeni(t); }catch(e){ try{ gocBasit(t); }catch(e2){ if(!(t.satirlar&&t.calisma&&t.calisma.length)){ t.satirlar=t.satirlar||{}; t.calisma=[yuvaBos(t,'')]; t.kombinasyonlar=Array.isArray(t.kombinasyonlar)?t.kombinasyonlar:[]; t.dayanak=null; } } } if(typeof t.baslik!=='string') t.baslik='başlıksız şiir'; });
     if(!d.aktif || !d.taslaklar.some(function(t){return t.id===d.aktif;})) d.aktif=d.taslaklar[0].id;
     return d;
   }
@@ -321,22 +335,25 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   function dolu(d){ return d&&d.taslaklar&&d.taslaklar.some(function(t){ if(t.calisma) return t.calisma.some(function(l){return (l.metin||'').trim();}); return (t.metin||'').trim(); }); }
 
   var durum=tumYukle();
-  var ui={ onizleme:false, sayfaIdx:0, kombDuzen:null, acikAlt:null, odakIdx:0, odakSnapshot:null, sonKayitli:null };
+  var ui={ onizleme:false, sayfaIdx:0, kombDuzen:null, acikAlt:null, odakIdx:0, sonKayitli:null };
+  var temelZaman=null;
   var dizeEller=[];
 
   function tas(){ for(var i=0;i<durum.taslaklar.length;i++) if(durum.taslaklar[i].id===durum.aktif) return durum.taslaklar[i]; durum.aktif=durum.taslaklar[0].id; return durum.taslaklar[0]; }
   function commit(){ var t=tas(); if(dizeEller&&dizeEller.length) dizeEller.forEach(function(ta,i){ if(ta && t.calisma[i]) t.calisma[i].metin=ta.value; }); }
 
   /* ===================== KOMBİNASYONLAR (donmuş hâller) ===================== */
-  /* temel hâl bir kez kendiliğinden saklanır (şiiri ilk değiştirdiğinde, değişmeden önceki hâli).
-     Sonraki kombinasyonlar YALNIZ "＋ kombinasyon kaydet" ile, kasıtlı oluşur. */
+  /* temel hâl TEK SEFER kendiliğinden donar: şiir ilk kez dolu hâle geldiğinde, kısa bir
+     duraksamada (idle) ya da şiirden ayrılırken/sekme kapanırken. Bir kez oluşunca asla
+     tekrar otomatik tetiklenmez (spam yok). Sonraki kombinasyonlar YALNIZ "＋" ile kasıtlı. */
   function kombinasyondanYapi(t, calismaLike){ return calismaLike.map(function(l){ var aid=altBul(t,l.satirId,l.metin); l.altId=aid; return {satirId:l.satirId,altId:aid}; }); }
-  function temelGuvence(t, snapshot){
-    if(t.kombinasyonlar.length) return false;
-    var bos=!snapshot.some(function(l){ return (l.metin||'').trim(); });
-    if(bos) return false;
-    var yapi=kombinasyondanYapi(t, snapshot.map(function(l){ return {satirId:l.satirId,altId:l.altId,metin:l.metin}; }));
+  function temelYakala(){
+    var t=tas();
+    if(t.kombinasyonlar.length) return false;                 /* yalnız ilk; sonrası spam değil */
+    if(!norm(calismaMetin(t))) return false;                  /* boşken yakalama */
+    var yapi=kombinasyondanYapi(t, t.calisma);
     t.kombinasyonlar.push({ id:uid(), ad:'temel hâl', zaman:Date.now(), temel:true, yildiz:false, yapi:yapi });
+    ui.sonKayitli=null;
     return true;
   }
   function kombinasyonKaydet(){
@@ -347,7 +364,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     var temel=!t.kombinasyonlar.length;
     var yapi=kombinasyondanYapi(t, t.calisma);
     var k={ id:uid(), ad: temel?'temel hâl':('kombinasyon '+(t.kombinasyonlar.length+1)), zaman:Date.now(), temel:temel, yildiz:false, yapi:yapi };
-    t.kombinasyonlar.push(k); t.dayanak=k.id; ui.odakSnapshot=null; ui.sonKayitli=null;
+    t.kombinasyonlar.push(k); t.dayanak=k.id; clearTimeout(temelZaman); ui.sonKayitli=null;
     kaydet(); cizSirt();
   }
   function kombinasyonYukle(kid){
@@ -361,7 +378,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     }
     t.calisma = k.yapi.map(function(r){ return {satirId:r.satirId, altId:r.altId, metin: altMetin(t,r.satirId,r.altId)}; });
     if(!t.calisma.length) t.calisma=[yuvaBos(t,'')];
-    t.dayanak=k.id; ui.acikAlt=null; ui.odakSnapshot=null; ui.sonKayitli=null;
+    t.dayanak=k.id; ui.acikAlt=null; clearTimeout(temelZaman); ui.sonKayitli=null;
     kaydet(); ciz();
   }
   function kombinasyonSil(kid){ var t=tas(); var k=t.kombinasyonlar.filter(function(x){return x.id===kid;})[0]; if(!k||k.temel) return; t.kombinasyonlar=t.kombinasyonlar.filter(function(x){return x.id!==kid;}); if(t.dayanak===kid) t.dayanak=null; cope(t); kaydet(); cizSirt(); }
@@ -422,6 +439,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     var ya=el('button','yedek-tus','⤓ yedekle'); ya.title='Tüm defterini indir'; ya.onclick=disaAktar; yed.appendChild(ya);
     var yg=el('button','yedek-tus','⤒ geri yükle'); yg.title='Yedek dosyası yükle'; yg.onclick=function(){ $('iceDosya').click(); }; yed.appendChild(yg);
     alt.appendChild(yed);
+    if(!ui.onizleme) durumYaz();
   }
 
   function kombListe(t){
@@ -459,12 +477,12 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     return ic;
   }
 
+  function durumYaz(){ var nk=tas().kombinasyonlar.length; $('durum').textContent = ui.onizleme ? 'kitap — metni seçip kopyalayabilirsin' : (nk? (nk+' kombinasyon saklı'):'yazmaya başla'); }
   function cizSayfa(){
     if(document.activeElement!==$('baslik')) $('baslik').value=tas().baslik;
     $('onizle').classList.toggle('aktif', ui.onizleme);
     $('kagitAlan').classList.toggle('onizleme', ui.onizleme);
-    var nk=tas().kombinasyonlar.length;
-    $('durum').textContent = ui.onizleme ? 'kitap — metni seçip kopyalayabilirsin' : (nk? (nk+' kombinasyon saklı'):'yazmaya başla');
+    durumYaz();
     $('ipuc').style.display = ui.onizleme?'none':'';
     if(ui.onizleme){ dizeEller=[]; kitapCizim(); } else yaziCiz();
   }
@@ -496,12 +514,13 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     });
   }
   function bagDize(ta){
-    ta.addEventListener('focus', function(){ var i=+ta.dataset.i; ui.odakIdx=i; var t=tas(); if(t.kombinasyonlar.length===0 && ui.odakSnapshot===null) ui.odakSnapshot=t.calisma.map(function(l){ return {satirId:l.satirId,altId:l.altId,metin:l.metin}; }); });
+    ta.addEventListener('focus', function(){ ui.odakIdx=+ta.dataset.i; });
     ta.addEventListener('input', function(){ var i=+ta.dataset.i; if(dizeEller[i]!==ta || !ta.isConnected) return; var t=tas(); if(t.calisma[i]) t.calisma[i].metin=ta.value; dizeBoy(ta);
-      if(ui.odakSnapshot && t.kombinasyonlar.length===0){ var degisti=ui.odakSnapshot.some(function(l,j){ return !t.calisma[j] || t.calisma[j].metin!==l.metin; }) || ui.odakSnapshot.length!==t.calisma.length; if(degisti){ if(temelGuvence(t, ui.odakSnapshot)){ ui.odakSnapshot=null; ui.sonKayitli=null; cizSirt(); } } }
       /* kaydet düğmesinin aktif/pasifliği metne bağlı → durum değişince sol kenarı tazele (odak bozulmaz) */
       var simdiN=norm(calismaMetin(t)), kyt = !simdiN || t.kombinasyonlar.some(function(k){ return norm(kombMetin(t,k))===simdiN; });
       if(kyt!==ui.sonKayitli){ ui.sonKayitli=kyt; if(ui.kombDuzen==null) cizSirt(); }
+      /* temel hâl: hiç kombinasyon yokken kısa duraksamada bir kez kendiliğinden donar */
+      clearTimeout(temelZaman); if(t.kombinasyonlar.length===0) temelZaman=setTimeout(function(){ if(temelYakala()){ kaydet(); cizSirt(); } }, 4000);
       clearTimeout(kaydZaman); kaydZaman=setTimeout(kaydet,500);
     });
     ta.addEventListener('keydown', function(e){ dizeTus(e,ta); });
@@ -519,7 +538,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
       var ny=yuvaBos(t,sag);
       t.calisma.splice(i+1,0,{satirId:ny.satirId,altId:ny.altId,metin:sag});
       if(ui.acikAlt!=null){ if(ui.acikAlt>i) ui.acikAlt++; }
-      yaziCiz(); odakla(i+1,0); clearTimeout(kaydZaman); kaydet();
+      yaziCiz(); odakla(i+1,0); ui.sonKayitli=null; cizSirt(); clearTimeout(kaydZaman); kaydet();
     } else if(e.key==='Backspace' && ta.selectionStart===0 && ta.selectionEnd===0){
       if(i===0) return;
       e.preventDefault();
@@ -527,7 +546,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
       t.calisma[i-1].metin += ta.value;
       t.calisma.splice(i,1);
       if(ui.acikAlt!=null){ if(ui.acikAlt===i) ui.acikAlt=null; else if(ui.acikAlt>i) ui.acikAlt--; }
-      yaziCiz(); odakla(i-1,prevLen); clearTimeout(kaydZaman); kaydet();
+      yaziCiz(); odakla(i-1,prevLen); ui.sonKayitli=null; cizSirt(); clearTimeout(kaydZaman); kaydet();
     } else if(e.key==='ArrowUp' && ta.selectionStart===0 && ta.selectionEnd===0){
       if(i>0){ e.preventDefault(); odakla(i-1, t.calisma[i-1].metin.length); }
     } else if(e.key==='ArrowDown' && ta.selectionStart===ta.value.length && ta.selectionEnd===ta.value.length){
@@ -545,7 +564,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     ui.acikAlt=null;
     var sonIdx=i+ekle.length, sonPos=parcalar[parcalar.length-1].length - (v.length-pos);
     if(sonPos<0) sonPos=parcalar[parcalar.length-1].length;
-    yaziCiz(); odakla(sonIdx, sonPos); kaydet();
+    yaziCiz(); odakla(sonIdx, sonPos); ui.sonKayitli=null; cizSirt(); kaydet();
   }
 
   /* ----- alternatif paneli (bir dizenin hâlleri) ----- */
@@ -578,7 +597,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   }
 
   /* ===================== ŞİİR (taslak) ===================== */
-  function taslakGec(id){ commit(); durum.aktif=id; ui.kombDuzen=null; ui.onizleme=false; ui.acikAlt=null; ui.odakSnapshot=null; ui.sonKayitli=null; kaydet(); ciz(); }
+  function taslakGec(id){ commit(); temelYakala(); clearTimeout(temelZaman); durum.aktif=id; ui.kombDuzen=null; ui.onizleme=false; ui.acikAlt=null; ui.sonKayitli=null; kaydet(); ciz(); }
   var psuru=null;
   function poemSurukle(grip,oge,id){
     grip.addEventListener('dragstart', function(e){ psuru=id; e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setDragImage(oge,10,10); }catch(_){} });
@@ -648,8 +667,10 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   }
 
   /* ---------- yedek ---------- */
+  /* yıkıcı bir değişimden önce mevcut/atılacak veriyi gizli bir kurtarma anahtarına koy (tek slot, sınırlı) */
+  function gizliYedek(anahtar, veri){ try{ localStorage.setItem('siir_defteri_yedek_'+anahtar, typeof veri==='string'?veri:JSON.stringify(veri)); }catch(e){} }
   function disaAktar(){ commit(); var blob=new Blob([JSON.stringify(durum)],{type:'application/json'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='siir-defteri-yedek.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){ URL.revokeObjectURL(url); },800); }
-  function iceAktar(file){ var r=new FileReader(); r.onload=function(){ try{ var d=JSON.parse(r.result); if(d&&d.taslaklar&&d.taslaklar.length){ if(!confirm('Yedek yüklenecek, şu anki defterinin yerine geçecek. Devam?')) return; durum=goc(d); ui.onizleme=false; ui.acikAlt=null; kaydet(); ciz(); } else alert('Bu bir şiir defteri yedeği değil.'); }catch(e){ alert('Dosya okunamadı.'); } }; r.readAsText(file); }
+  function iceAktar(file){ var r=new FileReader(); r.onload=function(){ try{ var d=JSON.parse(r.result); if(d&&d.taslaklar&&d.taslaklar.length){ if(!confirm('Yedek yüklenecek, şu anki defterinin yerine geçecek. Devam?')) return; commit(); gizliYedek('yerel', durum); durum=goc(d); ui.onizleme=false; ui.acikAlt=null; kaydet(); ciz(); } else alert('Bu bir şiir defteri yedeği değil.'); }catch(e){ alert('Dosya okunamadı.'); } }; r.readAsText(file); }
 
   /* ---------- modal ---------- */
   function modalAc(node){ var k=el('div','kapak'); k.appendChild(node); k.addEventListener('mousedown', function(e){ if(e.target===k) modalKapat(); }); $('kapakKok').innerHTML=''; $('kapakKok').appendChild(k); }
@@ -689,12 +710,15 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
         } else { driveYukleHemen(); }
       }).catch(function(){ driveNot('Drive’a ulaşılamadı'); });
   }
+  var driveYukleniyor=false;
   function driveYukleHemen(){
-    if(driveDurum!=='bagli'||!driveToken) return; commit();
-    var metin=JSON.stringify(durum), p;
+    if(driveDurum!=='bagli'||!driveToken) return;
+    if(driveYukleniyor && !driveFileId) return; /* ilk dosya oluşturma uçuşta: ikinci create'i engelle (yinelenen dosya olmasın) */
+    commit();
+    var metin=JSON.stringify(durum), p; driveYukleniyor=true;
     if(driveFileId){ p=fetch('https://www.googleapis.com/upload/drive/v3/files/'+driveFileId+'?uploadType=media',{method:'PATCH',headers:Object.assign({'Content-Type':'application/json'},driveBaslik()),body:metin}); }
     else { var b='----sd771'; var body='--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name:'siir-defteri.json'})+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+metin+'\r\n--'+b+'--'; p=fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:Object.assign({'Content-Type':'multipart/related; boundary='+b},driveBaslik()),body:body}); }
-    p.then(function(r){return r.json();}).then(function(res){ if(res.error){ driveTokenHata(res.error); return; } if(res.id) driveFileId=res.id; driveNot('eşitlendi'); }).catch(function(){ driveNot('eşitlenemedi'); });
+    p.then(function(r){return r.json();}).then(function(res){ driveYukleniyor=false; if(res.error){ driveTokenHata(res.error); return; } if(res.id) driveFileId=res.id; driveNot('eşitlendi'); }).catch(function(){ driveYukleniyor=false; driveNot('eşitlenemedi'); });
   }
   function driveKaydetGecikmeli(){ if(driveDurum!=='bagli') return; clearTimeout(driveZaman); driveZaman=setTimeout(driveYukleHemen,1500); }
   function driveTokenHata(err){ if(err&&(err.code===401||err.code===403)){ driveToken=null; driveBaglan(false); } else driveNot('Drive hatası'); }
@@ -703,8 +727,8 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     var mo=el('div','modal'); mo.appendChild(el('h3',null,'İki yerde de şiir var<button class="kapat">×</button>')); mo.querySelector('.kapat').onclick=modalKapat;
     mo.appendChild(el('div','not','Drive’daki defter ile bu cihazdaki farklı. Hangisini tutalım?'));
     var t=el('div','modal-tus');
-    var a=el('button','dugme dol','Drive’dakini kullan'); a.onclick=function(){ durum=goc(uzak); ui.acikAlt=null; kaydet(); ciz(); modalKapat(); driveNot('Drive’dan yüklendi'); }; t.appendChild(a);
-    var c=el('button','dugme','Bu cihazdakini kullan'); c.onclick=function(){ modalKapat(); driveYukleHemen(); }; t.appendChild(c);
+    var a=el('button','dugme dol','Drive’dakini kullan'); a.onclick=function(){ commit(); gizliYedek('yerel', durum); durum=goc(uzak); ui.acikAlt=null; kaydet(); ciz(); modalKapat(); driveNot('Drive’dan yüklendi'); }; t.appendChild(a);
+    var c=el('button','dugme','Bu cihazdakini kullan'); c.onclick=function(){ gizliYedek('uzak', uzak); modalKapat(); driveYukleHemen(); }; t.appendChild(c);
     mo.appendChild(t); modalAc(mo);
   }
   function driveKurModal(){
@@ -734,14 +758,16 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   /* ---------- olaylar ---------- */
   $('baslik').addEventListener('input', function(){ tas().baslik=$('baslik').value; kaydet(); cizSirt(); });
   $('kopyala').onclick=tumKopyala;
-  $('onizle').onclick=function(){ commit(); if(!ui.onizleme){ kaydet(); ui.sayfaIdx=0; } ui.onizleme=!ui.onizleme; ui.acikAlt=null; cizSayfa(); };
-  $('yeniSiir').onclick=function(){ commit(); var t=yeniTaslak(); durum.taslaklar.push(t); durum.aktif=t.id; ui.onizleme=false; ui.acikAlt=null; ui.odakSnapshot=null; ui.sonKayitli=null; kaydet(); ciz(); setTimeout(function(){ $('baslik').focus(); $('baslik').select(); },0); };
+  $('onizle').onclick=function(){ commit(); if(!ui.onizleme){ temelYakala(); clearTimeout(temelZaman); kaydet(); cizSirt(); ui.sayfaIdx=0; } ui.onizleme=!ui.onizleme; ui.acikAlt=null; cizSayfa(); };
+  $('yeniSiir').onclick=function(){ commit(); temelYakala(); clearTimeout(temelZaman); var t=yeniTaslak(); durum.taslaklar.push(t); durum.aktif=t.id; ui.onizleme=false; ui.acikAlt=null; ui.sonKayitli=null; kaydet(); ciz(); setTimeout(function(){ $('baslik').focus(); $('baslik').select(); },0); };
   $('iceDosya').onchange=function(e){ if(e.target.files&&e.target.files[0]) iceAktar(e.target.files[0]); e.target.value=''; };
   document.addEventListener('keydown', function(e){
     if(ui.onizleme && (e.key==='ArrowLeft'||e.key==='ArrowRight') && !/^(textarea|input)$/i.test((e.target.tagName||''))){ var sf=kitapSayfalar(),ss=Math.max(1,Math.ceil(sf.length/2)); if(e.key==='ArrowLeft'&&ui.sayfaIdx>0){ ui.sayfaIdx--; cizSayfa(); } else if(e.key==='ArrowRight'&&ui.sayfaIdx<ss-1){ ui.sayfaIdx++; cizSayfa(); } return; }
     if(e.key==='Escape'){ if($('kapakKok').firstChild) modalKapat(); else if(ui.acikAlt!=null){ ui.acikAlt=null; yaziCiz(); } else if(ui.onizleme){ ui.onizleme=false; cizSayfa(); } }
   });
-  window.addEventListener('beforeunload', function(){ commit(); try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} });
+  window.addEventListener('beforeunload', function(){ commit(); temelYakala(); try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} });
+  /* sekme gizlenince bekleyen Drive yüklemesini hemen akıt (kapanmadan kaybolmasın) */
+  document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='hidden'){ commit(); temelYakala(); try{ localStorage.setItem(ANAHTAR, JSON.stringify(durum)); }catch(e){} try{ driveYukleHemen(); }catch(e){} } });
 
   try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
   ciz();
