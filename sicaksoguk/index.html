@@ -77,30 +77,35 @@ body{transition:background .4s,color .4s}
 
 .mesaj{min-height:20px;text-align:center;margin-top:11px;font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--kirmizi);transition:opacity .2s}
 
-/* ---- tahmin satırı ---- */
-.liste{margin-top:8px;display:flex;flex-direction:column;gap:5px}
-.satir{position:relative;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;
-  padding:11px 13px;border-radius:10px;border:1.5px solid var(--kutu-cizgi);background:var(--mat);overflow:hidden}
-.satir .dolgu{position:absolute;inset:0;z-index:0;opacity:.20;transition:width .5s ease}
-.satir>*{position:relative;z-index:1}
-.satir .kel{font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;color:var(--mur)}
-.satir .puan{font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--mur);text-align:right;min-width:62px}
-.satir .rut{font-family:'Libre Baskerville',serif;font-size:11px;font-weight:700;text-align:center;min-width:54px;
-  padding:3px 7px;border-radius:20px;background:var(--kirmizi);color:#fff;white-space:nowrap}
-.satir .rut.yok{visibility:hidden}
-.satir.yeni{animation:vurgula 1.4s ease}
-@keyframes vurgula{0%{box-shadow:0 0 0 3px var(--kirmizi)}60%{box-shadow:0 0 0 3px var(--kirmizi)}100%{box-shadow:0 0 0 0 transparent}}
-.satir.son{border-color:var(--kirmizi);border-width:2px}
-.son-etiket{font-family:'Libre Baskerville',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--kirmizi);margin:14px 0 4px;font-weight:700}
-.bos-etiket{font-family:'Libre Baskerville',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soluk);margin:16px 0 4px;font-weight:700}
+/* ---- sonuç tablosu: # · kelime · °C · ‰ ilerleme (Cemantle düzeni) ---- */
+.tablo-bas,.satir{display:grid;grid-template-columns:28px 1fr 86px 138px;align-items:center;gap:8px}
+.tablo-bas{margin-top:16px;padding:0 12px 7px;border-bottom:1.5px solid var(--kutu-cizgi);
+  font-family:'Libre Baskerville',serif;font-size:11px;font-weight:700;color:var(--soluk);text-transform:uppercase;letter-spacing:.03em}
+.tablo-bas .s-sic{text-align:right}
+.liste{margin-top:5px;display:flex;flex-direction:column;gap:4px}
+.satir{position:relative;padding:9px 12px;border-radius:9px;background:var(--mat);border:1.5px solid transparent;transition:border-color .25s}
+.satir .s-no{font-family:'Libre Baskerville',serif;font-size:13px;font-weight:700;color:var(--soluk)}
+.satir .s-kel{font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;color:var(--mur);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.satir .s-sic{display:flex;align-items:center;justify-content:flex-end;gap:5px;font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--soluk)}
+.satir .s-sic .yuz{font-size:15px;line-height:1}
+/* ‰ ilerleme çubuğu (yalnız en yakın 1000) */
+.satir .s-ilr{display:flex;align-items:center;gap:7px}
+.s-ilr .ilr-no{font-family:'Playfair Display',serif;font-weight:700;font-size:13px;color:var(--mur);min-width:32px;text-align:right}
+.s-ilr .ilr-cubuk{flex:1;height:20px;background:var(--ince);border-radius:5px;overflow:hidden;position:relative}
+.s-ilr .ilr-cubuk i{position:absolute;left:0;top:0;bottom:0;background-image:linear-gradient(90deg,#FFD23F 0%,#FF8A1E 55%,#E8472E 100%);
+  background-repeat:no-repeat;background-position:left center;border-radius:5px;transition:width .5s ease}
+.s-ilr.bingo .ilr-cubuk b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:800;font-size:12px;color:#3a1400;letter-spacing:.05em}
+.satir.yeni{animation:vurgula 1.6s ease}
+@keyframes vurgula{0%,55%{border-color:var(--kirmizi);box-shadow:0 0 0 2px var(--kirmizi-yum)}100%{border-color:transparent;box-shadow:none}}
+.satir.son{border-color:var(--kirmizi)}
 
-/* sıcaklık renkleri (metin + dolgu arkaplanı sınıfla) */
-.t-buz   .kel,.t-buz   .puan{color:var(--buz)}    .t-buz   .dolgu{background:var(--buz)}
-.t-soguk .kel,.t-soguk .puan{color:var(--soguk)}  .t-soguk .dolgu{background:var(--soguk)}
-.t-serin .kel,.t-serin .puan{color:var(--serin)}  .t-serin .dolgu{background:var(--serin)}
-.t-ilik  .kel,.t-ilik  .puan{color:var(--ilik)}   .t-ilik  .dolgu{background:var(--ilik)}
-.t-sicak .kel,.t-sicak .puan{color:var(--sicak)}  .t-sicak .dolgu{background:var(--sicak)}
-.t-ates  .kel,.t-ates  .puan{color:var(--ates)}   .t-ates  .dolgu{background:var(--ates)}
+/* °C metin rengi (sıcak → soğuk) */
+.t-ates  .s-sic{color:var(--ates)}
+.t-sicak .s-sic{color:var(--sicak)}
+.t-ilik  .s-sic{color:var(--ilik)}
+.t-soguk .s-sic{color:var(--soguk)}
+.t-buz   .s-sic{color:var(--buz)}
 
 /* ---- kazanma / sonuç ---- */
 .sonuc{margin-top:18px;text-align:center;background:var(--mat);border:2px solid var(--kirmizi);border-radius:14px;
@@ -139,8 +144,11 @@ footer a{color:var(--soluk)}
 
 @media(max-width:480px){
   .adlik h1{font-size:38px}
-  .satir .puan{min-width:54px;font-size:16px}
-  .satir{padding:10px 11px;gap:7px}
+  .tablo-bas,.satir{grid-template-columns:22px 1fr 70px 104px;gap:6px}
+  .satir{padding:8px 10px}
+  .satir .s-kel{font-size:15px} .satir .s-sic{font-size:15px}
+  .s-ilr .ilr-no{min-width:26px;font-size:12px}
+  .tablo-bas{font-size:10px;padding:0 10px 6px}
 }
 </style>
 </head>
@@ -181,10 +189,12 @@ footer a{color:var(--soluk)}
 
     <div id="sonucYer"></div>
 
-    <div id="sonEtiket" class="son-etiket" hidden>son tahminin</div>
-    <div id="sonSatir"></div>
-
-    <div id="listeEtiket" class="bos-etiket" hidden>tahminlerin · sıcaktan soğuğa</div>
+    <div id="tabloBas" class="tablo-bas" hidden>
+      <span class="s-no">#</span>
+      <span class="s-kel">kelime</span>
+      <span class="s-sic">°C&nbsp;🌡️</span>
+      <span class="s-ilr">‰ ilerleme</span>
+    </div>
     <div class="liste" id="liste"></div>
 
     <div class="altlik">
@@ -200,9 +210,9 @@ footer a{color:var(--soluk)}
 <div class="perde" id="yardim" hidden>
   <div class="modal">
     <h2>sıcak soğuk<span class="nokta">.</span></h2>
-    <p>Gizli bir kelime var. Aklına gelen kelimeleri yaz; her tahmin, gizli kelimeye <b>anlamca ne kadar yakın</b> olduğuna göre bir <b>yüzde</b> alır. Anlam olarak yaklaştıkça sayı yükselir, ısınırsın.</p>
-    <p>Tahmin gizli kelimenin <b>en yakın 1000 komşusundan</b> biriyse, yanında bir <b>sıra</b> belirir: <b>999</b> en yakını, <b>1</b> en uzağıdır. Bu sıralamayı gördüysen artık çok sıcaksın.</p>
-    <p>Çok alakasız kelimeler <b>eksi</b> bile alabilir — buz gibi. Doğru kelimeyi bulana kadar tahmin sınırın yok.</p>
+    <p>Gizli bir kelime var. Aklına gelen kelimeleri yaz; her tahmin, gizli kelimeye <b>anlamca ne kadar yakın</b> olduğuna göre bir <b>°C sıcaklık</b> alır. Yaklaştıkça derece yükselir, ısınırsın: <b>🥶 soğuk</b>, <b>😎 sıcak</b>, doğru kelime <b>🥳 100°C</b>. Çok alakasızlar <b>eksiye</b> düşer (<b>🧊 buz gibi</b>).</p>
+    <p>Tahmin gizli kelimenin <b>en yakın 1000 komşusundan</b> biriyse, sağda bir <b>‰ ilerleme çubuğu</b> dolar: <b>1000</b> doğru kelime (BINGO), <b>999</b> en yakın komşu, <b>1</b> en uzak. Çubuğu gördüysen artık yakınsın; o sütun boşsa henüz ilk 1000'in dışındasın.</p>
+    <p>Liste sıcaktan soğuğa sıralanır; <b>#</b> kaçıncı tahminin olduğunu gösterir. Doğru kelimeyi bulana kadar tahmin sınırın yok.</p>
     <div class="olcek" id="olcekOrnek"></div>
     <p style="font-size:12.5px;color:var(--soluk)">Yakınlık, kelimelerin şiir ve sözlük metinlerindeki kullanımından öğrenilmiştir; bazen şaşırtıcı ama hep bir mantığı var.</p>
     <button class="kapat" id="yardimKapat">anladım</button>
@@ -274,24 +284,19 @@ function gizliyiKur(kelime){
   };
 }
 
-// ---- sıcaklık bandı ----
-function band(pct, rut){
-  if(rut!=null) return rut>=900?'t-ates':(rut>=500?'t-sicak':'t-ilik');
-  if(pct<0)  return 't-buz';
-  if(pct<15) return 't-soguk';
-  if(pct<25) return 't-serin';
-  if(pct<35) return 't-ilik';
-  if(pct<45) return 't-sicak';
-  return 't-ates';
+// ---- sıcaklık bandı + emoji yüz (Cemantle: 🥳 buldun · 😎 sıcak/top1000 · 🥶 soğuk · 🧊 donuk) ----
+function bulundu(t){ return t.w===S.gizli; }
+function band(t){
+  if(bulundu(t)) return 't-ates';
+  if(t.rut!=null) return t.rut>=900?'t-ates':(t.rut>=600?'t-sicak':'t-ilik');
+  if(t.pct<0) return 't-buz';
+  return 't-soguk';
 }
-function bandAd(pct, rut){
-  if(rut!=null) return rut>=900?'yanıyor':'çok sıcak';
-  if(pct<0)  return 'buz gibi';
-  if(pct<15) return 'soğuk';
-  if(pct<25) return 'serin';
-  if(pct<35) return 'ılık';
-  if(pct<45) return 'sıcak';
-  return 'çok sıcak';
+function emoji(t){
+  if(bulundu(t)) return '🥳';
+  if(t.rut!=null) return '😎';
+  if(t.pct<0) return '🧊';
+  return '🥶';
 }
 
 // ---- kayıt ----
@@ -323,7 +328,7 @@ function tahminYap(ham){
   if(onceki){ mesajVer('bunu zaten denedin'); vurgulaSatir(w); return; }
   mesajVer('');
   const sim = benzerlik(S.gizliIdx, IDX.get(w));
-  const pct = Math.round(sim*1000)/10;       // bir ondalık
+  const pct = Math.round(sim*10000)/100;     // °C, iki ondalık
   const rut = S.rutbe.get(w) ?? null;
   const kayit = {w, pct, rut, no:S.tahminler.length+1};
   S.tahminler.push(kayit);
@@ -346,38 +351,45 @@ function vurgulaSatir(w){
 }
 
 // ---- çizim ----
-function satirHTML(t, sonMu){
-  const sinif = band(t.pct, t.rut);
-  const w = Math.max(0, Math.min(100, t.pct));
-  const rut = t.rut!=null
-    ? '<span class="rut">'+t.rut+'/999</span>'
-    : '<span class="rut yok">—</span>';
-  return '<div class="satir '+sinif+(sonMu?' son':'')+'" data-w="'+t.w+'">'
-    + '<span class="dolgu" style="width:'+w+'%"></span>'
-    + '<span class="kel">'+t.w+'</span>'
-    + '<span class="puan">'+t.pct.toFixed(1)+'</span>'
-    + rut + '</div>';
+function ilerlemeHTML(t){
+  // ‰ ilerleme: yalnız en yakın 1000 içindeyse görünür; gizli kelime = 1000 = BINGO
+  if(bulundu(t)){
+    return '<span class="s-ilr bingo"><span class="ilr-no">1000</span>'
+      + '<span class="ilr-cubuk"><i style="width:100%;background-size:100% 100%"></i><b>BINGO!</b></span></span>';
+  }
+  if(t.rut!=null){
+    const en = (t.rut/10).toFixed(1);              // çubuğun dolu yüzdesi (rut/1000)
+    const bs = (100000/t.rut).toFixed(0);          // gradyanı tam ölçeğe yay
+    return '<span class="s-ilr"><span class="ilr-no">'+t.rut+'</span>'
+      + '<span class="ilr-cubuk"><i style="width:'+en+'%;background-size:'+bs+'% 100%"></i></span></span>';
+  }
+  return '<span class="s-ilr"></span>';
+}
+function satirHTML(t){
+  const son = (t.w===S.sonW && !S.bitti) ? ' son' : '';
+  return '<div class="satir '+band(t)+son+'" data-w="'+t.w+'">'
+    + '<span class="s-no">'+t.no+'</span>'
+    + '<span class="s-kel">'+t.w+'</span>'
+    + '<span class="s-sic">'+t.pct.toFixed(2)+'<span class="yuz">'+emoji(t)+'</span></span>'
+    + ilerlemeHTML(t) + '</div>';
 }
 function ciz(){
   // durum
   $('dTahmin').textContent = S.tahminler.length;
   const enIyi = S.tahminler.reduce((m,t)=>Math.max(m,t.pct), -Infinity);
-  $('dEnIyi').textContent = S.tahminler.length ? enIyi.toFixed(1) : '—';
+  $('dEnIyi').textContent = S.tahminler.length ? enIyi.toFixed(2) : '—';
   if(S.mod==='gun'){ $('dGun').textContent = '#'+S.gunNo; $('dGunEt').textContent='gün'; }
   else { $('dGun').textContent = '∞'; $('dGunEt').textContent='sonsuz'; }
 
-  // son tahmin (kazanınca gizle, sonuç paneli var)
-  const son = S.sonW ? S.tahminler.find(t=>t.w===S.sonW) : null;
-  if(son && !S.bitti){
-    $('sonEtiket').hidden=false;
-    $('sonSatir').innerHTML = satirHTML(son, true);
-    const el=$('sonSatir').firstChild; el.classList.add('yeni');
-  } else { $('sonEtiket').hidden=true; $('sonSatir').innerHTML=''; }
-
-  // sıralı liste (sıcaktan soğuğa)
+  // sıralı tablo (sıcaktan soğuğa)
   const sirali = S.tahminler.slice().sort((a,b)=>b.pct-a.pct);
-  $('listeEtiket').hidden = S.tahminler.length===0;
-  $('liste').innerHTML = sirali.map(t=>satirHTML(t,false)).join('');
+  $('tabloBas').hidden = S.tahminler.length===0;
+  $('liste').innerHTML = sirali.map(satirHTML).join('');
+  // yeni tahmini parlat + görünür kıl
+  if(S.sonW){
+    const el = document.querySelector('.satir[data-w="'+CSS.escape(S.sonW)+'"]');
+    if(el){ el.classList.add('yeni'); el.scrollIntoView({block:'nearest'}); }
+  }
 
   // giriş durumu
   $('tahminGir').disabled = S.bitti;
@@ -421,10 +433,9 @@ function paylas(){
   const enIyi = S.tahminler.reduce((m,t)=>Math.max(m,t.pct),0);
   const kafa = S.mod==='gun' ? 'Sıcak Soğuk #'+S.gunNo : 'Sıcak Soğuk';
   const sonuc = S.pes ? 'pes ettim' : (n+' tahminde 🔥');
-  // küçük termometre: en iyi tahminlerin bandından emoji
-  const top = S.tahminler.slice().sort((a,b)=>b.pct-a.pct).slice(0,5);
-  const emoji = {'t-ates':'🟥','t-sicak':'🟧','t-ilik':'🟨','t-serin':'🟩','t-soguk':'🟦','t-buz':'🟦'};
-  const bar = top.map(t=>emoji[band(t.pct,t.rut)]).join('');
+  // küçük termometre: en sıcak tahminlerin yüz emojileri
+  const top = S.tahminler.slice().sort((a,b)=>b.pct-a.pct).slice(0,6);
+  const bar = top.map(emoji).join('');
   const metin = kafa+' — '+sonuc+'\n'+bar+'\nyusufveranda.github.io/veranda-araclari/sicaksoguk/';
   if(navigator.clipboard){ navigator.clipboard.writeText(metin).then(()=>mesajVer('kopyalandı ✓'),()=>mesajVer(metin)); }
   else mesajVer('kopyalandı ✓');
