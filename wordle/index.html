@@ -77,6 +77,13 @@ body{transition:background .4s,color .4s}
 .sekme.kayip{background:var(--yok);color:var(--yok-ink);border-color:var(--yok)}
 .sekme .alt-no{position:absolute;bottom:-15px;left:0;right:0;font-family:'Libre Baskerville',serif;font-size:9.5px;color:var(--soluk)}
 
+/* anlamca: yakın anlam ipuçları */
+.ipuclar{text-align:center;margin:16px auto 0;font-family:'Libre Baskerville',serif}
+.ipuclar .ip-et{display:block;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--soluk);margin-bottom:4px}
+.ipuclar b{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:var(--kirmizi);letter-spacing:.02em;margin:0 3px}
+.ipuclar .ip-kilit{display:block;margin-top:6px;font-size:11px;font-style:italic;color:var(--soluk);opacity:.85}
+.ipuclar .ip-yeni{display:inline-block;animation:sonucGel .4s both}
+
 /* ----- tahta: kâğıt zemin + dizgi blokları ----- */
 .mat{background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:10px;box-shadow:5px 6px 0 var(--mat-golge);
   padding:12px;margin:26px auto 0}
@@ -193,7 +200,7 @@ body{transition:background .4s,color .4s}
   .ust-araclar{margin-top:0}
   .simge{width:34px;height:34px}
   .secimler{margin-top:12px;gap:8px}
-  .segment button{padding:6px 15px}
+  .segment button{padding:6px 11px;font-size:12.5px}
   .sekmeler{margin:14px auto 4px;gap:7px}
   .sekme{width:38px;height:38px}
   .mat{margin:12px auto 0;padding:8px}
@@ -228,6 +235,7 @@ body{transition:background .4s,color .4s}
     <div class="segment" id="oyunSeg">
       <button data-oyun="harfiyat" class="secili">harfiyat</button>
       <button data-oyun="iskelime">iskelime</button>
+      <button data-oyun="anlamca">anlamca</button>
     </div>
     <div class="modbar">
       <div class="segment" id="modSeg">
@@ -239,6 +247,7 @@ body{transition:background .4s,color .4s}
   </div>
 
   <div class="sekmeler gizli" id="sekmeler"></div>
+  <div class="ipuclar gizli" id="ipuclar"></div>
   <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
   <div class="tahta-alt" id="tahtaAlt"></div>
   <div class="mesaj" id="mesaj"></div>
@@ -257,6 +266,7 @@ body{transition:background .4s,color .4s}
 </div>
 
 <script src="../ortak/harf-veri.js"></script>
+<script src="../ortak/anlam-veri.js"></script>
 <script>
 const TRMAP={"İ":"i","I":"ı","Ş":"ş","Ğ":"ğ","Ü":"ü","Ö":"ö","Ç":"ç"};
 const trLower=s=>s.replace(/[İIŞĞÜÖÇ]/g,c=>TRMAP[c]).toLowerCase();
@@ -319,8 +329,12 @@ function yeniTahta(L,cevap){
   return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:oyun==='iskelime'?7:6};
 }
 function tahtalariKur(){
-  if(oyun==='harfiyat') tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
-  else tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L):rasgele(L)));
+  if(oyun==='iskelime') tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L):rasgele(L)));
+  else if(oyun==='anlamca'){
+    const ks=Object.keys(ANLAM_CEVAP);
+    const c=mod==='gun'?ks[gunSayisi()%ks.length]:ks[Math.floor(Math.random()*ks.length)];
+    const t=yeniTahta(5,c); t.maxSatir=3; t.ipucu=ANLAM_CEVAP[c]; tahtalar=[t];
+  } else tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false;
   revealAnim=false; bekleyenMesaj=''; bekleyenSes=null; clearTimeout(revealTimer); revealTimer=null;
 }
@@ -410,7 +424,7 @@ const OVGU=['dâhice!','harika!','bravo!','güzel!','oldu!','ucu ucuna!'];
 function durumDegerlendir(){
   const b=aktifTahta();
   bekleyenMesaj=''; bekleyenSes=null;
-  if(oyun==='harfiyat'){
+  if(oyun!=='iskelime'){   // harfiyat + anlamca: tek tahta
     if(b.kazandi){ oyunBitti=true; bekleyenMesaj=OVGU[Math.min(b.gecmis.length-1,OVGU.length-1)]; bekleyenSes=()=>sBitis(true); istatleGuncelle(true); }
     else if(b.bitti){ oyunBitti=true; bekleyenSes=()=>sBitis(false); istatleGuncelle(false); }
     return;
@@ -492,6 +506,16 @@ function ciz(){
       sek.appendChild(s);
     });
   }
+  // anlamca ipuçları: 1. ipucu baştan, 2. ipucu 2. tahminden sonra (reveal bitince)
+  const ip=document.getElementById('ipuclar');
+  if(oyun==='anlamca' && b.ipucu){
+    ip.classList.remove('gizli');
+    const ikiHazir=b.gecmis.length>=2 && !revealAnim && b.ipucu.length>=2;
+    const goster=ikiHazir?b.ipucu.slice(0,2):b.ipucu.slice(0,1);
+    ip.innerHTML='<span class="ip-et">yakın anlam</span>'+
+      goster.map((s,i)=>'<b'+(i===1?' class="ip-yeni"':'')+'>'+s+'</b>').join('<span style="color:var(--soluk)">·</span>')+
+      (!ikiHazir && b.ipucu.length>=2 && !b.bitti ? '<span class="ip-kilit">2. tahminden sonra bir ipucu daha</span>':'');
+  } else ip.classList.add('gizli');
   // tahta — hücre boyutu pikselle hesaplanır (uzun kelimeler de sığsın)
   const t=document.getElementById('tahta');
   // Kare boyutu YALNIZ genişliğe göre (sabit; adres çubuğu/scroll ile zıplamaz)
@@ -534,7 +558,9 @@ function ciz(){
   sonucCiz();
   // başlık / altyazı / ipucu
   document.getElementById('oyunBasi').innerHTML=oyun+'<span class="nokta">.</span>';
-  document.getElementById('altYazi').textContent = oyun==='harfiyat' ? 'beş harf · altı deneme' : 'üç’ten sekiz harfe · altı kelime, yedişer deneme';
+  document.getElementById('altYazi').textContent = oyun==='iskelime' ? 'üç’ten sekiz harfe · altı kelime, yedişer deneme'
+    : oyun==='anlamca' ? 'beş harf · üç deneme · yakın anlam ipucuyla'
+    : 'beş harf · altı deneme';
   document.getElementById('ipucu').textContent = oyunBitti ? '' : 'boş bırak, bildiğini yerine koy — yeşiller kendiliğinden gelir';
 }
 
@@ -552,7 +578,7 @@ function sonucCiz(){
   } else {
     const b=tahtalar[0];
     el.innerHTML = b.kazandi
-      ? `<div class="baslik ok">bildin!</div><div class="tek"><b>${b.cevap}</b></div><div class="alt2">${b.gecmis.length}/6 denemede</div>`
+      ? `<div class="baslik ok">bildin!</div><div class="tek"><b>${b.cevap}</b></div><div class="alt2">${b.gecmis.length}/${b.maxSatir} denemede</div>`
       : `<div class="baslik yo">bilemedin</div><div class="tek">cevap <b>${b.cevap}</b></div>`;
   }
   if(sonucYeni){ el.classList.remove('acilis'); void el.offsetWidth; el.classList.add('acilis'); sonucYeni=false; }
