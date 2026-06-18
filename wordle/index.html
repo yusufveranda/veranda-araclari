@@ -600,21 +600,23 @@ function sesUygula(){
   btn.classList.toggle('kapali', !ses);
 }
 
-document.querySelectorAll('#oyunSeg button').forEach(x=>x.onclick=()=>oyunSec(x.dataset.oyun));
-document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>modSec(x.dataset.mod));
+document.querySelectorAll('#oyunSeg button').forEach(x=>x.onclick=()=>{ oyunSec(x.dataset.oyun); x.blur(); });
+document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>{ modSec(x.dataset.mod); x.blur(); });
 document.getElementById('yeniBtn').onclick=yeniOyun;
-document.getElementById('silBtn').onclick=sil;
-document.getElementById('deneBtn').onclick=dene;
-document.getElementById('temaBtn').onclick=()=>{ tema=tema==='gece'?'aydinlik':'gece'; localStorage.setItem('harfiyat:tema',tema); temaUygula(); };
-document.getElementById('sesBtn').onclick=()=>{ ses=!ses; localStorage.setItem('harfiyat:ses',ses?'1':'0'); sesUygula(); if(ses) sGonder(); };
+document.getElementById('silBtn').onclick=function(){ sil(); this.blur(); };
+document.getElementById('deneBtn').onclick=function(){ dene(); this.blur(); };
+document.getElementById('temaBtn').onclick=function(){ tema=tema==='gece'?'aydinlik':'gece'; localStorage.setItem('harfiyat:tema',tema); temaUygula(); this.blur(); };
+document.getElementById('sesBtn').onclick=function(){ ses=!ses; localStorage.setItem('harfiyat:ses',ses?'1':'0'); sesUygula(); if(ses) sGonder(); this.blur(); };
 
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey) return;
-  if(e.key==='Enter') dene();
-  else if(e.key==='Backspace') sil();
-  else if(e.key==='ArrowLeft') imlecTasi(-1);
-  else if(e.key==='ArrowRight') imlecTasi(1);
-  else { const h=trLower(e.key); if(HARF.test(h)) harfGir(h); }
+  const ae=document.activeElement;
+  if(ae && (ae.tagName==='BUTTON'||ae.tagName==='A')) ae.blur();   // odaktaki düğme/link Enter'ı yutup toggle/gezinme yapmasın
+  if(e.key==='Enter'){ e.preventDefault(); dene(); }
+  else if(e.key==='Backspace'){ e.preventDefault(); sil(); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); imlecTasi(-1); }
+  else if(e.key==='ArrowRight'){ e.preventDefault(); imlecTasi(1); }
+  else { const h=trLower(e.key); if(HARF.test(h)){ e.preventDefault(); harfGir(h); } }
 });
 
 let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(ciz,120); });
