@@ -294,17 +294,16 @@ const IV = {'1P':'R','2m':'♭9','2M':'9','3m':'♭3','3M':'3','4P':'11','4A':'�
   '8P':'R','9m':'♭9','9M':'9','9A':'♯9','11P':'11','11A':'♯11','13m':'♭13','13M':'13'};
 
 /* ---- durum ----
-   İKİ KİP:
-   • 'serbest' = elle tıklama; state.notes tek kaynak, iki enstrüman yansıtır.
-   • 'akor'    = seçili akor; gitar ve piyano BAĞIMSIZ dizilişlerini gösterir
-                 (gVoicings/gIndex ile pVoicings/pIndex birbirini etkilemez). */
+   Bir akor tanındığında (yazılı/kurulu ya da tıklamayla tespit) gitar ve
+   piyano BAĞIMSIZ diziliş listeleri üretilir; kumandalar HEMEN etkindir.
+   gIndex/pIndex = -1 → "çalınan" (kullanıcının elle koyduğu notalar);
+   ≥0 → o üretilmiş diziliş. İki enstrüman birbirini etkilemez. */
 const state = {
-  mode: 'serbest',
-  notes: new Map(),        // serbest kip: midi -> {s,f} | null
-  symbol: null,            // okumada gösterilecek akor (akor kipinde aktif, serbestte tespit)
+  notes: new Map(),        // elle seçim: midi -> {s,f} | null
+  symbol: null,            // okumada gösterilecek akor
   detected: [],            // tespit alternatifleri
-  gVoicings: [], gIndex: 0,// gitar pozisyonları (akor kipi)
-  pVoicings: [], pIndex: 0,// piyano çevrimleri (akor kipi)
+  gVoicings: [], gIndex: -1,
+  pVoicings: [], pIndex: -1,
   favorites: load(),
 };
 function load(){ try { return JSON.parse(localStorage.getItem('nota-favoriler')) || []; } catch { return []; } }
