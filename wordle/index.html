@@ -37,16 +37,15 @@ body.gece{
 }
 body{transition:background .4s,color .4s}
 
-.oyun{max-width:464px;margin:0 auto;padding:0 4px}
+.oyun{max-width:464px;margin:0 auto;padding:0 4px;position:relative}
 
-/* ----- üst şerit: başlık + araç düğmeleri ----- */
-.tepe-cubuk{display:flex;align-items:flex-end;justify-content:space-between;margin-top:6px}
-.adlik{position:relative;padding-left:2px}
-.adlik .ust{font-family:'Libre Baskerville',serif;font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--soluk)}
-.adlik h2{font-family:'Playfair Display',serif;font-weight:800;font-size:38px;line-height:.96;color:var(--mur);letter-spacing:-.5px;margin-top:3px}
+/* ----- üst: ortalı başlık + köşe araç düğmeleri ----- */
+.ust-araclar{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.adlik{text-align:center;margin-top:6px}
+.adlik .ust{font-family:'Libre Baskerville',serif;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--soluk)}
+.adlik h2{font-family:'Playfair Display',serif;font-weight:800;font-size:42px;line-height:.96;color:var(--mur);letter-spacing:-.5px;margin-top:8px}
 .adlik h2 .nokta{color:var(--kirmizi)}
-.adlik .alt{font-family:'Libre Baskerville',serif;font-style:italic;font-size:12.5px;color:var(--soluk);margin-top:5px;min-height:16px}
-.araclar-min{display:flex;gap:7px}
+.adlik .alt{font-family:'Libre Baskerville',serif;font-style:italic;font-size:13px;color:var(--soluk);margin-top:9px;min-height:16px}
 .simge{width:38px;height:38px;border:1.5px solid var(--kutu-cizgi);border-radius:9px;background:var(--mat);color:var(--mur);
   display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:2px 3px 0 var(--mat-golge);transition:transform .15s,box-shadow .15s}
 .simge:hover{transform:translateY(-1px);box-shadow:2px 4px 0 var(--mat-golge)}
@@ -55,7 +54,7 @@ body{transition:background .4s,color .4s}
 .simge.kapali{color:var(--soluk);opacity:.7}
 
 /* ----- seçiciler: kâğıt sekmeler ----- */
-.secimler{margin-top:18px;display:flex;flex-direction:column;gap:10px;align-items:center}
+.secimler{margin-top:28px;display:flex;flex-direction:column;gap:11px;align-items:center}
 .segment{display:inline-flex;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:22px;padding:3px;box-shadow:2px 3px 0 var(--mat-golge)}
 .segment button{font-family:'Libre Baskerville',serif;font-size:13px;letter-spacing:.04em;padding:7px 18px;border:none;background:transparent;color:var(--soluk);border-radius:18px;cursor:pointer;transition:color .15s}
 .segment button.secili{background:var(--mur);color:var(--mat)}
@@ -66,7 +65,7 @@ body{transition:background .4s,color .4s}
 .gizli{display:none!important}
 
 /* ----- iskelime sekmeleri ----- */
-.sekmeler{display:flex;gap:7px;justify-content:center;margin:18px auto 2px;flex-wrap:wrap}
+.sekmeler{display:flex;gap:9px;justify-content:center;margin:26px auto 4px;flex-wrap:wrap}
 .sekme{position:relative;font-family:'Playfair Display',serif;font-weight:600;font-size:16px;width:42px;height:42px;
   border:1.5px solid var(--kutu-cizgi);border-radius:11px;background:var(--mat);color:var(--mur);cursor:pointer;
   display:flex;align-items:center;justify-content:center;box-shadow:2px 3px 0 var(--mat-golge);transition:transform .15s}
@@ -78,7 +77,7 @@ body{transition:background .4s,color .4s}
 
 /* ----- tahta: kâğıt zemin + dizgi blokları ----- */
 .mat{background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:10px;box-shadow:5px 6px 0 var(--mat-golge);
-  padding:12px;margin:22px auto 0}
+  padding:12px;margin:26px auto 0}
 .tahta{display:flex;flex-direction:column;gap:6px}
 .satir{display:grid;gap:6px}
 .kutu{aspect-ratio:1;border:1.6px solid var(--kutu-cizgi);border-radius:5px;display:flex;align-items:center;justify-content:center;
@@ -92,12 +91,30 @@ body{transition:background .4s,color .4s}
 .kutu.varr{background:var(--varr);border-color:var(--varr);color:var(--varr-ink)}
 .kutu.yok{background:var(--yok);border-color:var(--yok);color:var(--yok-ink)}
 .kutu.gir{animation:harfGir .22s cubic-bezier(.3,1.4,.5,1)}
-.kutu.cevir{animation:cevir .5s ease both}
 @keyframes harfGir{0%{transform:rotate(-14deg) translateY(-3px) scale(.6);opacity:.2}60%{transform:rotate(4deg) scale(1.07);opacity:1}100%{transform:none}}
-@keyframes cevir{0%{transform:rotateX(0)}48%{transform:rotateX(86deg)}100%{transform:rotateX(0)}}
+/* gönderince: kutu yan döner, RENK tam ortada (yan haldeyken) belirir */
+.kutu.cevir{animation-duration:.55s;animation-timing-function:ease;animation-fill-mode:both}
+.kutu.cevir.dogru{animation-name:cevirDogru}
+.kutu.cevir.varr{animation-name:cevirVar}
+.kutu.cevir.yok{animation-name:cevirYok}
+@keyframes cevirDogru{
+  0%{transform:rotateX(0);background:var(--kutu-bos);color:var(--mur);border-color:var(--kutu-dolu)}
+  50%{transform:rotateX(90deg);background:var(--kutu-bos);color:var(--mur);border-color:var(--kutu-dolu)}
+  50.01%{background:var(--dogru);color:var(--dogru-ink);border-color:var(--dogru)}
+  100%{transform:rotateX(0);background:var(--dogru);color:var(--dogru-ink);border-color:var(--dogru)}}
+@keyframes cevirVar{
+  0%{transform:rotateX(0);background:var(--kutu-bos);color:var(--mur);border-color:var(--kutu-dolu)}
+  50%{transform:rotateX(90deg);background:var(--kutu-bos);color:var(--mur);border-color:var(--kutu-dolu)}
+  50.01%{background:var(--varr);color:var(--varr-ink);border-color:var(--varr)}
+  100%{transform:rotateX(0);background:var(--varr);color:var(--varr-ink);border-color:var(--varr)}}
+@keyframes cevirYok{
+  0%{transform:rotateX(0);background:var(--kutu-bos);color:var(--mur);border-color:var(--kutu-dolu)}
+  50%{transform:rotateX(90deg);background:var(--kutu-bos);color:var(--mur);border-color:var(--kutu-dolu)}
+  50.01%{background:var(--yok);color:var(--yok-ink);border-color:var(--yok)}
+  100%{transform:rotateX(0);background:var(--yok);color:var(--yok-ink);border-color:var(--yok)}}
 .satir.titre{animation:titre .34s}
 @keyframes titre{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-@media(prefers-reduced-motion:reduce){.kutu.gir,.kutu.cevir,.satir.titre{animation:none}}
+@media(prefers-reduced-motion:reduce){.kutu.gir,.kutu.cevir,.kutu.cevir.dogru,.kutu.cevir.varr,.kutu.cevir.yok,.satir.titre{animation:none}}
 
 .tahta-alt{text-align:center;min-height:20px;margin-top:10px;font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--soluk)}
 .tahta-alt b{font-family:'Playfair Display',serif;color:var(--kirmizi);font-weight:700;letter-spacing:.04em}
@@ -150,16 +167,14 @@ body{transition:background .4s,color .4s}
 </header>
 
 <main class="oyun">
-  <div class="tepe-cubuk">
-    <div class="adlik">
-      <div class="ust">türkçe kelime oyunu</div>
-      <h2 id="oyunBasi">harfiyat<span class="nokta">.</span></h2>
-      <div class="alt" id="altYazi"></div>
-    </div>
-    <div class="araclar-min">
-      <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
-      <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
-    </div>
+  <div class="ust-araclar">
+    <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
+    <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
+  </div>
+  <div class="adlik">
+    <div class="ust">türkçe kelime oyunu</div>
+    <h2 id="oyunBasi">harfiyat<span class="nokta">.</span></h2>
+    <div class="alt" id="altYazi"></div>
   </div>
 
   <div class="secimler">
@@ -231,7 +246,7 @@ function rasgele(L){ const a=HARF_CEVAP[L]; return a[Math.floor(Math.random()*a.
 function gunlukCevap(L){ const a=HARF_CEVAP[L]; return a[(gunSayisi()*31+L*7)%a.length]; }
 
 function yeniTahta(L,cevap){
-  return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:6};
+  return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:oyun==='iskelime'?7:6};
 }
 function tahtalariKur(){
   if(oyun==='harfiyat') tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
@@ -323,8 +338,8 @@ function durumDegerlendir(){
 
 /* ===== skor ===== */
 function skorHesapla(){
-  const per=tahtalar.map(t=>({uz:t.uz,cozuldu:t.kazandi,deneme:t.gecmis.length,puan:t.kazandi?(7-t.gecmis.length):0}));
-  const toplam=per.reduce((a,b)=>a+b.puan,0), max=tahtalar.length*6;
+  const per=tahtalar.map(t=>({uz:t.uz,cozuldu:t.kazandi,deneme:t.gecmis.length,puan:t.kazandi?(t.maxSatir+1-t.gecmis.length):0}));
+  const toplam=per.reduce((a,b)=>a+b.puan,0), max=tahtalar.reduce((a,t)=>a+t.maxSatir,0);
   return {per,toplam,max,cozulen:per.filter(p=>p.cozuldu).length};
 }
 function skorNot(r){
@@ -426,7 +441,7 @@ function ciz(){
   sonucCiz();
   // başlık / altyazı / ipucu
   document.getElementById('oyunBasi').innerHTML=oyun+'<span class="nokta">.</span>';
-  document.getElementById('altYazi').textContent = oyun==='harfiyat' ? 'beş harf · altı deneme' : 'üç’ten sekiz harfe · altı kelime, altışar deneme';
+  document.getElementById('altYazi').textContent = oyun==='harfiyat' ? 'beş harf · altı deneme' : 'üç’ten sekiz harfe · altı kelime, yedişer deneme';
   document.getElementById('ipucu').textContent = oyunBitti ? '' : 'boş bırak, bildiğini yerine koy — yeşiller kendiliğinden gelir';
 }
 
