@@ -117,8 +117,12 @@ body{transition:background .4s,color .4s}
 @keyframes titre{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 @media(prefers-reduced-motion:reduce){.kutu.gir,.kutu.cevir,.kutu.cevir.dogru,.kutu.cevir.varr,.kutu.cevir.yok,.satir.titre{animation:none}}
 
-.tahta-alt{text-align:center;min-height:20px;margin-top:10px;font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--soluk)}
-.tahta-alt b{font-family:'Playfair Display',serif;color:var(--kirmizi);font-weight:700;letter-spacing:.04em}
+.tahta-alt{text-align:center;min-height:20px;margin-top:12px;font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--soluk)}
+.ta-sonuc{animation:sonucGel .42s cubic-bezier(.2,.85,.3,1) both}
+.ta-bas{display:block;font-family:'Playfair Display',serif;font-weight:800;font-size:22px;line-height:1.1}
+.ta-bas.ok{color:var(--dogru)} .ta-bas.yo{color:var(--yok)}
+.ta-kel{display:inline-block;font-family:'Playfair Display',serif;font-size:27px;color:var(--kirmizi);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+.ta-not{display:block;font-family:'Libre Baskerville',serif;font-style:italic;font-size:12.5px;color:var(--soluk);margin-top:3px}
 
 .mesaj{text-align:center;min-height:22px;color:var(--kirmizi);font-family:'Libre Baskerville',serif;font-style:italic;margin-top:8px;font-size:15px}
 
@@ -168,15 +172,17 @@ body{transition:background .4s,color .4s}
   header.site h1{font-size:23px}
   nav.araclar{margin-top:7px;gap:6px}
   nav.araclar a{padding:3px 10px;font-size:13px}
-  .tus{min-width:24px;padding:11px 0;font-size:14px}
-  .ksira{gap:5px;margin-bottom:5px}
-  .tus.eylem{min-width:46px}
+  /* tuşlar büyük ve dolgun: satır genişliğini doldur + uzun (kolay basılır) */
+  .tus{flex:1;min-width:0;max-width:50px;padding:18px 0;font-size:17px}
+  .klavye{flex:1;min-width:0}
+  .ksira{gap:4px;margin-bottom:5px}
+  .tus.eylem{max-width:none;min-width:46px;padding:0 6px;font-size:13px}
   /* klavye ekranın altına sabit — tahta büyük olsa da hep görünür */
-  .wrap{padding-bottom:182px}
+  .wrap{padding-bottom:212px}
   .klavye-sar{position:fixed;left:0;right:0;bottom:0;margin:0;gap:6px;z-index:30;
     justify-content:center;background:var(--oyun-bg);border-top:1.5px solid var(--kutu-cizgi);
     box-shadow:0 -4px 16px var(--mat-golge);
-    padding:9px 8px calc(9px + env(safe-area-inset-bottom,0px))}
+    padding:9px 5px calc(9px + env(safe-area-inset-bottom,0px))}
   .adlik .ust{font-size:9.5px;letter-spacing:.28em}
   .adlik h2{font-size:30px;margin-top:4px}
   .adlik .alt{font-size:12px;margin-top:5px}
@@ -255,7 +261,7 @@ const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
-const CEVIR_SURE=0.62, CEVIR_GECIKME=0.17;   // flip süresi + sütun gecikmesi (saniye)
+const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
 const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
 
 const GSET={}; for(const L in HARF_GECERLI) GSET[L]=new Set(HARF_GECERLI[L]);
@@ -264,6 +270,7 @@ let oyun='harfiyat', mod='gun';
 let tahtalar=[], aktif=0, oyunBitti=false;
 let animHarf=null, animCevir=null;
 let sonucHazir=false, sonucYeni=false;   // sonuç paneli: reveal sonrası göster + açılış animasyonu
+let revealAnim=false, bekleyenMesaj='', bekleyenSes=null;  // reveal bitene kadar hayalet/mesaj/sonuç ertelenir
 let bellek={};                 // oyun:mod -> devam eden durum
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
@@ -311,6 +318,7 @@ function tahtalariKur(){
   if(oyun==='harfiyat') tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   else tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L):rasgele(L)));
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false;
+  revealAnim=false; bekleyenMesaj=''; bekleyenSes=null;
 }
 
 /* ===== değerlendirme ===== */
@@ -326,9 +334,9 @@ function hayalet(b){
   b.gecmis.forEach(row=>row.renkler.forEach((rk,i)=>{ if(rk==='dogru') g[i]=b.cevap[i]; }));
   return g;
 }
-function tusRenkleri(b){
+function tusRenkleri(gecmis){
   const onc={yok:0,varr:1,dogru:2},renk={};
-  b.gecmis.forEach(row=>row.harfler.forEach((h,i)=>{ const rk=row.renkler[i]; if((onc[renk[h]]??-1)<onc[rk]) renk[h]=rk; }));
+  gecmis.forEach(row=>row.harfler.forEach((h,i)=>{ const rk=row.renkler[i]; if((onc[renk[h]]??-1)<onc[rk]) renk[h]=rk; }));
   return renk;
 }
 
@@ -372,8 +380,19 @@ function dene(){
   else if(b.gecmis.length>=b.maxSatir){ b.bitti=true; }
   // reveal sesleri: her harf açılırken (flip ortasında) renk notası, tek tek
   if(ses) renk.forEach((rk,i)=>setTimeout(()=>sReveal(rk),(i*CEVIR_GECIKME+CEVIR_SURE*.5)*1000));
+  revealAnim=true;   // bitene kadar hayalet/mesaj/sonuç gizli
   durumDegerlendir();
   durumKaydetBellek(); kaydet(); ciz(); mobilGorunur();
+  const rms=(b.uz*CEVIR_GECIKME+CEVIR_SURE)*1000;
+  setTimeout(revealBitti, rms);
+}
+function revealBitti(){
+  revealAnim=false;
+  if(bekleyenMesaj){ mesaj(bekleyenMesaj); bekleyenMesaj=''; }
+  if(oyunBitti){ sonucHazir=true; sonucYeni=true; }
+  ciz(); mobilGorunur();
+  if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
+  if(oyunBitti){ const el=document.getElementById('sonuc'); if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'center'}); }
 }
 function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
   if((window.innerWidth||999)>440) return;
@@ -384,27 +403,20 @@ function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde t
 function titret(){ const s=document.querySelector('#tahta .satir.aktifsatir'); if(s){ s.classList.add('titre'); setTimeout(()=>s.classList.remove('titre'),340); } }
 
 const OVGU=['dâhice!','harika!','bravo!','güzel!','oldu!','ucu ucuna!'];
-function sonucGecikmeli(ms){
-  sonucYeni=true; sonucHazir=false;
-  setTimeout(()=>{ sonucHazir=true; ciz();
-    const el=document.getElementById('sonuc');
-    if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'center'});
-  }, ms);
-}
 function durumDegerlendir(){
   const b=aktifTahta();
-  const revealMs=(b.uz*CEVIR_GECIKME+CEVIR_SURE)*1000;   // reveal bitiş anı
+  bekleyenMesaj=''; bekleyenSes=null;
   if(oyun==='harfiyat'){
-    if(b.kazandi){ oyunBitti=true; mesaj(OVGU[Math.min(b.gecmis.length-1,OVGU.length-1)]); sonucGecikmeli(revealMs); setTimeout(()=>sBitis(true),revealMs); istatleGuncelle(true); }
-    else if(b.bitti){ oyunBitti=true; mesaj(''); sonucGecikmeli(revealMs); setTimeout(()=>sBitis(false),revealMs); istatleGuncelle(false); }
+    if(b.kazandi){ oyunBitti=true; bekleyenMesaj=OVGU[Math.min(b.gecmis.length-1,OVGU.length-1)]; bekleyenSes=()=>sBitis(true); istatleGuncelle(true); }
+    else if(b.bitti){ oyunBitti=true; bekleyenSes=()=>sBitis(false); istatleGuncelle(false); }
     return;
   }
   // iskelime — otomatik geçiş yok; tüm tahtalar bitince skor paneli
   if(tahtalar.every(t=>t.bitti)){
     oyunBitti=true;
     const k=tahtalar.filter(t=>t.kazandi).length;
-    mesaj(k===6?'hepsi çözüldü! ✦':'oyun bitti');
-    sonucGecikmeli(revealMs); setTimeout(()=>sBitis(k>=4),revealMs);
+    bekleyenMesaj=k===6?'hepsi çözüldü! ✦':'oyun bitti';
+    bekleyenSes=()=>sBitis(k>=4);
     istatleGuncelle(k===6);
   }
 }
@@ -497,7 +509,7 @@ function ciz(){
       } else if(r===aktifSatirIdx && !b.bitti){
         const harf=b.giris[c];
         if(harf){ k.textContent=harf; k.classList.add('dolu'); }
-        else if(g[c]){ k.textContent=g[c]; k.classList.add('hayalet'); }
+        else if(g[c] && !revealAnim){ k.textContent=g[c]; k.classList.add('hayalet'); }
         if(c===b.imlec) k.classList.add('imlec');
         if(animHarf&&animHarf.t===aktif&&animHarf.c===c&&harf) k.classList.add('gir');
         k.classList.add('tiklanir'); k.onclick=()=>hucreSec(aktif,c);
@@ -507,11 +519,13 @@ function ciz(){
     t.appendChild(sd);
   }
   animHarf=null; animCevir=null;
-  // tahta altı (tek tahta sonucu)
+  // tahta altı — İskelime'de tahta sonucu (Harfiyat #sonuc panelini kullanır)
   const alt=document.getElementById('tahtaAlt');
-  if(b.bitti && b.kazandi) alt.innerHTML='✓ '+b.gecmis.length+' denemede çözüldü';
-  else if(b.bitti) alt.innerHTML='kelime: <b>'+b.cevap+'</b>';
-  else alt.innerHTML='';
+  if(oyun==='iskelime' && b.bitti && !revealAnim){
+    alt.innerHTML='<div class="ta-sonuc">'+(b.kazandi
+      ? '<span class="ta-bas ok">bildin!</span><span class="ta-kel">'+b.cevap+'</span><span class="ta-not">'+b.gecmis.length+' denemede</span>'
+      : '<span class="ta-bas yo">bilemedin</span><span class="ta-kel">'+b.cevap+'</span>')+'</div>';
+  } else alt.innerHTML='';
   klavyeCiz();
   sonucCiz();
   // başlık / altyazı / ipucu
@@ -541,7 +555,8 @@ function sonucCiz(){
 }
 
 function klavyeCiz(){
-  const renk=tusRenkleri(aktifTahta());
+  const b=aktifTahta();
+  const renk=tusRenkleri(revealAnim ? b.gecmis.slice(0,-1) : b.gecmis);  // reveal sırasında son tahmin rengi gelmesin
   const kl=document.getElementById('klavye'); kl.innerHTML='';
   SIRALAR.forEach((sira)=>{
     const sd=document.createElement('div'); sd.className='ksira';
@@ -556,13 +571,13 @@ function oyunlaKur(){
   if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'serbest oyun';
-  mesaj(''); ciz(); istatGoster();
+  mesaj(''); ciz(); istatGoster(); window.scrollTo(0,0);
 }
 function oyunSec(o){ if(o===oyun) return; durumKaydetBellek(); oyun=o;
   document.querySelectorAll('#oyunSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.oyun===o)); oyunlaKur(); }
 function modSec(m){ if(m===mod) return; durumKaydetBellek(); mod=m;
   document.querySelectorAll('#modSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.mod===m)); oyunlaKur(); }
-function yeniOyun(){ tahtalariKur(); durumKaydetBellek(); mesaj(''); ciz(); }
+function yeniOyun(){ tahtalariKur(); durumKaydetBellek(); mesaj(''); ciz(); window.scrollTo(0,0); }
 
 const IK_SES_ON='<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a3 3 0 010 6"/><path d="M18.5 7a6 6 0 010 10"/>';
 const IK_SES_OFF='<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/>';
