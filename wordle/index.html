@@ -123,7 +123,13 @@ body{transition:background .4s,color .4s}
 
 /* ----- skor / sonuç paneli ----- */
 .sonuc{max-width:380px;margin:14px auto 0;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:10px;
-  box-shadow:5px 6px 0 var(--mat-golge);padding:16px 18px;text-align:center}
+  box-shadow:5px 6px 0 var(--mat-golge);padding:18px 20px;text-align:center}
+.sonuc.acilis{animation:sonucGel .5s cubic-bezier(.2,.85,.3,1) both}
+@keyframes sonucGel{0%{opacity:0;transform:translateY(-12px) scale(.97)}100%{opacity:1;transform:none}}
+.sonuc .baslik{font-family:'Playfair Display',serif;font-weight:800;font-size:25px;color:var(--mur);letter-spacing:.01em;margin-bottom:5px}
+.sonuc .baslik.ok{color:var(--dogru)}
+.sonuc .baslik.yo{color:var(--yok)}
+.sonuc .alt2{font-family:'Libre Baskerville',serif;font-style:italic;font-size:13px;color:var(--soluk);margin-top:5px}
 .sonuc .skor{font-family:'Playfair Display',serif;font-weight:800;font-size:34px;color:var(--mur);line-height:1}
 .sonuc .skor small{font-size:18px;color:var(--soluk);font-weight:600}
 .sonuc .not{font-family:'Libre Baskerville',serif;font-style:italic;color:var(--kirmizi);font-size:14px;margin-top:3px}
@@ -133,8 +139,8 @@ body{transition:background .4s,color .4s}
 .sonuc .hap.ok{border-color:var(--dogru);color:var(--dogru)}
 .sonuc .hap.ok b{color:var(--dogru)}
 .sonuc .hap.yo{border-color:var(--yok)}
-.sonuc .tek{font-family:'Libre Baskerville',serif;font-size:14px;color:var(--mur);line-height:1.6}
-.sonuc .tek b{font-family:'Playfair Display',serif;color:var(--kirmizi);font-size:18px;letter-spacing:.05em}
+.sonuc .tek{font-family:'Libre Baskerville',serif;font-size:14px;color:var(--mur);line-height:1.4}
+.sonuc .tek b{display:inline-block;font-family:'Playfair Display',serif;color:var(--kirmizi);font-size:27px;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
 
 /* ----- klavye ----- */
 .klavye{margin-top:18px;user-select:none}
@@ -211,12 +217,15 @@ const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
+const CEVIR_SURE=0.62, CEVIR_GECIKME=0.17;   // flip süresi + sütun gecikmesi (saniye)
+const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
 
 const GSET={}; for(const L in HARF_GECERLI) GSET[L]=new Set(HARF_GECERLI[L]);
 
 let oyun='harfiyat', mod='gun';
 let tahtalar=[], aktif=0, oyunBitti=false;
 let animHarf=null, animCevir=null;
+let sonucHazir=false, sonucYeni=false;   // sonuç paneli: reveal sonrası göster + açılış animasyonu
 let bellek={};                 // oyun:mod -> devam eden durum
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
@@ -239,6 +248,18 @@ function sGonder(){ ton(300,.07,'triangle',.06); }
 function sIyi(){ ton(523,.12,'sine',.11); setTimeout(()=>ton(784,.18,'sine',.11),95); }
 function sKotu(){ ton(196,.16,'sine',.08); setTimeout(()=>ton(165,.22,'sine',.08),110); }
 function sBitis(k){ if(k){ ton(523,.12,'sine',.1); setTimeout(()=>ton(659,.12,'sine',.1),110); setTimeout(()=>ton(880,.22,'sine',.11),220);} else sKotu(); }
+// reveal: girişten farklı enstrüman — temel + oktav (çan/marimba), renge göre nota
+function sReveal(rk){
+  if(!ses) return; const c=ac(); if(!c) return;
+  const f=REVEAL_NOTA[rk]||300, t=c.currentTime;
+  [[1,.10],[2,.05]].forEach(([m,v])=>{
+    const o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.value=f*m;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,t+.30);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.33);
+  });
+}
 
 /* ===== gün / cevap ===== */
 function gunSayisi(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
@@ -251,7 +272,7 @@ function yeniTahta(L,cevap){
 function tahtalariKur(){
   if(oyun==='harfiyat') tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   else tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L):rasgele(L)));
-  aktif=0; oyunBitti=false; animHarf=null; animCevir=null;
+  aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false;
 }
 
 /* ===== değerlendirme ===== */
@@ -311,27 +332,35 @@ function dene(){
   b.giris=Array(b.uz).fill(''); b.imlec=0;
   if(kelime===b.cevap){ b.bitti=true; b.kazandi=true; }
   else if(b.gecmis.length>=b.maxSatir){ b.bitti=true; }
-  sGonder();
+  // reveal sesleri: her harf açılırken (flip ortasında) renk notası, tek tek
+  if(ses) renk.forEach((rk,i)=>setTimeout(()=>sReveal(rk),(i*CEVIR_GECIKME+CEVIR_SURE*.5)*1000));
   durumDegerlendir();
   durumKaydetBellek(); kaydet(); ciz();
 }
 function titret(){ const s=document.querySelector('#tahta .satir.aktifsatir'); if(s){ s.classList.add('titre'); setTimeout(()=>s.classList.remove('titre'),340); } }
 
 const OVGU=['dâhice!','harika!','bravo!','güzel!','oldu!','ucu ucuna!'];
+function sonucGecikmeli(ms){
+  sonucYeni=true; sonucHazir=false;
+  setTimeout(()=>{ sonucHazir=true; ciz();
+    const el=document.getElementById('sonuc');
+    if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }, ms);
+}
 function durumDegerlendir(){
   const b=aktifTahta();
+  const revealMs=(b.uz*CEVIR_GECIKME+CEVIR_SURE)*1000;   // reveal bitiş anı
   if(oyun==='harfiyat'){
-    if(b.kazandi){ oyunBitti=true; mesaj(OVGU[Math.min(b.gecmis.length-1,OVGU.length-1)]); setTimeout(()=>sBitis(true),300); istatleGuncelle(true); }
-    else if(b.bitti){ oyunBitti=true; mesaj(''); setTimeout(()=>sBitis(false),300); istatleGuncelle(false); }
+    if(b.kazandi){ oyunBitti=true; mesaj(OVGU[Math.min(b.gecmis.length-1,OVGU.length-1)]); sonucGecikmeli(revealMs); setTimeout(()=>sBitis(true),revealMs); istatleGuncelle(true); }
+    else if(b.bitti){ oyunBitti=true; mesaj(''); sonucGecikmeli(revealMs); setTimeout(()=>sBitis(false),revealMs); istatleGuncelle(false); }
     return;
   }
-  // iskelime — OTOMATİK GEÇİŞ YOK; tahtada kal, sonucu göster
-  if(b.kazandi) sIyi(); else if(b.bitti) sKotu();
+  // iskelime — otomatik geçiş yok; tüm tahtalar bitince skor paneli
   if(tahtalar.every(t=>t.bitti)){
     oyunBitti=true;
     const k=tahtalar.filter(t=>t.kazandi).length;
     mesaj(k===6?'hepsi çözüldü! ✦':'oyun bitti');
-    setTimeout(()=>sBitis(k>=4),350);
+    sonucGecikmeli(revealMs); setTimeout(()=>sBitis(k>=4),revealMs);
     istatleGuncelle(k===6);
   }
 }
@@ -379,12 +408,12 @@ function yukle(){
     v.t.forEach((sv,i)=>{ const b=tahtalar[i]; if(!b) return;
       sv.k.forEach(kel=>b.gecmis.push({harfler:kel.split(''),renkler:degerlendir(kel,b.cevap)}));
       b.bitti=sv.b; b.kazandi=sv.w; });
-    if(tahtalar.every(t=>t.bitti)) oyunBitti=true;
+    if(tahtalar.every(t=>t.bitti)){ oyunBitti=true; sonucHazir=true; }
     return true;
   }catch(e){ return false; }
 }
-function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti}; }
-function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; return true; } return false; }
+function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti,sonucHazir}; }
+function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; sonucHazir=!!d.sonucHazir; sonucYeni=false; return true; } return false; }
 
 /* ===== çizim ===== */
 function mesaj(m){ document.getElementById('mesaj').textContent=m||''; }
@@ -418,7 +447,7 @@ function ciz(){
       const k=document.createElement('div'); k.className='kutu';
       if(r<b.gecmis.length){
         const row=b.gecmis[r]; k.textContent=row.harfler[c]; k.classList.add('dolu',RENKAD[row.renkler[c]]);
-        if(animCevir&&animCevir.t===aktif&&animCevir.satir===r){ k.classList.add('cevir'); k.style.animationDelay=(c*.08)+'s'; }
+        if(animCevir&&animCevir.t===aktif&&animCevir.satir===r){ k.classList.add('cevir'); k.style.animationDuration=CEVIR_SURE+'s'; k.style.animationDelay=(c*CEVIR_GECIKME)+'s'; }
       } else if(r===aktifSatirIdx && !b.bitti){
         const harf=b.giris[c];
         if(harf){ k.textContent=harf; k.classList.add('dolu'); }
@@ -447,20 +476,22 @@ function ciz(){
 
 function sonucCiz(){
   const el=document.getElementById('sonuc');
-  if(!oyunBitti){ el.classList.add('gizli'); return; }
+  if(!(oyunBitti && sonucHazir)){ el.classList.add('gizli'); el.classList.remove('acilis'); return; }
   el.classList.remove('gizli');
   if(oyun==='iskelime'){
     const s=skorHesapla();
     const haplar=s.per.map(p=>`<span class="hap ${p.cozuldu?'ok':'yo'}">${p.uz}<b>${p.cozuldu?p.deneme:'—'}</b></span>`).join('');
-    el.innerHTML=`<div class="skor">${s.toplam}<small> / ${s.max}</small></div>
-      <div class="not">${skorNot(s.toplam/s.max)} · ${s.cozulen}/6 kelime</div>
+    el.innerHTML=`<div class="baslik ${s.cozulen===6?'ok':''}">${s.cozulen}/6 kelime</div>
+      <div class="skor">${s.toplam}<small> / ${s.max}</small></div>
+      <div class="not">${skorNot(s.toplam/s.max)}</div>
       <div class="izgara">${haplar}</div>`;
   } else {
     const b=tahtalar[0];
     el.innerHTML = b.kazandi
-      ? `<div class="tek">buldun — <b>${b.cevap}</b><br>${b.gecmis.length}/6 denemede</div>`
-      : `<div class="tek">kelime: <b>${b.cevap}</b><br>bu sefer olmadı</div>`;
+      ? `<div class="baslik ok">bildin!</div><div class="tek"><b>${b.cevap}</b></div><div class="alt2">${b.gecmis.length}/6 denemede</div>`
+      : `<div class="baslik yo">bilemedin</div><div class="tek">cevap <b>${b.cevap}</b></div>`;
   }
+  if(sonucYeni){ el.classList.remove('acilis'); void el.offsetWidth; el.classList.add('acilis'); sonucYeni=false; }
 }
 
 function klavyeCiz(){
