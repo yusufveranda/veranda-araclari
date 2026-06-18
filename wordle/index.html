@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>harfiyat — Türkçe Wordle</title>
 <meta name="description" content="Harfiyat: Türkçe Wordle. Günün kelimesini bul. İskelime modunda 3’ten 8 harfe altı kelimeyi tek oyunda çöz.">
 <meta name="theme-color" content="#EFE4CB">
@@ -173,16 +174,18 @@ body{transition:background .4s,color .4s}
   nav.araclar{margin-top:7px;gap:6px}
   nav.araclar a{padding:3px 10px;font-size:13px}
   /* tuşlar büyük ve dolgun: satır genişliğini doldur + uzun (kolay basılır) */
-  .tus{flex:1;min-width:0;max-width:50px;padding:18px 0;font-size:17px}
+  .tus{flex:1;min-width:0;max-width:54px;padding:18px 0;font-size:17px}
   .klavye{flex:1;min-width:0}
-  .ksira{gap:4px;margin-bottom:5px}
-  .tus.eylem{max-width:none;min-width:46px;padding:0 6px;font-size:13px}
+  .ksira{gap:3px;margin-bottom:5px}
+  /* dene/sil ince (harflere yer açar) */
+  .tus.eylem{max-width:none;min-width:30px;padding:0 2px;font-size:10px;letter-spacing:0}
+  .tus.eylem#silBtn{font-size:16px}
   /* klavye ekranın altına sabit — tahta büyük olsa da hep görünür */
   .wrap{padding-bottom:212px}
-  .klavye-sar{position:fixed;left:0;right:0;bottom:0;margin:0;gap:6px;z-index:30;
+  .klavye-sar{position:fixed;left:0;right:0;bottom:0;margin:0;gap:4px;z-index:30;
     justify-content:center;background:var(--oyun-bg);border-top:1.5px solid var(--kutu-cizgi);
     box-shadow:0 -4px 16px var(--mat-golge);
-    padding:9px 5px calc(9px + env(safe-area-inset-bottom,0px))}
+    padding:9px 4px calc(9px + env(safe-area-inset-bottom,0px))}
   .adlik .ust{font-size:9.5px;letter-spacing:.28em}
   .adlik h2{font-size:30px;margin-top:4px}
   .adlik .alt{font-size:12px;margin-top:5px}
@@ -271,6 +274,7 @@ let tahtalar=[], aktif=0, oyunBitti=false;
 let animHarf=null, animCevir=null;
 let sonucHazir=false, sonucYeni=false;   // sonuç paneli: reveal sonrası göster + açılış animasyonu
 let revealAnim=false, bekleyenMesaj='', bekleyenSes=null;  // reveal bitene kadar hayalet/mesaj/sonuç ertelenir
+let revealTimer=null;   // bekleyen revealBitti zamanlayıcısı (yeni oyun/geçişte temizlenir)
 let bellek={};                 // oyun:mod -> devam eden durum
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
@@ -318,7 +322,7 @@ function tahtalariKur(){
   if(oyun==='harfiyat') tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   else tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L):rasgele(L)));
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false;
-  revealAnim=false; bekleyenMesaj=''; bekleyenSes=null;
+  revealAnim=false; bekleyenMesaj=''; bekleyenSes=null; clearTimeout(revealTimer); revealTimer=null;
 }
 
 /* ===== değerlendirme ===== */
@@ -384,7 +388,7 @@ function dene(){
   durumDegerlendir();
   durumKaydetBellek(); kaydet(); ciz(); mobilGorunur();
   const rms=(b.uz*CEVIR_GECIKME+CEVIR_SURE)*1000;
-  setTimeout(revealBitti, rms);
+  clearTimeout(revealTimer); revealTimer=setTimeout(revealBitti, rms);
 }
 function revealBitti(){
   revealAnim=false;
@@ -568,6 +572,7 @@ function tus(h,ek){ const b=document.createElement('button'); b.className='tus'+
 
 /* ===== mod / oyun / tema / ses ===== */
 function oyunlaKur(){
+  clearTimeout(revealTimer); revealTimer=null; revealAnim=false;
   if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'serbest oyun';
@@ -577,7 +582,8 @@ function oyunSec(o){ if(o===oyun) return; durumKaydetBellek(); oyun=o;
   document.querySelectorAll('#oyunSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.oyun===o)); oyunlaKur(); }
 function modSec(m){ if(m===mod) return; durumKaydetBellek(); mod=m;
   document.querySelectorAll('#modSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.mod===m)); oyunlaKur(); }
-function yeniOyun(){ tahtalariKur(); durumKaydetBellek(); mesaj(''); ciz(); window.scrollTo(0,0); }
+function yeniOyun(){ const yb=document.getElementById('yeniBtn'); if(yb) yb.blur();
+  tahtalariKur(); durumKaydetBellek(); mesaj(''); ciz(); window.scrollTo(0,0); }
 
 const IK_SES_ON='<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a3 3 0 010 6"/><path d="M18.5 7a6 6 0 010 10"/>';
 const IK_SES_OFF='<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/>';
