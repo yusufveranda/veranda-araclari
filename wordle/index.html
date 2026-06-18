@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>harfiyat — Türkçe Wordle</title>
 <meta name="description" content="Harfiyat: Türkçe Wordle. Günün kelimesini bul. İskelime modunda 3’ten 8 harfe altı kelimeyi tek oyunda çöz.">
 <meta name="theme-color" content="#EFE4CB">
@@ -19,8 +19,9 @@ body{
   --varr:#CF9A3C; --varr-ink:#2B2117;
   --yok:#9A8C7A; --yok-ink:#F3EADB;
   --kirmizi:#C2331F; --kirmizi-yum:rgba(194,51,31,.12);
-  --tus:#F7F0DE; --tus-cizgi:#DAC9A4;
+  --tus:#F7F0DE; --tus-cizgi:#DAC9A4; --tus-yok:#9A8C7A; --tus-yok-ink:#F3EADB;
   background:var(--oyun-bg);
+  touch-action:manipulation;            /* telefonda çift-dokunma zoom yok */
 }
 body.gece{
   --oyun-bg:#16110C; --mat:#211A12; --mat-golge:rgba(0,0,0,.55);
@@ -30,7 +31,7 @@ body.gece{
   --varr:#D8A845; --varr-ink:#1C1510;
   --yok:#615746; --yok-ink:#EAE0CC;
   --kirmizi:#E8472E; --kirmizi-yum:rgba(232,71,46,.16);
-  --tus:#241C14; --tus-cizgi:#3C2F20;
+  --tus:#33291C; --tus-cizgi:#4A3A28; --tus-yok:#181109; --tus-yok-ink:#6A5E48;
   /* paylaşılan araç paleti (üst başlık/nav) koyuya çevrilir */
   --bg:#16110C; --card:#241C14; --ink:#EFE2C6; --muted:#9C8C70; --line:#3A2E20;
   --acc:#86B98E; --acc-soft:rgba(134,185,142,.14); --vurgu:#E0935A; --shadow:rgba(0,0,0,.4);
@@ -143,20 +144,46 @@ body{transition:background .4s,color .4s}
 .sonuc .tek b{display:inline-block;font-family:'Playfair Display',serif;color:var(--kirmizi);font-size:27px;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
 
 /* ----- klavye ----- */
-.klavye{margin-top:18px;user-select:none}
-.ksira{display:flex;justify-content:center;gap:5px;margin-bottom:6px}
+.klavye-sar{display:flex;gap:6px;justify-content:center;align-items:stretch;margin-top:18px}
+.klavye{user-select:none}
+.ksira{display:flex;justify-content:center;gap:5px;margin-bottom:5px}
+.ksira:last-child{margin-bottom:0}
 .tus{font-family:'Libre Baskerville',serif;min-width:29px;padding:12px 7px;border-radius:7px;background:var(--tus);
   border:1.5px solid var(--tus-cizgi);color:var(--mur);font-size:14px;text-transform:uppercase;cursor:pointer;
   box-shadow:0 2px 0 var(--mat-golge);transition:transform .08s}
 .tus:active{transform:translateY(1px);box-shadow:none}
-.tus.genis{min-width:50px;font-size:11px;letter-spacing:.06em}
+/* sağ eylem sütunu: sil (üst) + dene (alt), alt alta */
+.klavye-eylem{display:flex;flex-direction:column;gap:5px}
+.tus.eylem{min-width:52px;flex:1;display:flex;align-items:center;justify-content:center;padding:0 9px;font-size:12px;letter-spacing:.07em}
+.tus.eylem#silBtn{font-size:20px}
+.tus.eylem.dene{background:var(--kirmizi);color:#fff;border-color:var(--kirmizi);font-weight:700}
 .tus.dogru{background:var(--dogru);color:var(--dogru-ink);border-color:var(--dogru)}
 .tus.varr{background:var(--varr);color:var(--varr-ink);border-color:var(--varr)}
-.tus.yok{background:var(--yok);color:var(--yok-ink);border-color:var(--yok)}
+.tus.yok{background:var(--tus-yok);color:var(--tus-yok-ink);border-color:var(--tus-yok);box-shadow:none;opacity:.92}
 
 .istat{text-align:center;font-family:'Libre Baskerville',serif;font-size:12.5px;color:var(--soluk);margin-top:14px;min-height:16px}
 .ipucu{text-align:center;font-family:'Libre Baskerville',serif;font-size:11.5px;color:var(--soluk);opacity:.85;margin-top:6px;font-style:italic}
-@media(max-width:440px){.tus{min-width:26px;padding:11px 5px;font-size:13px}.tus.genis{min-width:44px}.adlik h2{font-size:33px}}
+@media(max-width:440px){
+  .wrap{padding:12px 12px 26px}
+  header.site h1{font-size:23px}
+  nav.araclar{margin-top:7px;gap:6px}
+  nav.araclar a{padding:3px 10px;font-size:13px}
+  .tus{min-width:24px;padding:10px 0;font-size:13px}
+  .ksira{gap:4px;margin-bottom:4px}
+  .klavye-sar{gap:5px;margin-top:10px}
+  .tus.eylem{min-width:44px}
+  .adlik .ust{font-size:9.5px;letter-spacing:.28em}
+  .adlik h2{font-size:30px;margin-top:4px}
+  .adlik .alt{font-size:12px;margin-top:5px}
+  .adlik{margin-top:0}
+  .ust-araclar{margin-top:0}
+  .simge{width:34px;height:34px}
+  .secimler{margin-top:12px;gap:8px}
+  .segment button{padding:6px 15px}
+  .sekmeler{margin:14px auto 4px;gap:7px}
+  .sekme{width:38px;height:38px}
+  .mat{margin:12px auto 0;padding:8px}
+}
 </style>
 </head>
 <body>
@@ -202,7 +229,13 @@ body{transition:background .4s,color .4s}
   <div class="tahta-alt" id="tahtaAlt"></div>
   <div class="mesaj" id="mesaj"></div>
   <div class="sonuc gizli" id="sonuc"></div>
-  <div class="klavye" id="klavye"></div>
+  <div class="klavye-sar">
+    <div class="klavye" id="klavye"></div>
+    <div class="klavye-eylem">
+      <button class="tus eylem" id="silBtn" aria-label="sil">⌫</button>
+      <button class="tus eylem dene" id="deneBtn">dene</button>
+    </div>
+  </div>
   <div class="istat" id="istat"></div>
   <div class="ipucu" id="ipucu"></div>
 </main>
@@ -434,8 +467,17 @@ function ciz(){
   }
   // tahta — hücre boyutu pikselle hesaplanır (uzun kelimeler de sığsın)
   const t=document.getElementById('tahta');
-  const W=Math.min(404,(window.innerWidth||404)-32);
-  const tile=Math.max(30,Math.min(58,Math.floor((W-24-(b.uz-1)*6)/b.uz)));
+  const dar=(window.innerWidth||404)<=440;
+  const W=Math.min(404,(window.innerWidth||404)-(dar?16:32));
+  const maxTile=dar?54:58;
+  let tile=Math.max(28,Math.min(maxTile,Math.floor((W-24-(b.uz-1)*6)/b.uz)));
+  if(dar){   // mobilde: tahta + klavye ekrana sığsın diye yüksekliğe göre küçült
+    const mEl=document.querySelector('.mat');
+    const ust=mEl?Math.max(120,mEl.getBoundingClientRect().top):300;
+    const budce=(window.innerHeight||780)-ust-150-74;   // klavye(~150) + mat dolgu/mesaj + güvenlik payı
+    const tileH=Math.floor((budce-(b.maxSatir-1)*6)/b.maxSatir);
+    tile=Math.max(26,Math.min(tile,tileH));
+  }
   document.getElementById('mat').style.width=(b.uz*tile+(b.uz-1)*6+24)+'px';
   t.innerHTML='';
   const aktifSatirIdx=b.gecmis.length, g=hayalet(b);
@@ -497,11 +539,9 @@ function sonucCiz(){
 function klavyeCiz(){
   const renk=tusRenkleri(aktifTahta());
   const kl=document.getElementById('klavye'); kl.innerHTML='';
-  SIRALAR.forEach((sira,i)=>{
+  SIRALAR.forEach((sira)=>{
     const sd=document.createElement('div'); sd.className='ksira';
-    if(i===2){ const b=tus('sil','genis'); b.onclick=sil; sd.appendChild(b); }
     for(const h of sira){ const b=tus(h,RENKAD[renk[h]]||''); b.onclick=()=>harfGir(h); sd.appendChild(b); }
-    if(i===2){ const b=tus('dene','genis'); b.onclick=dene; sd.appendChild(b); }
     kl.appendChild(sd);
   });
 }
@@ -538,6 +578,8 @@ function sesUygula(){
 document.querySelectorAll('#oyunSeg button').forEach(x=>x.onclick=()=>oyunSec(x.dataset.oyun));
 document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>modSec(x.dataset.mod));
 document.getElementById('yeniBtn').onclick=yeniOyun;
+document.getElementById('silBtn').onclick=sil;
+document.getElementById('deneBtn').onclick=dene;
 document.getElementById('temaBtn').onclick=()=>{ tema=tema==='gece'?'aydinlik':'gece'; localStorage.setItem('harfiyat:tema',tema); temaUygula(); };
 document.getElementById('sesBtn').onclick=()=>{ ses=!ses; localStorage.setItem('harfiyat:ses',ses?'1':'0'); sesUygula(); if(ses) sGonder(); };
 
@@ -550,6 +592,7 @@ document.addEventListener('keydown',e=>{
   else { const h=trLower(e.key); if(HARF.test(h)) harfGir(h); }
 });
 
+let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(ciz,120); });
 temaUygula(); sesUygula(); oyunlaKur();
 </script>
 </body>
