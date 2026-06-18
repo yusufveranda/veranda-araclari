@@ -366,16 +366,14 @@ function prettySym(sym){
   return core + slash;
 }
 
-/* akor sembolünden chroma → derece etiketi haritası */
-function dereceMap(symbol){
+/* akor sembolünden chroma → NOTA ADI haritası (enstrümanlarda gösterim;
+   doğru yazımla: B♭ akorunda Bb, A# değil). Dereceler yalnız üst kartta kalır. */
+function notaAdMap(symbol){
   const m = new Map();
   if (!symbol) return m;
   const ch = Chord.get(symbol);
   if (ch.empty) return m;
-  ch.notes.forEach((n, i) => {
-    const tok = ch.intervals[i];
-    m.set(Note.chroma(n), IV[tok] || tok);
-  });
+  ch.notes.forEach(n => m.set(Note.chroma(n), simpleNote(n)));
   return m;
 }
 
@@ -414,9 +412,9 @@ function detectScore(sym){
 
 /* ===================== ses =====================
    Ayrı profiller: PİYANO = örneklenmiş akustik (Salamander grand, Tone.Sampler),
-   GİTAR = telden-çekme (pluck) zarflı FM sentez (keskin atak, hızlı sönüm).
-   İkisi de ortak 1.5sn Tone.Reverb'e bağlı (doğal akustik alan). */
-let reverb = null, piyanoSes = null, gitarSes = null, sesAcik = false;
+   GİTAR = Tone.PluckSynth (Karplus-Strong telden-çekme fiziksel modelleme);
+   akor için 6 sesli havuz. İkisi de ortak 1.5sn Tone.Reverb'e bağlı. */
+let reverb = null, piyanoSes = null, gitarBus = null, pluckVoices = [], pluckIdx = 0, sesAcik = false;
 async function sesHazir(){
   if (!Tone) return false;
   if (sesAcik) return true;
@@ -427,28 +425,26 @@ async function sesHazir(){
     baseUrl: 'https://tonejs.github.io/audio/salamander/', release: 1
   }).connect(reverb);
   piyanoSes.volume.value = -4;
-  gitarSes = new Tone.PolySynth(Tone.FMSynth, {
-    harmonicity: 2.5, modulationIndex: 4, oscillator: { type: 'triangle' },
-    envelope: { attack: 0.003, decay: 1.0, sustain: 0.0, release: 0.8 },
-    modulation: { type: 'sine' },
-    modulationEnvelope: { attack: 0.002, decay: 0.25, sustain: 0, release: 0.3 }
-  }).connect(reverb);
-  gitarSes.volume.value = -11;
+  gitarBus = new Tone.Gain(0.7).connect(reverb);
+  pluckVoices = Array.from({ length: 6 }, () =>
+    new Tone.PluckSynth({ attackNoise: 0.9, dampening: 3600, resonance: 0.96, release: 1.4 }).connect(gitarBus));
   sesAcik = true;
   try { await Promise.race([Tone.loaded(), new Promise(r => setTimeout(r, 5000))]); } catch {}
   return true;
 }
-const sesAleti = kind => kind === 'gitar' ? gitarSes : piyanoSes;
+function pluk(midi, time){ pluckVoices[pluckIdx++ % pluckVoices.length].triggerAttack(Note.fromMidi(midi), time); }
 async function calNota(midi, kind){
   if (!(await sesHazir())) return;
-  sesAleti(kind).triggerAttackRelease(Note.fromMidi(midi), '8n', Tone.now() + 0.02);
+  if (kind === 'gitar') pluk(midi, Tone.now() + 0.02);
+  else piyanoSes.triggerAttackRelease(Note.fromMidi(midi), '8n', Tone.now() + 0.02);
 }
 async function calMidis(midis, kind){
   if (!(await sesHazir())) return;
   const ms = [...midis].sort((a, b) => a - b);
   if (!ms.length) return;
-  const inst = sesAleti(kind), now = Tone.now(), dt = kind === 'gitar' ? 0.04 : 0.012, dur = kind === 'gitar' ? '4n' : '2n';
-  ms.forEach((m, i) => inst.triggerAttackRelease(Note.fromMidi(m), dur, now + 0.02 + i * dt));
+  const now = Tone.now();
+  if (kind === 'gitar') ms.forEach((m, i) => pluk(m, now + 0.02 + i * 0.045));      // strum
+  else ms.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '2n', now + 0.02 + i * 0.012));
 }
 
 /* ===================== piyano çevrimleri ===================== */
@@ -523,7 +519,10 @@ function dogrula(sec, pcSet, rootC){
   if (acik && maxF > 4) return null;                                      // açık tel + yüksek perde = olanaksız
   if (new Set(basili).size > 4) return null;                             // 4'ten çok ayrı perde (parmak)
   const bass = sesli.reduce((a, b) => a.midi < b.midi ? a : b);
-  return { frets: sesli, minFret: minF, strings: sesli.length, isRoot: chromaOf(bass.midi) === rootC, acik };
+  // çalan teller arasında SIKIŞMIŞ susturulmuş tel (ör. 6-4-3-1 çal, 5-2 sustur) → çirkin
+  const teller = new Set(sesli.map(x => x.s)), sMin = Math.min(...teller), sMax = Math.max(...teller);
+  let trapped = 0; for (let s = sMin + 1; s < sMax; s++) if (!teller.has(s)) trapped++;
+  return { frets: sesli, minFret: minF, span: maxF - minF, strings: sesli.length, isRoot: chromaOf(bass.midi) === rootC, acik, trapped };
 }
 function genelGritler(pcSet){
   const grids = [], pick = (lo, hi, acikIzin) => {
@@ -555,10 +554,10 @@ function gitarVoicings(symbol){
   if (anahtar) for (const sh of CAGED[anahtar]){
     const barre = ((rootC - OPENC[sh.rs]) % 12 + 12) % 12;
     const sec = sh.rel.map(r => r === null ? null : barre + r);
-    if (sec.every(f => f === null || f <= FRET)) cands.push({ sec, tier: barre === 0 ? 0 : 1 });
-    if (barre + 12 <= FRET - 2) cands.push({ sec: sh.rel.map(r => r === null ? null : barre + 12 + r), tier: 2 });
+    if (sec.every(f => f === null || f <= FRET)) cands.push({ sec, tier: barre === 0 ? 0 : 1 }); // açık cowboy / CAGED barre
+    if (barre + 12 <= FRET - 2) cands.push({ sec: sh.rel.map(r => r === null ? null : barre + 12 + r), tier: 1 });
   }
-  genelGritler(pcSet).forEach(sec => cands.push({ sec, tier: 3 }));
+  genelGritler(pcSet).forEach(sec => cands.push({ sec, tier: 2 }));   // diğer pratik diziliş
   const gor = new Set(), out = [];
   for (const c of cands){
     const v = dogrula(c.sec, pcSet, rootC); if (!v) continue;
@@ -567,11 +566,14 @@ function gitarVoicings(symbol){
     v.tier = c.tier; v.label = gitarEtiket(v);
     out.push(v);
   }
-  // BİRİNCİL sıra: eşiğe (0. perde) yakınlık → ilk öneri en pes pozisyon, sonra
-  // sırayla boyun yukarı. Eşit perdede STANDART şekli (ezbere açık akor / CAGED barre)
-  // genel ızgaradan, sonra açık teli, kökü, dolu olanı öne al.
+  // STANDART OYNANABİLİRLİK sırası (saf "0. perdeye yakınlık" değil):
+  //   Sıra 1: açık "cowboy" akorları (E/A/C/G/D şekilleri)  → tier 0
+  //   Sıra 2: CAGED barre (E-şekli / A-şekli)               → tier 1
+  //   Sıra 3: diğer pratik dizilişler                        → tier 2
+  // sonra: sıkışmış sus tel cezası, boyun aşağıda, kök-bas, dolu, derli toplu.
   out.sort((a, b) =>
-    a.minFret - b.minFret || a.tier - b.tier || (b.acik - a.acik) || (b.isRoot - a.isRoot) || b.strings - a.strings);
+    a.tier - b.tier || a.trapped - b.trapped || a.minFret - b.minFret ||
+    (b.isRoot - a.isRoot) || (b.strings - a.strings) || (a.span - b.span));
   return out.slice(0, 8);
 }
 
@@ -581,9 +583,17 @@ function gitarVoicings(symbol){
 function tespitEt(){
   state.detected = state.notes.size >= 2 ? betterDetect(aktifBasOnce()) : [];
   state.symbol = state.detected[0] || null;
-  if (state.symbol){ state.gVoicings = gitarVoicings(state.symbol); state.pVoicings = piyanoVoicings(state.symbol); }
-  else { state.gVoicings = []; state.pVoicings = []; }
-  state.gIndex = -1; state.pIndex = -1;
+  if (state.symbol && state.notes.size){
+    // kullanıcının elle kurduğu şekli "senin seçimin" olarak index 0'a koy;
+    // kullanıcı çevrimlerde gezip kendi şekline geri dönebilsin.
+    const gFrets = [...guitarPlacements()].map(([midi, fr]) => ({ s: fr.s, f: fr.f, midi }));
+    state.gVoicings = [{ label: 'senin seçimin', manual: true, frets: gFrets }, ...gitarVoicings(state.symbol)];
+    state.pVoicings = [{ label: 'senin seçimin', manual: true, midis: [...state.notes.keys()].sort((a, b) => a - b) }, ...piyanoVoicings(state.symbol)];
+    state.gIndex = 0; state.pIndex = 0;
+  } else {
+    state.gVoicings = []; state.pVoicings = [];
+    state.gIndex = -1; state.pIndex = -1;
+  }
 }
 
 /* ===================== eylemler ===================== */
@@ -701,7 +711,7 @@ function piyanoKur(){
 
 function ciz(){
   const sym = state.symbol;
-  const dmap = dereceMap(sym);
+  const nmap = notaAdMap(sym);   // enstrümanlarda nota adı göster (derece değil)
   const kokChroma = sym ? Note.chroma(Chord.get(sym).tonic || '') : -1;
 
   // gitar ve piyano BAĞIMSIZ: ≥0 → üretilmiş diziliş; -1 → çalınan (elle notalar)
@@ -717,14 +727,14 @@ function ciz(){
     const on = midi !== undefined;
     c.classList.toggle('on', on);
     c.classList.toggle('kok', on && chromaOf(midi) === kokChroma);
-    if (on) c.querySelector('.dot').textContent = dmap.get(chromaOf(midi)) || pcName(midi);
+    if (on) c.querySelector('.dot').textContent = nmap.get(chromaOf(midi)) || pcName(midi);
   });
   piano.querySelectorAll('.wkey,.bkey').forEach(k => {
     const midi = +k.dataset.midi, on = pOn.has(midi);
     k.classList.toggle('on', on);
     k.classList.toggle('kok', on && chromaOf(midi) === kokChroma);
     const lab = k.querySelector('.klab');
-    if (on) lab.textContent = dmap.get(chromaOf(midi)) || pcName(midi);
+    if (on) lab.textContent = nmap.get(chromaOf(midi)) || pcName(midi);
     else if (k.classList.contains('wkey') && chromaOf(midi) === 0) lab.textContent = 'C' + (Math.floor(midi / 12) - 1);
     else lab.textContent = '';
   });
