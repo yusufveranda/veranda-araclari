@@ -20,7 +20,7 @@ window.ADLAR = {
   "bulmaca": "Bulmaca Yardımcısı",
   "siir": "Şiir Defteri",
   "politika": "Siyaset Bilimi Çalışma",
-  "nota": "Nota Çevirici",
+  "nota": "Veranda Band",
   "sicak_tahmin": "tahmin"
 };
 /* [data-ad] taşıyan ögelere config'ten metni yazar. Bu blok düzenleme sayfasınca aynen korunur. */
