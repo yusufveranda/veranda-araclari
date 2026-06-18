@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<title>harfiyat — Türkçe Wordle</title>
-<meta name="description" content="Harfiyat: Türkçe Wordle. Günün kelimesini bul. İskelime modunda 3’ten 8 harfe altı kelimeyi tek oyunda çöz.">
+<title>verandle — Türkçe Wordle</title>
+<meta name="description" content="Verandle: veranda’nın üç kelime oyunu. harfiyat (klasik), taraça (3–8 harf altı kelime) ve karine (yakın anlam ipuçlu).">
 <meta name="theme-color" content="#EFE4CB">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23EFE4CB'/%3E%3Crect x='11' y='11' width='18' height='18' rx='3' fill='%235E7F4B'/%3E%3Crect x='35' y='11' width='18' height='18' rx='3' fill='%23CF9A3C'/%3E%3Crect x='11' y='35' width='18' height='18' rx='3' fill='%23C2331F'/%3E%3Crect x='35' y='35' width='18' height='18' rx='3' fill='%23988A79'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
@@ -65,6 +65,45 @@ body{transition:background .4s,color .4s}
 .yenibtn{font-family:'Libre Baskerville',serif;font-size:12.5px;padding:8px 14px;border:1.5px solid var(--kutu-cizgi);border-radius:18px;background:var(--mat);color:var(--kirmizi);cursor:pointer;box-shadow:2px 3px 0 var(--mat-golge)}
 .yenibtn:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
 .gizli{display:none!important}
+
+/* ===== HUB: Verandle başlık + darağacı + oyun kartları ===== */
+#hub{text-align:center;padding-top:6px}
+.vhero-art{display:block;width:100%;max-width:340px;height:auto;margin:0 auto}
+.vhero-art .asili{transform-box:fill-box;transform-origin:50% 0%;animation:sallan 3.8s ease-in-out infinite}
+@keyframes sallan{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-3deg)}}
+@media(prefers-reduced-motion:reduce){.vhero-art .asili{animation:none}}
+.vhero-ad{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(42px,12vw,60px);color:var(--mur);letter-spacing:-1.2px;line-height:.9;margin-top:2px}
+.vhero-ad .nokta{color:var(--kirmizi)}
+.vhero-slogan{font-family:'Libre Baskerville',serif;font-style:italic;color:var(--soluk);font-size:14px;margin-top:9px}
+.kartlar-oyun{display:flex;flex-direction:column;gap:14px;max-width:430px;margin:30px auto 0}
+.okart{display:block;text-align:left;width:100%;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:13px;
+  padding:16px 18px;box-shadow:5px 6px 0 var(--mat-golge);cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s}
+.okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)}
+.okart:hover{transform:rotate(0) translateY(-3px);box-shadow:7px 9px 0 var(--mat-golge)}
+.okart:active{transform:translate(1px,2px);box-shadow:2px 2px 0 var(--mat-golge)}
+.okart-rozet{display:inline-block;font-family:'Libre Baskerville',serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--soluk);border:1px solid var(--kutu-cizgi);border-radius:10px;padding:2px 9px}
+.okart h3{font-family:'Playfair Display',serif;font-weight:700;font-size:25px;color:var(--mur);margin-top:10px}
+.okart p{font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--soluk);line-height:1.55;margin-top:5px}
+
+/* ===== oyun ekranı: mini wordmark + büyük tablar + farklı mod ===== */
+.oyun-ust{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.oyun-ust .ust-araclar{margin-top:0}
+.vmini{font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--mur);background:none;border:none;cursor:pointer;padding:4px 0;letter-spacing:-.3px}
+.vmini:hover{color:var(--kirmizi)}
+/* büyük, önde oyun tabları */
+.oyun-tablar{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.oyun-tablar button{flex:1;max-width:132px;font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--soluk);
+  background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;padding:13px 6px;cursor:pointer;
+  box-shadow:3px 4px 0 var(--mat-golge);transition:transform .12s,color .15s,background .15s}
+.oyun-tablar button:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
+.oyun-tablar button.secili{background:var(--mur);color:var(--mat);border-color:var(--mur);box-shadow:3px 4px 0 var(--kirmizi-yum)}
+.altYazi2{text-align:center;font-family:'Libre Baskerville',serif;font-style:italic;font-size:13px;color:var(--soluk);margin-top:11px;min-height:16px}
+/* mod toggle: tablardan farklı — küçük, hafif çip */
+.segment.mod{background:transparent;border:none;box-shadow:none;padding:0;gap:5px}
+.segment.mod button{font-family:'Libre Baskerville',serif;font-size:12.5px;padding:6px 13px;border:1px solid var(--kutu-cizgi);border-radius:15px;color:var(--soluk);background:var(--mat)}
+.segment.mod button.secili{background:var(--kirmizi-yum);color:var(--kirmizi);border-color:var(--kirmizi)}
+.modbar{margin-top:14px}
 
 /* ----- iskelime sekmeleri ----- */
 .sekmeler{display:flex;gap:9px;justify-content:center;margin:26px auto 4px;flex-wrap:wrap}
@@ -215,54 +254,114 @@ body{transition:background .4s,color .4s}
   <a href="../"><h1>veranda</h1></a>
   <nav class="araclar">
     <a href="../sozluk/">dilimin ucunda</a>
-    <a href="./" class="burada">harfiyat</a>
+    <a href="./" class="burada">verandle</a>
     <a href="../bulmaca/">bulmaca yardımcısı</a>
   </nav>
 </header>
 
 <main class="oyun">
-  <div class="ust-araclar">
-    <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
-    <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
-  </div>
-  <div class="adlik">
-    <div class="ust">türkçe kelime oyunu</div>
-    <h2 id="oyunBasi">harfiyat<span class="nokta">.</span></h2>
-    <div class="alt" id="altYazi"></div>
-  </div>
-
-  <div class="secimler">
-    <div class="segment" id="oyunSeg">
-      <button data-oyun="harfiyat" class="secili">harfiyat</button>
-      <button data-oyun="iskelime">iskelime</button>
-      <button data-oyun="anlamca">anlamca</button>
+  <!-- ===== HUB (vitrin) ===== -->
+  <section id="hub">
+    <div class="vhero">
+      <svg class="vhero-art" viewBox="0 0 360 196" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Verandada sevimli bir darağacında sallanan çöp adam">
+        <circle cx="300" cy="60" r="44" fill="var(--gunes)" opacity=".85"/>
+        <!-- veranda zemini + korkuluk -->
+        <rect x="0" y="168" width="360" height="28" fill="var(--mur)"/>
+        <g stroke="var(--mur)" stroke-width="5" stroke-linecap="round">
+          <line x1="16" y1="146" x2="16" y2="168"/><line x1="42" y1="146" x2="42" y2="168"/>
+          <line x1="68" y1="146" x2="68" y2="168"/><line x1="8" y1="146" x2="76" y2="146"/>
+        </g>
+        <!-- saksı -->
+        <path d="M326 168 l4 -15 h17 l4 15 z" fill="var(--mur)"/>
+        <g stroke="var(--gunes)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".9">
+          <path d="M337 153 q-7 -13 -2 -23"/><path d="M340 153 q1 -16 7 -21"/><path d="M339 153 q0 -17 0 -25"/>
+        </g>
+        <!-- darağacı -->
+        <g stroke="var(--mur)" stroke-width="8" stroke-linecap="round" fill="none">
+          <line x1="150" y1="168" x2="150" y2="34"/>
+          <line x1="146" y1="34" x2="234" y2="34"/>
+          <line x1="150" y1="58" x2="174" y2="34"/>
+        </g>
+        <!-- ip + sevimli çöp adam (hafif sallanır) -->
+        <g class="asili">
+          <line x1="223" y1="38" x2="223" y2="78" stroke="var(--mur)" stroke-width="3"/>
+          <g stroke="var(--mur)" stroke-width="3.4" stroke-linecap="round" fill="none">
+            <path d="M223 80 L214 105"/><path d="M223 80 L232 105"/>
+            <line x1="223" y1="107" x2="223" y2="134"/>
+            <path d="M223 134 L209 147 l-3 6"/><path d="M223 134 L237 145 l4 5"/>
+          </g>
+          <circle cx="223" cy="95" r="11" fill="var(--kutu-bos)" stroke="var(--mur)" stroke-width="3"/>
+          <circle cx="219" cy="93" r="1.6" fill="var(--mur)"/><circle cx="227" cy="93" r="1.6" fill="var(--mur)"/>
+          <path d="M218 98 q5 5 10 0" stroke="var(--mur)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="214" cy="98" r="2.1" fill="var(--gunes)" opacity=".45"/><circle cx="232" cy="98" r="2.1" fill="var(--gunes)" opacity=".45"/>
+        </g>
+      </svg>
+      <h1 class="vhero-ad">verandle<span class="nokta">.</span></h1>
+      <p class="vhero-slogan">bir veranda, üç kelime oyunu</p>
     </div>
+
+    <div class="kartlar-oyun">
+      <button class="okart" data-git="harfiyat">
+        <span class="okart-rozet">beş harf · altı deneme</span>
+        <h3>harfiyat</h3>
+        <p>klasik olan. beş harfli kelimeyi altı denemede çıkarıyorsun.</p>
+      </button>
+      <button class="okart" data-git="iskelime">
+        <span class="okart-rozet">3–8 harf · altı kelime</span>
+        <h3>taraça</h3>
+        <p>üçten sekize altı kelime, tek tahtada. sekmeler arası gez, hepsini topla.</p>
+      </button>
+      <button class="okart" data-git="anlamca">
+        <span class="okart-rozet">beş harf · üç deneme</span>
+        <h3>karine</h3>
+        <p>az deneme, çok düşünme. yakın anlam ipucu verir; ikincisi ikinci tahminden sonra düşer.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== oyun ekranı ===== -->
+  <section id="oyunEkran" class="gizli">
+    <div class="oyun-ust">
+      <button class="vmini" id="hubDon">‹ verandle</button>
+      <div class="ust-araclar">
+        <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
+        <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
+      </div>
+    </div>
+
+    <div class="oyun-tablar" id="oyunSeg">
+      <button data-oyun="harfiyat" class="secili">harfiyat</button>
+      <button data-oyun="iskelime">taraça</button>
+      <button data-oyun="anlamca">karine</button>
+    </div>
+    <div class="altYazi2" id="altYazi"></div>
+
     <div class="modbar">
-      <div class="segment" id="modSeg">
+      <div class="segment mod" id="modSeg">
         <button data-mod="gun" class="secili">günün kelimesi</button>
-        <button data-mod="serbest">serbest</button>
+        <button data-mod="serbest">sonsuz</button>
       </div>
       <button class="yenibtn gizli" id="yeniBtn">yeni ↻</button>
     </div>
-  </div>
 
-  <div class="sekmeler gizli" id="sekmeler"></div>
-  <div class="ipuclar gizli" id="ipuclar"></div>
-  <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
-  <div class="tahta-alt" id="tahtaAlt"></div>
-  <div class="mesaj" id="mesaj"></div>
-  <div class="sonuc gizli" id="sonuc"></div>
-  <div class="klavye-sar">
-    <div class="klavye" id="klavye"></div>
-    <div class="klavye-eylem">
-      <button class="tus eylem" id="silBtn" aria-label="sil">⌫</button>
-      <button class="tus eylem dene" id="deneBtn">dene</button>
+    <div class="sekmeler gizli" id="sekmeler"></div>
+    <div class="ipuclar gizli" id="ipuclar"></div>
+    <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
+    <div class="tahta-alt" id="tahtaAlt"></div>
+    <div class="mesaj" id="mesaj"></div>
+    <div class="sonuc gizli" id="sonuc"></div>
+    <div class="klavye-sar">
+      <div class="klavye" id="klavye"></div>
+      <div class="klavye-eylem">
+        <button class="tus eylem" id="silBtn" aria-label="sil">⌫</button>
+        <button class="tus eylem dene" id="deneBtn">dene</button>
+      </div>
     </div>
-  </div>
-  <div class="istat" id="istat"></div>
-  <div class="ipucu" id="ipucu"></div>
+    <div class="istat" id="istat"></div>
+    <div class="ipucu" id="ipucu"></div>
+  </section>
 </main>
-<footer>harfiyat · boş hücre bırakabilirsin; bildiğin harfi yerine koy · <span id="ftnot">her gün yeni</span></footer>
+<footer>verandle · <span id="ftnot">her gün yeni</span></footer>
 </div>
 
 <script src="../ortak/harf-veri.js"></script>
@@ -285,6 +384,7 @@ let animHarf=null, animCevir=null;
 let sonucHazir=false, sonucYeni=false;   // sonuç paneli: reveal sonrası göster + açılış animasyonu
 let revealAnim=false, bekleyenMesaj='', bekleyenSes=null;  // reveal bitene kadar hayalet/mesaj/sonuç ertelenir
 let revealTimer=null;   // bekleyen revealBitti zamanlayıcısı (yeni oyun/geçişte temizlenir)
+let _ipSig='';          // ipucu imzası — her tuşta yeniden çizip zıplamasın diye
 let bellek={};                 // oyun:mod -> devam eden durum
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
@@ -511,11 +611,15 @@ function ciz(){
   if(oyun==='anlamca' && b.ipucu){
     ip.classList.remove('gizli');
     const ikiHazir=b.gecmis.length>=2 && !revealAnim && b.ipucu.length>=2;
-    const goster=ikiHazir?b.ipucu.slice(0,2):b.ipucu.slice(0,1);
-    ip.innerHTML='<span class="ip-et">yakın anlam</span>'+
-      goster.map((s,i)=>'<b'+(i===1?' class="ip-yeni"':'')+'>'+s+'</b>').join('<span style="color:var(--soluk)">·</span>')+
-      (!ikiHazir && b.ipucu.length>=2 && !b.bitti ? '<span class="ip-kilit">2. tahminden sonra bir ipucu daha</span>':'');
-  } else ip.classList.add('gizli');
+    const sig=b.cevap+'|'+(ikiHazir?2:1)+'|'+b.bitti;
+    if(sig!==_ipSig){   // sadece ipucu değişince yeniden çiz (her tuşta zıplamasın)
+      _ipSig=sig;
+      const goster=ikiHazir?b.ipucu.slice(0,2):b.ipucu.slice(0,1);
+      ip.innerHTML='<span class="ip-et">yakın anlam</span>'+
+        goster.map((s,i)=>'<b'+(i===1?' class="ip-yeni"':'')+'>'+s+'</b>').join('<span style="color:var(--soluk)">·</span>')+
+        (!ikiHazir && b.ipucu.length>=2 && !b.bitti ? '<span class="ip-kilit">2. tahminden sonra bir ipucu daha</span>':'');
+    }
+  } else { ip.classList.add('gizli'); _ipSig=''; }
   // tahta — hücre boyutu pikselle hesaplanır (uzun kelimeler de sığsın)
   const t=document.getElementById('tahta');
   // Kare boyutu YALNIZ genişliğe göre (sabit; adres çubuğu/scroll ile zıplamaz)
@@ -557,7 +661,6 @@ function ciz(){
   klavyeCiz();
   sonucCiz();
   // başlık / altyazı / ipucu
-  document.getElementById('oyunBasi').innerHTML=oyun+'<span class="nokta">.</span>';
   document.getElementById('altYazi').textContent = oyun==='iskelime' ? 'üç’ten sekiz harfe · altı kelime, yedişer deneme'
     : oyun==='anlamca' ? 'beş harf · üç deneme · yakın anlam ipucuyla'
     : 'beş harf · altı deneme';
@@ -601,7 +704,7 @@ function oyunlaKur(){
   clearTimeout(revealTimer); revealTimer=null; revealAnim=false;
   if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
-  document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'serbest oyun';
+  document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'sonsuz oyun';
   mesaj(''); ciz(); istatGoster(); window.scrollTo(0,0);
 }
 function oyunSec(o){ if(o===oyun) return; durumKaydetBellek(); oyun=o;
@@ -626,6 +729,18 @@ function sesUygula(){
   btn.classList.toggle('kapali', !ses);
 }
 
+/* ===== hub <-> oyun geçişi ===== */
+function hubGoster(){ document.getElementById('oyunEkran').classList.add('gizli'); document.getElementById('hub').classList.remove('gizli'); window.scrollTo(0,0); }
+function hubaDon(){ if(tahtalar.length) durumKaydetBellek(); hubGoster(); }
+function oyunaGir(g){
+  document.getElementById('hub').classList.add('gizli');
+  document.getElementById('oyunEkran').classList.remove('gizli');
+  if(g!==oyun){ if(tahtalar.length) durumKaydetBellek(); oyun=g;
+    document.querySelectorAll('#oyunSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.oyun===g)); }
+  oyunlaKur();
+}
+document.querySelectorAll('.okart').forEach(k=>k.onclick=()=>oyunaGir(k.dataset.git));
+document.getElementById('hubDon').onclick=function(){ this.blur(); hubaDon(); };
 document.querySelectorAll('#oyunSeg button').forEach(x=>x.onclick=()=>{ oyunSec(x.dataset.oyun); x.blur(); });
 document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>{ modSec(x.dataset.mod); x.blur(); });
 document.getElementById('yeniBtn').onclick=yeniOyun;
@@ -636,6 +751,7 @@ document.getElementById('sesBtn').onclick=function(){ ses=!ses; localStorage.set
 
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey) return;
+  if(document.getElementById('oyunEkran').classList.contains('gizli')) return;   // hub'dayken karışma (kartlar Enter'la açılsın)
   const ae=document.activeElement;
   if(ae && (ae.tagName==='BUTTON'||ae.tagName==='A')) ae.blur();   // odaktaki düğme/link Enter'ı yutup toggle/gezinme yapmasın
   if(e.key==='Enter'){ e.preventDefault(); dene(); }
@@ -646,7 +762,7 @@ document.addEventListener('keydown',e=>{
 });
 
 let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(ciz,120); });
-temaUygula(); sesUygula(); oyunlaKur();
+temaUygula(); sesUygula(); hubGoster();
 </script>
 </body>
 </html>
