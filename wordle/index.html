@@ -168,10 +168,15 @@ body{transition:background .4s,color .4s}
   header.site h1{font-size:23px}
   nav.araclar{margin-top:7px;gap:6px}
   nav.araclar a{padding:3px 10px;font-size:13px}
-  .tus{min-width:24px;padding:10px 0;font-size:13px}
-  .ksira{gap:4px;margin-bottom:4px}
-  .klavye-sar{gap:5px;margin-top:10px}
-  .tus.eylem{min-width:44px}
+  .tus{min-width:24px;padding:11px 0;font-size:14px}
+  .ksira{gap:5px;margin-bottom:5px}
+  .tus.eylem{min-width:46px}
+  /* klavye ekranın altına sabit — tahta büyük olsa da hep görünür */
+  .wrap{padding-bottom:182px}
+  .klavye-sar{position:fixed;left:0;right:0;bottom:0;margin:0;gap:6px;z-index:30;
+    justify-content:center;background:var(--oyun-bg);border-top:1.5px solid var(--kutu-cizgi);
+    box-shadow:0 -4px 16px var(--mat-golge);
+    padding:9px 8px calc(9px + env(safe-area-inset-bottom,0px))}
   .adlik .ust{font-size:9.5px;letter-spacing:.28em}
   .adlik h2{font-size:30px;margin-top:4px}
   .adlik .alt{font-size:12px;margin-top:5px}
@@ -368,7 +373,13 @@ function dene(){
   // reveal sesleri: her harf açılırken (flip ortasında) renk notası, tek tek
   if(ses) renk.forEach((rk,i)=>setTimeout(()=>sReveal(rk),(i*CEVIR_GECIKME+CEVIR_SURE*.5)*1000));
   durumDegerlendir();
-  durumKaydetBellek(); kaydet(); ciz();
+  durumKaydetBellek(); kaydet(); ciz(); mobilGorunur();
+}
+function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
+  if((window.innerWidth||999)>440) return;
+  const b=aktifTahta(); const idx=Math.min(b.gecmis.length,b.maxSatir-1);
+  const sat=document.querySelectorAll('#tahta .satir')[idx];
+  if(sat) sat.scrollIntoView({behavior:'smooth',block:'center'});
 }
 function titret(){ const s=document.querySelector('#tahta .satir.aktifsatir'); if(s){ s.classList.add('titre'); setTimeout(()=>s.classList.remove('titre'),340); } }
 
@@ -377,7 +388,7 @@ function sonucGecikmeli(ms){
   sonucYeni=true; sonucHazir=false;
   setTimeout(()=>{ sonucHazir=true; ciz();
     const el=document.getElementById('sonuc');
-    if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+    if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'center'});
   }, ms);
 }
 function durumDegerlendir(){
@@ -467,17 +478,10 @@ function ciz(){
   }
   // tahta — hücre boyutu pikselle hesaplanır (uzun kelimeler de sığsın)
   const t=document.getElementById('tahta');
+  // Kare boyutu YALNIZ genişliğe göre (sabit; adres çubuğu/scroll ile zıplamaz)
   const dar=(window.innerWidth||404)<=440;
-  const W=Math.min(404,(window.innerWidth||404)-(dar?16:32));
-  const maxTile=dar?54:58;
-  let tile=Math.max(28,Math.min(maxTile,Math.floor((W-24-(b.uz-1)*6)/b.uz)));
-  if(dar){   // mobilde: tahta + klavye ekrana sığsın diye yüksekliğe göre küçült
-    const mEl=document.querySelector('.mat');
-    const ust=mEl?Math.max(120,mEl.getBoundingClientRect().top):300;
-    const budce=(window.innerHeight||780)-ust-150-74;   // klavye(~150) + mat dolgu/mesaj + güvenlik payı
-    const tileH=Math.floor((budce-(b.maxSatir-1)*6)/b.maxSatir);
-    tile=Math.max(26,Math.min(tile,tileH));
-  }
+  const W=Math.min(460,(window.innerWidth||404)-(dar?14:32));
+  const tile=Math.max(30,Math.min(dar?60:58,Math.floor((W-24-(b.uz-1)*6)/b.uz)));
   document.getElementById('mat').style.width=(b.uz*tile+(b.uz-1)*6+24)+'px';
   t.innerHTML='';
   const aktifSatirIdx=b.gecmis.length, g=hayalet(b);
