@@ -53,10 +53,21 @@ body.gece{
 
 /* ===== enstrüman sahnesi ===== */
 .sahne{display:grid;gap:18px;margin-top:18px}
-.enstruman{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px var(--shadow);padding:14px 16px 18px}
-.enst-bas{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.enstruman{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px var(--shadow);padding:14px 16px 18px;min-width:0}
+.sahne>*,.paneller>*{min-width:0}
+.enst-bas{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
 .enst-bas h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:19px;color:var(--ink)}
-.enst-bas .ipucu{font-size:12.5px;color:var(--muted);font-style:italic}
+.enst-sag{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.enst-sag .ipucu{font-size:12.5px;color:var(--muted);font-style:italic}
+.cycler{display:inline-flex;align-items:center;gap:6px}
+.cycler .ok{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
+.cycler .ok:disabled{opacity:.35;cursor:default}
+.cycler .ok:not(:disabled):hover{border-color:var(--acc);color:var(--acc)}
+.cyc-lab{font-size:12px;color:var(--muted);min-width:132px;text-align:center}
+.ip-akor{margin-top:9px}
+.ip-yukle{font-size:12.5px;color:var(--acc);background:var(--acc-soft);border:none;border-radius:13px;padding:4px 12px;font-weight:600}
+.ip-yukle:hover{filter:brightness(.97)}
+@media(max-width:560px){.cyc-lab{min-width:92px;font-size:11px}.enst-sag .ipucu{display:none}}
 .kaydir{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
 
 /* fretboard */
@@ -100,14 +111,6 @@ body.gece{
 .bkey .klab{color:#cdbfa6}
 .bkey.on .klab{color:#fff}
 .do-isaret{color:var(--muted);opacity:.7}
-
-/* ===== çevrim/diziliş çubuğu ===== */
-.diziom{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;box-shadow:0 3px 12px var(--shadow)}
-.diziom .et{font-size:13px;color:var(--muted);font-style:italic}
-.diziom select{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);max-width:60vw}
-.diziom button.ok{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:16px}
-.diziom button.ok:hover{border-color:var(--acc);color:var(--acc)}
-.diziom .say{font-size:13px;color:var(--muted)}
 
 /* ===== paneller ===== */
 .paneller{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
@@ -194,21 +197,33 @@ body.gece{
 
   <section class="sahne">
     <div class="enstruman">
-      <div class="enst-bas"><h3>Gitar</h3><span class="ipucu">perdeye dokun · standart akort (EADGBE)</span></div>
+      <div class="enst-bas">
+        <h3>Gitar</h3>
+        <div class="enst-sag">
+          <span class="ipucu">standart akort · ‹ › pozisyonlar (CAGED)</span>
+          <div class="cycler">
+            <button class="ok" id="gPrev" type="button" aria-label="önceki pozisyon">‹</button>
+            <span class="cyc-lab" id="gLab">— elle</span>
+            <button class="ok" id="gNext" type="button" aria-label="sonraki pozisyon">›</button>
+          </div>
+        </div>
+      </div>
       <div class="kaydir"><div id="fretboard" class="fretboard"></div></div>
     </div>
     <div class="enstruman">
-      <div class="enst-bas"><h3>Piyano</h3><span class="ipucu">tuşa dokun · C2–C6</span></div>
+      <div class="enst-bas">
+        <h3>Piyano</h3>
+        <div class="enst-sag">
+          <span class="ipucu">C2–C6 · ‹ › çevrimler</span>
+          <div class="cycler">
+            <button class="ok" id="pPrev" type="button" aria-label="önceki çevrim">‹</button>
+            <span class="cyc-lab" id="pLab">— elle</span>
+            <button class="ok" id="pNext" type="button" aria-label="sonraki çevrim">›</button>
+          </div>
+        </div>
+      </div>
       <div class="kaydir"><div id="piano" class="piano"></div></div>
     </div>
-  </section>
-
-  <section class="diziom">
-    <span class="et">Diziliş / çevrim:</span>
-    <button class="ok" id="vPrev" type="button" aria-label="önceki">‹</button>
-    <select id="vSelect"></select>
-    <button class="ok" id="vNext" type="button" aria-label="sonraki">›</button>
-    <span class="say" id="vSay"></span>
   </section>
 
   <div class="paneller">
@@ -278,14 +293,18 @@ const IV = {'1P':'R','2m':'♭9','2M':'9','3m':'♭3','3M':'3','4P':'11','4A':'�
   '5d':'♭5','5P':'5','5A':'♯5','6m':'♭13','6M':'13','7m':'♭7','7M':'7',
   '8P':'R','9m':'♭9','9M':'9','9A':'♯9','11P':'11','11A':'♯11','13m':'♭13','13M':'13'};
 
-/* ---- durum ---- */
+/* ---- durum ----
+   İKİ KİP:
+   • 'serbest' = elle tıklama; state.notes tek kaynak, iki enstrüman yansıtır.
+   • 'akor'    = seçili akor; gitar ve piyano BAĞIMSIZ dizilişlerini gösterir
+                 (gVoicings/gIndex ile pVoicings/pIndex birbirini etkilemez). */
 const state = {
-  notes: new Map(),        // midi -> {s,f} | null   (TEK doğruluk kaynağı)
-  inputSymbol: null,       // arama/kurucudan gelen sembol; manuelde null
-  symbol: null,            // gösterilecek akor (input ya da tespit)
-  detected: [],            // Chord.detect sonucu
-  voicings: [],            // [{label, notes:[{midi,fret}]}]
-  voiceIndex: 0,
+  mode: 'serbest',
+  notes: new Map(),        // serbest kip: midi -> {s,f} | null
+  symbol: null,            // okumada gösterilecek akor (akor kipinde aktif, serbestte tespit)
+  detected: [],            // tespit alternatifleri
+  gVoicings: [], gIndex: 0,// gitar pozisyonları (akor kipi)
+  pVoicings: [], pIndex: 0,// piyano çevrimleri (akor kipi)
   favorites: load(),
 };
 function load(){ try { return JSON.parse(localStorage.getItem('nota-favoriler')) || []; } catch { return []; } }
@@ -328,14 +347,18 @@ function guitarPlacements(){
   return res;
 }
 
-/* tonal akor sembolünü okunaklı biçime çevir (CM → C, Cm → Cm) */
+/* tonal akor sembolünü okunaklı biçime çevir (CM → C, Cm → Cm, A/E bası korunur) */
 function prettySym(sym){
   if (!sym) return sym;
-  const ch = Chord.get(sym);
+  const slash = sym.includes('/') ? '/' + sym.split('/')[1] : '';
+  const base = sym.split('/')[0];
+  const ch = Chord.get(base);
   if (ch.empty) return sym;
-  if (ch.type === 'major') return ch.tonic;
-  if (ch.type === 'minor') return ch.tonic + 'm';
-  return ch.symbol || sym;
+  let core;
+  if (ch.type === 'major') core = ch.tonic;
+  else if (ch.type === 'minor') core = ch.tonic + 'm';
+  else core = ch.symbol || base;
+  return core + slash;
 }
 
 /* akor sembolünden chroma → derece etiketi haritası */
@@ -359,6 +382,31 @@ function aktifBasOnce(){
   return out;
 }
 
+/* çift değiştirgeçli adı sadeleştir (G## → A, Cbb → B♭); tek diyez/bemol korunur */
+function simpleNote(n){ return /##|bb/.test(n) ? (Note.simplify(n) || n) : n; }
+
+/* Chord.detect'i daha akıllı sırala: çift-değiştirgeçli (G## gibi) ve
+   karmaşık aug/dim/#5 adları yerine sade Majör/minör adlarını öne al. */
+function betterDetect(names){
+  const raw = Chord.detect(names, { assumePerfectFifth: false }) || [];
+  return raw.map(sym => ({ sym, sc: detectScore(sym) })).sort((a, b) => a.sc - b.sc).map(o => o.sym);
+}
+function detectScore(sym){
+  const base = sym.split('/')[0];
+  const ch = Chord.get(base);
+  if (ch.empty) return 999;
+  const dbl = ch.notes.filter(n => /##|bb/.test(n)).length;   // çift-değiştirgeç = enharmonik çirkinlik
+  const t = ch.type, sy = ch.symbol || base;
+  let cat;
+  if (t === 'major' || t === 'minor') cat = 0;
+  else if (['major seventh','minor seventh','dominant seventh','sixth','minor sixth','suspended fourth','suspended second'].includes(t)) cat = 1;
+  else if (/ninth|eleventh|thirteenth/.test(t)) cat = 2;
+  else if (/augmented|diminished|half/.test(t)) cat = 3;
+  else cat = 2;
+  if (/[#b]5/.test(sy) && (t === 'minor' || /maj/i.test(sy))) cat = Math.max(cat, 4); // m#5 / maj#5 saçmalığı
+  return dbl * 10 + cat + sy.length * 0.01;
+}
+
 /* ===================== ses ===================== */
 let synth = null;
 async function sesHazir(){
@@ -376,13 +424,15 @@ async function sesHazir(){
 async function calNota(midi){ if (await sesHazir()) synth.triggerAttackRelease(Note.fromMidi(midi), '8n'); }
 async function calAkor(){
   if (!(await sesHazir())) return;
-  const ms = [...state.notes.keys()].sort((a, b) => a - b);
+  let ms;
+  if (state.mode === 'akor' && state.pVoicings[state.pIndex]) ms = state.pVoicings[state.pIndex].midis.slice();
+  else ms = [...state.notes.keys()];
+  ms.sort((a, b) => a - b);
   const now = Tone.now();
   ms.forEach((m, i) => synth.triggerAttackRelease(Note.fromMidi(m), '2n', now + i * 0.035));
 }
 
-/* ===================== diziliş (voicing) üretimi ===================== */
-/* piyano: akor seslerini döndürüp tepeye yığ → kök / çevrimler */
+/* ===================== piyano çevrimleri ===================== */
 function yiginla(adlar, taban){
   const out = []; let zemin = taban;
   for (const n of adlar){
@@ -397,108 +447,158 @@ function piyanoCevrim(adlar, cevrim){
   for (let i = 0; i < cevrim; i++) arr.push(arr.shift());
   return yiginla(arr, 52); // ~E3'ten başla, görünür alanda ortalı
 }
+const CEVRIM_AD = ['kök', '1. çevrim', '2. çevrim', '3. çevrim', '4. çevrim', '5. çevrim', '6. çevrim'];
+function piyanoVoicings(symbol){
+  const ch = Chord.get(symbol);
+  if (ch.empty || !ch.notes.length) return [];
+  return ch.notes.map((_, inv) => ({ label: CEVRIM_AD[inv] || (inv + '. çevrim'), midis: piyanoCevrim(ch.notes, inv) }));
+}
 
-/* gitar: 5-perdelik pencereyi boyunca gezdir, her telde akor sesi seç */
-function gitarPozisyon(pcSet, kokPc){
-  const span = 4, gorulen = new Set(), out = [];
-  for (let bas = 0; bas <= 11; bas++){
+/* ===================== gitar pozisyonları (oynanabilir) =====================
+   CAGED taşınır barre şekilleri (E ve A şekli) + ezbere açık akorlar +
+   anatomik kısıtlı genel arama. Her aday DOĞRULANIR: açılım ≤4 perde,
+   açık tel varsa basılı notalar 1-4'te, ≤4 ayrı perde, kök sesi var. */
+const OPENC = OPEN.map(chromaOf);                  // tellerin açık chroma'sı
+const CAGED = { // rs = kökün bulunduğu tel; rel = barre perdesine göre [E A D G B e]
+  maj:  [{ rs: 0, rel: [0, 2, 2, 1, 0, 0] }, { rs: 1, rel: [null, 0, 2, 2, 2, 0] }],
+  min:  [{ rs: 0, rel: [0, 2, 2, 0, 0, 0] }, { rs: 1, rel: [null, 0, 2, 2, 1, 0] }],
+  dom7: [{ rs: 0, rel: [0, 2, 0, 1, 0, 0] }, { rs: 1, rel: [null, 0, 2, 0, 2, 0] }],
+  maj7: [{ rs: 0, rel: [0, 2, 1, 1, 0, 0] }, { rs: 1, rel: [null, 0, 2, 1, 2, 0] }],
+  min7: [{ rs: 0, rel: [0, 2, 0, 0, 0, 0] }, { rs: 1, rel: [null, 0, 2, 0, 1, 0] }],
+};
+const ACIK = { // ezbere açık akorlar (E/A şeklinin açık biçimi CAGED'ten zaten çıkar)
+  'C:maj': [null, 3, 2, 0, 1, 0], 'G:maj': [3, 2, 0, 0, 0, 3], 'D:maj': [null, null, 0, 2, 3, 2],
+  'D:min': [null, null, 0, 2, 3, 1],
+  'C:dom7': [null, 3, 2, 3, 1, 0], 'G:dom7': [3, 2, 0, 0, 0, 1], 'D:dom7': [null, null, 0, 2, 1, 2], 'B:dom7': [null, 2, 1, 2, 0, 2],
+  'C:maj7': [null, 3, 2, 0, 0, 0], 'G:maj7': [3, 2, 0, 0, 0, 2], 'D:maj7': [null, null, 0, 2, 2, 2],
+  'D:min7': [null, null, 0, 2, 1, 1],
+};
+function nitelikAnahtari(ch){
+  const I = new Set(ch.intervals);
+  const ext = ['6M', '6m', '9M', '9m', '9A', '11P', '11A', '13M', '13m'].some(x => I.has(x));
+  const third = I.has('3M') ? 'M' : I.has('3m') ? 'm' : null;
+  const sev = I.has('7M') ? 'maj' : I.has('7m') ? 'dom' : null;
+  const fifth = I.has('5P') ? 'P' : null;
+  if (ext || !third || !fifth) return null;        // genişletilmiş/aug/dim/sus → genel arama
+  if (third === 'M' && !sev) return 'maj';
+  if (third === 'm' && !sev) return 'min';
+  if (third === 'M' && sev === 'dom') return 'dom7';
+  if (third === 'M' && sev === 'maj') return 'maj7';
+  if (third === 'm' && sev === 'dom') return 'min7';
+  return null;
+}
+/* bir grip'i doğrula → geçerliyse {frets,minFret,strings,isRoot} */
+function dogrula(sec, pcSet, rootC){
+  const sesli = [];
+  sec.forEach((f, s) => { if (f !== null && f >= 0 && f <= FRET) sesli.push({ s, f, midi: OPEN[s] + f }); });
+  if (sesli.length < 4) return null;
+  for (const x of sesli) if (!pcSet.has(chromaOf(x.midi))) return null;   // yabancı ses yok
+  const chromas = new Set(sesli.map(x => chromaOf(x.midi)));
+  if (!chromas.has(rootC)) return null;                                   // kök bulunmalı
+  if (chromas.size < Math.min(pcSet.size, 3)) return null;
+  const basili = sesli.map(x => x.f).filter(f => f > 0);
+  const minF = basili.length ? Math.min(...basili) : 0;
+  const maxF = basili.length ? Math.max(...basili) : 0;
+  const acik = sesli.some(x => x.f === 0);
+  if (maxF - minF > 4) return null;                                       // 4 perdeden geniş = olanaksız
+  if (acik && maxF > 4) return null;                                      // açık tel + yüksek perde = olanaksız
+  if (new Set(basili).size > 4) return null;                             // 4'ten çok ayrı perde (parmak)
+  const bass = sesli.reduce((a, b) => a.midi < b.midi ? a : b);
+  return { frets: sesli, minFret: minF, strings: sesli.length, isRoot: chromaOf(bass.midi) === rootC, acik };
+}
+function genelGritler(pcSet){
+  const grids = [], pick = (lo, hi, acikIzin) => {
     const sec = [];
     for (let s = 0; s < 6; s++){
       const ops = [];
-      for (let f = 0; f <= FRET; f++){
-        if (f !== 0 && (f < bas || f > bas + span)) continue;
-        if (pcSet.has(chromaOf(OPEN[s] + f))) ops.push(f);
-      }
+      if (acikIzin && pcSet.has(OPENC[s])) ops.push(0);
+      for (let f = Math.max(lo, 1); f <= hi; f++) if (pcSet.has(chromaOf(OPEN[s] + f))) ops.push(f);
       sec.push(ops.length ? Math.min(...ops) : null);
     }
-    const sesli = [];
-    sec.forEach((f, s) => { if (f !== null) sesli.push({ s, f, midi: OPEN[s] + f }); });
-    if (sesli.length < 4) continue;
-    const chromas = new Set(sesli.map(x => chromaOf(x.midi)));
-    let kapsar = true; pcSet.forEach(pc => { if (!chromas.has(pc)) kapsar = false; });
-    if (!kapsar) continue;
-    const basili = sesli.map(x => x.f).filter(f => f > 0);
-    const minF = basili.length ? Math.min(...basili) : 0;
-    const maxF = basili.length ? Math.max(...basili) : 0;
-    if (maxF - minF > span) continue;
-    const bass = sesli.reduce((a, b) => a.midi < b.midi ? a : b);
-    const sig = sec.map(f => f === null ? 'x' : f).join('-');
-    if (gorulen.has(sig)) continue; gorulen.add(sig);
-    out.push({ frets: sesli, minFret: minF, teller: sesli.length, kok: chromaOf(bass.midi) === kokPc });
-  }
-  out.sort((a, b) => (b.kok - a.kok) || (a.minFret - b.minFret) || (b.teller - a.teller));
-  return out.slice(0, 6);
+    return sec;
+  };
+  grids.push(pick(1, 4, true));                                  // açık pozisyon
+  for (let b = 1; b <= 11; b++) grids.push(pick(b, b + 4, false)); // taşınır pozisyonlar
+  return grids;
 }
-
-const CEVRIM_AD = ['kök', '1. çevrim', '2. çevrim', '3. çevrim', '4. çevrim', '5. çevrim', '6. çevrim'];
-function notlariDizi(){ return [...state.notes.entries()].map(([midi, fret]) => ({ midi, fret })); }
-
-function dizilisYap(symbol, calinaniEkle){
-  const list = [];
-  if (calinaniEkle && state.notes.size) list.push({ label: 'Çalınan diziliş', notes: notlariDizi() });
-  if (symbol){
-    const ch = Chord.get(symbol);
-    if (!ch.empty && ch.notes.length){
-      ch.notes.forEach((_, inv) => {
-        const midis = piyanoCevrim(ch.notes, inv);
-        list.push({ label: `Piyano · ${CEVRIM_AD[inv] || (inv + '. çevrim')}`,
-          notes: midis.map(m => ({ midi: m, fret: null })) });
-      });
-      const pcSet = new Set(ch.notes.map(n => Note.chroma(n)));
-      const kokPc = Note.chroma(ch.tonic || ch.notes[0]);
-      gitarPozisyon(pcSet, kokPc).forEach(v => {
-        const ad = v.minFret === 0 ? 'açık pozisyon' : `${v.minFret}. perde pozisyonu`;
-        list.push({ label: `Gitar · ${ad}${v.kok ? '' : ' (çevrim)'}`,
-          notes: v.frets.map(x => ({ midi: x.midi, fret: { s: x.s, f: x.f } })) });
-      });
-    }
-  }
-  state.voicings = list;
-  state.voiceIndex = 0;
+function gitarEtiket(v){
+  if (v.minFret === 0 || (v.acik && v.minFret <= 3)) return v.isRoot ? 'açık akor' : 'açık · çevrim';
+  return `${v.minFret}. perde${v.isRoot ? '' : ' · çevrim'}`;
 }
-function dizilisUygula(i){
-  const e = state.voicings[i]; if (!e) return;
-  state.notes = new Map(e.notes.map(n => [n.midi, n.fret]));
-  state.voiceIndex = i;
-  ciz();
+function gitarVoicings(symbol){
+  const ch = Chord.get(symbol);
+  if (ch.empty || !ch.notes.length) return [];
+  const pcSet = new Set(ch.notes.map(n => Note.chroma(n)));
+  const rootC = Note.chroma(ch.tonic || ch.notes[0]);
+  const anahtar = nitelikAnahtari(ch), rootName = PC_AD[rootC];
+  const cands = []; // {sec, tier}  (tier küçük = daha pratik/öncelikli)
+  if (anahtar && ACIK[rootName + ':' + anahtar]) cands.push({ sec: ACIK[rootName + ':' + anahtar], tier: 0 });
+  if (anahtar) for (const sh of CAGED[anahtar]){
+    const barre = ((rootC - OPENC[sh.rs]) % 12 + 12) % 12;
+    const sec = sh.rel.map(r => r === null ? null : barre + r);
+    if (sec.every(f => f === null || f <= FRET)) cands.push({ sec, tier: barre === 0 ? 0 : 1 });
+    if (barre + 12 <= FRET - 2) cands.push({ sec: sh.rel.map(r => r === null ? null : barre + 12 + r), tier: 2 });
+  }
+  genelGritler(pcSet).forEach(sec => cands.push({ sec, tier: 3 }));
+  const gor = new Set(), out = [];
+  for (const c of cands){
+    const v = dogrula(c.sec, pcSet, rootC); if (!v) continue;
+    const sig = v.frets.map(x => x.s + '.' + x.f).sort().join('-');
+    if (gor.has(sig)) continue; gor.add(sig);
+    v.tier = c.tier; v.label = gitarEtiket(v);
+    out.push(v);
+  }
+  out.sort((a, b) => a.tier - b.tier || (b.isRoot - a.isRoot) || a.minFret - b.minFret || b.strings - a.strings);
+  return out.slice(0, 8);
 }
 
 /* ===================== tespit ===================== */
 function tespitEt(){
-  state.detected = state.notes.size >= 2 ? Chord.detect(aktifBasOnce(), { assumePerfectFifth: false }) : [];
-  state.symbol = state.inputSymbol || state.detected[0] || null;
+  state.detected = state.notes.size >= 2 ? betterDetect(aktifBasOnce()) : [];
+  state.symbol = state.detected[0] || null;
 }
 
 /* ===================== eylemler ===================== */
-function manuelDuzenleme(){
-  state.inputSymbol = null;
-  tespitEt();
-  dizilisYap(state.symbol, true); // index 0 = "Çalınan diziliş" = mevcut notalar
-  ciz();
-}
+function manuelDuzenleme(){ tespitEt(); ciz(); }
+
 function akorUygula(symbol){
   let ch = Chord.get(symbol);
   if ((ch.empty || !ch.notes.length) && symbol.includes('/')){ symbol = symbol.split('/')[0]; ch = Chord.get(symbol); }
   if (ch.empty || !ch.notes.length) return false;
-  state.inputSymbol = ch.symbol || symbol;
-  dizilisYap(state.inputSymbol, false);
-  dizilisUygula(0);     // piyano kök pozisyonu
-  tespitEt();
+  state.mode = 'akor';
+  state.symbol = ch.symbol || symbol;
+  state.gVoicings = gitarVoicings(state.symbol);
+  state.pVoicings = piyanoVoicings(state.symbol);
+  state.gIndex = 0; state.pIndex = 0;
+  state.detected = betterDetect(ch.notes.map(n => PC_AD[Note.chroma(n)]));
   ciz();
   return true;
 }
 function temizle(){
-  state.notes.clear(); state.inputSymbol = null; state.voicings = []; state.voiceIndex = 0;
-  tespitEt(); ciz();
+  state.mode = 'serbest'; state.notes.clear();
+  state.symbol = null; state.detected = []; state.gVoicings = []; state.pVoicings = []; state.gIndex = 0; state.pIndex = 0;
+  ciz();
+}
+/* akor kipinden serbeste geçerken DOKUNULAN enstrümanın notalarıyla tohumla */
+function gitarVoicingNotalari(){
+  const v = state.gVoicings[state.gIndex], m = new Map();
+  if (v) v.frets.forEach(x => m.set(x.midi, { s: x.s, f: x.f }));
+  return m;
+}
+function piyanoVoicingNotalari(){
+  const v = state.pVoicings[state.pIndex], m = new Map();
+  if (v) v.midis.forEach(mi => m.set(mi, null));
+  return m;
 }
 function perdeTikla(s, f){
-  const midi = OPEN[s] + f;
-  const cur = state.notes.get(midi);
+  if (state.mode === 'akor'){ state.notes = gitarVoicingNotalari(); state.mode = 'serbest'; }
+  const midi = OPEN[s] + f, cur = state.notes.get(midi);
   if (state.notes.has(midi) && cur && cur.s === s && cur.f === f){ state.notes.delete(midi); }
   else { state.notes.set(midi, { s, f }); calNota(midi); }
   manuelDuzenleme();
 }
 function tusTikla(midi){
+  if (state.mode === 'akor'){ state.notes = piyanoVoicingNotalari(); state.mode = 'serbest'; }
   if (state.notes.has(midi)){ state.notes.delete(midi); }
   else { state.notes.set(midi, null); calNota(midi); }
   manuelDuzenleme();
@@ -514,8 +614,8 @@ function fretboardKur(){
   numRow.appendChild(cell('fb-num', '')); numRow.appendChild(cell('fb-num', '0'));
   for (let f = 1; f <= FRET; f++) numRow.appendChild(cell('fb-num' + (ISARET.has(f) ? ' mark' : ''), String(f)));
   fb.appendChild(numRow);
-  // her tel bir satır
-  for (let s = 0; s < 6; s++){
+  // her tel bir satır — TAB düzeni: tepede ince mi (s=5), altta kalın Mi (s=0)
+  for (let s = 5; s >= 0; s--){
     const row = document.createElement('div'); row.className = 'fb-row';
     const nm = document.createElement('div'); nm.className = 'fb-name'; nm.textContent = TEL_AD[s];
     row.appendChild(nm);
@@ -563,42 +663,45 @@ function piyanoKur(){
 }
 
 function ciz(){
-  const dmap = dereceMap(state.symbol);
-  const kokChroma = state.symbol ? Note.chroma(Chord.get(state.symbol).tonic || '') : -1;
+  const sym = state.symbol;
+  const dmap = dereceMap(sym);
+  const kokChroma = sym ? Note.chroma(Chord.get(sym).tonic || '') : -1;
 
-  // gitar — çakışmasız yerleşimi hesapla, sonra hücreleri boya
-  const place = guitarPlacements();
-  const onCell = new Map();
-  for (const [midi, fr] of place) onCell.set(fr.s + ':' + fr.f, midi);
+  // gitar ve piyanoda hangi notalar açık? (akor kipinde bağımsız diziliş, serbestte ortak)
+  const gOn = new Map();   // "s:f" -> midi
+  const pOn = new Set();   // midi
+  if (state.mode === 'akor'){
+    const gv = state.gVoicings[state.gIndex]; if (gv) gv.frets.forEach(x => gOn.set(x.s + ':' + x.f, x.midi));
+    const pv = state.pVoicings[state.pIndex]; if (pv) pv.midis.forEach(m => pOn.add(m));
+  } else {
+    for (const [midi, fr] of guitarPlacements()) gOn.set(fr.s + ':' + fr.f, midi);
+    for (const midi of state.notes.keys()) pOn.add(midi);
+  }
+
   fb.querySelectorAll('.cell').forEach(c => {
-    const id = c.dataset.s + ':' + c.dataset.f;
-    const midi = onCell.get(id);
+    const midi = gOn.get(c.dataset.s + ':' + c.dataset.f);
     const on = midi !== undefined;
     c.classList.toggle('on', on);
     c.classList.toggle('kok', on && chromaOf(midi) === kokChroma);
     if (on) c.querySelector('.dot').textContent = dmap.get(chromaOf(midi)) || pcName(midi);
   });
-
-  // piyano
   piano.querySelectorAll('.wkey,.bkey').forEach(k => {
-    const midi = +k.dataset.midi;
-    const on = state.notes.has(midi);
+    const midi = +k.dataset.midi, on = pOn.has(midi);
     k.classList.toggle('on', on);
-    const isKok = chromaOf(midi) === kokChroma;
-    k.classList.toggle('kok', on && isKok);
+    k.classList.toggle('kok', on && chromaOf(midi) === kokChroma);
     const lab = k.querySelector('.klab');
     if (on) lab.textContent = dmap.get(chromaOf(midi)) || pcName(midi);
-    else if (k.classList.contains('wkey') && chromaOf(midi) === 0){ lab.textContent = 'C' + (Math.floor(midi / 12) - 1); }
+    else if (k.classList.contains('wkey') && chromaOf(midi) === 0) lab.textContent = 'C' + (Math.floor(midi / 12) - 1);
     else lab.textContent = '';
   });
 
   okumaCiz();
-  dizilisCiz();
+  cyclersCiz();
 }
 
 function okumaCiz(){
   const ad = $('#ad'), adAlt = $('#adAlt'), bilgi = $('#bilgi');
-  if (!state.notes.size){
+  if (state.mode === 'serbest' && !state.notes.size){
     ad.firstChild.nodeValue = '—'; adAlt.textContent = 'bir akor seç';
     bilgi.innerHTML = '<span class="et">Gitar perdesine ya da piyano tuşuna bas; akoru yaz ya da kur.</span>';
     return;
@@ -607,13 +710,15 @@ function okumaCiz(){
     const ch = Chord.get(state.symbol);
     ad.firstChild.nodeValue = prettySym(state.symbol);
     adAlt.textContent = ch.name || '';
-    const notes = ch.notes.join(' · ');
+    const notes = ch.notes.map(simpleNote).join(' · ');
     const ints = ch.intervals.map(t => IV[t] || t).join(' ');
-    let alt = '';
-    const alts = state.detected.filter(d => d !== (ch.symbol || state.symbol)).slice(0, 4);
-    if (alts.length) alt = `<div class="alt-akorlar">${alts.map(a => `<button data-a="${a}">${prettySym(a)}</button>`).join('')}</div>`;
-    bilgi.innerHTML = `<span class="et">Notalar:</span> ${notes}<br><span class="et">Dereceler:</span> ${ints}${alt}`;
+    const primary = prettySym(state.symbol), gor = new Set([primary]), alts = [];
+    for (const d of state.detected){ const p = prettySym(d); if (!gor.has(p)){ gor.add(p); alts.push(d); } if (alts.length >= 4) break; }
+    const alt = alts.length ? `<div class="alt-akorlar">${alts.map(a => `<button data-a="${a}">${prettySym(a)}</button>`).join('')}</div>` : '';
+    const ip = state.mode === 'serbest' ? '<div class="ip-akor"><button class="ip-yukle">↳ çevrim ve pozisyonları gör</button></div>' : '';
+    bilgi.innerHTML = `<span class="et">Notalar:</span> ${notes}<br><span class="et">Dereceler:</span> ${ints}${alt}${ip}`;
     bilgi.querySelectorAll('.alt-akorlar button').forEach(b => b.onclick = () => akorUygula(b.dataset.a));
+    const y = bilgi.querySelector('.ip-yukle'); if (y) y.onclick = () => akorUygula(state.symbol);
   } else {
     ad.firstChild.nodeValue = '?'; adAlt.textContent = 'tanımlanamadı';
     const ms = [...state.notes.keys()].sort((a, b) => a - b);
@@ -621,24 +726,24 @@ function okumaCiz(){
   }
 }
 
-function dizilisCiz(){
-  const sel = $('#vSelect'), say = $('#vSay');
-  if (!state.voicings.length){
-    sel.innerHTML = '<option>—</option>'; sel.disabled = true; say.textContent = '';
-    return;
-  }
-  sel.disabled = false;
-  sel.innerHTML = state.voicings.map((v, i) => `<option value="${i}"${i === state.voiceIndex ? ' selected' : ''}>${v.label}</option>`).join('');
-  say.textContent = `${state.voiceIndex + 1} / ${state.voicings.length}`;
+function cyclersCiz(){
+  const akor = state.mode === 'akor';
+  const gv = state.gVoicings, gOk = akor && gv.length > 0;
+  $('#gPrev').disabled = !gOk; $('#gNext').disabled = !gOk;
+  $('#gLab').textContent = gOk ? `${gv[state.gIndex].label} · ${state.gIndex + 1}/${gv.length}` : '— elle';
+  const pv = state.pVoicings, pOk = akor && pv.length > 0;
+  $('#pPrev').disabled = !pOk; $('#pNext').disabled = !pOk;
+  $('#pLab').textContent = pOk ? `${pv[state.pIndex].label} · ${state.pIndex + 1}/${pv.length}` : '— elle';
 }
 
-/* ===================== çubuk olayları ===================== */
+/* ===================== eylem çubuğu + bağımsız çevrim okları ===================== */
 $('#cal').onclick = calAkor;
 $('#temizleTus').onclick = temizle;
 $('#kaydet').onclick = kaydet;
-$('#vPrev').onclick = () => { if (state.voicings.length) dizilisUygula((state.voiceIndex - 1 + state.voicings.length) % state.voicings.length); };
-$('#vNext').onclick = () => { if (state.voicings.length) dizilisUygula((state.voiceIndex + 1) % state.voicings.length); };
-$('#vSelect').onchange = e => dizilisUygula(+e.target.value);
+$('#gPrev').onclick = () => { const n = state.gVoicings.length; if (state.mode === 'akor' && n){ state.gIndex = (state.gIndex - 1 + n) % n; ciz(); } };
+$('#gNext').onclick = () => { const n = state.gVoicings.length; if (state.mode === 'akor' && n){ state.gIndex = (state.gIndex + 1) % n; ciz(); } };
+$('#pPrev').onclick = () => { const n = state.pVoicings.length; if (state.mode === 'akor' && n){ state.pIndex = (state.pIndex - 1 + n) % n; ciz(); } };
+$('#pNext').onclick = () => { const n = state.pVoicings.length; if (state.mode === 'akor' && n){ state.pIndex = (state.pIndex + 1) % n; ciz(); } };
 
 /* ===================== arama ===================== */
 const ara = $('#ara'), araMesaj = $('#araMesaj');
@@ -704,10 +809,10 @@ $('#kurUygula').onclick = e => { const s = e.target.dataset.symbol; if (s) akorU
 
 /* ===================== favoriler · gam · öneri ===================== */
 function kaydet(){
-  if (!state.notes.size) return;
+  if (state.mode !== 'akor' && !state.notes.size) return;
   const sym = state.symbol;
-  const noteNames = sym && !Chord.get(sym).empty ? Chord.get(sym).notes : aktifBasOnce();
-  const label = sym ? prettySym(sym) : aktifBasOnce().join(' ');
+  const noteNames = sym && !Chord.get(sym).empty ? Chord.get(sym).notes.map(simpleNote) : aktifBasOnce();
+  const label = sym ? prettySym(sym) : noteNames.join(' ');
   state.favorites.push({ symbol: sym, label, noteNames });
   persist(); favCiz();
 }
