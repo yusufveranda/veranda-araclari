@@ -86,6 +86,10 @@ body{transition:background .4s,color .4s}
 .okart h3{font-family:'Playfair Display',serif;font-weight:700;font-size:25px;color:var(--mur);margin-top:10px}
 .okart p{font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--soluk);line-height:1.55;margin-top:5px}
 
+/* ===== üst bar (her iki görünümde): geri tuşu + ses/tema ===== */
+.tepe-bar{display:flex;align-items:center;justify-content:space-between;margin-top:6px;min-height:38px}
+.tepe-bar .ust-araclar{margin-top:0}
+.sakli{visibility:hidden;pointer-events:none}
 /* ===== oyun ekranı: mini wordmark + büyük tablar + farklı mod ===== */
 .oyun-ust{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
 .oyun-ust .ust-araclar{margin-top:0}
@@ -260,11 +264,19 @@ body{transition:background .4s,color .4s}
 </header>
 
 <main class="oyun">
+  <div class="tepe-bar">
+    <button class="vmini sakli" id="hubDon">‹ verandle</button>
+    <div class="ust-araclar">
+      <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
+      <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
+    </div>
+  </div>
+
   <!-- ===== HUB (vitrin) ===== -->
   <section id="hub">
     <div class="vhero">
       <svg class="vhero-art" viewBox="0 0 360 196" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Verandada sevimli bir darağacında sallanan çöp adam">
-        <circle cx="300" cy="60" r="44" fill="var(--gunes)" opacity=".85"/>
+        <circle cx="236" cy="92" r="60" fill="var(--gunes)" opacity=".9"/>
         <!-- veranda zemini + korkuluk -->
         <rect x="0" y="168" width="360" height="28" fill="var(--mur)"/>
         <g stroke="var(--mur)" stroke-width="5" stroke-linecap="round">
@@ -321,14 +333,6 @@ body{transition:background .4s,color .4s}
 
   <!-- ===== oyun ekranı ===== -->
   <section id="oyunEkran" class="gizli">
-    <div class="oyun-ust">
-      <button class="vmini" id="hubDon">‹ verandle</button>
-      <div class="ust-araclar">
-        <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
-        <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
-      </div>
-    </div>
-
     <div class="oyun-tablar" id="oyunSeg">
       <button data-oyun="harfiyat" class="secili">harfiyat</button>
       <button data-oyun="iskelime">taraça</button>
@@ -730,11 +734,12 @@ function sesUygula(){
 }
 
 /* ===== hub <-> oyun geçişi ===== */
-function hubGoster(){ document.getElementById('oyunEkran').classList.add('gizli'); document.getElementById('hub').classList.remove('gizli'); window.scrollTo(0,0); }
+function hubGoster(){ document.getElementById('oyunEkran').classList.add('gizli'); document.getElementById('hub').classList.remove('gizli'); document.getElementById('hubDon').classList.add('sakli'); window.scrollTo(0,0); }
 function hubaDon(){ if(tahtalar.length) durumKaydetBellek(); hubGoster(); }
 function oyunaGir(g){
   document.getElementById('hub').classList.add('gizli');
   document.getElementById('oyunEkran').classList.remove('gizli');
+  document.getElementById('hubDon').classList.remove('sakli');
   if(g!==oyun){ if(tahtalar.length) durumKaydetBellek(); oyun=g;
     document.querySelectorAll('#oyunSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.oyun===g)); }
   oyunlaKur();
