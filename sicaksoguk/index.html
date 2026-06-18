@@ -34,7 +34,7 @@ body.gece{
   --acc:#86B98E; --acc-soft:rgba(134,185,142,.14); --vurgu:#E0935A; --shadow:rgba(0,0,0,.4);
 }
 body{transition:background .4s,color .4s}
-.oyun{max-width:520px;margin:0 auto;padding:0 14px 80px;position:relative}
+.oyun{max-width:800px;margin:0 auto;padding:0 20px 90px;position:relative}
 
 /* ---- üst bar ---- */
 .tepe-bar{display:flex;align-items:center;justify-content:space-between;padding-top:14px;gap:10px}
@@ -66,7 +66,7 @@ body{transition:background .4s,color .4s}
 .durum span{display:flex;flex-direction:column;align-items:center;gap:1px}
 
 /* ---- giriş ---- */
-.giris{display:flex;gap:8px;margin-top:18px}
+.giris{display:flex;gap:8px;margin-top:18px;max-width:520px;margin-left:auto;margin-right:auto}
 .giris input{flex:1;font-family:'Libre Baskerville',serif;font-size:17px;color:var(--mur);background:var(--kutu-bos);
   border:1.5px solid var(--kutu-cizgi);border-radius:11px;padding:13px 15px;outline:none}
 .giris input:focus{border-color:var(--kirmizi)}
@@ -78,27 +78,28 @@ body{transition:background .4s,color .4s}
 .mesaj{min-height:20px;text-align:center;margin-top:11px;font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--kirmizi);transition:opacity .2s}
 
 /* ---- sonuç tablosu: # · kelime · °C · ‰ ilerleme (Cemantle düzeni) ---- */
-.tablo-bas,.satir{display:grid;grid-template-columns:28px 1fr 86px 138px;align-items:center;gap:8px}
-.tablo-bas{margin-top:16px;padding:0 12px 7px;border-bottom:1.5px solid var(--kutu-cizgi);
-  font-family:'Libre Baskerville',serif;font-size:11px;font-weight:700;color:var(--soluk);text-transform:uppercase;letter-spacing:.03em}
+.tablo-bas,.satir{display:grid;grid-template-columns:42px minmax(80px,1fr) 132px minmax(190px,1.7fr);align-items:center;gap:14px}
+.tablo-bas{margin-top:18px;padding:0 16px 8px;border-bottom:1.5px solid var(--kutu-cizgi);
+  font-family:'Libre Baskerville',serif;font-size:11.5px;font-weight:700;color:var(--soluk);text-transform:uppercase;letter-spacing:.04em}
 .tablo-bas .s-sic{text-align:right}
-.liste{margin-top:5px;display:flex;flex-direction:column;gap:4px}
-.satir{position:relative;padding:9px 12px;border-radius:9px;background:var(--mat);border:1.5px solid transparent;transition:border-color .25s}
-.satir .s-no{font-family:'Libre Baskerville',serif;font-size:13px;font-weight:700;color:var(--soluk)}
-.satir .s-kel{font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;color:var(--mur);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.satir .s-sic{display:flex;align-items:center;justify-content:flex-end;gap:5px;font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--soluk)}
-.satir .s-sic .yuz{font-size:15px;line-height:1}
+.liste{margin-top:6px;display:flex;flex-direction:column;gap:5px}
+.satir{position:relative;padding:11px 16px;border-radius:10px;background:var(--mat);border:1.5px solid transparent;transition:border-color .25s}
+.satir .s-no{font-family:'Libre Baskerville',serif;font-size:13.5px;font-weight:700;color:var(--soluk)}
+.satir .s-kel{font-family:'Libre Baskerville',serif;font-weight:700;font-size:17px;color:var(--mur);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.satir .s-sic{display:flex;align-items:center;justify-content:flex-end;gap:6px;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--soluk)}
+.satir .s-sic .yuz{font-size:16px;line-height:1}
 /* ‰ ilerleme çubuğu (yalnız en yakın 1000) */
-.satir .s-ilr{display:flex;align-items:center;gap:7px}
-.s-ilr .ilr-no{font-family:'Playfair Display',serif;font-weight:700;font-size:13px;color:var(--mur);min-width:32px;text-align:right}
-.s-ilr .ilr-cubuk{flex:1;height:20px;background:var(--ince);border-radius:5px;overflow:hidden;position:relative}
+.satir .s-ilr{display:flex;align-items:center;gap:9px}
+.s-ilr .ilr-no{font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--mur);min-width:36px;text-align:right}
+.s-ilr .ilr-cubuk{flex:1;height:24px;background:var(--ince);border-radius:6px;overflow:hidden;position:relative}
 .s-ilr .ilr-cubuk i{position:absolute;left:0;top:0;bottom:0;background-image:linear-gradient(90deg,#FFD23F 0%,#FF8A1E 55%,#E8472E 100%);
-  background-repeat:no-repeat;background-position:left center;border-radius:5px;transition:width .5s ease}
+  background-repeat:no-repeat;background-position:left center;border-radius:6px;transition:width .9s cubic-bezier(.22,.61,.36,1)}
 .s-ilr.bingo .ilr-cubuk b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-weight:800;font-size:12px;color:#3a1400;letter-spacing:.05em}
+  font-family:'Playfair Display',serif;font-weight:800;font-size:13px;color:#3a1400;letter-spacing:.06em}
 .satir.yeni{animation:vurgula 1.6s ease}
-@keyframes vurgula{0%,55%{border-color:var(--kirmizi);box-shadow:0 0 0 2px var(--kirmizi-yum)}100%{border-color:transparent;box-shadow:none}}
+@keyframes vurgula{0%{border-color:var(--kirmizi);box-shadow:0 0 0 2px var(--kirmizi-yum);transform:translateY(-3px)}55%{border-color:var(--kirmizi);box-shadow:0 0 0 2px var(--kirmizi-yum);transform:none}100%{border-color:transparent;box-shadow:none}}
 .satir.son{border-color:var(--kirmizi)}
+.satir .s-no.ip{color:var(--kirmizi)}     /* ipucuyla gelen tahmin */
 
 /* °C metin rengi (sıcak → soğuk) */
 .t-ates  .s-sic{color:var(--ates)}
@@ -120,9 +121,24 @@ body{transition:background .4s,color .4s}
 .sonuc-dugmeler button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--mat-golge)}
 .sonuc-dugmeler button.vurgu{background:var(--kirmizi);color:#fff;border-color:var(--kirmizi)}
 
-.altlik{margin-top:22px;text-align:center}
-.altlik button{font-family:'Libre Baskerville',serif;font-size:13px;color:var(--soluk);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:6px}
-.altlik button:hover{color:var(--kirmizi)}
+.altlik{margin-top:24px;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap}
+.ipucu-btn{font-family:'Libre Baskerville',serif;font-size:14px;font-weight:700;color:var(--kirmizi);background:var(--mat);
+  border:1.5px solid var(--kirmizi);border-radius:22px;padding:9px 20px;cursor:pointer;box-shadow:2px 3px 0 var(--kirmizi-yum);transition:.12s}
+.ipucu-btn:hover{transform:translateY(-1px)} .ipucu-btn:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--kirmizi-yum)}
+.pes-btn{font-family:'Libre Baskerville',serif;font-size:13px;color:var(--soluk);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:6px}
+.pes-btn:hover{color:var(--kirmizi)}
+
+/* en yakın kelimeler (oyun bitince) */
+.yakinlar{margin-top:14px;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;padding:14px 16px;box-shadow:3px 4px 0 var(--mat-golge);animation:gel .35s ease}
+.yakinlar h3{font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:var(--mur);margin-bottom:4px}
+.yakinlar .ipucu-not{font-family:'Libre Baskerville',serif;font-size:12px;color:var(--soluk);margin-bottom:10px}
+.yakin-liste{max-height:380px;overflow:auto;display:flex;flex-direction:column;gap:2px;padding-right:4px}
+.yakin-satir{display:grid;grid-template-columns:48px 1fr 70px;gap:10px;align-items:center;padding:6px 12px;border-radius:7px}
+.yakin-satir .yr{font-family:'Playfair Display',serif;font-weight:700;font-size:12.5px;color:var(--soluk);text-align:right}
+.yakin-satir .yk{font-family:'Libre Baskerville',serif;font-weight:700;font-size:14.5px;color:var(--mur)}
+.yakin-satir .yc{font-family:'Playfair Display',serif;font-weight:700;font-size:13px;color:var(--soluk);text-align:right}
+.yakin-satir.bende{background:var(--kirmizi-yum)} .yakin-satir.bende .yk{color:var(--kirmizi)}
+.yakin-satir.gizli{background:var(--kirmizi);border-radius:8px} .yakin-satir.gizli .yr,.yakin-satir.gizli .yk,.yakin-satir.gizli .yc{color:#fff}
 
 /* yardım modalı */
 .perde{position:fixed;inset:0;background:rgba(20,14,8,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
@@ -142,13 +158,15 @@ body{transition:background .4s,color .4s}
 footer{text-align:center;font-family:'Libre Baskerville',serif;font-size:11.5px;color:var(--soluk);margin-top:34px}
 footer a{color:var(--soluk)}
 
-@media(max-width:480px){
+@media(max-width:560px){
   .adlik h1{font-size:38px}
-  .tablo-bas,.satir{grid-template-columns:22px 1fr 70px 104px;gap:6px}
-  .satir{padding:8px 10px}
-  .satir .s-kel{font-size:15px} .satir .s-sic{font-size:15px}
-  .s-ilr .ilr-no{min-width:26px;font-size:12px}
-  .tablo-bas{font-size:10px;padding:0 10px 6px}
+  .tablo-bas,.satir{grid-template-columns:22px minmax(0,1fr) 72px minmax(96px,1.2fr);gap:7px}
+  .satir{padding:9px 11px}
+  .satir .s-kel{font-size:15px} .satir .s-sic{font-size:15.5px}
+  .s-ilr{gap:6px} .s-ilr .ilr-no{min-width:27px;font-size:12px}
+  .s-ilr .ilr-cubuk{height:20px}
+  .tablo-bas{font-size:10px;padding:0 11px 6px;gap:7px}
+  .yakin-satir{grid-template-columns:42px 1fr 60px;gap:8px;padding:5px 10px}
 }
 </style>
 </head>
@@ -197,8 +215,9 @@ footer a{color:var(--soluk)}
     </div>
     <div class="liste" id="liste"></div>
 
-    <div class="altlik">
-      <button id="pesBtn">pes et / cevabı gör</button>
+    <div class="altlik" id="altlik">
+      <button class="ipucu-btn" id="ipucuBtn">💡 ipucu al</button>
+      <button class="pes-btn" id="pesBtn">pes et / cevabı gör</button>
     </div>
   </div>
 
@@ -212,7 +231,7 @@ footer a{color:var(--soluk)}
     <h2>sıcak soğuk<span class="nokta">.</span></h2>
     <p>Gizli bir kelime var. Aklına gelen kelimeleri yaz; her tahmin, gizli kelimeye <b>anlamca ne kadar yakın</b> olduğuna göre bir <b>°C sıcaklık</b> alır. Yaklaştıkça derece yükselir, ısınırsın: <b>🥶 soğuk</b>, <b>😎 sıcak</b>, doğru kelime <b>🥳 100°C</b>. Çok alakasızlar <b>eksiye</b> düşer (<b>🧊 buz gibi</b>).</p>
     <p>Tahmin gizli kelimenin <b>en yakın 1000 komşusundan</b> biriyse, sağda bir <b>‰ ilerleme çubuğu</b> dolar: <b>1000</b> doğru kelime (BINGO), <b>999</b> en yakın komşu, <b>1</b> en uzak. Çubuğu gördüysen artık yakınsın; o sütun boşsa henüz ilk 1000'in dışındasın.</p>
-    <p>Liste sıcaktan soğuğa sıralanır; <b>#</b> kaçıncı tahminin olduğunu gösterir. Doğru kelimeyi bulana kadar tahmin sınırın yok.</p>
+    <p>Liste sıcaktan soğuğa sıralanır; <b>#</b> kaçıncı tahminin olduğunu gösterir. Tıkandıysan <b>💡 ipucu al</b>; en yakın 1000 içinden, en iyi tahmininle cevabın arasından bir kelime verir. Oyun bitince <b>en yakın kelimeler</b> listesinden komşuluğu inceleyebilirsin. Tahmin sınırın yok.</p>
     <div class="olcek" id="olcekOrnek"></div>
     <p style="font-size:12.5px;color:var(--soluk)">Yakınlık, kelimelerin şiir ve sözlük metinlerindeki kullanımından öğrenilmiştir; bazen şaşırtıcı ama hep bir mantığı var.</p>
     <button class="kapat" id="yardimKapat">anladım</button>
@@ -248,7 +267,7 @@ function vektorleriCoz(){
 function benzerlik(i,j){ let s=0; const a=i*D,b=j*D; for(let k=0;k<D;k++) s+=M[a+k]*M[b+k]; return s; }
 
 // ---- durum ----
-const S = { mod:'gun', gizli:'', gizliIdx:-1, rutbe:null, esik:null, tahminler:[], bitti:false, pes:false, gunNo:0 };
+const S = { mod:'gun', gizli:'', gizliIdx:-1, rutbe:null, enYakinlar:[], tahminler:[], bitti:false, pes:false, gunNo:0, sonW:null, animYeni:false };
 
 function gunNumarasi(){
   const bas = new Date(2026,0,1);
@@ -276,12 +295,12 @@ function gizliyiKur(kelime){
   for(let k=1;k<=999 && k<order.length;k++){
     S.rutbe.set(WORDS[order[k]], 1000-k);
   }
-  S.esik = {
-    enYakin: sims[order[1]]*100,
-    onuncu:  sims[order[Math.min(10,NW-1)]]*100,
-    yuzuncu: sims[order[Math.min(100,NW-1)]]*100,
-    bininci: sims[order[Math.min(1000,NW-1)]]*100
-  };
+  // en yakın 1000 (gizli dahil): rütbe sırasına göre {w,pct,rut} — bitince liste + ipucu için
+  S.enYakinlar = [];
+  for(let k=0;k<1000 && k<order.length;k++){
+    const j = order[k];
+    S.enYakinlar.push({ w:WORDS[j], pct:Math.round(sims[j]*10000)/100, rut:(k===0?1000:1000-k) });
+  }
 }
 
 // ---- sıcaklık bandı + emoji yüz (Cemantle: 🥳 buldun · 😎 sıcak/top1000 · 🥶 soğuk · 🧊 donuk) ----
@@ -319,24 +338,44 @@ function istatYaz(kazandiMi){
 }
 
 // ---- tahmin ----
+function tahminEkle(w, hint){
+  const sim = benzerlik(S.gizliIdx, IDX.get(w));
+  const pct = Math.round(sim*10000)/100;     // °C, iki ondalık
+  const rut = S.rutbe.get(w) ?? null;
+  S.tahminler.push({w, pct, rut, no:S.tahminler.length+1, hint:!!hint});
+  S.sonW = w;
+  S.animYeni = true;                          // yeni satır: çubuk + sayı yavaşça dolsun
+  if(w===S.gizli){ S.bitti=true; istatYaz(true); }
+  kaydet();
+  ciz();
+  if(S.bitti) kutla();
+}
 function tahminYap(ham){
   if(S.bitti) return;
   const w = trLower(ham.trim()).replace(/[^a-zçğıöşüâîû]/g,'');
   if(!w){ return; }
   if(!IDX.has(w)){ mesajVer('bu kelimeyi bilmiyorum 🤷'); return; }
-  const onceki = S.tahminler.find(t=>t.w===w);
-  if(onceki){ mesajVer('bunu zaten denedin'); vurgulaSatir(w); return; }
+  if(S.tahminler.find(t=>t.w===w)){ mesajVer('bunu zaten denedin'); vurgulaSatir(w); return; }
   mesajVer('');
-  const sim = benzerlik(S.gizliIdx, IDX.get(w));
-  const pct = Math.round(sim*10000)/100;     // °C, iki ondalık
-  const rut = S.rutbe.get(w) ?? null;
-  const kayit = {w, pct, rut, no:S.tahminler.length+1};
-  S.tahminler.push(kayit);
-  S.sonW = w;
-  if(w===S.gizli){ S.bitti=true; istatYaz(true); }
-  kaydet();
-  ciz();
-  if(S.bitti) kutla();
+  tahminEkle(w, false);
+}
+// ipucu: oyuncunun en iyi sırasıyla hedef (1000) arasında, ortalardan bir kelime ver
+function ipucuAl(){
+  if(S.bitti || !S.enYakinlar.length) return;
+  const enIyiRut = S.tahminler.reduce((m,t)=>Math.max(m, t.rut||0), 0);
+  let hedef = Math.round((enIyiRut + 1000)/2);          // yarı yol
+  hedef = Math.min(hedef, 992);                         // en yakın komşuyu birebir verme
+  // hedef rütbeye en yakın, henüz denenmemiş kelimeyi bul
+  const denenen = new Set(S.tahminler.map(t=>t.w));
+  let en=null, fark=1e9;
+  for(const e of S.enYakinlar){
+    if(e.rut>=1000 || denenen.has(e.w)) continue;       // gizliyi ve denenmişi atla
+    const d = Math.abs(e.rut - hedef);
+    if(d<fark){ fark=d; en=e; }
+  }
+  if(!en){ mesajVer('verecek yeni ipucu kalmadı'); return; }
+  mesajVer('ipucu: en yakın 1000 içinden bir kelime 💡');
+  tahminEkle(en.w, true);
 }
 
 let mesajZaman;
@@ -367,11 +406,23 @@ function ilerlemeHTML(t){
 }
 function satirHTML(t){
   const son = (t.w===S.sonW && !S.bitti) ? ' son' : '';
+  const no = t.hint ? '<span class="s-no ip" title="ipucu">💡</span>' : '<span class="s-no">'+t.no+'</span>';
   return '<div class="satir '+band(t)+son+'" data-w="'+t.w+'">'
-    + '<span class="s-no">'+t.no+'</span>'
+    + no
     + '<span class="s-kel">'+t.w+'</span>'
     + '<span class="s-sic">'+t.pct.toFixed(2)+'<span class="yuz">'+emoji(t)+'</span></span>'
     + ilerlemeHTML(t) + '</div>';
+}
+function sayiAnim(el, hedef, sure){
+  el.textContent = '0';
+  let bitti=false; const bas = performance.now();
+  (function adim(now){
+    if(bitti) return;
+    const p = Math.min(1, (now-bas)/sure), e = 1-Math.pow(1-p,3);
+    el.textContent = Math.round(e*hedef);
+    if(p<1) requestAnimationFrame(adim); else { el.textContent=hedef; bitti=true; }
+  })(bas);
+  setTimeout(()=>{ if(!bitti){ el.textContent=hedef; bitti=true; } }, sure+200); // rAF tetiklenmezse güvence
 }
 function ciz(){
   // durum
@@ -385,29 +436,47 @@ function ciz(){
   const sirali = S.tahminler.slice().sort((a,b)=>b.pct-a.pct);
   $('tabloBas').hidden = S.tahminler.length===0;
   $('liste').innerHTML = sirali.map(satirHTML).join('');
-  // yeni tahmini parlat + görünür kıl
+  // yeni tahmini görünür kıl; gerçekten yeniyse parlat + çubuğu/sayıyı yavaşça doldur
   if(S.sonW){
     const el = document.querySelector('.satir[data-w="'+CSS.escape(S.sonW)+'"]');
-    if(el){ el.classList.add('yeni'); el.scrollIntoView({block:'nearest'}); }
+    if(el){
+      el.scrollIntoView({block:'nearest'});
+      if(S.animYeni){
+        el.classList.add('yeni');
+        const son = S.tahminler.find(x=>x.w===S.sonW);
+        const fill = el.querySelector('.ilr-cubuk i'), no = el.querySelector('.ilr-no');
+        if(fill && son){
+          const hedefW = fill.style.width;                 // hedef genişlik
+          const hedefN = bulundu(son) ? 1000 : son.rut;
+          fill.style.width = '0%'; void el.offsetWidth;     // sıfırla + reflow
+          setTimeout(()=>{ fill.style.width = hedefW; }, 40); // CSS geçişiyle yavaşça dolar (setTimeout arka planda da çalışır)
+          if(no && hedefN!=null) sayiAnim(no, hedefN, 950);
+        }
+      }
+    }
   }
+  S.animYeni = false;
 
   // giriş durumu
   $('tahminGir').disabled = S.bitti;
   $('giris').querySelector('button').disabled = S.bitti;
-  $('pesBtn').style.display = (S.bitti) ? 'none' : '';
+  $('ipucuBtn').style.display = $('pesBtn').style.display = (S.bitti) ? 'none' : '';
 }
 
+function ipucuEki(){
+  const ip = S.tahminler.filter(t=>t.hint).length;
+  return ip ? ' · '+ip+' ipucu' : '';
+}
 function kutla(){
   const n = S.tahminler.length;
   const not = n<=10?'olağanüstü!':n<=25?'çok iyi':n<=60?'güzel iş':'sonunda!';
-  sonucPanel('buldun! 🔥', S.gizli, n+' tahminde · '+not);
+  sonucPanel('buldun! 🔥', S.gizli, n+' tahminde · '+not+ipucuEki());
 }
 function pesEt(){
   if(S.bitti) return;
   S.bitti=true; S.pes=true; istatYaz(false); kaydet();
   ciz();
-  // cevabı, kullanıcının vardığı en yakın komşularıyla göster
-  sonucPanel('gizli kelime', S.gizli, 'bu sefer olmadı — '+S.tahminler.length+' tahmin');
+  sonucPanel('gizli kelime', S.gizli, 'bu sefer olmadı — '+S.tahminler.length+' tahmin'+ipucuEki());
 }
 function sonucPanel(bas, kel, det){
   const istat = istatOku();
@@ -416,16 +485,33 @@ function sonucPanel(bas, kel, det){
     alt = '<div class="det">oynanan '+istat.oynanan+' · kazanılan '+(istat.kazanan||0)
         + (istat.enAz?' · en az '+istat.enAz+' tahmin':'')+'</div>';
   }
-  const dugmeler = (S.mod==='serbest')
-    ? '<button class="vurgu" id="yeniBtn">yeni kelime ↻</button><button id="paylasBtn">sonucu kopyala</button>'
-    : '<button class="vurgu" id="paylasBtn">sonucu kopyala</button>';
+  const yeni = (S.mod==='serbest') ? '<button class="vurgu" id="yeniBtn">yeni kelime ↻</button>' : '';
   $('sonucYer').innerHTML =
     '<div class="sonuc"><div class="bas">'+bas+'</div><div class="kel">'+kel+'</div>'
     + '<div class="det">'+det+'</div>'+alt
-    + '<div class="sonuc-dugmeler">'+dugmeler+'</div></div>';
+    + '<div class="sonuc-dugmeler">'+yeni
+    + '<button id="yakinBtn">🔍 en yakın kelimeler</button>'
+    + '<button id="paylasBtn">sonucu kopyala</button></div></div>'
+    + '<div id="yakinYer"></div>';
   const pb=$('paylasBtn'); if(pb) pb.onclick=paylas;
   const yb=$('yeniBtn'); if(yb) yb.onclick=()=>yeniSerbest();
+  const yk=$('yakinBtn'); if(yk) yk.onclick=yakinlariGoster;
   $('sonucYer').scrollIntoView({block:'center',behavior:'smooth'});
+}
+// oyun bitince: gizli kelimenin en yakın 1000 komşusunu rütbe sırasıyla listele
+function yakinlariGoster(){
+  const yer = $('yakinYer'), btn = $('yakinBtn');
+  if(yer.firstChild){ yer.innerHTML=''; btn.textContent='🔍 en yakın kelimeler'; return; }
+  btn.textContent='▲ listeyi gizle';
+  const denenen = new Set(S.tahminler.map(t=>t.w));
+  const satir = e => '<div class="yakin-satir'+(e.rut>=1000?' gizli':(denenen.has(e.w)?' bende':''))+'">'
+    + '<span class="yr">'+(e.rut>=1000?'★':e.rut)+'</span>'
+    + '<span class="yk">'+e.w+'</span>'
+    + '<span class="yc">'+e.pct.toFixed(2)+'</span></div>';
+  yer.innerHTML = '<div class="yakinlar"><h3>en yakın 1000 kelime</h3>'
+    + '<div class="ipucu-not">gizli kelime ★ · senin tahminlerin renkli · sıra ne kadar büyükse o kadar yakın</div>'
+    + '<div class="yakin-liste">'+S.enYakinlar.map(satir).join('')+'</div></div>';
+  $('yakinYer').scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 
 function paylas(){
@@ -446,7 +532,7 @@ function durumYukle(){
   try{ return JSON.parse(localStorage.getItem(anahtar())||'null'); }catch(e){ return null; }
 }
 function oyunKur(){
-  S.tahminler=[]; S.bitti=false; S.pes=false; S.sonW=null;
+  S.tahminler=[]; S.bitti=false; S.pes=false; S.sonW=null; S.animYeni=false;
   $('sonucYer').innerHTML='';
   let gizli;
   if(S.mod==='gun'){
@@ -458,7 +544,7 @@ function oyunKur(){
   }
   gizliyiKur(gizli);
   if(kayit && kayit.gizli===gizli){
-    S.tahminler = (kayit.tahminler||[]).map(t=>({w:t.w,pct:t.pct,rut:(t.rut===undefined?(S.rutbe.get(t.w)??null):t.rut),no:t.no}));
+    S.tahminler = (kayit.tahminler||[]).map(t=>({w:t.w,pct:t.pct,rut:(t.rut===undefined?(S.rutbe.get(t.w)??null):t.rut),no:t.no,hint:!!t.hint}));
     S.bitti = !!kayit.bitti; S.pes=!!kayit.pes;
     if(S.tahminler.length) S.sonW = S.tahminler[S.tahminler.length-1].w;
   }
@@ -494,6 +580,7 @@ $('giris').addEventListener('submit', e=>{ e.preventDefault();
   tahminYap(v); $('tahminGir').focus();
 });
 $('modlar').addEventListener('click', e=>{ const b=e.target.closest('button[data-mod]'); if(b){ b.blur(); modSec(b.dataset.mod); }});
+$('ipucuBtn').addEventListener('click', ()=>{ $('ipucuBtn').blur(); ipucuAl(); });
 $('pesBtn').addEventListener('click', ()=>{ if(confirm('Cevabı görmek istediğine emin misin? Oyun biter.')) pesEt(); });
 $('temaBtn').addEventListener('click', ()=>{ const g=!document.body.classList.contains('gece'); temaUygula(g); localStorage.setItem('sicak:tema', g?'1':'0'); });
 $('yardimBtn').addEventListener('click', ()=>{ olcekCiz(); $('yardim').hidden=false; });
