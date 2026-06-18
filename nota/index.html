@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>nota çevirici — gitar ↔ piyano</title>
+<meta name="description" content="Gitar ve piyano arasında nota ve akor çevirici. Perdeye ya da tuşa bas, akoru bul; akor ara ya da kur; çevrimleri ve pozisyonları gör, çal, kaydet.">
+<meta name="theme-color" content="#1f6f5c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f6f5c'/%3E%3Cpath d='M24 16h22v6l-15 3v18a7 6 0 1 1-6-6c2 0 4 .7 5 1.8V16Z' fill='%23F2E6CE'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../ortak/stil.css">
+<script src="../ortak/adlar.js"></script>
+<style>
+/* ===== araca özgü tema belirteçleri ===== */
+body{
+  --ahsap:#d8c19a; --ahsap-cizgi:#b79b6f; --tel:#9a8a72; --nut:#3a2e22;
+  --perde-isaret:#bfa87f; --aktif:var(--acc); --aktif-yum:var(--acc-soft);
+  --kok:#c8743c; --kok-yum:rgba(200,116,60,.16);
+  --beyaz:#fffdf8; --siyah:#2a2620; --tus-cizgi:#cdbfa6;
+  touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+}
+body.gece{
+  --bg:#16110C; --card:#241C14; --ink:#EFE2C6; --muted:#9C8C70; --line:#3A2E20;
+  --acc:#86B98E; --acc-soft:rgba(134,185,142,.16); --vurgu:#E0935A; --shadow:rgba(0,0,0,.4);
+  --ahsap:#3a2e20; --ahsap-cizgi:#54422c; --tel:#7a6a52; --nut:#caa56f;
+  --perde-isaret:#6a583c; --kok:#E0935A; --kok-yum:rgba(224,147,90,.18);
+  --beyaz:#2b261d; --siyah:#0d0a07; --tus-cizgi:#473a28;
+}
+
+.nota-wrap{max-width:1040px}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+.gece-tus{margin-left:auto;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:18px;padding:4px 12px;font-size:14px}
+
+/* ===== okuma kartı (akor adı + bilgi) ===== */
+.okuma{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px var(--shadow);padding:16px 18px;margin-top:18px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.okuma .ad{font-family:'Playfair Display',Georgia,serif;font-size:34px;line-height:1.05;color:var(--acc);min-width:120px}
+.okuma .ad small{display:block;font-family:Georgia,serif;font-size:13px;color:var(--muted);font-style:italic;margin-top:2px}
+.okuma .bilgi{font-size:14px;color:var(--ink);line-height:1.6;flex:1;min-width:180px}
+.okuma .bilgi .et{color:var(--muted)}
+.okuma .alt-akorlar{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.okuma .alt-akorlar button{font-size:12.5px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:14px;padding:2px 10px}
+.okuma .alt-akorlar button:hover{border-color:var(--acc);color:var(--acc)}
+.okuma .eylem{display:flex;gap:8px;flex-wrap:wrap}
+.okuma .eylem button{border:none;border-radius:20px;padding:9px 16px;font-size:14px;font-weight:600}
+.cal{background:var(--acc);color:#fff}
+.cal:hover{filter:brightness(1.05)}
+.kaydet{background:var(--vurgu);color:#fff}
+.kaydet:hover{filter:brightness(1.05)}
+.temizle{background:transparent;color:var(--muted);border:1px solid var(--line)!important}
+.temizle:hover{color:var(--ink)}
+
+/* ===== enstrüman sahnesi ===== */
+.sahne{display:grid;gap:18px;margin-top:18px}
+.enstruman{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px var(--shadow);padding:14px 16px 18px}
+.enst-bas{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.enst-bas h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:19px;color:var(--ink)}
+.enst-bas .ipucu{font-size:12.5px;color:var(--muted);font-style:italic}
+.kaydir{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+
+/* fretboard */
+.fretboard{display:grid;gap:0;background:var(--ahsap);border-radius:8px;padding:0;min-width:760px;border:1px solid var(--ahsap-cizgi)}
+.fb-row{display:grid;grid-template-columns:34px 44px repeat(15,minmax(40px,1fr))}
+.fb-num{height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
+.fb-num.mark{color:var(--kok);font-weight:700}
+.fb-name{display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);background:var(--card);font-weight:700}
+.cell{position:relative;height:42px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;border-left:2px solid var(--ahsap-cizgi)}
+.cell.acik{border-left:none;border-right:4px solid var(--nut)} /* açık tel sütunu, nut çizgisi sağda */
+.cell::before{content:"";position:absolute;left:0;right:0;top:50%;height:var(--telk,2px);background:var(--tel);transform:translateY(-50%)}
+.cell.acik::before{right:4px}
+.fb-row:nth-child(2) .cell{--telk:1.4px}
+.fb-row:nth-child(3) .cell{--telk:1.7px}
+.fb-row:nth-child(4) .cell{--telk:2px}
+.fb-row:nth-child(5) .cell{--telk:2.4px}
+.fb-row:nth-child(6) .cell{--telk:2.9px}
+.fb-row:nth-child(7) .cell{--telk:3.4px}
+.cell .dot{position:relative;z-index:2;width:30px;height:30px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:var(--aktif);box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.cell.on .dot{display:flex}
+.cell.kok .dot{background:var(--kok)}
+.cell:hover::after{content:"";position:absolute;z-index:1;width:26px;height:26px;border-radius:50%;border:2px dashed var(--tel)}
+.cell.on:hover::after{display:none}
+/* perde işaret noktaları */
+.fb-dots{display:grid;grid-template-columns:34px 44px repeat(15,minmax(40px,1fr));height:0}
+.fb-dots span{position:relative}
+
+/* piyano */
+.piano-wrap{position:relative}
+.piano{position:relative;height:158px;display:flex;user-select:none}
+.wkey{position:relative;height:100%;background:var(--beyaz);border:1px solid var(--tus-cizgi);border-top:none;border-radius:0 0 6px 6px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
+.wkey:active{background:var(--acc-soft)}
+.wkey.on{background:var(--aktif-yum);box-shadow:inset 0 0 0 2px var(--aktif)}
+.wkey.on.kok{background:var(--kok-yum);box-shadow:inset 0 0 0 2px var(--kok)}
+.bkey{position:absolute;top:0;height:62%;background:var(--siyah);border-radius:0 0 5px 5px;z-index:3;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px}
+.bkey.on{background:var(--aktif)}
+.bkey.on.kok{background:var(--kok)}
+.klab{font-size:10px;font-weight:700;color:var(--muted);pointer-events:none}
+.wkey.on .klab{color:var(--aktif)}
+.wkey.on.kok .klab{color:var(--kok)}
+.bkey .klab{color:#cdbfa6}
+.bkey.on .klab{color:#fff}
+.do-isaret{color:var(--muted);opacity:.7}
+
+/* ===== çevrim/diziliş çubuğu ===== */
+.diziom{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;box-shadow:0 3px 12px var(--shadow)}
+.diziom .et{font-size:13px;color:var(--muted);font-style:italic}
+.diziom select{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);max-width:60vw}
+.diziom button.ok{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:16px}
+.diziom button.ok:hover{border-color:var(--acc);color:var(--acc)}
+.diziom .say{font-size:13px;color:var(--muted)}
+
+/* ===== paneller ===== */
+.paneller{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px var(--shadow);padding:16px 18px}
+.panel h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:18px;color:var(--ink);margin-bottom:12px}
+.panel.kayit{grid-column:1 / -1}
+@media(max-width:760px){.paneller{grid-template-columns:1fr}}
+
+.ara input{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:12px;font-size:16px;background:var(--bg);color:var(--ink)}
+.ara input:focus{outline:none;border-color:var(--acc)}
+.ara .mesaj{font-size:13px;margin-top:8px;min-height:18px}
+.ara .mesaj.hata{color:#c0392b}
+.ara .mesaj.ok{color:var(--acc)}
+.ornekler{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.ornekler button{font-size:13px;color:var(--acc);background:var(--acc-soft);border:none;border-radius:14px;padding:4px 11px}
+.ornekler button:hover{filter:brightness(.97)}
+
+.kur .grup{margin-bottom:12px}
+.kur .grup>label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.cipler{display:flex;gap:6px;flex-wrap:wrap}
+.cip{font-size:13.5px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:5px 11px}
+.cip:hover{border-color:var(--acc)}
+.cip.sec{background:var(--acc);border-color:var(--acc);color:#fff}
+.cip.ek.sec{background:var(--vurgu);border-color:var(--vurgu)}
+.kur .onizleme{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;border-top:1px dashed var(--line);padding-top:12px}
+.kur .onizleme .sembol{font-family:'Playfair Display',Georgia,serif;font-size:24px;color:var(--acc)}
+.kur .onizleme .sembol.gecersiz{color:#c0392b;font-size:16px;font-family:Georgia,serif;font-style:italic}
+.kur .onizleme button{margin-left:auto;background:var(--acc);color:#fff;border:none;border-radius:18px;padding:8px 16px;font-size:14px;font-weight:600}
+.kur .onizleme button:disabled{opacity:.4}
+
+.fav-list{display:flex;gap:8px;flex-wrap:wrap;min-height:10px}
+.fav{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:6px 8px 6px 13px;font-size:14px}
+.fav b{font-family:'Playfair Display',Georgia,serif;color:var(--acc);font-weight:600}
+.fav .ac{cursor:pointer}
+.fav .sil{border:none;background:transparent;color:var(--muted);font-size:16px;line-height:1;padding:0 2px}
+.fav .sil:hover{color:#c0392b}
+.fav-bos{font-size:13.5px;color:var(--muted);font-style:italic}
+.skala,.oneri{font-size:14px;margin-top:14px;line-height:1.7}
+.skala b,.oneri b{color:var(--ink);font-weight:600}
+.skala span{color:var(--muted)}
+.oneri .chip{display:inline-block;background:var(--acc-soft);color:var(--acc);border:none;border-radius:14px;padding:4px 12px;font-size:14px;margin:0 4px 4px 0;font-weight:600}
+.oneri .chip:hover{filter:brightness(.97)}
+
+.yukleniyor{padding:40px;text-align:center;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<a class="eve-don" href="../">veranda</a>
+
+<div class="wrap nota-wrap">
+<header class="site">
+  <a href="../"><h1>veranda</h1></a>
+  <nav class="araclar">
+    <a href="../sozluk/" data-ad="sozluk">dilimin ucunda</a>
+    <a href="../wordle/" data-ad="verandle">verandle</a>
+    <a href="../bulmaca/" data-ad="bulmaca">bulmaca yardımcısı</a>
+    <a href="./" class="burada" data-ad="nota">Nota Çevirici</a>
+  </nav>
+  <div class="bar">
+    <span class="alt" style="color:var(--muted);font-style:italic;font-size:14.5px">Gitar ↔ piyano · perdeye bas, akoru gör; akoru yaz, perdeyi gör.</span>
+    <button class="gece-tus" id="geceTus" type="button">☾ gece</button>
+  </div>
+</header>
+
+<main id="uygulama">
+  <div class="yukleniyor" id="yukleniyor">müzik motoru yükleniyor…</div>
+</main>
+
+<footer>
+  nota çevirici · veranda · <span style="color:var(--muted)">tonal.js + Tone.js ile, tamamen tarayıcıda — sunucu yok</span>
+</footer>
+</div>
+
+<template id="govde">
+  <section class="okuma">
+    <div class="ad" id="ad">—<small id="adAlt">bir akor seç</small></div>
+    <div class="bilgi" id="bilgi"></div>
+    <div class="eylem">
+      <button class="cal" id="cal" type="button">▶ Çal</button>
+      <button class="kaydet" id="kaydet" type="button">★ Kaydet</button>
+      <button class="temizle" id="temizleTus" type="button">Temizle</button>
+    </div>
+  </section>
+
+  <section class="sahne">
+    <div class="enstruman">
+      <div class="enst-bas"><h3>Gitar</h3><span class="ipucu">perdeye dokun · standart akort (EADGBE)</span></div>
+      <div class="kaydir"><div id="fretboard" class="fretboard"></div></div>
+    </div>
+    <div class="enstruman">
+      <div class="enst-bas"><h3>Piyano</h3><span class="ipucu">tuşa dokun · C2–C6</span></div>
+      <div class="kaydir"><div id="piano" class="piano"></div></div>
+    </div>
+  </section>
+
+  <section class="diziom">
+    <span class="et">Diziliş / çevrim:</span>
+    <button class="ok" id="vPrev" type="button" aria-label="önceki">‹</button>
+    <select id="vSelect"></select>
+    <button class="ok" id="vNext" type="button" aria-label="sonraki">›</button>
+    <span class="say" id="vSay"></span>
+  </section>
+
+  <div class="paneller">
+    <section class="panel ara">
+      <h3>Akor ara</h3>
+      <input id="ara" type="text" placeholder="örn. Cmaj7, F#m7b5, Em(add9), G13…" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="mesaj" id="araMesaj"></div>
+      <div class="ornekler" id="ornekler"></div>
+    </section>
+
+    <section class="panel kur">
+      <h3>Akor kur</h3>
+      <div class="grup"><label>Kök</label><div class="cipler" id="kurKok"></div></div>
+      <div class="grup"><label>Nitelik</label><div class="cipler" id="kurNitelik"></div></div>
+      <div class="grup"><label>Yapı</label><div class="cipler" id="kurYapi"></div></div>
+      <div class="grup"><label>Genişletme / değişim</label><div class="cipler" id="kurEk"></div></div>
+      <div class="onizleme">
+        <span class="sembol" id="kurSembol">C</span>
+        <button id="kurUygula" type="button">Göster</button>
+      </div>
+    </section>
+
+    <section class="panel kayit">
+      <h3>Kayıtlı akorlar</h3>
+      <div class="fav-list" id="favList"></div>
+      <div class="skala"><b>Olası gam / ton:</b> <span id="skala">— kaydettikçe burada beliriri</span></div>
+      <div class="oneri"><b>Sıradaki akor önerisi:</b> <span id="oneri">—</span></div>
+    </section>
+  </div>
+</template>
+
+<script type="module">
+/* ============================================================
+   nota çevirici — gitar ↔ piyano
+   Tek doğruluk kaynağı: MIDI nota numarası (mutlak perde).
+   Her perde ve her tuş tek bir tamsayıya iner; iki enstrüman da
+   state.notes'un saf izdüşümüdür → çift yönlü senkron, döngü yok.
+   ============================================================ */
+
+const $ = (s, r=document) => r.querySelector(s);
+const yuk = $('#yukleniyor');
+
+let Note, Chord, Scale, Key, ChordType, Tone;
+try {
+  const tonal = await import('https://esm.sh/tonal@6.4.0');
+  ({ Note, Chord, Scale, Key, ChordType } = tonal);
+  // tonal'da bulunmayan ama kullanıcıların yazdığı birkaç türü kütüphaneye ekle
+  // (sözlük gömmek değil — tonal'ın kendi tür kaydına genişletme)
+  ChordType.add(['1P', '3M', '5P', '7M', '9M', '11P'], ['maj11', 'Maj11', 'M11'], 'major eleventh');
+} catch (e) {
+  yuk.textContent = 'Müzik kütüphanesi yüklenemedi — internet bağlantısını kontrol et.';
+  throw e;
+}
+try { Tone = await import('https://esm.sh/tone@14.8.49'); } catch (e) { Tone = null; }
+
+/* ---- sabitler ---- */
+const OPEN = [40, 45, 50, 55, 59, 64];           // tepeden alta: kalın Mi → ince mi
+const TEL_AD = ['E', 'A', 'D', 'G', 'B', 'e'];
+const FRET = 15;
+const P_LOW = 36, P_HIGH = 84;                    // C2 … C6
+const PC_AD = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const SIYAH_PC = new Set([1, 3, 6, 8, 10]);
+const ISARET = new Set([3, 5, 7, 9, 12, 15]);
+
+/* interval token → kısa derece etiketi (akor sözlüğü değil, sadece gösterim) */
+const IV = {'1P':'R','2m':'♭9','2M':'9','3m':'♭3','3M':'3','4P':'11','4A':'♯11',
+  '5d':'♭5','5P':'5','5A':'♯5','6m':'♭13','6M':'13','7m':'♭7','7M':'7',
+  '8P':'R','9m':'♭9','9M':'9','9A':'♯9','11P':'11','11A':'♯11','13m':'♭13','13M':'13'};
+
+/* ---- durum ---- */
+const state = {
+  notes: new Map(),        // midi -> {s,f} | null   (TEK doğruluk kaynağı)
+  inputSymbol: null,       // arama/kurucudan gelen sembol; manuelde null
+  symbol: null,            // gösterilecek akor (input ya da tespit)
+  detected: [],            // Chord.detect sonucu
+  voicings: [],            // [{label, notes:[{midi,fret}]}]
+  voiceIndex: 0,
+  favorites: load(),
+};
+function load(){ try { return JSON.parse(localStorage.getItem('nota-favoriler')) || []; } catch { return []; } }
+function persist(){ try { localStorage.setItem('nota-favoriler', JSON.stringify(state.favorites)); } catch {} }
+
+/* ---- arayüzü kur ---- */
+const app = $('#uygulama');
+app.innerHTML = '';
+app.appendChild($('#govde').content.cloneNode(true));
+if (window.adlariUygula) window.adlariUygula();
+
+/* gece modu */
+const geceTus = $('#geceTus');
+if (localStorage.getItem('nota-gece') === '1') document.body.classList.add('gece');
+geceTus.onclick = () => {
+  document.body.classList.toggle('gece');
+  localStorage.setItem('nota-gece', document.body.classList.contains('gece') ? '1' : '0');
+};
+
+/* ===================== yardımcılar ===================== */
+const chromaOf = m => ((m % 12) + 12) % 12;
+const pcName = m => PC_AD[chromaOf(m)];
+
+/* gitar gösterimi: açık perde tıklamaları kendi telinde sabit kalır;
+   yerleşimsiz (piyanodan gelen) notalar aynı tele düşmeyecek biçimde,
+   pesten tize tek tek boş tellere dağıtılır. */
+function guitarPlacements(){
+  const res = new Map(), used = new Set();
+  for (const [midi, fr] of state.notes){ if (fr){ res.set(midi, fr); used.add(fr.s); } }
+  const bos = [...state.notes.entries()].filter(([, fr]) => !fr).map(([m]) => m).sort((a, b) => a - b);
+  for (const midi of bos){
+    let best = null;
+    for (let s = 0; s < 6; s++){
+      if (used.has(s)) continue;
+      const f = midi - OPEN[s];
+      if (f >= 0 && f <= FRET && (best === null || f < best.f)) best = { s, f };
+    }
+    if (best){ res.set(midi, best); used.add(best.s); }   // boş tel kalmazsa gitarda gösterilmez
+  }
+  return res;
+}
+
+/* tonal akor sembolünü okunaklı biçime çevir (CM → C, Cm → Cm) */
+function prettySym(sym){
+  if (!sym) return sym;
+  const ch = Chord.get(sym);
+  if (ch.empty) return sym;
+  if (ch.type === 'major') return ch.tonic;
+  if (ch.type === 'minor') return ch.tonic + 'm';
+  return ch.symbol || sym;
+}
+
+/* akor sembolünden chroma → derece etiketi haritası */
+function dereceMap(symbol){
+  const m = new Map();
+  if (!symbol) return m;
+  const ch = Chord.get(symbol);
+  if (ch.empty) return m;
+  ch.notes.forEach((n, i) => {
+    const tok = ch.intervals[i];
+    m.set(Note.chroma(n), IV[tok] || tok);
+  });
+  return m;
+}
+
+/* aktif perdelerin chroma'larını bas-önce, oktav tekrarsız ad listesine çevir */
+function aktifBasOnce(){
+  const ms = [...state.notes.keys()].sort((a, b) => a - b);
+  const seen = new Set(), out = [];
+  for (const m of ms){ const c = chromaOf(m); if (!seen.has(c)){ seen.add(c); out.push(PC_AD[c]); } }
+  return out;
+}
+
+/* ===================== ses ===================== */
+let synth = null;
+async function sesHazir(){
+  if (!Tone) return false;
+  if (!synth){
+    await Tone.start();
+    synth = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: .005, decay: .25, sustain: .35, release: 1.4 }
+    }).toDestination();
+    synth.volume.value = -9;
+  }
+  return true;
+}
+async function calNota(midi){ if (await sesHazir()) synth.triggerAttackRelease(Note.fromMidi(midi), '8n'); }
+async function calAkor(){
+  if (!(await sesHazir())) return;
+  const ms = [...state.notes.keys()].sort((a, b) => a - b);
+  const now = Tone.now();
+  ms.forEach((m, i) => synth.triggerAttackRelease(Note.fromMidi(m), '2n', now + i * 0.035));
+}
+
+/* ===================== diziliş (voicing) üretimi ===================== */
+/* piyano: akor seslerini döndürüp tepeye yığ → kök / çevrimler */
+function yiginla(adlar, taban){
+  const out = []; let zemin = taban;
+  for (const n of adlar){
+    const pc = Note.chroma(n); let m = zemin;
+    while (chromaOf(m) !== pc) m++;
+    out.push(m); zemin = m + 1;
+  }
+  return out;
+}
+function piyanoCevrim(adlar, cevrim){
+  const arr = adlar.slice();
+  for (let i = 0; i < cevrim; i++) arr.push(arr.shift());
+  return yiginla(arr, 52); // ~E3'ten başla, görünür alanda ortalı
+}
+
+/* gitar: 5-perdelik pencereyi boyunca gezdir, her telde akor sesi seç */
+function gitarPozisyon(pcSet, kokPc){
+  const span = 4, gorulen = new Set(), out = [];
+  for (let bas = 0; bas <= 11; bas++){
+    const sec = [];
+    for (let s = 0; s < 6; s++){
+      const ops = [];
+      for (let f = 0; f <= FRET; f++){
+        if (f !== 0 && (f < bas || f > bas + span)) continue;
+        if (pcSet.has(chromaOf(OPEN[s] + f))) ops.push(f);
+      }
+      sec.push(ops.length ? Math.min(...ops) : null);
+    }
+    const sesli = [];
+    sec.forEach((f, s) => { if (f !== null) sesli.push({ s, f, midi: OPEN[s] + f }); });
+    if (sesli.length < 4) continue;
+    const chromas = new Set(sesli.map(x => chromaOf(x.midi)));
+    let kapsar = true; pcSet.forEach(pc => { if (!chromas.has(pc)) kapsar = false; });
+    if (!kapsar) continue;
+    const basili = sesli.map(x => x.f).filter(f => f > 0);
+    const minF = basili.length ? Math.min(...basili) : 0;
+    const maxF = basili.length ? Math.max(...basili) : 0;
+    if (maxF - minF > span) continue;
+    const bass = sesli.reduce((a, b) => a.midi < b.midi ? a : b);
+    const sig = sec.map(f => f === null ? 'x' : f).join('-');
+    if (gorulen.has(sig)) continue; gorulen.add(sig);
+    out.push({ frets: sesli, minFret: minF, teller: sesli.length, kok: chromaOf(bass.midi) === kokPc });
+  }
+  out.sort((a, b) => (b.kok - a.kok) || (a.minFret - b.minFret) || (b.teller - a.teller));
+  return out.slice(0, 6);
+}
+
+const CEVRIM_AD = ['kök', '1. çevrim', '2. çevrim', '3. çevrim', '4. çevrim', '5. çevrim', '6. çevrim'];
+function notlariDizi(){ return [...state.notes.entries()].map(([midi, fret]) => ({ midi, fret })); }
+
+function dizilisYap(symbol, calinaniEkle){
+  const list = [];
+  if (calinaniEkle && state.notes.size) list.push({ label: 'Çalınan diziliş', notes: notlariDizi() });
+  if (symbol){
+    const ch = Chord.get(symbol);
+    if (!ch.empty && ch.notes.length){
+      ch.notes.forEach((_, inv) => {
+        const midis = piyanoCevrim(ch.notes, inv);
+        list.push({ label: `Piyano · ${CEVRIM_AD[inv] || (inv + '. çevrim')}`,
+          notes: midis.map(m => ({ midi: m, fret: null })) });
+      });
+      const pcSet = new Set(ch.notes.map(n => Note.chroma(n)));
+      const kokPc = Note.chroma(ch.tonic || ch.notes[0]);
+      gitarPozisyon(pcSet, kokPc).forEach(v => {
+        const ad = v.minFret === 0 ? 'açık pozisyon' : `${v.minFret}. perde pozisyonu`;
+        list.push({ label: `Gitar · ${ad}${v.kok ? '' : ' (çevrim)'}`,
+          notes: v.frets.map(x => ({ midi: x.midi, fret: { s: x.s, f: x.f } })) });
+      });
+    }
+  }
+  state.voicings = list;
+  state.voiceIndex = 0;
+}
+function dizilisUygula(i){
+  const e = state.voicings[i]; if (!e) return;
+  state.notes = new Map(e.notes.map(n => [n.midi, n.fret]));
+  state.voiceIndex = i;
+  ciz();
+}
+
+/* ===================== tespit ===================== */
+function tespitEt(){
+  state.detected = state.notes.size >= 2 ? Chord.detect(aktifBasOnce(), { assumePerfectFifth: false }) : [];
+  state.symbol = state.inputSymbol || state.detected[0] || null;
+}
+
+/* ===================== eylemler ===================== */
+function manuelDuzenleme(){
+  state.inputSymbol = null;
+  tespitEt();
+  dizilisYap(state.symbol, true); // index 0 = "Çalınan diziliş" = mevcut notalar
+  ciz();
+}
+function akorUygula(symbol){
+  let ch = Chord.get(symbol);
+  if ((ch.empty || !ch.notes.length) && symbol.includes('/')){ symbol = symbol.split('/')[0]; ch = Chord.get(symbol); }
+  if (ch.empty || !ch.notes.length) return false;
+  state.inputSymbol = ch.symbol || symbol;
+  dizilisYap(state.inputSymbol, false);
+  dizilisUygula(0);     // piyano kök pozisyonu
+  tespitEt();
+  ciz();
+  return true;
+}
+function temizle(){
+  state.notes.clear(); state.inputSymbol = null; state.voicings = []; state.voiceIndex = 0;
+  tespitEt(); ciz();
+}
+function perdeTikla(s, f){
+  const midi = OPEN[s] + f;
+  const cur = state.notes.get(midi);
+  if (state.notes.has(midi) && cur && cur.s === s && cur.f === f){ state.notes.delete(midi); }
+  else { state.notes.set(midi, { s, f }); calNota(midi); }
+  manuelDuzenleme();
+}
+function tusTikla(midi){
+  if (state.notes.has(midi)){ state.notes.delete(midi); }
+  else { state.notes.set(midi, null); calNota(midi); }
+  manuelDuzenleme();
+}
+
+/* ===================== çizim ===================== */
+const fb = $('#fretboard');
+const piano = $('#piano');
+
+function fretboardKur(){
+  // perde numarası satırı
+  const numRow = document.createElement('div'); numRow.className = 'fb-row';
+  numRow.appendChild(cell('fb-num', '')); numRow.appendChild(cell('fb-num', '0'));
+  for (let f = 1; f <= FRET; f++) numRow.appendChild(cell('fb-num' + (ISARET.has(f) ? ' mark' : ''), String(f)));
+  fb.appendChild(numRow);
+  // her tel bir satır
+  for (let s = 0; s < 6; s++){
+    const row = document.createElement('div'); row.className = 'fb-row';
+    const nm = document.createElement('div'); nm.className = 'fb-name'; nm.textContent = TEL_AD[s];
+    row.appendChild(nm);
+    for (let f = 0; f <= FRET; f++){
+      const b = document.createElement('button');
+      b.className = 'cell' + (f === 0 ? ' acik' : '');
+      b.dataset.s = s; b.dataset.f = f;
+      const dot = document.createElement('span'); dot.className = 'dot';
+      b.appendChild(dot);
+      b.onclick = () => perdeTikla(s, f);
+      row.appendChild(b);
+    }
+    fb.appendChild(row);
+  }
+  function cell(cls, txt){ const d = document.createElement('div'); d.className = cls; d.textContent = txt; return d; }
+}
+
+let whiteW = 38;
+function piyanoKur(){
+  piano.innerHTML = '';
+  const whites = [], blacks = [];
+  for (let m = P_LOW; m <= P_HIGH; m++){
+    if (SIYAH_PC.has(chromaOf(m))) blacks.push({ m, before: whites.length - 1 });
+    else whites.push({ m });
+  }
+  piano.style.width = (whites.length * whiteW) + 'px';
+  whites.forEach(w => {
+    const k = document.createElement('button');
+    k.className = 'wkey'; k.dataset.midi = w.m; k.style.width = whiteW + 'px'; k.style.flex = '0 0 auto';
+    const lab = document.createElement('span'); lab.className = 'klab';
+    if (chromaOf(w.m) === 0){ lab.textContent = 'C' + (Math.floor(w.m / 12) - 1); lab.classList.add('do-isaret'); }
+    k.appendChild(lab);
+    k.onclick = () => tusTikla(w.m);
+    piano.appendChild(k);
+  });
+  const bw = whiteW * 0.62;
+  blacks.forEach(b => {
+    const k = document.createElement('button');
+    k.className = 'bkey'; k.dataset.midi = b.m; k.style.width = bw + 'px';
+    k.style.left = ((b.before + 1) * whiteW - bw / 2) + 'px';
+    const lab = document.createElement('span'); lab.className = 'klab'; k.appendChild(lab);
+    k.onclick = () => tusTikla(b.m);
+    piano.appendChild(k);
+  });
+}
+
+function ciz(){
+  const dmap = dereceMap(state.symbol);
+  const kokChroma = state.symbol ? Note.chroma(Chord.get(state.symbol).tonic || '') : -1;
+
+  // gitar — çakışmasız yerleşimi hesapla, sonra hücreleri boya
+  const place = guitarPlacements();
+  const onCell = new Map();
+  for (const [midi, fr] of place) onCell.set(fr.s + ':' + fr.f, midi);
+  fb.querySelectorAll('.cell').forEach(c => {
+    const id = c.dataset.s + ':' + c.dataset.f;
+    const midi = onCell.get(id);
+    const on = midi !== undefined;
+    c.classList.toggle('on', on);
+    c.classList.toggle('kok', on && chromaOf(midi) === kokChroma);
+    if (on) c.querySelector('.dot').textContent = dmap.get(chromaOf(midi)) || pcName(midi);
+  });
+
+  // piyano
+  piano.querySelectorAll('.wkey,.bkey').forEach(k => {
+    const midi = +k.dataset.midi;
+    const on = state.notes.has(midi);
+    k.classList.toggle('on', on);
+    const isKok = chromaOf(midi) === kokChroma;
+    k.classList.toggle('kok', on && isKok);
+    const lab = k.querySelector('.klab');
+    if (on) lab.textContent = dmap.get(chromaOf(midi)) || pcName(midi);
+    else if (k.classList.contains('wkey') && chromaOf(midi) === 0){ lab.textContent = 'C' + (Math.floor(midi / 12) - 1); }
+    else lab.textContent = '';
+  });
+
+  okumaCiz();
+  dizilisCiz();
+}
+
+function okumaCiz(){
+  const ad = $('#ad'), adAlt = $('#adAlt'), bilgi = $('#bilgi');
+  if (!state.notes.size){
+    ad.firstChild.nodeValue = '—'; adAlt.textContent = 'bir akor seç';
+    bilgi.innerHTML = '<span class="et">Gitar perdesine ya da piyano tuşuna bas; akoru yaz ya da kur.</span>';
+    return;
+  }
+  if (state.symbol){
+    const ch = Chord.get(state.symbol);
+    ad.firstChild.nodeValue = prettySym(state.symbol);
+    adAlt.textContent = ch.name || '';
+    const notes = ch.notes.join(' · ');
+    const ints = ch.intervals.map(t => IV[t] || t).join(' ');
+    let alt = '';
+    const alts = state.detected.filter(d => d !== (ch.symbol || state.symbol)).slice(0, 4);
+    if (alts.length) alt = `<div class="alt-akorlar">${alts.map(a => `<button data-a="${a}">${prettySym(a)}</button>`).join('')}</div>`;
+    bilgi.innerHTML = `<span class="et">Notalar:</span> ${notes}<br><span class="et">Dereceler:</span> ${ints}${alt}`;
+    bilgi.querySelectorAll('.alt-akorlar button').forEach(b => b.onclick = () => akorUygula(b.dataset.a));
+  } else {
+    ad.firstChild.nodeValue = '?'; adAlt.textContent = 'tanımlanamadı';
+    const ms = [...state.notes.keys()].sort((a, b) => a - b);
+    bilgi.innerHTML = `<span class="et">Seçili notalar:</span> ${ms.map(pcName).join(' · ')} <span class="et">(akor tanınmadı — birkaç nota daha?)</span>`;
+  }
+}
+
+function dizilisCiz(){
+  const sel = $('#vSelect'), say = $('#vSay');
+  if (!state.voicings.length){
+    sel.innerHTML = '<option>—</option>'; sel.disabled = true; say.textContent = '';
+    return;
+  }
+  sel.disabled = false;
+  sel.innerHTML = state.voicings.map((v, i) => `<option value="${i}"${i === state.voiceIndex ? ' selected' : ''}>${v.label}</option>`).join('');
+  say.textContent = `${state.voiceIndex + 1} / ${state.voicings.length}`;
+}
+
+/* ===================== çubuk olayları ===================== */
+$('#cal').onclick = calAkor;
+$('#temizleTus').onclick = temizle;
+$('#kaydet').onclick = kaydet;
+$('#vPrev').onclick = () => { if (state.voicings.length) dizilisUygula((state.voiceIndex - 1 + state.voicings.length) % state.voicings.length); };
+$('#vNext').onclick = () => { if (state.voicings.length) dizilisUygula((state.voiceIndex + 1) % state.voicings.length); };
+$('#vSelect').onchange = e => dizilisUygula(+e.target.value);
+
+/* ===================== arama ===================== */
+const ara = $('#ara'), araMesaj = $('#araMesaj');
+let araT;
+ara.oninput = () => {
+  clearTimeout(araT);
+  araT = setTimeout(() => {
+    const q = ara.value.trim();
+    if (!q){ araMesaj.textContent = ''; araMesaj.className = 'mesaj'; return; }
+    const ch = Chord.get(q);
+    if (ch.empty || !ch.notes.length){ araMesaj.textContent = 'tanınmadı'; araMesaj.className = 'mesaj hata'; return; }
+    akorUygula(q);
+    araMesaj.textContent = `${ch.name || ch.symbol} — ${ch.notes.join(' ')}`;
+    araMesaj.className = 'mesaj ok';
+  }, 180);
+};
+ara.onkeydown = e => { if (e.key === 'Enter') ara.blur(); };
+const ORNEK = ['Cmaj7', 'Am7', 'F#m7b5', 'G13', 'Em(add9)', 'Cmaj11', 'Daug', 'Bdim7', 'A7sus4'];
+$('#ornekler').innerHTML = ORNEK.map(s => `<button>${s}</button>`).join('');
+$('#ornekler').querySelectorAll('button').forEach(b => b.onclick = () => { ara.value = b.textContent; ara.oninput(); });
+
+/* ===================== akor kurucu ===================== */
+const NITELIK = [['maj', ''], ['min', 'm'], ['dim', 'dim'], ['aug', 'aug'], ['sus2', 'sus2'], ['sus4', 'sus4']];
+const YAPI = [['—', ''], ['6', '6'], ['7', '7'], ['maj7', 'maj7'], ['9', '9'], ['maj9', 'maj9'],
+  ['11', '11'], ['maj11', 'maj11'], ['13', '13'], ['maj13', 'maj13']];
+const EK = ['add9', 'b5', '#5', 'b9', '#9', '#11', 'b13'];
+const kur = { kok: 'C', nitelik: '', yapi: '', ek: new Set() };
+
+function cipler(host, items, aktifTest, onSec, ekMi){
+  host.innerHTML = '';
+  items.forEach(it => {
+    const [lab, val] = Array.isArray(it) ? it : [it, it];
+    const b = document.createElement('button');
+    b.className = 'cip' + (ekMi ? ' ek' : '') + (aktifTest(val) ? ' sec' : '');
+    b.textContent = lab; b.onclick = () => onSec(val, b);
+    host.appendChild(b);
+  });
+}
+function kurCiz(){
+  cipler($('#kurKok'), PC_AD, v => kur.kok === v, v => { kur.kok = v; kurCiz(); kurOnizle(); });
+  cipler($('#kurNitelik'), NITELIK, v => kur.nitelik === v, v => { kur.nitelik = v; kurCiz(); kurOnizle(); });
+  cipler($('#kurYapi'), YAPI, v => kur.yapi === v, v => { kur.yapi = v; kurCiz(); kurOnizle(); });
+  cipler($('#kurEk'), EK, v => kur.ek.has(v), v => { kur.ek.has(v) ? kur.ek.delete(v) : kur.ek.add(v); kurCiz(); kurOnizle(); }, true);
+  kurOnizle();
+}
+function kurSembolDene(){
+  // sembolü kur ve tonal'da geçerli bir varyant bul (sözlük değil; doğrulama)
+  const adaylar = [];
+  const base = kur.nitelik, yapi = kur.yapi, ek = [...kur.ek].join('');
+  adaylar.push(kur.kok + base + yapi + ek);
+  if (base === 'm' && yapi === 'maj7') adaylar.push(kur.kok + 'mM7' + ek, kur.kok + 'minMaj7' + ek);
+  if (base === 'aug') adaylar.push(kur.kok + '+' + yapi + ek, kur.kok + 'aug' + yapi + ek);
+  if (yapi === 'maj7') adaylar.push(kur.kok + base + 'M7' + ek);
+  for (const a of adaylar){ const ch = Chord.get(a); if (!ch.empty && ch.notes.length) return { ok: true, symbol: ch.symbol || a, ch }; }
+  return { ok: false };
+}
+function kurOnizle(){
+  const r = kurSembolDene(), el = $('#kurSembol'), btn = $('#kurUygula');
+  if (r.ok){ el.textContent = r.symbol; el.className = 'sembol'; btn.disabled = false; btn.dataset.symbol = r.symbol; }
+  else { el.textContent = 'bu birleşim geçersiz'; el.className = 'sembol gecersiz'; btn.disabled = true; }
+}
+$('#kurUygula').onclick = e => { const s = e.target.dataset.symbol; if (s) akorUygula(s); };
+
+/* ===================== favoriler · gam · öneri ===================== */
+function kaydet(){
+  if (!state.notes.size) return;
+  const sym = state.symbol;
+  const noteNames = sym && !Chord.get(sym).empty ? Chord.get(sym).notes : aktifBasOnce();
+  const label = sym ? prettySym(sym) : aktifBasOnce().join(' ');
+  state.favorites.push({ symbol: sym, label, noteNames });
+  persist(); favCiz();
+}
+function favCiz(){
+  const host = $('#favList');
+  if (!state.favorites.length){ host.innerHTML = '<span class="fav-bos">Henüz kayıt yok — bir akor seçip ★ Kaydet de.</span>'; }
+  else {
+    host.innerHTML = '';
+    state.favorites.forEach((f, i) => {
+      const el = document.createElement('span'); el.className = 'fav';
+      el.innerHTML = `<b class="ac">${f.label}</b><button class="sil" title="sil">×</button>`;
+      el.querySelector('.ac').onclick = () => { if (f.symbol) akorUygula(f.symbol); };
+      el.querySelector('.sil').onclick = () => { state.favorites.splice(i, 1); persist(); favCiz(); };
+      host.appendChild(el);
+    });
+  }
+  gamCiz();
+}
+function tumNotalar(){
+  const seen = new Set();
+  state.favorites.forEach(f => (f.noteNames || []).forEach(n => seen.add(PC_AD[Note.chroma(n)])));
+  return [...seen];
+}
+function gamCiz(){
+  const sk = $('#skala'), on = $('#oneri');
+  const pcs = tumNotalar();
+  if (pcs.length < 2){ sk.textContent = '— en az iki farklı akor kaydet'; on.textContent = '—'; return; }
+  const scales = Scale.detect(pcs);
+  sk.textContent = scales.length ? scales.slice(0, 3).join('  ·  ') : 'belirgin bir gam çıkmadı';
+  // öneri
+  const sug = oneriHesap(scales);
+  if (!sug.length){ on.textContent = '—'; return; }
+  on.innerHTML = sug.map(s => `<button class="chip">${s}</button>`).join('');
+  on.querySelectorAll('.chip').forEach(b => b.onclick = () => akorUygula(b.textContent));
+}
+function oneriHesap(scales){
+  if (!scales.length || !state.favorites.length) return [];
+  const top = scales[0];                       // örn. "C major"
+  const sp = top.split(' '); const tonic = sp[0]; const type = sp.slice(1).join(' ');
+  let triads = null;
+  if (type === 'major') triads = Key.majorKey(tonic).triads;
+  else if (type === 'minor' || type === 'aeolian') triads = Key.minorKey(tonic).natural.triads;
+  if (!triads) return [];
+  const scaleNotes = Scale.get(top).notes;
+  const son = state.favorites[state.favorites.length - 1];
+  const kok = son.symbol ? (Chord.get(son.symbol).tonic || son.noteNames[0]) : son.noteNames[0];
+  let deg = scaleNotes.findIndex(n => Note.chroma(n) === Note.chroma(kok));
+  // yaygın ilerleme hareketleri (derece → hedef dereceler)
+  const HAREKET = { 0: [3, 4, 5], 1: [4, 0], 2: [5, 3], 3: [4, 1, 0], 4: [0, 5, 3], 5: [3, 1, 4], 6: [0] };
+  const hedef = (deg >= 0 ? HAREKET[deg] : [4, 5, 3]) || [4, 5, 3];
+  const out = [];
+  hedef.forEach(d => { if (triads[d] && !out.includes(triads[d])) out.push(triads[d]); });
+  return out.slice(0, 3);
+}
+
+/* ===================== başlat ===================== */
+fretboardKur();
+piyanoKur();
+kurCiz();
+favCiz();
+ciz();
+$('#yukleniyor')?.remove();
+</script>
+</body>
+</html>
