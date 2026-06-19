@@ -186,7 +186,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 /* tam akor adı görünsün: ellipsis/kırpma YOK — uzun adlar (Amaj7b5) sarar/genişler */
 .fav{display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 11px;font-size:14px;cursor:pointer}
 .fav:hover{border-color:var(--acc)}
-.fav b{font-family:'Playfair Display',Georgia,serif;color:var(--acc);font-weight:600;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.15}
+.fav b{flex:1;min-width:0;font-family:'Playfair Display',Georgia,serif;color:var(--acc);font-weight:600;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.15}
+.fav-no{flex:0 0 auto;font-family:Georgia,serif;font-size:10px;font-weight:700;color:var(--vurgu);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:0 4px;line-height:1.5}
 .fav .ac{cursor:pointer}
 .fav .sil{border:none;background:transparent;color:var(--muted);font-size:16px;line-height:1;padding:0 2px;flex:0 0 auto}
 .fav .sil:hover{color:#c0392b}
@@ -277,6 +278,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .lane-blok .lb-eylem button:hover{color:var(--ink);background:rgba(255,255,255,.12)}
 .lane-blok .lb-arp.on{background:var(--acc);color:#150c08}
 .lane-blok .lb-sil:hover{color:#e0533c;background:rgba(192,52,27,.2)}
+.lane-blok .lb-havuz:hover,.lane-blok .lb-kopya:hover{color:var(--acc);background:var(--acc-soft)}
 .lane-blok .lb-arpgost{position:absolute;top:2px;left:5px;font-size:12px;color:var(--vurgu);font-weight:700;line-height:1}
 /* arpej vuruş seçici (1-16) — bloğun sol üstünde, süre rozetiyle simetrik */
 .lane-blok .lb-hit{position:absolute;top:4px;left:5px;z-index:7;-webkit-appearance:none;appearance:none;font-family:Georgia,serif;font-size:11px;font-weight:700;color:#f0b48a;background:linear-gradient(180deg,rgba(192,52,27,.22),rgba(192,52,27,.08));border:1px solid rgba(192,52,27,.45);border-radius:7px;padding:1px 4px;line-height:1.5;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.4)}
@@ -1398,14 +1400,33 @@ function favCiz(){
   else {
     host.innerHTML = '';
     state.favorites.forEach((f, i) => {
-      const el = document.createElement('span'); el.className = 'fav'; el.title = 'yükle ve çal';
-      el.innerHTML = `<b class="ac">${f.label}</b><button class="sil" title="sil">×</button>`;
+      const el = document.createElement('span'); el.className = 'fav'; el.title = 'yükle ve çal' + (i < 10 ? ` · ${(i + 1) % 10} tuşu` : '');
+      const no = i < 10 ? (i + 1) % 10 : null;     // 1..9, 10. için 0
+      el.innerHTML = `${no !== null ? `<span class="fav-no">${no}</span>` : ''}<b class="ac">${escapeHtml(f.label)}</b><button class="sil" title="sil">×</button>`;
       el.onclick = () => favYukle(f);
       el.querySelector('.sil').onclick = e => { e.stopPropagation(); state.favorites.splice(i, 1); persist(); favCiz(); };
       host.appendChild(el);
     });
   }
   gamCiz(); if (typeof poolCiz === 'function') poolCiz();
+  if ($('#lanesIc') && looper.tracks.length) lanesCiz();   // havuz değişince timeline'daki ↑ butonlarını tazele
+}
+/* bir bloğun akoru havuzda (Kayıtlı akorlar) mı? (etikete göre) */
+function akorHavuzdaMi(b){ return state.favorites.some(f => f.label === b.label); }
+function favNesne(b){ return { symbol: b.symbol || null, label: b.label, noteNames: (b.noteNames || []).slice(), gFrets: (b.gFrets || []).map(x => ({ ...x })), pMidis: (b.pMidis || []).slice() }; }
+/* bir timeline bloğunun akorunu havuza ekle ("yukarı at") — zaten varsa dokunma */
+function havuzaEkle(b){
+  if (!b || b.rest || b.perc || akorHavuzdaMi(b)) return false;
+  state.favorites.push(favNesne(b)); persist(); favCiz(); return true;
+}
+/* yüklenen loop'taki ama havuzda OLMAYAN akorları havuza geri ekle (o şarkıyla çalışmak için) */
+function loopAkorlariHavuza(){
+  let n = 0;
+  looper.tracks.forEach(tr => tr.blocks.forEach(b => {
+    if (b.rest || b.perc || akorHavuzdaMi(b)) return;
+    state.favorites.push(favNesne(b)); n++;
+  }));
+  if (n){ persist(); favCiz(); }
 }
 function tumNotalar(){
   const seen = new Set();
@@ -1580,9 +1601,24 @@ function blokYapistir(){
   if (!clip) return;
   gecmisAl();
   const yeni = Object.assign(dkopya(clip), { id: ++blokId });
-  const { track, idx } = eklemeHedef();
+  let track, idx;
+  if (clip.perc){                                         // ritim deseni KENDİ (perc) şeridine yapışsın
+    const sel = looper.selId ? bulBlok(looper.selId) : null;
+    if (sel && sel.track.instrument === 'perc'){ track = sel.track; idx = sel.idx + 1; }
+    else { track = looper.tracks.find(t => t.instrument === 'perc') || (looper.tracks.push(trackNesne('perc')), looper.tracks[looper.tracks.length - 1]); idx = track.blocks.length; }
+  } else { const h = eklemeHedef(); track = h.track; idx = h.idx; }
   track.blocks.splice(idx, 0, yeni);
   looper.selId = yeni.id; looper.activeTrackId = track.id;
+  if (looper.playing) looperBaslat();
+  lanesCiz(); gamCiz(); blokGorunur();
+}
+/* bir bloğu kendi şeridinde sağına çoğalt (ritim desenini yan yana dizmek için) */
+function blokKopyala(b, tr){
+  gecmisAl();
+  const idx = tr.blocks.indexOf(b);
+  const yeni = Object.assign(dkopya(b), { id: ++blokId });
+  tr.blocks.splice(idx + 1, 0, yeni);
+  looper.selId = yeni.id; looper.activeTrackId = tr.id;
   if (looper.playing) looperBaslat();
   lanesCiz(); gamCiz(); blokGorunur();
 }
@@ -1652,9 +1688,10 @@ function laneCiz(tr, host){
       el.className = ortak + ' perc';
       const sureRozet = `<span class="lb-sure" title="süre: ${DUR_AD[b.dur]} ölçü (↑/↓ değiştir)">${DUR_AD[b.dur]}<i>ölçü</i></span>`;
       el.innerHTML = `<span class="lb-perc-no" title="${b.steps} adımlık desen">${b.steps}</span>${sureRozet}${percMiniHTML(b)}
-        <div class="lb-eylem"><button class="lb-duzenle" title="deseni düzenle">✎</button><button class="lb-sil" title="sil (Backspace)">×</button></div>`;
+        <div class="lb-eylem"><button class="lb-duzenle" title="deseni düzenle">✎</button><button class="lb-kopya" title="kopyala (yan yana diz)">⧉</button><button class="lb-sil" title="sil (Backspace)">×</button></div>`;
       el.onclick = e => { if (e.target.closest('.lb-eylem')) return; looper.selId = b.id; looper.activeTrackId = tr.id; lanesCiz(); blokGorunur(); blokSesCal(b, tr); };
       el.querySelector('.lb-duzenle').onclick = e => { e.stopPropagation(); drumAc(b.id); };
+      el.querySelector('.lb-kopya').onclick = e => { e.stopPropagation(); blokKopyala(b, tr); };
       el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); blokSil(tr, arr.indexOf(b)); };
       host.appendChild(el); return;
     }
@@ -1667,11 +1704,13 @@ function laneCiz(tr, host){
       : '';
     const sureRozet = b.rest ? '' : `<span class="lb-sure" title="süre: ${DUR_AD[b.dur]} ölçü (↑/↓ değiştir)">${DUR_AD[b.dur]}<i>ölçü</i></span>`;
     const disliBtn = b.rest ? '' : `<button class="lb-disli" title="arpej notaları (voicing)">⚙</button>`;
+    const havuzBtn = (!b.rest && !akorHavuzdaMi(b)) ? `<button class="lb-havuz" title="bu akoru havuza ekle (↑)">↑</button>` : '';
     el.innerHTML = `<span class="lb-ad">${b.rest ? '·' : escapeHtml(b.label)}</span>${sureRozet}${hitSec}
-      <div class="lb-eylem">${arpBtn}${disliBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div>`;
+      <div class="lb-eylem">${arpBtn}${disliBtn}${havuzBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div>`;
     el.onclick = e => { if (e.target.closest('.lb-eylem') || e.target.closest('.lb-hit')) return; looper.selId = b.id; looper.activeTrackId = tr.id; lanesCiz(); blokGorunur(); liveSyncBlok(b); blokSesCal(b, tr); };  // seç + iki enstrümanı vurgula + anında çal
     if (!b.rest) el.querySelector('.lb-arp').onclick = e => { e.stopPropagation(); gecmisAl(); b.arp = !b.arp; looper.selId = b.id; if (looper.playing) looperBaslat(); lanesCiz(); };
     if (!b.rest) el.querySelector('.lb-disli').onclick = e => { e.stopPropagation(); arpPopAc(b, tr, el); };
+    { const hv = el.querySelector('.lb-havuz'); if (hv) hv.onclick = e => { e.stopPropagation(); if (havuzaEkle(b)) lanesCiz(); }; }
     const hitEl = el.querySelector('.lb-hit');
     if (hitEl){ hitEl.onclick = e => e.stopPropagation(); hitEl.onchange = e => { e.stopPropagation(); gecmisAl(); b.hits = +e.target.value; looper.selId = b.id; looper.activeTrackId = tr.id; if (looper.playing) looperBaslat(); lanesCiz(); }; }
     el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); blokSil(tr, arr.indexOf(b)); };
@@ -1740,6 +1779,7 @@ function loopAc(id, cal){
   idleriTazele();
   $('#lpBpm').value = it.bpm; $('#lpBpmVal').textContent = it.bpm; if (sesAcik) Tone.Transport.bpm.value = it.bpm;
   lanesCiz(); gamCiz();
+  loopAkorlariHavuza();                  // loop'taki, havuzda olmayan akorları geri yükle
   if (cal || looper.playing) looperBaslat();
 }
 function loopSil(id){ loopsKaydet(loopsYukle().filter(x => x.id !== id)); loopLibCiz(); }
@@ -2096,6 +2136,13 @@ function looperKur(){
       e.preventDefault();
       const ae = document.activeElement; if (ae && /^(BUTTON|A)$/.test(ae.tagName)) ae.blur();
       looper.playing ? looperDur() : looperBaslat();
+      return;
+    }
+    // Çevirici sekmesi: 1-9,0 → kenardaki "Kayıtlı akorlar"ı yükle + çal
+    const ceviriciAktif = $('#tab-cevirici') && $('#tab-cevirici').classList.contains('aktif');
+    if (ceviriciAktif && !yaziyor && /^[0-9]$/.test(e.key) && !e.ctrlKey && !e.metaKey){
+      const idx = e.key === '0' ? 9 : (+e.key - 1);
+      if (state.favorites[idx]){ e.preventDefault(); favYukle(state.favorites[idx]); }
       return;
     }
     const looperAktif = $('#tab-looper') && $('#tab-looper').classList.contains('aktif');
