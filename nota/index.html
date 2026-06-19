@@ -330,6 +330,63 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .ll-it .ll-cal,.ll-it .ll-sil{border:none;background:transparent;color:var(--muted);font-size:15px;padding:0 12px;border-left:1px solid var(--line)}
 .ll-it .ll-cal:hover{color:var(--acc)}
 .ll-it .ll-sil:hover{color:#e0533c}
+
+/* ===== özel vurmalı (custom percussion) ===== */
+.iz-davul{color:#e7b6dc;background:rgba(180,90,160,.14);border-color:rgba(180,90,160,.42)}
+.iz-davul:hover{border-color:#cf8fc4;filter:brightness(1.06)}
+/* perc kanal rengi — gitar(ahşap)/piyano(koyu)'dan ayrışan patlıcan tonu */
+.lane[data-k="perc"] .lane-bas{background:linear-gradient(180deg,#2a1c2e,#1d1320);color:#e0c2d6;border-right-color:#3c2740}
+.lane[data-k="perc"] .lane-track{background:linear-gradient(180deg,#231526,#170d18)}
+.lane-perc-rozet{flex:1;font-size:12.5px;font-weight:700;color:#e7c2dd;white-space:nowrap}
+/* perc blok */
+.lane-blok.perc{background:rgba(42,22,46,.55)}
+.lane-blok.perc .lb-perc-no{position:absolute;top:4px;left:5px;z-index:3;font-family:Georgia,serif;font-size:11px;font-weight:700;color:#ecaedf;background:linear-gradient(180deg,rgba(180,90,160,.24),rgba(180,90,160,.08));border:1px solid rgba(180,90,160,.42);border-radius:7px;padding:1px 6px;line-height:1.5;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.lane-blok .lb-duzenle{font-size:12px}
+.lb-perc-mini{position:absolute;inset:24px 6px 7px;display:grid;grid-template-columns:repeat(var(--adim),1fr);grid-auto-rows:1fr;gap:1px;pointer-events:none}
+.lb-perc-mini span{border-radius:1px;background:rgba(255,255,255,.05)}
+.lb-perc-mini span.on{background:var(--muted)}
+.lb-perc-mini span.on.kick{background:var(--acc)}
+.lb-perc-mini span.on.snare{background:var(--vurgu)}
+.lb-perc-mini span.on.hihat{background:#cf8fc4}
+
+/* ===== ritim deseni düzenleyici (modal) ===== */
+.drum-modal{position:fixed;inset:0;z-index:50;display:none}
+.drum-modal.acik{display:block}
+.drum-arka{position:absolute;inset:0;background:rgba(8,4,3,.72);backdrop-filter:blur(2px)}
+.drum-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(880px,94vw);max-height:90vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 60px rgba(0,0,0,.6);padding:20px 22px}
+.drum-bas{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.drum-bas h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:22px;color:var(--ink)}
+.drum-kapat{border:1px solid var(--line);background:var(--bg);color:var(--muted);width:34px;height:34px;border-radius:50%;font-size:18px;line-height:1;padding:0}
+.drum-kapat:hover{color:#e0533c;border-color:#c0392b}
+.drum-ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.drum-adim{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)}
+.drum-adim input{width:76px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:15px}
+.drum-adim input:focus{outline:none;border-color:var(--acc)}
+.drum-presets{display:flex;gap:6px;flex-wrap:wrap}
+.drum-presets button{font-size:12.5px;color:var(--acc);background:var(--acc-soft);border:1px solid transparent;border-radius:13px;padding:5px 11px}
+.drum-presets button:hover{border-color:var(--acc)}
+.drum-onizle{margin-left:auto;display:flex;gap:8px}
+.drum-onizle .drum-cal{background:var(--acc);color:#150c08;border:none;border-radius:16px;padding:8px 16px;font-size:13.5px;font-weight:600}
+.drum-onizle .drum-dur{background:var(--bg);color:var(--muted);border:1px solid var(--line);border-radius:16px;padding:8px 14px;font-size:13.5px}
+.drum-grid{overflow-x:auto;padding-bottom:6px}
+.dg-row{display:grid;grid-template-columns:96px repeat(var(--adim),minmax(20px,1fr));gap:3px;align-items:center;margin-bottom:4px}
+.dg-row.dg-no{margin-bottom:2px}
+.dg-lab{font-size:12.5px;color:var(--ink);font-weight:700;white-space:nowrap}
+.dg-num{font-size:9.5px;color:var(--muted);text-align:center;line-height:1}
+.dg-num.vurus{color:var(--acc);font-weight:700}
+.dg-cell{height:30px;border:1px solid var(--line);border-radius:5px;background:var(--bg);padding:0;cursor:pointer}
+.dg-cell.vurus{border-left:2px solid rgba(232,154,78,.55)}
+.dg-cell:hover{border-color:var(--acc)}
+.dg-row[data-row="kick"] .dg-cell.on{background:var(--acc);border-color:var(--acc)}
+.dg-row[data-row="snare"] .dg-cell.on{background:var(--vurgu);border-color:var(--vurgu)}
+.dg-row[data-row="hihat"] .dg-cell.on{background:#cf8fc4;border-color:#cf8fc4}
+.dg-cell.calan{outline:2px solid #fff;outline-offset:-2px}
+.dg-num.calan{color:#fff}
+.drum-alt{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px}
+.drum-ipucu{font-size:12.5px;color:var(--muted);font-style:italic}
+.drum-ekle{background:var(--vurgu);color:#fff;border:none;border-radius:18px;padding:10px 22px;font-size:15px;font-weight:600}
+.drum-ekle:hover{filter:brightness(1.06)}
+@media(max-width:560px){.drum-onizle{margin-left:0}.dg-row{grid-template-columns:62px repeat(var(--adim),minmax(16px,1fr))}.dg-lab{font-size:11px}}
 </style>
 </head>
 <body>
@@ -508,6 +565,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
     <div class="iz-arac">
       <button class="iz-ekle" id="izGitar" type="button">+ Gitar kanalı</button>
       <button class="iz-ekle" id="izPiyano" type="button">+ Piyano kanalı</button>
+      <button class="iz-ekle iz-davul" id="izDavul" type="button">🥁 Ritim deseni</button>
       <span class="iz-not">Her kanal kendi enstrümanını ve ses düzeyini taşır · havuz akoru <b>aktif kanala</b> düşer</span>
     </div>
     <div class="lanes" id="lanes">
@@ -525,6 +583,38 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
       </div>
       <div class="ll-list" id="loopList"></div>
     </section>
+  </div>
+
+  <!-- ritim deseni düzenleyici (overlay; tüm sekmelerin üstünde) -->
+  <div class="drum-modal" id="drumModal" aria-hidden="true">
+    <div class="drum-arka" id="drumArka"></div>
+    <div class="drum-panel" role="dialog" aria-label="Ritim deseni düzenleyici">
+      <div class="drum-bas">
+        <h3>🥁 Ritim deseni</h3>
+        <button class="drum-kapat" id="drumKapat" type="button" title="kapat">×</button>
+      </div>
+      <div class="drum-ust">
+        <label class="drum-adim">Toplam adım
+          <input type="number" id="drumAdim" min="1" max="32" step="1" value="16" autocomplete="off">
+        </label>
+        <div class="drum-presets" id="drumPresets">
+          <button type="button" data-n="10">5/8 · 10</button>
+          <button type="button" data-n="12">6/8 · 12</button>
+          <button type="button" data-n="14">7/8 · 14</button>
+          <button type="button" data-n="16">4/4 · 16</button>
+          <button type="button" data-n="18">9/8 · 18</button>
+        </div>
+        <div class="drum-onizle">
+          <button type="button" id="drumOnizle" class="drum-cal">▶ Önizle</button>
+          <button type="button" id="drumOnizleDur" class="drum-dur">■ Dur</button>
+        </div>
+      </div>
+      <div class="drum-grid" id="drumGrid"></div>
+      <div class="drum-alt">
+        <span class="drum-ipucu">Hücreleri tıkla · 1 adım = 1/16 nota (14→7/8, 16→4/4, 18→9/8) · desen blok boyunca döngüler</span>
+        <button type="button" id="drumEkle" class="drum-ekle">Diziye ekle</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1339,6 +1429,7 @@ function trackTetikle(tr, midis, time){
 /* bir bloğun KENDİ kanal enstrümanını anında çal (ön dinleme; es ise sessiz) */
 function blokSesCal(blk, tr){
   if (blk.rest) return;
+  if (blk.perc){ percOnizleBir(blk); return; }                 // perc: deseni tek tur ön dinle
   if (tr.instrument === 'gitar') calMidis(blk.gFrets.map(x => x.midi), 'gitar');
   else calMidis(blk.pMidis, 'piyano');
 }
@@ -1353,7 +1444,11 @@ function blokNesne(f, ref){
 /* ekleme hedefi DAİMA AKTİF KANAL (W/S ya da tıkla ile seçilen şerit):
    seçili blok aktif kanaldaysa onun SAĞINA, değilse aktif kanalın SONUNA */
 function eklemeHedef(){
-  const track = aktifTrack();
+  let track = aktifTrack();
+  if (track.instrument === 'perc'){                            // havuz akoru perc kanalına düşmez → bir akor kanalına yönlendir
+    track = looper.tracks.find(t => t.instrument !== 'perc');
+    if (!track){ track = trackNesne('gitar'); looper.tracks.push(track); looper.activeTrackId = track.id; }
+  }
   const sel = looper.selId ? bulBlok(looper.selId) : null;
   if (sel && sel.track === track) return { track, idx: sel.idx + 1 };
   return { track, idx: track.blocks.length };
@@ -1449,9 +1544,20 @@ function laneCiz(tr, host){
   host.innerHTML = '';
   arr.forEach((b, i) => {
     const el = document.createElement('div');
-    el.className = 'lane-blok' + (b.id === looper.selId ? ' secili' : '') + (looper.calan[tr.id] === b.id ? ' oynuyor' : '') + (b.arp ? ' arpli' : '') + (b.rest ? ' rest' : '');
     el.dataset.bid = b.id;
     el.style.width = (b.dur * PXB) + 'px';
+    const ortak = 'lane-blok' + (b.id === looper.selId ? ' secili' : '') + (looper.calan[tr.id] === b.id ? ' oynuyor' : '');
+    if (b.perc){                                                 // ===== vurmalı blok (tek, döngülenebilir desen) =====
+      el.className = ortak + ' perc';
+      const sureRozet = `<span class="lb-sure" title="süre: ${DUR_AD[b.dur]} ölçü (↑/↓ değiştir)">${DUR_AD[b.dur]}<i>ölçü</i></span>`;
+      el.innerHTML = `<span class="lb-perc-no" title="${b.steps} adımlık desen">${b.steps}</span>${sureRozet}${percMiniHTML(b)}
+        <div class="lb-eylem"><button class="lb-duzenle" title="deseni düzenle">✎</button><button class="lb-sil" title="sil (Backspace)">×</button></div>`;
+      el.onclick = e => { if (e.target.closest('.lb-eylem')) return; looper.selId = b.id; looper.activeTrackId = tr.id; lanesCiz(); blokGorunur(); blokSesCal(b, tr); };
+      el.querySelector('.lb-duzenle').onclick = e => { e.stopPropagation(); drumAc(b.id); };
+      el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); blokSil(tr, arr.indexOf(b)); };
+      host.appendChild(el); return;
+    }
+    el.className = ortak + (b.arp ? ' arpli' : '') + (b.rest ? ' rest' : '');
     // akor adı + SÜRE rozeti (ölçü) + arpej vuruş seçici (1-16, yalnız arpejli blokta); düzenleme: arpej + ×. Es blokta yok.
     const arpBtn = b.rest ? '' : `<button class="lb-arp${b.arp ? ' on' : ''}" title="arpej (Q)">≈</button>`;
     const hits = Math.max(1, Math.min(16, b.hits || 4));
@@ -1489,11 +1595,14 @@ function lanesCiz(){
     lane.className = 'lane' + (tr.id === looper.activeTrackId ? ' aktif' : '');
     lane.dataset.k = tr.instrument;
     const bas = document.createElement('div'); bas.className = 'lane-bas';
-    bas.innerHTML =
-      `<div class="lane-ust"><div class="lane-enst" role="group" aria-label="enstrüman">
+    const ustIc = tr.instrument === 'perc'
+      ? `<span class="lane-perc-rozet" title="vurmalı kanal">🥁 Vurmalı</span>`
+      : `<div class="lane-enst" role="group" aria-label="enstrüman">
          <button data-i="gitar" class="${tr.instrument === 'gitar' ? 'sec' : ''}" title="gitar kanalı">🎸</button>
          <button data-i="piyano" class="${tr.instrument === 'piyano' ? 'sec' : ''}" title="piyano kanalı">🎹</button>
-       </div><button class="lane-sil" title="kanalı sil">×</button></div>
+       </div>`;
+    bas.innerHTML =
+      `<div class="lane-ust">${ustIc}<button class="lane-sil" title="kanalı sil">×</button></div>
        <label class="lane-vol-sar" title="ses düzeyi"><span>🔉</span><input type="range" class="lane-vol" min="0" max="1" step="0.01" value="${tr.vol}"></label>`;
     bas.onclick = e => { if (e.target.closest('button') || e.target.closest('input')) return; looper.activeTrackId = tr.id; lanesCiz(); };
     bas.querySelectorAll('.lane-enst button').forEach(b => b.onclick = e => { e.stopPropagation(); b.blur(); trackEnstruman(tr.id, b.dataset.i); });
@@ -1558,7 +1667,7 @@ function calanIsaretle(){
 /* bir bloğu tıklamak/çalmak HEM gitar perdesini HEM piyano tuşunu Çevirici'de vurgular
    (kanalın enstrümanı ne olursa olsun — blok iki dizilişi de taşır) */
 function liveSyncBlok(b){
-  if (!b || b.rest) return;
+  if (!b || b.rest || b.perc) return;
   state.symbol = b.symbol || null;
   const gen = b.symbol && !Chord.get(b.symbol).empty;
   state.gVoicings = [{ label: 'looper', manual: true, frets: (b.gFrets || []).map(x => ({ ...x })) }, ...(gen ? gitarVoicings(b.symbol) : [])];
@@ -1586,6 +1695,7 @@ function arpDizi(midis){ return [...new Set(midis)].sort((a, b) => a - b); }
 async function looperBaslat(){
   if (!looper.tracks.some(t => t.blocks.length)) return;
   if (!(await sesHazir())) return;
+  if (looper.tracks.some(t => t.blocks.some(b => b.perc))) await percHazir();   // vurmalı synth'leri hazırla
   Tone.Transport.stop(); Tone.Transport.cancel(); Tone.Transport.position = 0;
   Tone.Transport.bpm.value = looper.bpm;
   let total = 4;
@@ -1594,7 +1704,8 @@ async function looperBaslat(){
     let beat = 0;
     tr.blocks.forEach(b => {
       Tone.Transport.schedule(time => {
-        if (!b.rest){
+        if (b.perc) percCal(tr, b, time);
+        else if (!b.rest){
           const baseM = tr.instrument === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis;
           if (b.arp){
             const arp = arpDizi(baseM);                                       // akorun benzersiz perdeleri (pesten tize)
@@ -1662,6 +1773,126 @@ function abCiz(){
     b.title = snap[s] ? (snapAktif === s ? 'tıkla: üzerine kaydet' : 'tıkla: bu hâle geç') : 'tıkla: şu anki hâli kaydet';
   });
 }
+/* ===================== özel vurmalı (custom percussion) =====================
+   Tone.js gömülü synth'ler (örnek dosyası yok). Mevcut motor (akor/arpej) DEĞİŞMEZ; bunlar EK.
+   Kick = MembraneSynth · Snare + Hi-Hat = NoiseSynth (hi-hat'e highpass). */
+const perc = { ready: false, kick: null, snare: null, hihat: null, hhf: null };
+async function percHazir(){
+  if (!(await sesHazir())) return false;                  // Tone.start + temel motor (yeniden kurmaz)
+  if (perc.ready) return true;
+  perc.kick = new Tone.MembraneSynth({ octaves: 7, pitchDecay: 0.045, envelope: { attack: 0.001, decay: 0.34, sustain: 0 } }).toDestination();
+  perc.kick.volume.value = -3;
+  perc.snare = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.18, sustain: 0 } }).toDestination();
+  perc.snare.volume.value = -11;
+  perc.hhf = new Tone.Filter(8000, 'highpass').toDestination();
+  perc.hihat = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.045, sustain: 0 } }).connect(perc.hhf);
+  perc.hihat.volume.value = -15;
+  perc.ready = true;
+  return true;
+}
+const PERC_STEP_BEAT = 0.25;        // 1 adım = 1/16 nota → 4 adım = 1 vuruş; 14 adım = 7/8, 18 = 9/8
+const PERC_ROWS = [['kick', 'Kick', '🥁'], ['snare', 'Snare', '🪘'], ['hihat', 'Hi-Hat', '🎩']];
+function percVurStep(pattern, s, time, vel){
+  if (pattern.kick[s])  perc.kick.triggerAttackRelease('C1', '8n', time, vel);
+  if (pattern.snare[s]) perc.snare.triggerAttackRelease('16n', time, vel);
+  if (pattern.hihat[s]) perc.hihat.triggerAttackRelease('32n', time, vel * 0.8);
+}
+/* looper: deseni blok süresi boyunca DÖNGÜLEYEREK çal (14/16/18… adım fark etmez) */
+function percCal(tr, b, time){
+  if (!perc.ready || !b.steps) return;
+  const secB = 60 / looper.bpm, stepSec = PERC_STEP_BEAT * secB, blockSec = b.dur * secB;
+  let i = 0;
+  for (let t = 0; t < blockSec - 1e-3; t += stepSec){ percVurStep(b.pattern, i % b.steps, time + t, tr.vol); i++; }
+}
+/* perc bloğunu tıklayınca deseni tek tur ön dinle */
+async function percOnizleBir(b){
+  if (!(await percHazir())) return;
+  const secB = 60 / looper.bpm, stepSec = PERC_STEP_BEAT * secB, t0 = Tone.now() + 0.05;
+  for (let i = 0; i < b.steps; i++) percVurStep(b.pattern, i, t0 + i * stepSec, 0.95);
+}
+function percMiniHTML(b){
+  let html = `<div class="lb-perc-mini" style="--adim:${b.steps}">`;
+  PERC_ROWS.forEach(([r]) => { for (let i = 0; i < b.steps; i++) html += `<span class="${b.pattern[r][i] ? 'on ' + r : ''}"></span>`; });
+  return html + '</div>';
+}
+
+/* ----- desen düzenleyici (modal) ----- */
+const editor = { steps: 16, pattern: { kick: [], snare: [], hihat: [] }, blokId: null };
+let percOnizleTimer = null, percOnizleStep = 0;
+function varsayilanDesen(steps){
+  const k = new Array(steps).fill(0), s = new Array(steps).fill(0), h = new Array(steps).fill(0);
+  for (let i = 0; i < steps; i++){ if (i % 4 === 0) k[i] = 1; if (i % 2 === 0) h[i] = 1; }
+  s[Math.min(steps - 1, Math.max(0, Math.round(steps / 8) * 4 || 4))] = 1;   // ortaya yakın bir vuruşta snare
+  return { kick: k, snare: s, hihat: h };
+}
+function drumAcik(){ const m = $('#drumModal'); return !!(m && m.classList.contains('acik')); }
+function drumAc(blokId){
+  onizleDurdur();
+  const f = blokId ? bulBlok(blokId) : null;
+  if (f && f.blk.perc){ editor.blokId = blokId; editor.steps = f.blk.steps; editor.pattern = dkopya(f.blk.pattern); }
+  else { editor.blokId = null; editor.steps = 16; editor.pattern = varsayilanDesen(16); }
+  $('#drumAdim').value = editor.steps;
+  $('#drumEkle').textContent = editor.blokId ? 'Güncelle' : 'Diziye ekle';
+  gridCiz();
+  const m = $('#drumModal'); m.classList.add('acik'); m.setAttribute('aria-hidden', 'false');
+}
+function drumKapat(){ onizleDurdur(); const m = $('#drumModal'); if (m){ m.classList.remove('acik'); m.setAttribute('aria-hidden', 'true'); } }
+function adimAyarla(n){
+  n = Math.max(1, Math.min(32, Math.round(+n) || 16));
+  PERC_ROWS.forEach(([r]) => {
+    const old = editor.pattern[r] || [], arr = new Array(n).fill(0);
+    for (let i = 0; i < Math.min(n, old.length); i++) arr[i] = old[i];
+    editor.pattern[r] = arr;
+  });
+  editor.steps = n; if ($('#drumAdim')) $('#drumAdim').value = n;
+  gridCiz();
+}
+function gridCiz(){
+  const host = $('#drumGrid'); if (!host) return;
+  host.style.setProperty('--adim', editor.steps);
+  let html = '<div class="dg-row dg-no"><span class="dg-lab"></span>';
+  for (let i = 0; i < editor.steps; i++) html += `<span class="dg-num${i % 4 === 0 ? ' vurus' : ''}" data-i="${i}">${i + 1}</span>`;
+  html += '</div>';
+  PERC_ROWS.forEach(([r, ad, em]) => {
+    html += `<div class="dg-row" data-row="${r}"><span class="dg-lab">${em} ${ad}</span>`;
+    for (let i = 0; i < editor.steps; i++) html += `<button type="button" class="dg-cell${editor.pattern[r][i] ? ' on' : ''}${i % 4 === 0 ? ' vurus' : ''}" data-row="${r}" data-i="${i}" aria-pressed="${editor.pattern[r][i] ? 'true' : 'false'}"></button>`;
+    html += '</div>';
+  });
+  host.innerHTML = html;
+  host.querySelectorAll('.dg-cell').forEach(c => c.onclick = () => {
+    const r = c.dataset.row, i = +c.dataset.i, v = editor.pattern[r][i] ? 0 : 1;
+    editor.pattern[r][i] = v; c.classList.toggle('on', !!v); c.setAttribute('aria-pressed', v ? 'true' : 'false');
+  });
+}
+function gridSutunVurgu(s){ const host = $('#drumGrid'); if (host) host.querySelectorAll('[data-i]').forEach(el => el.classList.toggle('calan', +el.dataset.i === s)); }
+function onizleBaslat(){
+  onizleDurdur();
+  percHazir().then(ok => {
+    if (!ok || !drumAcik()) return;
+    percOnizleStep = 0;
+    const stepMs = Math.max(45, PERC_STEP_BEAT * 60 / looper.bpm * 1000);
+    const tik = () => { const s = percOnizleStep % editor.steps; percVurStep(editor.pattern, s, Tone.now() + 0.02, 0.95); gridSutunVurgu(s); percOnizleStep++; };
+    tik(); percOnizleTimer = setInterval(tik, stepMs);
+  });
+}
+function onizleDurdur(){ if (percOnizleTimer){ clearInterval(percOnizleTimer); percOnizleTimer = null; } gridSutunVurgu(-1); }
+function percEkle(){
+  onizleDurdur();
+  if (editor.blokId){                                          // mevcut bloğu güncelle
+    const f = bulBlok(editor.blokId);
+    if (f && f.blk.perc){ gecmisAl(); f.blk.steps = editor.steps; f.blk.pattern = dkopya(editor.pattern); f.blk.label = '🥁 ' + editor.steps; looper.selId = f.blk.id; if (looper.playing) looperBaslat(); lanesCiz(); blokGorunur(); }
+    drumKapat(); return;
+  }
+  gecmisAl();
+  let track = looper.tracks.find(t => t.instrument === 'perc');     // varsa perc kanalına ekle, yoksa oluştur
+  if (!track){ track = trackNesne('perc'); looper.tracks.push(track); }
+  const blk = { id: ++blokId, perc: true, label: '🥁 ' + editor.steps, steps: editor.steps, pattern: dkopya(editor.pattern), dur: 4, noteNames: [] };
+  track.blocks.push(blk);
+  looper.selId = blk.id; looper.activeTrackId = track.id;
+  if (looper.playing) looperBaslat();
+  lanesCiz(); blokGorunur(); drumKapat();
+}
+
 function looperKur(){
   // sekme geçişi
   document.querySelectorAll('.tab-tus').forEach(t => t.onclick = () => {
@@ -1684,6 +1915,22 @@ function looperKur(){
   $('#izPiyano') && ($('#izPiyano').onclick = e => { e.currentTarget.blur(); trackEkle('piyano'); });
   $('#loopKaydetBtn') && ($('#loopKaydetBtn').onclick = e => { e.currentTarget.blur(); loopKaydet(); });
   $('#loopAd') && ($('#loopAd').onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); loopKaydet(); e.target.blur(); } });
+  // ritim deseni düzenleyici (modal)
+  $('#izDavul') && ($('#izDavul').onclick = e => { e.currentTarget.blur(); drumAc(); });
+  $('#drumKapat') && ($('#drumKapat').onclick = () => drumKapat());
+  $('#drumArka') && ($('#drumArka').onclick = () => drumKapat());
+  $('#drumAdim') && ($('#drumAdim').onchange = e => adimAyarla(e.target.value));
+  $('#drumPresets') && $('#drumPresets').querySelectorAll('button').forEach(b => b.onclick = () => { b.blur(); adimAyarla(+b.dataset.n); });
+  $('#drumOnizle') && ($('#drumOnizle').onclick = e => { e.currentTarget.blur(); onizleBaslat(); });
+  $('#drumOnizleDur') && ($('#drumOnizleDur').onclick = e => { e.currentTarget.blur(); onizleDurdur(); });
+  $('#drumEkle') && ($('#drumEkle').onclick = e => { e.currentTarget.blur(); percEkle(); });
+  // modal açıkken looper kısayollarını (Boşluk/WASD/sayı/oklar) engelle + Esc ile kapat —
+  // capture+stopImmediatePropagation ile mevcut keydown'a DOKUNMADAN
+  document.addEventListener('keydown', e => {
+    if (!drumAcik()) return;
+    if (e.key === 'Escape'){ e.preventDefault(); drumKapat(); }
+    e.stopImmediatePropagation();
+  }, true);
   // Boşluk tuşunun odaktaki düğmeyi YENİDEN tetiklemesini engelle (keyup'taki etkinleştirmeyi de bastır)
   const bosTus = e => (e.code === 'Space' || e.key === ' ');
   const yaziAlani = () => { const t = document.activeElement && document.activeElement.tagName; return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT'; };
