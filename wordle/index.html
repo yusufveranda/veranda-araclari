@@ -134,11 +134,11 @@ body{transition:background .4s,color .4s}
 /* anlamca: yakın anlam ipuçları */
 .ipuclar{text-align:center;margin:18px auto 0;max-width:360px;background:var(--mat);border:1.5px solid var(--kutu-cizgi);
   border-radius:11px;box-shadow:4px 5px 0 var(--mat-golge);padding:13px 16px 14px;font-family:'Libre Baskerville',serif}
-.ipuclar .ip-et{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--soluk);margin-bottom:7px}
-.ipuclar .ip-kelimeler{line-height:1.18}
-.ipuclar b{font-family:'Playfair Display',serif;font-weight:800;font-size:27px;color:var(--kirmizi);letter-spacing:.01em;margin:0 5px}
-.ipuclar .ip-nokta{color:var(--soluk);font-size:18px}
-.ipuclar .ip-alt{display:block;margin-top:9px;font-size:12.5px;font-style:italic;color:var(--soluk)}
+.ipuclar .ip-grup{margin-top:11px}
+.ipuclar .ip-grup:first-child{margin-top:0}
+.ipuclar .ip-et{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--soluk);margin-bottom:2px}
+.ipuclar b{font-family:'Playfair Display',serif;font-weight:800;font-size:26px;color:var(--kirmizi);letter-spacing:.01em}
+.ipuclar .ip-alt{display:block;margin-top:11px;font-size:12.5px;font-style:italic;color:var(--soluk)}
 .ipuclar .ip-kilit{display:block;margin-top:7px;font-size:11px;font-style:italic;color:var(--soluk);opacity:.85}
 .ipuclar .ip-yeni{display:inline-block;animation:sonucGel .4s both}
 
@@ -757,8 +757,8 @@ function introIcerik(o){
     '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış, gri hiç yok.</p>'+
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
-    '<p><b>Sana yakın anlamlı kelimeler verilir</b> (örn. <i>konum · vaziyet</i>). Sen <b>aynı anlama gelen 5 harfli kelimeyi</b> bulursun (cevap: <i>durum</i>).</p>'+
-    '<p>3 deneme hakkın var; 2. tahminden sonra bir ipucu daha düşer.</p>'+
+    '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
+    '<p>Sen bunlarla <b>aynı anlama gelen 5 harfli kelimeyi</b> bul (cevap: <i>deniz</i>). 3 deneme hakkın var.</p>'+
     '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış.</p>'};
   return {bas:'harfiyat nasıl oynanır?', html:
     '<p>Klasik Wordle: <b>5 harfli</b> günün kelimesini <b>6 denemede</b> bul.</p>'+
@@ -876,10 +876,10 @@ function ciz(){
     if(sig!==_ipSig){   // sadece ipucu değişince yeniden çiz (her tuşta zıplamasın)
       _ipSig=sig;
       const goster=ikiHazir?b.ipucu.slice(0,2):b.ipucu.slice(0,1);
-      ip.innerHTML='<span class="ip-et">buna yakın anlamlı</span>'+
-        '<div class="ip-kelimeler">'+goster.map((s,i)=>'<b'+(i===1?' class="ip-yeni"':'')+'>'+s+'</b>').join('<span class="ip-nokta">·</span>')+'</div>'+
+      const ET=['çağrışım','yakın anlam','yakın anlam'];
+      ip.innerHTML=goster.map((s,i)=>'<div class="ip-grup'+(i===1?' ip-yeni':'')+'"><span class="ip-et">'+ET[i]+'</span><b>'+s+'</b></div>').join('')+
         '<span class="ip-alt">aynı anlama gelen 5 harfli kelimeyi bul</span>'+
-        (!ikiHazir && b.ipucu.length>=2 && !b.bitti ? '<span class="ip-kilit">2. tahminden sonra bir ipucu daha</span>':'');
+        (!ikiHazir && b.ipucu.length>=2 && !b.bitti ? '<span class="ip-kilit">2. tahminden sonra "yakın anlam" gelir</span>':'');
     }
   } else { ip.classList.add('gizli'); _ipSig=''; }
   // tahta — hücre boyutu pikselle hesaplanır (uzun kelimeler de sığsın)
