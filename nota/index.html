@@ -274,6 +274,11 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .lane-blok .lb-arp.on{background:var(--acc);color:#150c08}
 .lane-blok .lb-sil:hover{color:#e0533c;background:rgba(192,52,27,.2)}
 .lane-blok .lb-arpgost{position:absolute;top:2px;left:5px;font-size:12px;color:var(--vurgu);font-weight:700;line-height:1}
+/* arpej vuruş seçici (1-16) — bloğun sol üstünde, süre rozetiyle simetrik */
+.lane-blok .lb-hit{position:absolute;top:4px;left:5px;z-index:7;-webkit-appearance:none;appearance:none;font-family:Georgia,serif;font-size:11px;font-weight:700;color:#f0b48a;background:linear-gradient(180deg,rgba(192,52,27,.22),rgba(192,52,27,.08));border:1px solid rgba(192,52,27,.45);border-radius:7px;padding:1px 4px;line-height:1.5;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.lane-blok .lb-hit:hover{border-color:var(--acc);color:#f4d6a6}
+.lane-blok .lb-hit:focus{outline:none;border-color:var(--acc)}
+.lane-blok .lb-hit option{background:var(--card);color:var(--ink);font-weight:600}
 .lane-blok.rest{background:repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0 6px,transparent 6px 12px);border-style:dashed}
 .lane-blok.rest .lb-ad{color:var(--muted);font-size:22px}
 .lane-blok.secili{border-color:var(--vurgu);box-shadow:0 0 0 2px var(--vurgu)}
@@ -1342,13 +1347,15 @@ function blokSesCal(blk, tr){
 function blokNesne(f, ref){
   const v = favVoicing(f);
   return { id: ++blokId, symbol: f.symbol || null, label: f.label, noteNames: f.noteNames || [],
-    gFrets: v.gFrets.map(x => ({ ...x })), pMidis: v.pMidis.slice(), dur: ref ? ref.dur : 4, arp: ref ? !!ref.arp : false };
+    gFrets: v.gFrets.map(x => ({ ...x })), pMidis: v.pMidis.slice(), dur: ref ? ref.dur : 4,
+    arp: ref ? !!ref.arp : false, hits: ref && ref.hits ? ref.hits : 4 };
 }
-/* ekleme hedefini bul: seçili blok varsa onun kanalı + sağı; yoksa aktif kanalın sonu */
+/* ekleme hedefi DAİMA AKTİF KANAL (W/S ya da tıkla ile seçilen şerit):
+   seçili blok aktif kanaldaysa onun SAĞINA, değilse aktif kanalın SONUNA */
 function eklemeHedef(){
-  const sel = looper.selId ? bulBlok(looper.selId) : null;
-  if (sel) return { track: sel.track, idx: sel.idx + 1 };
   const track = aktifTrack();
+  const sel = looper.selId ? bulBlok(looper.selId) : null;
+  if (sel && sel.track === track) return { track, idx: sel.idx + 1 };
   return { track, idx: track.blocks.length };
 }
 function poolEkle(f){
@@ -1445,14 +1452,19 @@ function laneCiz(tr, host){
     el.className = 'lane-blok' + (b.id === looper.selId ? ' secili' : '') + (looper.calan[tr.id] === b.id ? ' oynuyor' : '') + (b.arp ? ' arpli' : '') + (b.rest ? ' rest' : '');
     el.dataset.bid = b.id;
     el.style.width = (b.dur * PXB) + 'px';
-    // akor adı + SÜRE rozeti (ölçü) + arpej göstergesi; düzenleme: arpej + ×. Es blokta yok.
+    // akor adı + SÜRE rozeti (ölçü) + arpej vuruş seçici (1-16, yalnız arpejli blokta); düzenleme: arpej + ×. Es blokta yok.
     const arpBtn = b.rest ? '' : `<button class="lb-arp${b.arp ? ' on' : ''}" title="arpej (Q)">≈</button>`;
-    const arpRozet = (b.arp && !b.rest) ? '<span class="lb-arpgost" title="arpejli">≈</span>' : '';
+    const hits = Math.max(1, Math.min(16, b.hits || 4));
+    const hitSec = (b.arp && !b.rest)
+      ? `<select class="lb-hit" title="arpej vuruş sayısı (1–16): blok boyunca eşit dağılır">${Array.from({ length: 16 }, (_, k) => `<option value="${k + 1}"${hits === k + 1 ? ' selected' : ''}>≈${k + 1}</option>`).join('')}</select>`
+      : '';
     const sureRozet = b.rest ? '' : `<span class="lb-sure" title="süre: ${DUR_AD[b.dur]} ölçü (↑/↓ değiştir)">${DUR_AD[b.dur]}<i>ölçü</i></span>`;
-    el.innerHTML = `<span class="lb-ad">${b.rest ? '·' : escapeHtml(b.label)}</span>${sureRozet}${arpRozet}
+    el.innerHTML = `<span class="lb-ad">${b.rest ? '·' : escapeHtml(b.label)}</span>${sureRozet}${hitSec}
       <div class="lb-eylem">${arpBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div>`;
-    el.onclick = e => { if (e.target.closest('.lb-eylem')) return; looper.selId = b.id; looper.activeTrackId = tr.id; lanesCiz(); blokGorunur(); liveSyncBlok(b); blokSesCal(b, tr); };  // seç + iki enstrümanı vurgula + anında çal
+    el.onclick = e => { if (e.target.closest('.lb-eylem') || e.target.closest('.lb-hit')) return; looper.selId = b.id; looper.activeTrackId = tr.id; lanesCiz(); blokGorunur(); liveSyncBlok(b); blokSesCal(b, tr); };  // seç + iki enstrümanı vurgula + anında çal
     if (!b.rest) el.querySelector('.lb-arp').onclick = e => { e.stopPropagation(); gecmisAl(); b.arp = !b.arp; looper.selId = b.id; if (looper.playing) looperBaslat(); lanesCiz(); };
+    const hitEl = el.querySelector('.lb-hit');
+    if (hitEl){ hitEl.onclick = e => e.stopPropagation(); hitEl.onchange = e => { e.stopPropagation(); gecmisAl(); b.hits = +e.target.value; looper.selId = b.id; looper.activeTrackId = tr.id; if (looper.playing) looperBaslat(); lanesCiz(); }; }
     el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); blokSil(tr, arr.indexOf(b)); };
     host.appendChild(el);
   });
@@ -1585,12 +1597,11 @@ async function looperBaslat(){
         if (!b.rest){
           const baseM = tr.instrument === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis;
           if (b.arp){
-            const arp = arpDizi(baseM);                                       // bloğun TÜM notaları
+            const arp = arpDizi(baseM);                                       // akorun benzersiz perdeleri (pesten tize)
             if (arp.length){
-              const blokSec = b.dur * 60 / looper.bpm;
-              const adim = Math.max(0.07, Math.min(30 / looper.bpm, blokSec / arp.length));  // ~1/8 nota, kısa blokta sığdır
-              let t = 0, k = 0;
-              while (t < blokSec - 1e-3 && k < 32){ trackNota(tr, arp[k % arp.length], time + t); t += adim; k++; }   // bloğu doldur, döngüle
+              const n = Math.max(1, Math.min(16, b.hits || 4));               // TAM olarak n vuruş (seçiciden)
+              const blokSec = b.dur * 60 / looper.bpm, adim = blokSec / n;     // n nota blok boyunca eşit dağılır
+              for (let k = 0; k < n; k++) trackNota(tr, arp[k % arp.length], time + k * adim);  // perdeleri döngüleyerek çal
             }
           } else trackTetikle(tr, baseM, time);
         }
