@@ -1058,6 +1058,22 @@ let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeou
   ciz();
 },120); });
 temaUygula(); sesUygula(); hubGoster();
+
+/* yeni sürüm yayınlanınca otomatik tazele — kullanıcı hard-refresh yapmasa da güncel kalır.
+   yüklenen sayfanın Last-Modified'ı sunucudakinden eskiyse (yeni deploy olmuş) yenile. */
+(function(){
+  const yukluLM = Date.parse(document.lastModified) || 0;
+  function kontrol(){
+    fetch(location.pathname,{method:'HEAD',cache:'no-store'}).then(function(r){
+      const s = Date.parse(r.headers.get('Last-Modified')||'') || 0;
+      if(s && yukluLM && s > yukluLM+2000 && sessionStorage.getItem('sk-surum')!==String(s)){
+        sessionStorage.setItem('sk-surum',String(s)); location.reload();
+      }
+    }).catch(function(){});
+  }
+  kontrol();   // açılışta (cache'ten eski geldiyse tazele)
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') kontrol(); });
+})();
 </script>
 </body>
 </html>
