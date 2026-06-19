@@ -12,7 +12,7 @@ window.ADLAR = {
   "karine": "Avlu",
   "karine_rozet": "beş harf · üç deneme",
   "karine_aciklama": "İpuculu \nKısa",
-  "sicak": "sıcak soğuk",
+  "sicak": "Sıcak Soğuk",
   "sicak_rozet": "anlam oyunu · sınırsız tahmin",
   "sicak_aciklama": "harfini değil anlamını bul. her tahmin gizli kelimeye ne kadar yakın? yaklaştıkça ısınırsın.",
   "sicak_slogan": "gizli kelimeyi anlam yakınlığıyla yakala",
