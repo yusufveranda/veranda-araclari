@@ -898,6 +898,7 @@ function payBagla(el){   // isim + kopyala + tablo düğmelerini bağla (taraça
 function sonucCiz(){
   const el=document.getElementById('sonuc');
   if(!(oyunBitti && sonucHazir)){ el.classList.add('gizli'); el.classList.remove('acilis'); return; }
+  if(document.activeElement && document.activeElement.id==='nickGir') return;   // isim yazılırken paneli yeniden kurma → odak/klavye kaçmasın, sayfa kaymasın
   el.classList.remove('gizli');
   const payHTML=`<div class="pay"><input id="nickGir" class="nick-gir" maxlength="16" placeholder="ismin"><button class="pay-btn" id="kopyaBtn">📋 kopyala</button></div>
       <div class="pay-not" id="payNot"></div>
