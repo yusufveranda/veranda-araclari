@@ -114,7 +114,7 @@ body{transition:background .4s,color .4s}
 .modbar{margin-top:14px}
 
 /* ----- iskelime sekmeleri ----- */
-.sekmeler{display:flex;gap:9px;justify-content:center;margin:26px auto 4px;flex-wrap:wrap}
+.sekmeler{display:flex;gap:9px;justify-content:center;margin:26px auto 20px;flex-wrap:wrap}
 .sekme{position:relative;font-family:'Playfair Display',serif;font-weight:600;font-size:16px;width:42px;height:42px;
   border:1.5px solid var(--kutu-cizgi);border-radius:11px;background:var(--mat);color:var(--mur);cursor:pointer;
   display:flex;align-items:center;justify-content:center;box-shadow:2px 3px 0 var(--mat-golge);transition:transform .15s}
@@ -123,6 +123,7 @@ body{transition:background .4s,color .4s}
 .sekme.cozuldu{background:var(--dogru);color:var(--dogru-ink);border-color:var(--dogru)}
 .sekme.kayip{background:var(--yok);color:var(--yok-ink);border-color:var(--yok)}
 .sekme .alt-no{position:absolute;bottom:-15px;left:0;right:0;font-family:'Libre Baskerville',serif;font-size:9.5px;color:var(--soluk)}
+.sekme .alt-no.altin{color:var(--altin);font-weight:700}
 
 /* anlamca: yakın anlam ipuçları */
 .ipuclar{text-align:center;margin:16px auto 0;font-family:'Libre Baskerville',serif}
@@ -306,7 +307,7 @@ body{transition:background .4s,color .4s}
   .simge{width:34px;height:34px}
   .secimler{margin-top:12px;gap:8px}
   .segment button{padding:6px 11px;font-size:12.5px}
-  .sekmeler{margin:14px auto 4px;gap:7px}
+  .sekmeler{margin:14px auto 18px;gap:7px}
   .sekme{width:38px;height:38px}
   .mat{margin:12px auto 0;padding:8px}
 }
@@ -634,7 +635,7 @@ function skorHesapla(){
   // 0–100: her kelimenin payı uzunluk ağırlığıyla orantılı (3/7/8 harf = 1.5 kat zor).
   // pay = TABAN (son denemede çözünce alınan oran) + (1-TABAN)·hız. Hepsi 1.de → 100.
   const TABAN=0.35, ALTIN=altinUz();
-  const agir=uz=>{ let w=(uz===3||uz===7||uz===8)?1.5:1; if(uz===ALTIN) w*=2; return w; };   // 3/7/8 harf 1.5×, günün altın kelimesi 2×
+  const agir=uz=> uz===ALTIN ? 2 : ((uz===3||uz===7||uz===8)?1.5:1);   // altın kelime sabit 2× (1 ya da 1.5'tan 2'ye); 3/7/8 harf 1.5×; diğerleri 1×
   const toplamAgir=tahtalar.reduce((a,t)=>a+agir(t.uz),0)||1;
   const puan100=Math.round(per.reduce((a,p,i)=>{
     if(!p.cozuldu) return a;
@@ -654,8 +655,9 @@ function ozetIzgaraHTML(){   // 6 mini ızgara, tek ekranda — sadece oynanan s
   const altin=altinUz();
   return tahtalar.map(t=>{
     const huc=t.gecmis.map(row=>row.harfler.map((h,i)=>`<i class="mt ${RENKAD[row.renkler[i]]}">${h}</i>`).join('')).join('');
-    const au=t.uz===altin;
-    return `<div class="mboard${au?' altin':''}"><div class="met">${t.uz} harf${au?' 🌟':''}</div><div class="mgrid" style="grid-template-columns:repeat(${t.uz},15px)">${huc}</div></div>`;
+    const au=t.uz===altin, w=au?2:((t.uz===3||t.uz===7||t.uz===8)?1.5:1);
+    const etk=au?' 🌟2×':(w>1?' '+w+'×':'');
+    return `<div class="mboard${au?' altin':''}"><div class="met">${t.uz} harf${etk}</div><div class="mgrid" style="grid-template-columns:repeat(${t.uz},15px)">${huc}</div></div>`;
   }).join('');
 }
 function payMetni(){   // spoiler vermez: yalnız uzunluk + çözüldü/çözülmedi + deneme
@@ -814,10 +816,14 @@ function ciz(){
   sek.classList.toggle('gizli', oyun!=='iskelime');
   if(oyun==='iskelime'){
     sek.innerHTML='';
+    const _altin=altinUz();
     tahtalar.forEach((t,i)=>{
+      const au=t.uz===_altin, w=au?2:((t.uz===3||t.uz===7||t.uz===8)?1.5:1);
       const s=document.createElement('button');
-      s.className='sekme'+(i===aktif?' aktif':'')+(t.kazandi?' cozuldu':(t.bitti?' kayip':''))+(t.uz===altinUz()?' altin':'');
-      s.textContent=t.uz; s.onclick=()=>{ aktif=i; ciz(); };
+      s.className='sekme'+(i===aktif?' aktif':'')+(t.kazandi?' cozuldu':(t.bitti?' kayip':''))+(au?' altin':'');
+      s.textContent=t.uz;
+      if(w>1){ const no=document.createElement('span'); no.className='alt-no'+(au?' altin':''); no.textContent=w+'×'; s.appendChild(no); }
+      s.onclick=()=>{ aktif=i; ciz(); };
       sek.appendChild(s);
     });
   }
