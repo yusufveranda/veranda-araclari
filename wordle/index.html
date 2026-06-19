@@ -114,7 +114,13 @@ body{transition:background .4s,color .4s}
 .modbar{margin-top:14px}
 
 /* ----- iskelime sekmeleri ----- */
-.sekmeler{display:flex;gap:9px;justify-content:center;margin:26px auto 20px;flex-wrap:wrap}
+.sekme-ipucu{text-align:center;font-family:'Libre Baskerville',serif;font-size:11.5px;font-style:italic;color:var(--kirmizi);margin:22px auto 0}
+.sekmeler{display:flex;gap:9px;justify-content:center;margin:8px auto 20px;flex-wrap:wrap}
+.simge.yardim{font-family:'Playfair Display',serif;font-weight:800;font-size:20px;color:var(--mur)}
+.intro-metin p{font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--mur);line-height:1.55;margin-top:11px}
+.intro-metin p:first-child{margin-top:14px}
+.intro-metin b{font-weight:700}
+#introBasla{width:100%;margin-top:16px}
 .sekme{position:relative;font-family:'Playfair Display',serif;font-weight:600;font-size:16px;width:42px;height:42px;
   border:1.5px solid var(--kutu-cizgi);border-radius:11px;background:var(--mat);color:var(--mur);cursor:pointer;
   display:flex;align-items:center;justify-content:center;box-shadow:2px 3px 0 var(--mat-golge);transition:transform .15s}
@@ -307,7 +313,8 @@ body{transition:background .4s,color .4s}
   .simge{width:34px;height:34px}
   .secimler{margin-top:12px;gap:8px}
   .segment button{padding:6px 11px;font-size:12.5px}
-  .sekmeler{margin:14px auto 18px;gap:7px}
+  .sekmeler{margin:6px auto 18px;gap:7px}
+  .sekme-ipucu{margin:12px auto 0;font-size:11px}
   .sekme{width:38px;height:38px}
   .mat{margin:12px auto 0;padding:8px}
 }
@@ -330,6 +337,7 @@ body{transition:background .4s,color .4s}
   <div class="tepe-bar">
     <button class="vmini sakli" id="hubDon">‹ <span data-ad="verandle">verandle</span></button>
     <div class="ust-araclar">
+      <button class="simge yardim" id="yardimBtn" title="nasıl oynanır" aria-label="nasıl oynanır">?</button>
       <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
       <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
     </div>
@@ -416,6 +424,7 @@ body{transition:background .4s,color .4s}
       <button class="yenibtn gizli" id="yeniBtn">yeni ↻</button>
     </div>
 
+    <div class="sekme-ipucu gizli" id="sekmeIpucu">↔ 6 ayrı kelime — sekmeye dokunup geç</div>
     <div class="sekmeler gizli" id="sekmeler"></div>
     <div class="ipuclar gizli" id="ipuclar"></div>
     <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
@@ -448,6 +457,14 @@ body{transition:background .4s,color .4s}
     <div class="lb-geri" id="lbGeri"></div>
     <div class="lb-lider" id="lbLider"></div>
     <div class="lb-liste" id="lbListe"></div>
+  </div>
+</div>
+
+<div class="lb-modal gizli" id="introModal">
+  <div class="lb-kart">
+    <div class="lb-ust"><div class="lb-bas" id="introBaslik">nasıl oynanır</div><button class="lb-kapat" id="introKapat" aria-label="kapat">✕</button></div>
+    <div class="intro-metin" id="introIcerik"></div>
+    <button class="lb-ekle" id="introBasla">anladım, başla</button>
   </div>
 </div>
 
@@ -727,6 +744,24 @@ function lbGeriCiz(){   // bugün → yeni kelimelere; bu hafta → hafta kapan�
 }
 function lbTimerBasla(){ if(lbTimer) clearInterval(lbTimer); lbGeriCiz(); lbTimer=setInterval(lbGeriCiz,1000); }
 function lbTimerDur(){ if(lbTimer){ clearInterval(lbTimer); lbTimer=null; } }
+
+/* ===== nasıl oynanır (açıklama) ===== */
+function introIcerik(o){
+  if(o==='iskelime') return {bas:'taraça nasıl oynanır?', html:
+    '<p><b>Tek tahtada 6 ayrı kelime var</b> — 3, 4, 5, 6, 7 ve 8 harfli.</p>'+
+    '<p>Üstteki <b>3·4·5·6·7·8 sekmelerine dokunarak</b> kelimeler arasında geçersin. Her kelimenin <b>7 deneme</b> hakkı var; hepsini çözmeye çalış.</p>'+
+    '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış, gri hiç yok.</p>'+
+    '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
+  if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
+    '<p><b>5 harf, 3 deneme.</b> Az denemede çözmeye çalış.</p>'+
+    '<p>Harf değil <b>yakın anlam ipucu</b> verir; ikinci ipucu 2. tahminden sonra gelir.</p>'+
+    '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış.</p>'};
+  return {bas:'harfiyat nasıl oynanır?', html:
+    '<p>Klasik Wordle: <b>5 harfli</b> günün kelimesini <b>6 denemede</b> bul.</p>'+
+    '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış, gri hiç yok.</p>'};
+}
+function introAc(o){ const d=introIcerik(o); document.getElementById('introBaslik').textContent=d.bas; document.getElementById('introIcerik').innerHTML=d.html; document.getElementById('introModal').classList.remove('gizli'); }
+function introKapat(){ document.getElementById('introModal').classList.add('gizli'); }
 function lbGoster(kapsam){
   lbKapsam=kapsam;
   document.querySelectorAll('#lbTablar button').forEach(b=>b.classList.toggle('secili',b.dataset.k===kapsam));
@@ -814,6 +849,7 @@ function ciz(){
   // sekmeler
   const sek=document.getElementById('sekmeler');
   sek.classList.toggle('gizli', oyun!=='iskelime');
+  document.getElementById('sekmeIpucu').classList.toggle('gizli', oyun!=='iskelime');
   if(oyun==='iskelime'){
     sek.innerHTML='';
     const _altin=altinUz();
@@ -944,6 +980,7 @@ function oyunlaKur(){
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'sonsuz oyun';
   mesaj(''); ciz(); istatGoster(); window.scrollTo(0,0);
   if(oyunBitti) lbGonder();   // bitmiş günlük oyun yeniden açılınca da skoru gönder
+  if(oyun==='iskelime' && !localStorage.getItem('harfiyat:taraca-intro')){ localStorage.setItem('harfiyat:taraca-intro','1'); introAc('iskelime'); }   // taraça'ya ilk girişte açıklama
 }
 function oyunSec(o){ if(o===oyun) return; durumKaydetBellek(); oyun=o;
   document.querySelectorAll('#oyunSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.oyun===o)); oyunlaKur(); }
@@ -991,10 +1028,15 @@ document.getElementById('lbKapat').onclick=lbKapat;
 document.getElementById('lbModal').addEventListener('click',e=>{ if(e.target.id==='lbModal') lbKapat(); });
 document.querySelectorAll('#lbTablar button').forEach(b=>b.onclick=()=>lbGoster(b.dataset.k));
 document.getElementById('lbEkleBtn').onclick=lbBeniEkle;
+document.getElementById('yardimBtn').onclick=function(){ introAc(oyun); this.blur(); };
+document.getElementById('introKapat').onclick=introKapat;
+document.getElementById('introBasla').onclick=introKapat;
+document.getElementById('introModal').addEventListener('click',e=>{ if(e.target.id==='introModal') introKapat(); });
 
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey) return;
   if(!document.getElementById('lbModal').classList.contains('gizli')){ if(e.key==='Escape') lbKapat(); return; }   // tablo açıkken oyuna karışma
+  if(!document.getElementById('introModal').classList.contains('gizli')){ if(e.key==='Escape') introKapat(); return; }   // açıklama açıkken oyuna karışma
   if(/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName)) return;   // isim alanına yazarken oyuna karışma
   if(document.getElementById('oyunEkran').classList.contains('gizli')) return;   // hub'dayken karışma (kartlar Enter'la açılsın)
   const ae=document.activeElement;
