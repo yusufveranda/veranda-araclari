@@ -224,6 +224,7 @@ footer a{color:var(--soluk)}
     <button class="vmini" onclick="location.href='../wordle/'">‹ <span data-ad="verandle">verandle</span></button>
     <div class="tepe-sag">
       <button class="simge" id="yardimBtn" title="nasıl oynanır"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.7 2-2.7 4"/><circle cx="12" cy="17.4" r=".5" fill="currentColor" stroke="none"/></svg></button>
+      <button class="simge" id="temaBtn" title="gece / gündüz"><svg viewBox="0 0 24 24"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.6 6.6 0 0 0 21 12.8z"/></svg></button>
     </div>
   </div>
 
@@ -743,7 +744,12 @@ function modSec(m){
 }
 
 // ---- tema ----
-function temaKur(){ document.body.classList.remove('gece'); if(window.adlariUygula) try{adlariUygula();}catch(e){} }   // tek ton; gece/gündüz düğmesi yok
+function temaUygula(g){ document.body.classList.toggle('gece',g); if(window.adlariUygula) try{adlariUygula();}catch(e){} }
+function temaKur(){
+  let g = localStorage.getItem('sicak:tema');
+  if(g===null) g = localStorage.getItem('harfiyat:tema');   // verandle ile ortak his
+  temaUygula(g==='1'||g==='gece');
+}
 
 // ---- olaylar ----
 $('giris').addEventListener('submit', e=>{ e.preventDefault();
@@ -754,6 +760,7 @@ $('modlar').addEventListener('click', e=>{ const b=e.target.closest('button[data
 $('ipucuBtn').addEventListener('click', ()=>{ $('ipucuBtn').blur(); ipucuAl(); });
 $('pesBtn').addEventListener('click', ()=>{ if(confirm('Cevabı görmek istediğine emin misin? Oyun biter.')) pesEt(); });
 $('yardimBtn').addEventListener('click', ()=>{ olcekCiz(); $('yardim').hidden=false; });
+$('temaBtn').addEventListener('click', ()=>{ const g=!document.body.classList.contains('gece'); temaUygula(g); localStorage.setItem('sicak:tema', g?'1':'0'); });
 $('yardimKapat').addEventListener('click', ()=>$('yardim').hidden=true);
 $('yardim').addEventListener('click', e=>{ if(e.target.id==='yardim') $('yardim').hidden=true; });
 $('skKapat').addEventListener('click', skKapat);
