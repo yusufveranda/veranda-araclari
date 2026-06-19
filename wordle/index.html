@@ -619,7 +619,9 @@ function revealBitti(){
   if(oyunBitti){ sonucHazir=true; sonucYeni=true; lbGonder(); }
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
-  if(oyunBitti){ const el=document.getElementById('sonuc'); if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  if(oyunBitti){ const el=document.getElementById('sonuc'); if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'center'});
+    if(mod==='gun' && lbDestekli()) setTimeout(()=>{ if(document.getElementById('lbModal').classList.contains('gizli')) lbAc(); }, 1300);   // çözünce tabloyu göster
+  }
 }
 function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
   if((window.innerWidth||999)>440) return;
@@ -683,7 +685,7 @@ function ozetIzgaraHTML(){   // 6 mini ızgara, tek ekranda — sadece oynanan s
 }
 function payMetni(){   // spoiler vermez: yalnız uzunluk + çözüldü/çözülmedi + deneme
   const s=skorHesapla(), isim=(localStorage.getItem('harfiyat:nick')||'').trim();
-  const bas=(isim?isim+' · ':'')+oyunAdi()+(mod==='gun'?' #'+gunSayisi():' (sonsuz)');
+  const bas=(isim?isim+' · ':'')+oyunAdi()+(mod==='gun'?' #'+(gunSayisi()-168):' (sonsuz)');   // milat 2026-06-19 = 1. gün
   if(oyun==='iskelime'){
     const KEY=L=>String.fromCodePoint(48+L,0xFE0F,0x20E3);   // 3️⃣ … 8️⃣
     const huc=s.per.map(p=>KEY(p.uz)+(p.cozuldu?'🟩'+p.deneme:'⬛–'));
@@ -728,13 +730,10 @@ function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlen
   lbGonderildi[key]=pr; return pr;
 }
 function lbAc(){
-  const nick=nickAl();
-  if(!nick){ const not=document.getElementById('payNot'); if(not) not.textContent='önce ismini yaz';
-    const ng=document.getElementById('nickGir'); if(ng) ng.focus(); return; }
   document.getElementById('lbBaslik').textContent=oyunAdi()+' leaderboard';
   document.getElementById('lbModal').classList.remove('gizli');
   lbTimerBasla();
-  lbGonder().then(()=>lbGoster(lbKapsam));
+  lbGonder().then(()=>lbGoster(lbKapsam));   // isim yoksa gönderim no-op, tablo yine açılır
 }
 function lbKapat(){ document.getElementById('lbModal').classList.add('gizli'); lbTimerDur(); }
 function lbGeriCiz(){   // bugün → yeni kelimelere; bu hafta → hafta kapanışına
@@ -796,10 +795,11 @@ function lbGoster(kapsam){
   }).catch(()=>{ if(kapsam===lbKapsam) listeEl.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
 }
 function lbBeniEkle(){
-  const not=document.getElementById('lbEkleNot'), nick=nickAl();
+  const not=document.getElementById('lbEkleNot');
   if(mod!=='gun'){ if(not) not.textContent='tablo yalnız günün kelimesinde'; return; }
   if(!lbDestekli() || !oyunBitti){ if(not) not.textContent='önce oyunu bitir'; return; }
-  if(!nick){ if(not) not.textContent='önce ismini yaz'; lbKapat(); const ng=document.getElementById('nickGir'); if(ng) ng.focus(); return; }
+  if(!nickAl()){ const n=prompt('Tabloya girmek için bir isim:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else { if(not) not.textContent='isim gerekli'; return; } }
+  const nick=nickAl();
   const key=lbOyun()+':'+gunSayisi()+':'+nick.toLowerCase();
   delete lbGonderildi[key];   // temizlik/yeniden ekleme için oturum kilidini aş
   if(not) not.textContent='ekleniyor…';

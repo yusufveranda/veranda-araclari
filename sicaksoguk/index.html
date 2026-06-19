@@ -252,7 +252,7 @@ footer a{color:var(--soluk)}
 <div class="perde" id="yardim" hidden>
   <div class="modal">
     <h2>sıcak soğuk<span class="nokta">.</span></h2>
-    <p>Gizli bir kelime var. Aklına gelen kelimeleri yaz; her tahmin, gizli kelimeye <b>anlamca ne kadar yakın</b> olduğuna göre bir <b>°C sıcaklık</b> alır. Yaklaştıkça derece yükselir, ısınırsın: <b>🥶 soğuk</b>, <b>😎 sıcak</b>, doğru kelime <b>🥳 100°C</b>. Çok alakasızlar <b>eksiye</b> düşer (<b>🧊 buz gibi</b>).</p>
+    <p>Gizli bir kelime var. Aklına gelen kelimeleri yaz; her tahmin, gizli kelimeye <b>anlamca ne kadar yakın</b> olduğuna göre bir <b>°C sıcaklık</b> alır. Yaklaştıkça ısınırsın: <b>🧊 buz gibi</b> → <b>🥶 soğuk</b> → <b>😅 sıcak</b> → <b>🥵 yanıyor</b>, doğru kelime <b>🔥 100°C</b>. Çok alakasızlar <b>eksiye</b> düşer.</p>
     <p>Tahmin gizli kelimenin <b>en yakın 1000 komşusundan</b> biriyse, sağda bir <b>‰ ilerleme çubuğu</b> dolar: <b>1000</b> doğru kelime (BINGO), <b>999</b> en yakın komşu, <b>1</b> en uzak. Çubuğu gördüysen artık yakınsın; o sütun boşsa henüz ilk 1000'in dışındasın.</p>
     <p>Liste sıcaktan soğuğa sıralanır; <b>#</b> kaçıncı tahminin olduğunu gösterir. Tıkandıysan <b>💡 ipucu al</b>; seni biraz yaklaştıran bir kelime verir ama cevabı ele vermez — <b>sıralamada +10 tahmin</b> sayılır. Oyun bitince <b>en yakın kelimeler</b> listesinden komşuluğu inceleyebilirsin. Tahmin sınırın yok.</p>
     <div class="olcek" id="olcekOrnek"></div>
@@ -343,7 +343,7 @@ function gizliyiKur(kelime){
   }
 }
 
-// ---- sıcaklık bandı + emoji yüz (Cemantle: 🥳 buldun · 😎 sıcak/top1000 · 🥶 soğuk · 🧊 donuk) ----
+// ---- sıcaklık bandı + emoji (buz→ateş: 🧊 🥶 😐 😅 🥵 🔥) ----
 function bulundu(t){ return t.w===S.gizli; }
 function band(t){
   if(bulundu(t)) return 't-ates';
@@ -352,10 +352,10 @@ function band(t){
   return 't-soguk';
 }
 function emoji(t){
-  if(bulundu(t)) return '🥳';
-  if(t.rut!=null) return '😎';
-  if(t.pct<0) return '🧊';
-  return '🥶';
+  if(bulundu(t)) return '🔥';                                   // buldun
+  if(t.rut!=null) return t.rut>=900?'🥵':(t.rut>=600?'😅':'😐'); // yanıyor · sıcak · ılık
+  if(t.pct<0) return '🧊';                                       // buz gibi
+  return '🥶';                                                   // soğuk
 }
 
 // ---- kayıt ----
@@ -389,6 +389,7 @@ function tahminEkle(w, hint){
   kaydet();
   ciz();
   if(S.bitti) kutla();
+  if(S.bitti && S.mod==='gun' && !S.pes) setTimeout(()=>{ if($('skPerde').hidden) skAc(); }, 1300);   // çözünce tabloyu göster
 }
 function tahminYap(ham){
   if(S.bitti) return;
@@ -469,7 +470,7 @@ function ciz(){
   $('dTahmin').textContent = S.tahminler.length;
   const enIyi = S.tahminler.reduce((m,t)=>Math.max(m,t.pct), -Infinity);
   $('dEnIyi').textContent = S.tahminler.length ? enIyi.toFixed(2) : '—';
-  if(S.mod==='gun'){ $('dGun').textContent = '#'+S.gunNo; $('dGunEt').textContent='gün'; }
+  if(S.mod==='gun'){ $('dGun').textContent = '#'+(S.gunNo-168); $('dGunEt').textContent='gün'; }   // milat 2026-06-19 = 1. gün
   else { $('dGun').textContent = '∞'; $('dGunEt').textContent='sonsuz'; }
 
   // sıralı tablo (sıcaktan soğuğa)
@@ -563,7 +564,7 @@ function yakinlariGoster(){
 function paylas(){
   const n = S.tahminler.length;
   const enIyi = S.tahminler.reduce((m,t)=>Math.max(m,t.pct),0);
-  const kafa = S.mod==='gun' ? 'Sıcak Soğuk #'+S.gunNo : 'Sıcak Soğuk';
+  const kafa = S.mod==='gun' ? 'Sıcak Soğuk #'+(S.gunNo-168) : 'Sıcak Soğuk';
   const sonuc = S.pes ? 'pes ettim' : (n+' tahminde 🔥');
   // küçük termometre: en sıcak tahminlerin yüz emojileri
   const top = S.tahminler.slice().sort((a,b)=>b.pct-a.pct).slice(0,6);
@@ -593,8 +594,7 @@ function skGonder(){   // sadece günlük + bulununca (pes değil)
   skGonderildi[key]=pr; return pr;
 }
 function skAc(){
-  if(!lbNick()){ const n=prompt('Tabloya girmek için bir isim:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else return; }
-  $('skPerde').hidden=false; skTimerBasla(); skGonder().then(()=>skGoster(skKapsam));
+  $('skPerde').hidden=false; skTimerBasla(); skGonder().then(()=>skGoster(skKapsam));   // isim yoksa gönderim no-op, tablo yine açılır
 }
 function skKapat(){ $('skPerde').hidden=true; skTimerDur(); }
 function skGoster(kapsam){
