@@ -95,8 +95,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .kaydir{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
 
 /* fretboard */
-.fretboard{display:grid;gap:0;background:var(--ahsap);border-radius:8px;padding:0;min-width:760px;border:1px solid var(--ahsap-cizgi)}
-.fb-row{display:grid;grid-template-columns:34px 44px repeat(15,minmax(40px,1fr))}
+.fretboard{display:grid;gap:0;background:var(--ahsap);border-radius:8px;padding:0;min-width:700px;border:1px solid var(--ahsap-cizgi)}
+.fb-row{display:grid;grid-template-columns:32px 40px repeat(15,minmax(36px,1fr))}
 .fb-num{height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
 .fb-num.mark{color:var(--kok);font-weight:700}
 .fb-name{display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);background:var(--card);font-weight:700}
@@ -116,7 +116,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .cell:hover::after{content:"";position:absolute;z-index:1;width:26px;height:26px;border-radius:50%;border:2px dashed var(--tel)}
 .cell.on:hover::after{display:none}
 /* perde işaret noktaları */
-.fb-dots{display:grid;grid-template-columns:34px 44px repeat(15,minmax(40px,1fr));height:0}
+.fb-dots{display:grid;grid-template-columns:32px 40px repeat(15,minmax(36px,1fr));height:0}
 .fb-dots span{position:relative}
 
 /* piyano */
@@ -138,7 +138,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 
 /* ===== paneller ===== */
 /* masaüstü pano düzeni: solda enstrümanlar+araçlar, sağda kayıt/gam yan paneli */
-.dashboard{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:18px;align-items:start;margin-top:18px}
+.dashboard{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start;margin-top:18px}
 .dashboard>*{min-width:0}
 .ana{display:flex;flex-direction:column;gap:18px}
 .ana>.sahne{margin-top:0}
@@ -150,7 +150,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .kayit-bas h3{margin-bottom:0}
 .tumsil{font-size:12.5px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:13px;padding:3px 10px;white-space:nowrap;flex:0 0 auto}
 .tumsil:hover{color:#c0392b;border-color:#c0392b}
-@media(max-width:900px){.dashboard{grid-template-columns:minmax(0,1fr) 248px}}
+@media(max-width:900px){.dashboard{grid-template-columns:minmax(0,1fr) 300px}}
 @media(max-width:768px){
   .dashboard{grid-template-columns:1fr}
   .yan{position:static}
@@ -180,9 +180,10 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .kur .onizleme button:disabled{opacity:.4}
 
 .fav-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-height:10px}
-.fav{display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 11px;font-size:14px;cursor:pointer;overflow:hidden}
+/* tam akor adı görünsün: ellipsis/kırpma YOK — uzun adlar (Amaj7b5) sarar/genişler */
+.fav{display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 11px;font-size:14px;cursor:pointer}
 .fav:hover{border-color:var(--acc)}
-.fav b{font-family:'Playfair Display',Georgia,serif;color:var(--acc);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fav b{font-family:'Playfair Display',Georgia,serif;color:var(--acc);font-weight:600;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.15}
 .fav .ac{cursor:pointer}
 .fav .sil{border:none;background:transparent;color:var(--muted);font-size:16px;line-height:1;padding:0 2px;flex:0 0 auto}
 .fav .sil:hover{color:#c0392b}
@@ -387,6 +388,19 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .drum-ekle{background:var(--vurgu);color:#fff;border:none;border-radius:18px;padding:10px 22px;font-size:15px;font-weight:600}
 .drum-ekle:hover{filter:brightness(1.06)}
 @media(max-width:560px){.drum-onizle{margin-left:0}.dg-row{grid-template-columns:62px repeat(var(--adim),minmax(16px,1fr))}.dg-lab{font-size:11px}}
+
+/* ===== arpej voicing popover ===== */
+.lane-blok .lb-disli{font-size:12px}
+.arp-pop{position:fixed;z-index:60;display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 38px rgba(0,0,0,.55);padding:12px 14px;width:232px}
+.arp-pop.acik{display:block}
+.ap-bas{font-size:12px;color:var(--muted);margin-bottom:9px;font-weight:700;letter-spacing:.02em}
+.ap-bas small{color:var(--acc);font-family:'Playfair Display',Georgia,serif;font-size:15px;margin-left:6px}
+.ap-notes{display:flex;flex-wrap:wrap;gap:6px}
+.ap-nota{font-family:'Playfair Display',Georgia,serif;font-size:15px;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:11px;padding:5px 13px;min-width:42px}
+.ap-nota.on{background:var(--acc);border-color:var(--acc);color:#150c08}
+.ap-nota:not(.on){opacity:.55;text-decoration:line-through}
+.ap-nota:hover{border-color:var(--acc)}
+.ap-ipucu{font-size:11px;color:var(--muted);margin-top:9px;font-style:italic;line-height:1.4}
 </style>
 </head>
 <body>
@@ -616,6 +630,9 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
       </div>
     </div>
   </div>
+
+  <!-- arpej voicing popover (akor bloğunun hangi notaları çalınacak) -->
+  <div class="arp-pop" id="arpPop" aria-hidden="true"></div>
 </template>
 
 <script type="module">
@@ -677,7 +694,6 @@ const state = {
    selId = seçili BLOK id'si (kanallar arası benzersiz) · activeTrackId = ekleme hedefi kanal */
 const looper = { tracks: [], bpm: 100, loop: true, drum: false, playing: false, selId: null, activeTrackId: null, calan: {} };
 let trackId = 0, blokId = 0, clip = null;     // clip = kopyalanan blok (Ctrl+C/V)
-const trChains = new Map();       // kanal id -> { gain, voices, idx } (gitar; ses düzeyi için) — JSON'a girmez
 const gecmis = [];               // geri al (Ctrl/Cmd+Z) yığını
 const DUR_BEATS = [0.5, 1, 2, 3, 4, 8, 16];                                    // ölçü: ⅛ ¼ ½ ¾ 1 2 4 (1 ölçü = 4 vuruş)
 const DUR_AD = { 0.5: '⅛', 1: '¼', 2: '½', 3: '¾', 4: '1', 8: '2', 16: '4' };
@@ -778,7 +794,8 @@ function detectScore(sym){
    Ayrı profiller: PİYANO = örneklenmiş akustik (Salamander grand, Tone.Sampler),
    GİTAR = Tone.PluckSynth (Karplus-Strong telden-çekme fiziksel modelleme);
    akor için 6 sesli havuz. İkisi de ortak 1.5sn Tone.Reverb'e bağlı. */
-let reverb = null, piyanoSes = null, gitarBus = null, pluckVoices = [], pluckIdx = 0, kick = null, snare = null, sesAcik = false;
+let reverb = null, piyanoSes = null, pluckVoices = [], pluckIdx = 0, kick = null, snare = null, sesAcik = false;
+let gitarSampler = null, gitarLp = null, gitarChorus = null, gitarYedekLp = null;   // akustik gitar zinciri
 async function sesHazir(){
   if (!Tone) return false;
   if (sesAcik) return true;
@@ -789,10 +806,21 @@ async function sesHazir(){
     baseUrl: 'https://tonejs.github.io/audio/salamander/', release: 2.4
   }).connect(reverb);
   piyanoSes.volume.value = -4;
-  gitarBus = new Tone.Gain(0.62).connect(reverb);
-  // resonance ↑ + dampening ↑ → tel daha uzun ve parlak çınlar (notalar erken ölmez)
+  // ===== GİTAR: gerçek akustik Sampler (birincil); akustik gövde + mekân zinciri =====
+  // lowpass (sert dijital tiz gider) → chorus (gövde kalınlığı) → kısa reverb (akustik mekân)
+  gitarChorus = new Tone.Chorus({ frequency: 1.1, delayTime: 3.5, depth: 0.55, wet: 0.18 }).start();
+  gitarLp = new Tone.Filter(3200, 'lowpass');
+  gitarLp.chain(gitarChorus, reverb);
+  gitarSampler = new Tone.Sampler({                                       // açık tel örnekleri E2 A2 D3 G3 B3 E4
+    urls: { E2: 'E2.mp3', A2: 'A2.mp3', D3: 'D3.mp3', G3: 'G3.mp3', B3: 'B3.mp3', E4: 'E4.mp3' },
+    baseUrl: 'https://nbrosowsky.github.io/tonejs-instruments/samples/guitar-acoustic/',
+    release: 1.1
+  }).connect(gitarLp);
+  gitarSampler.volume.value = -3;
+  // YEDEK: Sampler yüklenmezse devreye giren YUMUŞATILMIŞ Karplus-Strong (aynı lowpass+chorus+reverb)
+  gitarYedekLp = new Tone.Filter(2400, 'lowpass'); gitarYedekLp.connect(gitarChorus);
   pluckVoices = Array.from({ length: 6 }, () =>
-    new Tone.PluckSynth({ attackNoise: 0.8, dampening: 4200, resonance: 0.985, release: 3 }).connect(gitarBus));
+    new Tone.PluckSynth({ attackNoise: 0.6, dampening: 2600, resonance: 0.92, release: 1.4 }).connect(gitarYedekLp));
   // ritim: kick + snare KURU (reverb dışı) — ritim netliği için
   kick = new Tone.MembraneSynth({ octaves: 6, pitchDecay: 0.05, envelope: { attack: 0.001, decay: 0.32, sustain: 0 } }).toDestination();
   kick.volume.value = -7;
@@ -802,23 +830,33 @@ async function sesHazir(){
   try { await Promise.race([Tone.loaded(), new Promise(r => setTimeout(r, 5000))]); } catch {}
   return true;
 }
-function pluk(midi, time){ pluckVoices[pluckIdx++ % pluckVoices.length].triggerAttack(Note.fromMidi(midi), time); }
+/* gitar nota: yüklüyse akustik Sampler (velocity = ses düzeyi), değilse yumuşatılmış pluck (yedek) */
+function pluk(midi, time, vel, dur){
+  if (gitarSampler && gitarSampler.loaded) gitarSampler.triggerAttackRelease(Note.fromMidi(midi), dur || '2n', time, vel == null ? 0.85 : vel);
+  else if (pluckVoices.length) pluckVoices[pluckIdx++ % pluckVoices.length].triggerAttack(Note.fromMidi(midi), time);
+}
 /* belirli bir zamanda strum/akor tetikle (looper Tone.Transport için de kullanır) */
 function tetikle(midis, kind, time){
   if (!sesAcik) return;
   const ms = [...midis].sort((a, b) => a - b);
   if (!ms.length) return;
-  if (kind === 'gitar') ms.forEach((m, i) => pluk(m, time + i * 0.07));               // insan eli gibi yumuşak strum
+  if (kind === 'gitar') ms.forEach((m, i) => pluk(m, time + i * 0.06, 0.85, '2n'));    // insan eli gibi yumuşak strum
   else ms.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '1n', time + i * 0.02));
 }
 async function calNota(midi, kind){
   if (!(await sesHazir())) return;
-  if (kind === 'gitar') pluk(midi, Tone.now() + 0.02);
+  if (kind === 'gitar') pluk(midi, Tone.now() + 0.02, 0.9, '2n');
   else piyanoSes.triggerAttackRelease(Note.fromMidi(midi), '8n', Tone.now() + 0.02);
 }
 async function calMidis(midis, kind){
   if (!(await sesHazir())) return;
   tetikle(midis, kind, Tone.now() + 0.02);
+}
+/* SERT DUR: tüm enstrümanların kuyruklarını anında kes (releaseAll / triggerRelease) */
+function sesKes(){
+  if (!sesAcik) return;
+  const inst = [piyanoSes, gitarSampler, kick, snare, (typeof perc !== 'undefined' ? perc.kick : null), (typeof perc !== 'undefined' ? perc.snare : null), (typeof perc !== 'undefined' ? perc.hihat : null), ...pluckVoices];
+  inst.forEach(i => { if (!i) return; try { if (typeof i.releaseAll === 'function') i.releaseAll(); else if (typeof i.triggerRelease === 'function') i.triggerRelease(); } catch {} });
 }
 /* çıkış anahtarına göre tekil nota / akor yönlendir (gitar / piyano / ikisi) */
 function cikisCal(midi){
@@ -1081,7 +1119,7 @@ function fretboardKur(){
   function cell(cls, txt){ const d = document.createElement('div'); d.className = cls; d.textContent = txt; return d; }
 }
 
-let whiteW = 38;
+let whiteW = 34;
 function piyanoKur(){
   piano.innerHTML = '';
   const whites = [], blacks = [];
@@ -1388,7 +1426,6 @@ function trackEkle(instrument){
 function trackSil(id){
   gecmisAl();
   looper.tracks = looper.tracks.filter(t => t.id !== id);
-  chainSil(id);
   if (looper.activeTrackId === id) looper.activeTrackId = looper.tracks[0] ? looper.tracks[0].id : null;
   if (looper.selId && !bulBlok(looper.selId)) looper.selId = null;
   if (looper.playing) looper.tracks.some(t => t.blocks.length) ? looperBaslat() : looperDur();
@@ -1397,33 +1434,21 @@ function trackSil(id){
 function trackEnstruman(id, inst){
   const tr = looper.tracks.find(t => t.id === id); if (!tr || tr.instrument === inst) return;
   gecmisAl();
-  tr.instrument = inst; chainSil(id);          // gitar zinciri artık geçersiz; gerekirse tekrar kurulur
+  tr.instrument = inst;
   looper.activeTrackId = id;
   if (looper.playing) looperBaslat();
   lanesCiz(); gamCiz();
 }
 function trackVol(id, v){
   const tr = looper.tracks.find(t => t.id === id); if (!tr) return;
-  tr.vol = v;
-  const c = trChains.get(id); if (c) c.gain.gain.value = v;   // gitar: canlı güncelle (piyano hız ile çalınır)
+  tr.vol = v;   // gitar/piyano/perc hepsi velocity ile çalınır → sonraki çalışta uygulanır
 }
 
-/* ----- kanal ses zinciri (yalnız gitar; ses düzeyi için) — motoru değiştirmez, ekler ----- */
-function gitarChain(tr){
-  let c = trChains.get(tr.id);
-  if (c){ c.gain.gain.value = tr.vol; return c; }
-  const gain = new Tone.Gain(tr.vol).connect(reverb);
-  const voices = Array.from({ length: 6 }, () =>
-    new Tone.PluckSynth({ attackNoise: 0.8, dampening: 4200, resonance: 0.985, release: 3 }).connect(gain));
-  c = { gain, voices, idx: 0 }; trChains.set(tr.id, c); return c;
-}
-function chainSil(id){ const c = trChains.get(id); if (c){ try { c.voices.forEach(v => v.dispose()); c.gain.dispose(); } catch {} trChains.delete(id); } }
-function plukTrack(tr, midi, time){ const c = gitarChain(tr); c.voices[c.idx++ % c.voices.length].triggerAttack(Note.fromMidi(midi), time); }
-function trackNota(tr, midi, time){ if (tr.instrument === 'gitar') plukTrack(tr, midi, time); else piyanoSes.triggerAttackRelease(Note.fromMidi(midi), '8n', time, tr.vol); }
-/* bir bloğun akorunu kanalın enstrümanı + ses düzeyiyle tetikle */
+/* kanalın enstrümanı + ses düzeyiyle (velocity) tek nota / akor tetikle */
+function trackNota(tr, midi, time){ if (tr.instrument === 'gitar') pluk(midi, time, tr.vol, '8n'); else piyanoSes.triggerAttackRelease(Note.fromMidi(midi), '8n', time, tr.vol); }
 function trackTetikle(tr, midis, time){
   const ms = [...midis].sort((a, b) => a - b); if (!ms.length) return;
-  if (tr.instrument === 'gitar') ms.forEach((m, i) => plukTrack(tr, m, time + i * 0.07));               // strum
+  if (tr.instrument === 'gitar') ms.forEach((m, i) => pluk(m, time + i * 0.06, tr.vol, '2n'));           // strum (akustik Sampler)
   else ms.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '1n', time + i * 0.02, tr.vol));
 }
 /* bir bloğun KENDİ kanal enstrümanını anında çal (ön dinleme; es ise sessiz) */
@@ -1565,10 +1590,12 @@ function laneCiz(tr, host){
       ? `<select class="lb-hit" title="arpej vuruş sayısı (1–16): blok boyunca eşit dağılır">${Array.from({ length: 16 }, (_, k) => `<option value="${k + 1}"${hits === k + 1 ? ' selected' : ''}>≈${k + 1}</option>`).join('')}</select>`
       : '';
     const sureRozet = b.rest ? '' : `<span class="lb-sure" title="süre: ${DUR_AD[b.dur]} ölçü (↑/↓ değiştir)">${DUR_AD[b.dur]}<i>ölçü</i></span>`;
+    const disliBtn = b.rest ? '' : `<button class="lb-disli" title="arpej notaları (voicing)">⚙</button>`;
     el.innerHTML = `<span class="lb-ad">${b.rest ? '·' : escapeHtml(b.label)}</span>${sureRozet}${hitSec}
-      <div class="lb-eylem">${arpBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div>`;
+      <div class="lb-eylem">${arpBtn}${disliBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div>`;
     el.onclick = e => { if (e.target.closest('.lb-eylem') || e.target.closest('.lb-hit')) return; looper.selId = b.id; looper.activeTrackId = tr.id; lanesCiz(); blokGorunur(); liveSyncBlok(b); blokSesCal(b, tr); };  // seç + iki enstrümanı vurgula + anında çal
     if (!b.rest) el.querySelector('.lb-arp').onclick = e => { e.stopPropagation(); gecmisAl(); b.arp = !b.arp; looper.selId = b.id; if (looper.playing) looperBaslat(); lanesCiz(); };
+    if (!b.rest) el.querySelector('.lb-disli').onclick = e => { e.stopPropagation(); arpPopAc(b, tr, el); };
     const hitEl = el.querySelector('.lb-hit');
     if (hitEl){ hitEl.onclick = e => e.stopPropagation(); hitEl.onchange = e => { e.stopPropagation(); gecmisAl(); b.hits = +e.target.value; looper.selId = b.id; looper.activeTrackId = tr.id; if (looper.playing) looperBaslat(); lanesCiz(); }; }
     el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); blokSil(tr, arr.indexOf(b)); };
@@ -1708,7 +1735,12 @@ async function looperBaslat(){
         else if (!b.rest){
           const baseM = tr.instrument === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis;
           if (b.arp){
-            const arp = arpDizi(baseM);                                       // akorun benzersiz perdeleri (pesten tize)
+            let arp = arpDizi(baseM);                                         // akorun benzersiz perdeleri (pesten tize)
+            if (b.arpOff && b.arpOff.length){                                 // voicing: kullanıcı kapattığı notaları çıkar
+              const off = new Set(b.arpOff.map(nn => Note.chroma(nn)));
+              const f = arp.filter(m => !off.has(chromaOf(m)));
+              if (f.length) arp = f;                                          // hepsi kapalıysa sessizlik olmasın
+            }
             if (arp.length){
               const n = Math.max(1, Math.min(16, b.hits || 4));               // TAM olarak n vuruş (seçiciden)
               const blokSec = b.dur * 60 / looper.bpm, adim = blokSec / n;     // n nota blok boyunca eşit dağılır
@@ -1737,7 +1769,7 @@ async function looperBaslat(){
   playheadDongu(total);
 }
 function looperDur(){
-  if (sesAcik){ Tone.Transport.stop(); Tone.Transport.cancel(); Tone.Transport.position = 0; }
+  if (sesAcik){ Tone.Transport.stop(); Tone.Transport.cancel(); Tone.Transport.position = 0; sesKes(); }   // SERT DUR: kuyrukları kes
   looper.playing = false; looper.calan = {};
   $('#lpPlay').classList.remove('aktif');
   cancelAnimationFrame(playheadRAF);
@@ -1893,6 +1925,46 @@ function percEkle(){
   lanesCiz(); blokGorunur(); drumKapat();
 }
 
+/* ===================== arpej voicing (hangi notalar çalınacak) ===================== */
+/* bloğun benzersiz akor notalarını ver (öncelik: akor adları; yoksa çalınan voicing'den türet) */
+function blokNotalari(b, tr){
+  if (b.noteNames && b.noteNames.length) return b.noteNames.map(simpleNote);
+  const baseM = tr.instrument === 'gitar' ? (b.gFrets || []).map(x => x.midi) : (b.pMidis || []);
+  const seen = new Set(), out = [];
+  arpDizi(baseM).forEach(m => { const c = chromaOf(m); if (!seen.has(c)){ seen.add(c); out.push(PC_AD[c]); } });
+  return out;
+}
+let arpPop = null;   // { b, tr }
+function arpPopAc(b, tr, anchorEl){
+  arpPop = { b, tr };
+  const pop = $('#arpPop'); if (!pop) return;
+  const notes = blokNotalari(b, tr);
+  const off = new Set((b.arpOff || []).map(n => Note.chroma(n)));
+  pop.innerHTML =
+    `<div class="ap-bas">Arpej notaları<small>${escapeHtml(b.label || '')}</small></div>` +
+    `<div class="ap-notes">${notes.map(n => `<button type="button" class="ap-nota${off.has(Note.chroma(n)) ? '' : ' on'}" data-n="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('')}</div>` +
+    `<div class="ap-ipucu">${b.arp ? 'Açık notalar arpejde sırayla çalınır.' : 'Önce bloğun arpejini aç (≈).'} Vuruş sayısı not sayısından azsa açık notalar döngülenir.</div>`;
+  pop.querySelectorAll('.ap-nota').forEach(btn => btn.onclick = e => { e.stopPropagation(); arpNotaToggle(btn.dataset.n); });
+  pop.classList.add('acik'); pop.setAttribute('aria-hidden', 'false');
+  const r = anchorEl.getBoundingClientRect(), w = pop.offsetWidth || 232, h = pop.offsetHeight || 120;
+  pop.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left)) + 'px';
+  let top = r.bottom + 6; if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+  pop.style.top = top + 'px';
+}
+function arpNotaToggle(nn){
+  if (!arpPop) return;
+  const b = arpPop.b, c = Note.chroma(nn);
+  gecmisAl();
+  b.arpOff = b.arpOff || [];
+  const idx = b.arpOff.findIndex(x => Note.chroma(x) === c);
+  if (idx >= 0) b.arpOff.splice(idx, 1); else b.arpOff.push(nn);
+  if (looper.playing) looperBaslat();
+  lanesCiz();
+  const el = document.querySelector(`.lane-blok[data-bid="${b.id}"]`);
+  if (el) arpPopAc(b, arpPop.tr, el); else arpPopKapat();
+}
+function arpPopKapat(){ const pop = $('#arpPop'); if (pop){ pop.classList.remove('acik'); pop.setAttribute('aria-hidden', 'true'); } arpPop = null; }
+
 function looperKur(){
   // sekme geçişi
   document.querySelectorAll('.tab-tus').forEach(t => t.onclick = () => {
@@ -1931,6 +2003,10 @@ function looperKur(){
     if (e.key === 'Escape'){ e.preventDefault(); drumKapat(); }
     e.stopImmediatePropagation();
   }, true);
+  // arpej voicing popover: dışarı tıkla / Esc ile kapat
+  document.addEventListener('mousedown', e => { if (arpPop && !e.target.closest('#arpPop') && !e.target.closest('.lb-disli')) arpPopKapat(); });
+  document.addEventListener('keydown', e => { if (arpPop && e.key === 'Escape'){ e.stopImmediatePropagation(); arpPopKapat(); } }, true);
+  const lanesEl = $('#lanes'); if (lanesEl) lanesEl.addEventListener('scroll', () => { if (arpPop) arpPopKapat(); });
   // Boşluk tuşunun odaktaki düğmeyi YENİDEN tetiklemesini engelle (keyup'taki etkinleştirmeyi de bastır)
   const bosTus = e => (e.code === 'Space' || e.key === ' ');
   const yaziAlani = () => { const t = document.activeElement && document.activeElement.tagName; return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT'; };
