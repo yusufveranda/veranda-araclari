@@ -1735,10 +1735,10 @@ async function looperBaslat(){
         else if (!b.rest){
           const baseM = tr.instrument === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis;
           if (b.arp){
-            let arp = arpDizi(baseM);                                         // akorun benzersiz perdeleri (pesten tize)
-            if (b.arpOff && b.arpOff.length){                                 // voicing: kullanıcı kapattığı notaları çıkar
-              const off = new Set(b.arpOff.map(nn => Note.chroma(nn)));
-              const f = arp.filter(m => !off.has(chromaOf(m)));
+            let arp = arpDizi(baseM);                                         // voicing'in MUTLAK perdeleri (oktavlar ayrı)
+            if (b.arpOff && b.arpOff.length){                                 // voicing: kapatılan MUTLAK perdeleri çıkar (oktav duyarlı)
+              const off = new Set(b.arpOff);
+              const f = arp.filter(m => !off.has(m));
               if (f.length) arp = f;                                          // hepsi kapalıysa sessizlik olmasın
             }
             if (arp.length){
@@ -1926,38 +1926,39 @@ function percEkle(){
 }
 
 /* ===================== arpej voicing (hangi notalar çalınacak) ===================== */
-/* bloğun benzersiz akor notalarını ver (öncelik: akor adları; yoksa çalınan voicing'den türet) */
+/* bloğun ÇALINAN voicing'inin MUTLAK perdelerini ver — oktavlar AYRI kalır
+   (A2, E3, A3, C4, E4 → her tel/tuş ayrı düğme). Perde sınıfına EZİLMEZ. */
 function blokNotalari(b, tr){
-  if (b.noteNames && b.noteNames.length) return b.noteNames.map(simpleNote);
   const baseM = tr.instrument === 'gitar' ? (b.gFrets || []).map(x => x.midi) : (b.pMidis || []);
-  const seen = new Set(), out = [];
-  arpDizi(baseM).forEach(m => { const c = chromaOf(m); if (!seen.has(c)){ seen.add(c); out.push(PC_AD[c]); } });
-  return out;
+  const yazim = new Map();   // akor adlarından perde-sınıfı → doğru yazım (Bb vs A#)
+  (b.noteNames || []).forEach(n => { const s = simpleNote(n); yazim.set(Note.chroma(s), s); });
+  // arpDizi yalnız TAM aynı midi'leri tekler (oktavları korur) → mutlak perde listesi
+  return arpDizi(baseM).map(m => ({ midi: m, ad: (yazim.get(chromaOf(m)) || PC_AD[chromaOf(m)]) + (Math.floor(m / 12) - 1) }));
 }
 let arpPop = null;   // { b, tr }
 function arpPopAc(b, tr, anchorEl){
   arpPop = { b, tr };
   const pop = $('#arpPop'); if (!pop) return;
   const notes = blokNotalari(b, tr);
-  const off = new Set((b.arpOff || []).map(n => Note.chroma(n)));
+  const off = new Set(b.arpOff || []);   // MUTLAK MIDI kümesi (perde sınıfı değil)
   pop.innerHTML =
     `<div class="ap-bas">Arpej notaları<small>${escapeHtml(b.label || '')}</small></div>` +
-    `<div class="ap-notes">${notes.map(n => `<button type="button" class="ap-nota${off.has(Note.chroma(n)) ? '' : ' on'}" data-n="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('')}</div>` +
+    `<div class="ap-notes">${notes.map(n => `<button type="button" class="ap-nota${off.has(n.midi) ? '' : ' on'}" data-m="${n.midi}">${escapeHtml(n.ad)}</button>`).join('')}</div>` +
     `<div class="ap-ipucu">${b.arp ? 'Açık notalar arpejde sırayla çalınır.' : 'Önce bloğun arpejini aç (≈).'} Vuruş sayısı not sayısından azsa açık notalar döngülenir.</div>`;
-  pop.querySelectorAll('.ap-nota').forEach(btn => btn.onclick = e => { e.stopPropagation(); arpNotaToggle(btn.dataset.n); });
+  pop.querySelectorAll('.ap-nota').forEach(btn => btn.onclick = e => { e.stopPropagation(); arpNotaToggle(+btn.dataset.m); });
   pop.classList.add('acik'); pop.setAttribute('aria-hidden', 'false');
   const r = anchorEl.getBoundingClientRect(), w = pop.offsetWidth || 232, h = pop.offsetHeight || 120;
   pop.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left)) + 'px';
   let top = r.bottom + 6; if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
   pop.style.top = top + 'px';
 }
-function arpNotaToggle(nn){
+function arpNotaToggle(midi){
   if (!arpPop) return;
-  const b = arpPop.b, c = Note.chroma(nn);
+  const b = arpPop.b;
   gecmisAl();
   b.arpOff = b.arpOff || [];
-  const idx = b.arpOff.findIndex(x => Note.chroma(x) === c);
-  if (idx >= 0) b.arpOff.splice(idx, 1); else b.arpOff.push(nn);
+  const idx = b.arpOff.indexOf(midi);   // MUTLAK perde aç/kapa (oktav bağımsız)
+  if (idx >= 0) b.arpOff.splice(idx, 1); else b.arpOff.push(midi);
   if (looper.playing) looperBaslat();
   lanesCiz();
   const el = document.querySelector(`.lane-blok[data-bid="${b.id}"]`);
