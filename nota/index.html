@@ -25,16 +25,19 @@ body{
   --kok:#C0341B; --kok-yum:rgba(192,52,27,.30);
   /* piyano: duvar piyanosu — mat fildişi + mat siyah */
   --beyaz:#e6d3ad; --siyah:#140c08; --tus-cizgi:#2b1c13;
+  /* vişne çürüğü ahşap doku — feTurbulence ile yordamsal damar (dış dosyaya bağımlı değil) */
+  --ahsap-doku:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='150'%3E%3Cfilter id='wd'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.13' numOctaves='4' seed='14' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.10 0 0 0 0 0.02 0 0 0 0 0.02 0 0 0 0.85 -0.36'/%3E%3C/filter%3E%3Crect width='220' height='150' filter='url(%23wd)'/%3E%3C/svg%3E");
   color:var(--ink); font-family:Georgia,'Times New Roman',serif;
   touch-action:manipulation; -webkit-tap-highlight-color:transparent; min-height:100vh;
   background:
-    radial-gradient(1200px 520px at 72% -10%, rgba(240,137,47,.20), transparent 62%),
-    radial-gradient(1000px 660px at 10% 118%, rgba(74,4,4,.52), transparent 60%),
-    linear-gradient(165deg,#26130f 0%,#190e0b 48%,#110806 100%);
+    radial-gradient(1200px 520px at 72% -10%, rgba(255,60,40,.12), transparent 62%),
+    radial-gradient(1000px 660px at 12% 120%, rgba(74,8,8,.50), transparent 60%),
+    linear-gradient(165deg,#3d1414 0%,#2c0f0f 52%,#1d0808 100%);
   background-attachment:fixed;
 }
-body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* vişne çürüğü ahşap damarı — tüm gövdenin üstünde ince doku */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.42;
+  background-image:var(--ahsap-doku);background-size:360px 246px}
 .wrap{position:relative;z-index:1}
 
 .nota-wrap{max-width:min(1680px,96vw);padding-left:16px;padding-right:16px}
@@ -389,6 +392,10 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .drum-ekle:hover{filter:brightness(1.06)}
 @media(max-width:560px){.drum-onizle{margin-left:0}.dg-row{grid-template-columns:62px repeat(var(--adim),minmax(16px,1fr))}.dg-lab{font-size:11px}}
 
+/* ===== vişne çürüğü ahşap dokusu: ana panellerin üstüne damar bindir ===== */
+.okuma,.panel,.enstruman,.looper-ust,.loop-lib,.lanes,.drum-panel{
+  background-image:var(--ahsap-doku);background-size:300px 205px}
+
 /* ===== arpej voicing popover ===== */
 .lane-blok .lb-disli{font-size:12px}
 .arp-pop{position:fixed;z-index:60;display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 38px rgba(0,0,0,.55);padding:12px 14px;width:232px}
@@ -406,38 +413,89 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 <body>
 <div class="wrap nota-wrap">
 <header class="hero">
-  <svg class="hero-bg" viewBox="0 0 1200 250" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Akşamüstü verandada gitar çalan kişi silüeti">
+  <svg class="hero-bg" viewBox="0 0 1200 250" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Akşamüstü verandada akustik gitar çalan kişinin silüeti, arkada kızıl gün batımı">
     <defs>
       <linearGradient id="vbGok" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#280b07"/><stop offset=".5" stop-color="#7e1f10"/>
-        <stop offset=".78" stop-color="#c4501c"/><stop offset="1" stop-color="#eaa050"/>
+        <stop offset="0" stop-color="#1d0707"/><stop offset=".5" stop-color="#4d1411"/>
+        <stop offset=".8" stop-color="#86251a"/><stop offset="1" stop-color="#b03c1e"/>
       </linearGradient>
       <radialGradient id="vbGunes" cx=".5" cy=".5" r=".5">
-        <stop offset="0" stop-color="#FCD27A"/><stop offset=".3" stop-color="#F4922F"/>
-        <stop offset=".62" stop-color="#D7261D"/><stop offset="1" stop-color="#D7261D" stop-opacity="0"/>
+        <stop offset="0" stop-color="#ff3b2b"/><stop offset=".28" stop-color="#ff2a2a"/>
+        <stop offset=".55" stop-color="#c40d12"/><stop offset=".78" stop-color="#8b0000"/>
+        <stop offset="1" stop-color="#8b0000" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="vbDisc" cx=".5" cy=".42" r=".62">
+        <stop offset="0" stop-color="#ff5743"/><stop offset=".55" stop-color="#ef1820"/><stop offset="1" stop-color="#9c0306"/>
       </radialGradient>
       <linearGradient id="vbAlt" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#140a07" stop-opacity="0"/><stop offset="1" stop-color="#120807" stop-opacity=".94"/>
+        <stop offset="0" stop-color="#1a0606" stop-opacity="0"/><stop offset="1" stop-color="#150505" stop-opacity=".82"/>
       </linearGradient>
     </defs>
+    <!-- gökyüzü -->
     <rect width="1200" height="250" fill="url(#vbGok)"/>
-    <circle cx="648" cy="198" r="172" fill="url(#vbGunes)"/>
-    <circle cx="648" cy="198" r="94" fill="#F6A63A" opacity=".92"/>
-    <path d="M0,205 Q260,182 520,200 T1040,196 T1200,206 V250 H0 Z" fill="#37130c" opacity=".75"/>
-    <path d="M0,223 Q300,209 640,221 T1200,219 V250 H0 Z" fill="#1f0a06" opacity=".82"/>
-    <g><line x1="1034" y1="0" x2="1034" y2="42" stroke="#0e0603" stroke-width="3"/><path d="M1018,66 Q1018,42 1034,42 Q1050,42 1050,66 Z" fill="#0e0603"/><circle cx="1034" cy="62" r="16" fill="#FBD27A" opacity=".2"/><circle cx="1034" cy="62" r="6.5" fill="#FBD27A"/></g>
-    <g fill="#0d0603"><rect x="0" y="231" width="1200" height="19"/><rect x="0" y="214" width="1200" height="5"/><rect x="34" y="219" width="5" height="13"/><rect x="118" y="219" width="5" height="13"/><rect x="202" y="219" width="5" height="13"/><rect x="286" y="219" width="5" height="13"/><rect x="806" y="219" width="5" height="13"/><rect x="890" y="219" width="5" height="13"/><rect x="974" y="219" width="5" height="13"/><rect x="1058" y="219" width="5" height="13"/><rect x="1142" y="219" width="5" height="13"/></g>
-    <g fill="#0d0603"><path d="M84,214 q-12,-36 6,-58 q-16,30 2,58 Z"/><path d="M84,214 q16,-32 38,-42 q-24,20 -24,42 Z"/><path d="M70,214 h34 l-5,17 h-24 Z"/></g>
-    <g fill="#0b0503">
-      <path d="M452,232 l10,-42 M522,232 l-8,-42" stroke="#0b0503" stroke-width="5" stroke-linecap="round"/>
-      <ellipse cx="488" cy="192" rx="31" ry="11"/>
-      <path d="M464,196 q-28,8 -40,36 l17,0 q12,-26 35,-26 Z"/>
-      <path d="M480,120 q-16,36 -4,74 q34,8 50,-6 q4,-44 -16,-74 Z"/>
-      <circle cx="491" cy="107" r="17"/>
-      <ellipse cx="515" cy="178" rx="39" ry="25" transform="rotate(-20 515 178)"/>
-      <rect x="522" y="118" width="86" height="9" rx="4" transform="rotate(-32 522 122)"/>
-      <path d="M494,146 q33,6 30,37" stroke="#0b0503" stroke-width="13" fill="none" stroke-linecap="round"/>
-      <path d="M482,140 q41,-16 88,-45" stroke="#0b0503" stroke-width="11" fill="none" stroke-linecap="round"/>
+    <!-- KIZIL gün batımı: geniş kor halesi + tanımlı disk (kan kırmızısı) -->
+    <circle cx="585" cy="194" r="205" fill="url(#vbGunes)"/>
+    <circle cx="585" cy="190" r="88" fill="url(#vbDisc)"/>
+    <!-- uzak tepe çizgisi -->
+    <path d="M0,205 Q300,190 640,201 T1200,199 V250 H0 Z" fill="#37100b" opacity=".5"/>
+    <!-- ÇATI kirişi + iki direk: kareyi çerçeveler (verandadan bakış) -->
+    <g fill="#0c0604">
+      <rect x="0" y="0" width="1200" height="13"/>
+      <rect x="1118" y="0" width="32" height="250"/>
+      <path d="M1100,13 h62 v9 h-12 v-9 h-26 v9 h-12 Z"/>
+      <rect x="46" y="0" width="15" height="250" opacity=".92"/>
+    </g>
+    <!-- asılı veranda feneri -->
+    <g>
+      <line x1="1058" y1="13" x2="1058" y2="40" stroke="#0c0604" stroke-width="3"/>
+      <path d="M1044,66 Q1044,40 1058,40 Q1072,40 1072,66 Z" fill="#0c0604"/>
+      <circle cx="1058" cy="60" r="16" fill="#ffb24a" opacity=".16"/>
+      <circle cx="1058" cy="60" r="6" fill="#ffd584"/>
+    </g>
+    <!-- VERANDA korkuluğu (müzisyenin ardında; orta boşluk müzisyen için) -->
+    <g fill="#090402">
+      <rect x="0" y="191" width="1200" height="6"/>
+      <rect x="0" y="207" width="1200" height="5"/>
+      <g>
+        <rect x="20" y="192" width="5" height="18"/><rect x="62" y="192" width="5" height="18"/><rect x="104" y="192" width="5" height="18"/><rect x="146" y="192" width="5" height="18"/><rect x="188" y="192" width="5" height="18"/><rect x="230" y="192" width="5" height="18"/><rect x="272" y="192" width="5" height="18"/><rect x="314" y="192" width="5" height="18"/><rect x="356" y="192" width="5" height="18"/><rect x="398" y="192" width="5" height="18"/><rect x="754" y="192" width="5" height="18"/><rect x="796" y="192" width="5" height="18"/><rect x="838" y="192" width="5" height="18"/><rect x="880" y="192" width="5" height="18"/><rect x="922" y="192" width="5" height="18"/><rect x="964" y="192" width="5" height="18"/><rect x="1006" y="192" width="5" height="18"/><rect x="1048" y="192" width="5" height="18"/><rect x="1090" y="192" width="5" height="18"/>
+      </g>
+    </g>
+    <!-- MÜZİSYEN: verandada oturmuş, akustik gitar çalan kişi (net silüet) -->
+    <g fill="#0a0403">
+      <ellipse cx="650" cy="184" rx="26" ry="6"/>                                    <!-- tabure oturağı -->
+      <path d="M636,100 Q617,108 615,140 Q613,169 638,184 Q666,186 663,150 Q661,115 650,103 Q643,97 636,100 Z"/> <!-- gövde (öne eğik) -->
+      <circle cx="636" cy="84" r="16"/>                                              <!-- baş -->
+      <path d="M621,82 Q624,66 642,68 Q634,60 624,66 Q617,72 621,82 Z"/>             <!-- saç -->
+      <path d="M640,178 Q604,176 580,187 L582,199 Q612,191 642,193 Z"/>             <!-- ön uyluk (gitar burada) -->
+    </g>
+    <!-- akustik gitar: alt+üst bout (figure-8, belirgin bel) + uzun sap + flared başlık -->
+    <g fill="#080302">
+      <ellipse cx="602" cy="172" rx="46" ry="38"/>                          <!-- alt bout (büyük) -->
+      <ellipse cx="561" cy="139" rx="31" ry="25"/>                          <!-- üst bout -->
+      <path d="M549,130 L470,86 L463,97 L542,141 Z"/>                       <!-- sap (boyun) -->
+      <path d="M472,90 L452,72 Q444,65 439,73 Q435,81 445,88 L464,99 Z"/>   <!-- başlık (flared headstock) -->
+    </g>
+    <!-- bacaklar + kollar (kalın yuvarlak uçlu çizgiler) -->
+    <g stroke="#0a0403" fill="none" stroke-linecap="round">
+      <path d="M634,186 L638,214 M666,186 L672,214" stroke-width="5"/>
+      <path d="M582,188 Q574,201 569,214" stroke-width="14"/>
+      <path d="M636,192 Q636,203 638,214" stroke-width="12"/>
+      <path d="M648,108 Q566,103 484,92" stroke-width="11"/>
+      <path d="M652,112 Q675,140 664,160 Q641,177 602,170" stroke-width="13"/>
+    </g>
+    <g fill="#0a0403"><circle cx="484" cy="91" r="8"/><circle cx="604" cy="170" r="8"/></g>
+    <!-- ince sıcak rim ışığı: güneşe bakan (sol) kenarlar -->
+    <g fill="none" stroke="#ff7a45" stroke-width="2" opacity=".26" stroke-linecap="round">
+      <path d="M464,84 L546,126"/><path d="M558,180 Q556,150 578,134"/><path d="M622,76 Q619,88 624,96"/>
+    </g>
+    <!-- AHŞAP veranda zemini (ön plan; plank çizgileri) -->
+    <g>
+      <rect x="0" y="213" width="1200" height="37" fill="#170604"/>
+      <line x1="0" y1="214" x2="1200" y2="214" stroke="#46160d" stroke-width="2" opacity=".7"/>
+      <line x1="0" y1="232" x2="1200" y2="232" stroke="#2c0e08" stroke-width="2" opacity=".55"/>
+      <g stroke="#2a0d08" stroke-width="2" opacity=".5">
+        <line x1="150" y1="213" x2="150" y2="250"/><line x1="430" y1="213" x2="430" y2="250"/><line x1="690" y1="213" x2="690" y2="250"/><line x1="930" y1="213" x2="930" y2="250"/><line x1="300" y1="232" x2="300" y2="250"/><line x1="560" y1="232" x2="560" y2="250"/><line x1="820" y1="232" x2="820" y2="250"/><line x1="1050" y1="232" x2="1050" y2="250"/>
+      </g>
     </g>
     <rect width="1200" height="250" fill="url(#vbAlt)"/>
   </svg>
