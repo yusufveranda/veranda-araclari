@@ -34,6 +34,12 @@ body.gece{
   --acc:#86B98E; --acc-soft:rgba(134,185,142,.14); --vurgu:#E0935A; --shadow:rgba(0,0,0,.4);
 }
 body{transition:background .4s,color .4s}
+/* ---- aura: yakınlığa göre ısınan arka plan + kıvılcımlar ---- */
+#aura{position:fixed;inset:0;z-index:-1;transition:background 1.4s ease;background:radial-gradient(125% 95% at 50% 16%, #8aa3b2, #5d7585)}
+#kivilcim{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+.kiv{position:absolute;bottom:-40px;will-change:transform,opacity;animation:kivYuksel linear forwards;filter:drop-shadow(0 0 4px rgba(255,140,40,.55))}
+@keyframes kivYuksel{0%{transform:translateY(0) scale(.7) rotate(0);opacity:0}12%{opacity:.95}100%{transform:translateY(-115vh) scale(1.15) rotate(40deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.kiv{display:none}}
 .oyun{max-width:800px;margin:0 auto;padding:0 20px 90px;position:relative}
 
 /* ---- üst bar ---- */
@@ -194,13 +200,14 @@ footer a{color:var(--soluk)}
 </style>
 </head>
 <body>
+<div id="aura"></div>
+<div id="kivilcim"></div>
 <div class="oyun">
 
   <div class="tepe-bar">
     <button class="vmini" onclick="location.href='../wordle/'">‹ <span data-ad="verandle">verandle</span></button>
     <div class="tepe-sag">
       <button class="simge" id="yardimBtn" title="nasıl oynanır"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.7 2-2.7 4"/><circle cx="12" cy="17.4" r=".5" fill="currentColor" stroke="none"/></svg></button>
-      <button class="simge" id="temaBtn" title="gece / gündüz"><svg viewBox="0 0 24 24"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.6 6.6 0 0 0 21 12.8z"/></svg></button>
     </div>
   </div>
 
@@ -388,6 +395,8 @@ function tahminEkle(w, hint){
   if(w===S.gizli){ S.bitti=true; istatYaz(true); }
   kaydet();
   ciz();
+  auraHesapla();
+  if(w===S.gizli) fiyasko();   // taze kazanış
   if(S.bitti) kutla();
   if(S.bitti && S.mod==='gun' && !S.pes) setTimeout(()=>{ if($('skPerde').hidden) skAc(); }, 1300);   // çözünce tabloyu göster
 }
@@ -644,6 +653,34 @@ function skGeriCiz(){
 function skTimerBasla(){ if(skTimer) clearInterval(skTimer); skGeriCiz(); skTimer=setInterval(skGeriCiz,1000); }
 function skTimerDur(){ if(skTimer){ clearInterval(skTimer); skTimer=null; } }
 
+// ---- aura: en yakın tahmine göre arka plan ısınması + kıvılcım/fiyasko ----
+let auraS=0, kivTimer=null;
+function auraIsi(t){ if(t.w===S.gizli) return 1; if(t.rut!=null) return 0.36+0.60*(t.rut/1000); return Math.max(0,Math.min(1,t.pct/45))*0.33; }
+function auraRenk(s){
+  const cool=[138,163,178], hot=[214,86,46], m=(a,b)=>Math.round(a+(b-a)*s), koyu=v=>Math.round(v*0.72);
+  const r=m(cool[0],hot[0]), g=m(cool[1],hot[1]), b=m(cool[2],hot[2]);
+  return 'radial-gradient(125% 95% at 50% 16%, rgb('+r+','+g+','+b+'), rgb('+koyu(r)+','+koyu(g)+','+koyu(b)+'))';
+}
+function auraUygula(yumusak){ const el=document.getElementById('aura'); if(!el) return; el.style.transition='background '+(yumusak?'1.4s':'0s')+' ease'; el.style.background=auraRenk(auraS); kivilcimAyarla(); }
+function auraHesapla(){ let s=0; for(const t of S.tahminler) s=Math.max(s,auraIsi(t)); auraS=s; auraUygula(true); }
+function auraSifirla(){ if(kivTimer){clearInterval(kivTimer);kivTimer=null;} const c=document.getElementById('kivilcim'); if(c) c.innerHTML=''; }
+function kivilcimAyarla(){
+  if(auraS>=0.8 && !S.bitti){ if(!kivTimer) kivTimer=setInterval(()=>kivSpawn(1,true),650); }
+  else if(kivTimer){ clearInterval(kivTimer); kivTimer=null; }
+}
+function kivSpawn(n,kenar){
+  const c=document.getElementById('kivilcim'); if(!c) return;
+  for(let i=0;i<n;i++){ const e=document.createElement('span'); e.className='kiv';
+    e.style.left=(kenar?(Math.random()<.5?Math.random()*9:91+Math.random()*9):Math.random()*100)+'%';
+    const sure=2.4+Math.random()*2.6; e.style.animationDuration=sure+'s'; e.style.fontSize=(10+Math.random()*16)+'px';
+    e.textContent=Math.random()<.5?'🔥':'✨'; c.appendChild(e); setTimeout(()=>e.remove(),sure*1000+250); }
+}
+function fiyasko(){   // tam fiyasko 🔥 — arka plan ateşe döner, bol kıvılcım
+  auraS=1; const el=document.getElementById('aura');
+  if(el){ el.style.transition='background 1.6s ease'; el.style.background='radial-gradient(135% 105% at 50% 22%, #F4B042, #C2331F)'; }
+  let n=0; const t=setInterval(()=>{ kivSpawn(5,false); if(++n>=18) clearInterval(t); },240);
+}
+
 // ---- mod / oyun kurma ----
 function durumYukle(){
   try{ return JSON.parse(localStorage.getItem(anahtar())||'null'); }catch(e){ return null; }
@@ -667,6 +704,7 @@ function oyunKur(){
   }
   $('oyunAlan').hidden=false;
   ciz();
+  auraSifirla(); auraHesapla();
   if(S.bitti){ S.pes ? sonucPanel('gizli kelime',S.gizli,'pes edildi') : kutla(); }
   else { setTimeout(()=>$('tahminGir').focus(),60); }
 }
@@ -684,12 +722,7 @@ function modSec(m){
 }
 
 // ---- tema ----
-function temaUygula(g){ document.body.classList.toggle('gece',g); if(window.adlariUygula) try{adlariUygula();}catch(e){} }
-function temaKur(){
-  let g = localStorage.getItem('sicak:tema');
-  if(g===null) g = localStorage.getItem('harfiyat:tema'); // verandle ile ortak his
-  temaUygula(g==='1'||g==='gece'||g===true);
-}
+function temaKur(){ document.body.classList.remove('gece'); if(window.adlariUygula) try{adlariUygula();}catch(e){} }   // tek orta-ton; gece/gündüz yok (aura zemin)
 
 // ---- olaylar ----
 $('giris').addEventListener('submit', e=>{ e.preventDefault();
@@ -699,7 +732,6 @@ $('giris').addEventListener('submit', e=>{ e.preventDefault();
 $('modlar').addEventListener('click', e=>{ const b=e.target.closest('button[data-mod]'); if(b){ b.blur(); modSec(b.dataset.mod); }});
 $('ipucuBtn').addEventListener('click', ()=>{ $('ipucuBtn').blur(); ipucuAl(); });
 $('pesBtn').addEventListener('click', ()=>{ if(confirm('Cevabı görmek istediğine emin misin? Oyun biter.')) pesEt(); });
-$('temaBtn').addEventListener('click', ()=>{ const g=!document.body.classList.contains('gece'); temaUygula(g); localStorage.setItem('sicak:tema', g?'1':'0'); });
 $('yardimBtn').addEventListener('click', ()=>{ olcekCiz(); $('yardim').hidden=false; });
 $('yardimKapat').addEventListener('click', ()=>$('yardim').hidden=true);
 $('yardim').addEventListener('click', e=>{ if(e.target.id==='yardim') $('yardim').hidden=true; });
