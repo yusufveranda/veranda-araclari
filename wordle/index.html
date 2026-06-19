@@ -232,6 +232,7 @@ body{transition:background .4s,color .4s}
 .lb-tablar button{font-family:'Libre Baskerville',serif;font-size:12px;padding:6px 11px;border:1px solid var(--kutu-cizgi);border-radius:14px;background:var(--kutu-bos);color:var(--soluk);cursor:pointer}
 .lb-tablar button.secili{background:var(--kirmizi-yum);color:var(--kirmizi);border-color:var(--kirmizi)}
 .lb-lider{font-family:'Libre Baskerville',serif;font-size:13px;color:var(--mur);text-align:center;margin-top:13px;line-height:1.4}
+.lb-aralik{font-family:'Libre Baskerville',serif;font-size:11.5px;font-style:italic;color:var(--soluk);margin-bottom:5px}
 .lb-lider b{font-family:'Playfair Display',serif;color:var(--kirmizi)}
 .lb-liste{margin-top:11px;display:flex;flex-direction:column;gap:5px}
 .lb-sat{display:flex;align-items:center;gap:10px;padding:8px 11px;border:1px solid var(--ince);border-radius:8px;
@@ -242,6 +243,11 @@ body{transition:background .4s,color .4s}
 .lb-puan{font-family:'Playfair Display',serif;font-weight:700;color:var(--mur);white-space:nowrap}
 .lb-puan small{font-family:'Libre Baskerville',serif;font-weight:400;font-size:11px;color:var(--soluk)}
 .lb-bos{text-align:center;color:var(--soluk);font-family:'Libre Baskerville',serif;font-style:italic;padding:16px 0}
+.lb-ekle-sar{display:flex;flex-direction:column;align-items:center;gap:5px;margin-top:13px}
+.lb-ekle{font-family:'Libre Baskerville',serif;font-size:13px;padding:8px 16px;border:1.5px solid var(--dogru);border-radius:9px;
+  background:var(--dogru);color:var(--dogru-ink);cursor:pointer;box-shadow:2px 3px 0 var(--mat-golge)}
+.lb-ekle:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
+.lb-ekle-not{font-family:'Libre Baskerville',serif;font-style:italic;font-size:12px;color:var(--soluk);min-height:15px;text-align:center}
 
 /* ----- klavye ----- */
 .klavye-sar{display:flex;gap:6px;justify-content:center;align-items:stretch;margin-top:18px}
@@ -420,12 +426,13 @@ body{transition:background .4s,color .4s}
 
 <div class="lb-modal gizli" id="lbModal">
   <div class="lb-kart">
-    <div class="lb-ust"><div class="lb-bas">🏆 <span id="lbBaslik">tablo</span></div><button class="lb-kapat" id="lbKapat" aria-label="kapat">✕</button></div>
+    <div class="lb-ust"><div class="lb-bas">🏆 <span id="lbBaslik">leaderboard</span></div><button class="lb-kapat" id="lbKapat" aria-label="kapat">✕</button></div>
     <div class="lb-tablar" id="lbTablar">
       <button data-k="gun" class="secili">bugün</button>
       <button data-k="hafta">bu hafta</button>
       <button data-k="tum">tüm zamanlar</button>
     </div>
+    <div class="lb-ekle-sar"><button class="lb-ekle" id="lbEkleBtn">＋ beni tabloya ekle</button><span class="lb-ekle-not" id="lbEkleNot"></span></div>
     <div class="lb-lider" id="lbLider"></div>
     <div class="lb-liste" id="lbListe"></div>
   </div>
@@ -490,13 +497,13 @@ function sReveal(rk){
 /* ===== gün / cevap ===== */
 function gunSayisi(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
 function rasgele(L){ const a=HARF_CEVAP[L]; return a[Math.floor(Math.random()*a.length)]; }
-function gunlukCevap(L){ const a=HARF_CEVAP[L]; return a[(gunSayisi()*31+L*7)%a.length]; }
+function gunlukCevap(L,tuz){ const a=HARF_CEVAP[L]; return a[(gunSayisi()*31+L*7+(tuz||0))%a.length]; }
 
 function yeniTahta(L,cevap){
   return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:oyun==='iskelime'?7:6};
 }
 function tahtalariKur(){
-  if(oyun==='iskelime') tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L):rasgele(L)));
+  if(oyun==='iskelime') tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L, L===5?137:0):rasgele(L)));   // 5 harfli: harfiyat'la aynı çıkmasın diye kaydır
   else if(oyun==='anlamca'){
     const ks=Object.keys(ANLAM_CEVAP);
     const c=mod==='gun'?ks[gunSayisi()%ks.length]:ks[Math.floor(Math.random()*ks.length)];
@@ -663,7 +670,9 @@ const LB_URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeN
 function lbOyun(){ return oyun==='iskelime'?'taraca':oyun==='anlamca'?'avlu':oyun; }   // tablo oyun anahtarı (harfiyat/taraca/avlu)
 function oyunAdi(){ return oyun==='iskelime'?'taraça':oyun==='anlamca'?'avlu':'harfiyat'; }
 function lbDestekli(){ return oyun==='iskelime'||oyun==='anlamca'||oyun==='harfiyat'; }   // verandle'ın üç oyunu da
-function haftaNo(){ return Math.floor(gunSayisi()/7); }
+function haftaBas(){ const g=gunSayisi(); return g-(((g-1)%7)+7)%7; }   // haftanın başı = en son Cuma (gün no). hafta: Cuma 00:00 → Cuma 00:00
+function gunTarih(g){ const d=new Date(2026,0,1); d.setDate(d.getDate()+g); return d; }
+function haftaAraligiYazi(){ const b=haftaBas(), f=g=>gunTarih(g).toLocaleDateString('tr-TR',{day:'numeric',month:'long'}); return 'Cuma '+f(b)+' → '+f(b+6); }
 function nickAl(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function kacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
@@ -683,7 +692,7 @@ function lbAc(){
   const nick=nickAl();
   if(!nick){ const not=document.getElementById('payNot'); if(not) not.textContent='önce ismini yaz';
     const ng=document.getElementById('nickGir'); if(ng) ng.focus(); return; }
-  document.getElementById('lbBaslik').textContent=oyunAdi()+' tablosu';
+  document.getElementById('lbBaslik').textContent=oyunAdi()+' leaderboard';
   document.getElementById('lbModal').classList.remove('gizli');
   lbGonder().then(()=>lbGoster(lbKapsam));
 }
@@ -695,19 +704,35 @@ function lbGoster(kapsam){
   liderEl.textContent=''; listeEl.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   const q=new URLSearchParams({fn:'list',oyun:lbOyun(),kapsam});
   if(kapsam==='gun') q.set('gun',String(gunSayisi()));
-  if(kapsam==='hafta') q.set('hafta',String(haftaNo()));
+  if(kapsam==='hafta') q.set('hbas',String(haftaBas()));
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{
     if(kapsam!==lbKapsam) return;   // arada sekme değiştiyse eski cevabı yazma
     const ben=nickAl().toLowerCase(), arr=(j&&j.liste)||[];
+    if(kapsam!=='gun'){   // bu hafta: toplam/7 (kaçırılan gün=0) · tüm zamanlar: toplam/oynanan gün
+      arr.forEach(r=>{ r._gun=r.oyunSayisi||0; r._ort = kapsam==='hafta' ? r.puan/7 : (r._gun?r.puan/r._gun:0); });
+      arr.sort((a,b)=> b._ort-a._ort || b._gun-a._gun);
+    }
+    let ust = kapsam==='hafta' ? '<div class="lb-aralik">'+haftaAraligiYazi()+'</div>' : '';
+    if(kapsam!=='gun' && arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'tüm zamanların')+' lideri: <b>'+kacis(arr[0].nick)+'</b> · '+arr[0]._ort.toFixed(1)+' ort';
+    liderEl.innerHTML=ust;
     if(!arr.length){ listeEl.innerHTML='<div class="lb-bos">henüz kimse yok — ilk sen ol</div>'; return; }
-    if(kapsam!=='gun' && arr[0]) liderEl.innerHTML='🏆 '+(kapsam==='hafta'?'bu haftanın':'tüm zamanların')+' lideri: <b>'+kacis(arr[0].nick)+'</b> · '+arr[0].puan+' puan';
     listeEl.innerHTML=arr.map((r,i)=>{
       const benMi=String(r.nick).toLowerCase()===ben;
-      const oy=(kapsam!=='gun' && r.oyunSayisi!=null) ? ' · '+r.oyunSayisi+' oyun' : '';
-      const sag=r.puan+' <small>puan'+oy+'</small>';
+      const sag = kapsam==='gun' ? r.puan+' <small>puan</small>'
+        : r._ort.toFixed(1)+' <small>ort · '+r._gun+' gün</small>';
       return `<div class="lb-sat${benMi?' ben':''}"><span class="lb-sira">${i+1}</span><span class="lb-nick">${kacis(r.nick)}</span><span class="lb-puan">${sag}</span></div>`;
     }).join('');
   }).catch(()=>{ if(kapsam===lbKapsam) listeEl.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
+}
+function lbBeniEkle(){
+  const not=document.getElementById('lbEkleNot'), nick=nickAl();
+  if(mod!=='gun'){ if(not) not.textContent='tablo yalnız günün kelimesinde'; return; }
+  if(!lbDestekli() || !oyunBitti){ if(not) not.textContent='önce oyunu bitir'; return; }
+  if(!nick){ if(not) not.textContent='önce ismini yaz'; lbKapat(); const ng=document.getElementById('nickGir'); if(ng) ng.focus(); return; }
+  const key=lbOyun()+':'+gunSayisi()+':'+nick.toLowerCase();
+  delete lbGonderildi[key];   // temizlik/yeniden ekleme için oturum kilidini aş
+  if(not) not.textContent='ekleniyor…';
+  lbGonder().then(j=>{ if(not) not.textContent=(j&&j.kilit)?('zaten ekliydin: '+nick):('eklendi: '+nick+' ✓'); lbGoster(lbKapsam); });
 }
 
 /* ===== istatistik (günlük) ===== */
@@ -840,7 +865,7 @@ function sonucCiz(){
   el.classList.remove('gizli');
   const payHTML=`<div class="pay"><input id="nickGir" class="nick-gir" maxlength="16" placeholder="ismin"><button class="pay-btn" id="kopyaBtn">📋 kopyala</button></div>
       <div class="pay-not" id="payNot"></div>
-      <button class="lb-ac-btn" id="lbBtn">🏆 tablo</button>`;
+      <button class="lb-ac-btn" id="lbBtn">🏆 leaderboard</button>`;
   if(oyun==='iskelime'){
     const s=skorHesapla();
     const haplar=s.per.map(p=>`<span class="hap ${p.cozuldu?'ok':'yo'}">${p.uz}<b>${p.cozuldu?p.deneme:'—'}</b></span>`).join('');
@@ -927,6 +952,7 @@ document.getElementById('sesBtn').onclick=function(){ ses=!ses; localStorage.set
 document.getElementById('lbKapat').onclick=lbKapat;
 document.getElementById('lbModal').addEventListener('click',e=>{ if(e.target.id==='lbModal') lbKapat(); });
 document.querySelectorAll('#lbTablar button').forEach(b=>b.onclick=()=>lbGoster(b.dataset.k));
+document.getElementById('lbEkleBtn').onclick=lbBeniEkle;
 
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey) return;
