@@ -1005,7 +1005,10 @@ document.addEventListener('keydown',e=>{
   else { const h=trLower(e.key); if(HARF.test(h)){ e.preventDefault(); harfGir(h); } }
 });
 
-let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(ciz,120); });
+let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(()=>{
+  if(/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName)) return;   // isim yazarken klavye resize'ı paneli yıkıp odağı atmasın
+  ciz();
+},120); });
 temaUygula(); sesUygula(); hubGoster();
 </script>
 </body>
