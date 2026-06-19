@@ -21,6 +21,7 @@ body{
   --varr:#CF9A3C; --varr-ink:#2B2117;
   --yok:#9A8C7A; --yok-ink:#F3EADB;
   --kirmizi:#C2331F; --kirmizi-yum:rgba(194,51,31,.12);
+  --altin:#B8860B;
   --tus:#F7F0DE; --tus-cizgi:#DAC9A4; --tus-yok:#9A8C7A; --tus-yok-ink:#F3EADB;
   background:var(--oyun-bg);
   touch-action:manipulation;            /* telefonda çift-dokunma zoom yok */
@@ -33,6 +34,7 @@ body.gece{
   --varr:#D8A845; --varr-ink:#1C1510;
   --yok:#615746; --yok-ink:#EAE0CC;
   --kirmizi:#E8472E; --kirmizi-yum:rgba(232,71,46,.16);
+  --altin:#E6C25A;
   --tus:#33291C; --tus-cizgi:#4A3A28; --tus-yok:#181109; --tus-yok-ink:#6A5E48;
   /* paylaşılan araç paleti (üst başlık/nav) koyuya çevrilir */
   --bg:#16110C; --card:#241C14; --ink:#EFE2C6; --muted:#9C8C70; --line:#3A2E20;
@@ -248,6 +250,15 @@ body{transition:background .4s,color .4s}
   background:var(--dogru);color:var(--dogru-ink);cursor:pointer;box-shadow:2px 3px 0 var(--mat-golge)}
 .lb-ekle:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
 .lb-ekle-not{font-family:'Libre Baskerville',serif;font-style:italic;font-size:12px;color:var(--soluk);min-height:15px;text-align:center}
+.lb-geri{font-family:'Libre Baskerville',serif;font-size:12px;color:var(--soluk);text-align:center;margin-top:11px;min-height:16px}
+.lb-geri b{font-family:'Playfair Display',serif;color:var(--kirmizi);font-weight:700}
+/* altın kelime (taraça, günlük) — 2× puan, altın renk */
+.altin-et{color:var(--altin)!important;font-style:normal;font-weight:700}
+.puan-not{font-family:'Libre Baskerville',serif;font-size:11px;color:var(--soluk);margin-top:11px;line-height:1.5}
+.sekme.altin{border-color:var(--altin);box-shadow:2px 3px 0 var(--mat-golge),0 0 0 2px var(--altin)}
+.sekme.altin::after{content:'★';position:absolute;top:-10px;right:-7px;font-size:12px;color:var(--altin)}
+.hap.altin{border-color:var(--altin);color:var(--altin)} .hap.altin b{color:var(--altin)}
+.mboard.altin .met{color:var(--altin)}
 
 /* ----- klavye ----- */
 .klavye-sar{display:flex;gap:6px;justify-content:center;align-items:stretch;margin-top:18px}
@@ -433,6 +444,7 @@ body{transition:background .4s,color .4s}
       <button data-k="tum">tüm zamanlar</button>
     </div>
     <div class="lb-ekle-sar"><button class="lb-ekle" id="lbEkleBtn">＋ beni tabloya ekle</button><span class="lb-ekle-not" id="lbEkleNot"></span></div>
+    <div class="lb-geri" id="lbGeri"></div>
     <div class="lb-lider" id="lbLider"></div>
     <div class="lb-liste" id="lbListe"></div>
   </div>
@@ -498,6 +510,7 @@ function sReveal(rk){
 function gunSayisi(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
 function rasgele(L){ const a=HARF_CEVAP[L]; return a[Math.floor(Math.random()*a.length)]; }
 function gunlukCevap(L,tuz){ const a=HARF_CEVAP[L]; return a[(gunSayisi()*31+L*7+(tuz||0))%a.length]; }
+function altinUz(){ return (mod==='gun'&&oyun==='iskelime') ? ISK_UZ[((gunSayisi()*2654435761)>>>0)%ISK_UZ.length] : 0; }   // günün altın kelimesi (uzunluk): her gün rastgele-deterministik, 2× puan
 
 function yeniTahta(L,cevap){
   return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:oyun==='iskelime'?7:6};
@@ -620,7 +633,8 @@ function skorHesapla(){
   const cozulen=per.filter(p=>p.cozuldu).length, toplamDeneme=per.reduce((a,p)=>a+p.deneme,0);
   // 0–100: her kelimenin payı uzunluk ağırlığıyla orantılı (3/7/8 harf = 1.5 kat zor).
   // pay = TABAN (son denemede çözünce alınan oran) + (1-TABAN)·hız. Hepsi 1.de → 100.
-  const TABAN=0.35, agir=uz=>(uz===3||uz===7||uz===8)?1.5:1;
+  const TABAN=0.35, ALTIN=altinUz();
+  const agir=uz=>{ let w=(uz===3||uz===7||uz===8)?1.5:1; if(uz===ALTIN) w*=2; return w; };   // 3/7/8 harf 1.5×, günün altın kelimesi 2×
   const toplamAgir=tahtalar.reduce((a,t)=>a+agir(t.uz),0)||1;
   const puan100=Math.round(per.reduce((a,p,i)=>{
     if(!p.cozuldu) return a;
@@ -637,9 +651,11 @@ function skorNot(r){
 
 /* ===== taraça: oyun sonu özeti + paylaşım ===== */
 function ozetIzgaraHTML(){   // 6 mini ızgara, tek ekranda — sadece oynanan satırlar
+  const altin=altinUz();
   return tahtalar.map(t=>{
     const huc=t.gecmis.map(row=>row.harfler.map((h,i)=>`<i class="mt ${RENKAD[row.renkler[i]]}">${h}</i>`).join('')).join('');
-    return `<div class="mboard"><div class="met">${t.uz} harf</div><div class="mgrid" style="grid-template-columns:repeat(${t.uz},15px)">${huc}</div></div>`;
+    const au=t.uz===altin;
+    return `<div class="mboard${au?' altin':''}"><div class="met">${t.uz} harf${au?' 🌟':''}</div><div class="mgrid" style="grid-template-columns:repeat(${t.uz},15px)">${huc}</div></div>`;
   }).join('');
 }
 function payMetni(){   // spoiler vermez: yalnız uzunluk + çözüldü/çözülmedi + deneme
@@ -676,7 +692,7 @@ function haftaAraligiYazi(){ const b=haftaBas(), f=g=>gunTarih(g).toLocaleDateSt
 function nickAl(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function kacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-let lbGonderildi={}, lbKapsam='gun';
+let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlenir)
   if(mod!=='gun' || !lbDestekli() || !oyunBitti) return Promise.resolve(null);
   const nick=nickAl(); if(!nick) return Promise.resolve({yokNick:true});
@@ -694,12 +710,25 @@ function lbAc(){
     const ng=document.getElementById('nickGir'); if(ng) ng.focus(); return; }
   document.getElementById('lbBaslik').textContent=oyunAdi()+' leaderboard';
   document.getElementById('lbModal').classList.remove('gizli');
+  lbTimerBasla();
   lbGonder().then(()=>lbGoster(lbKapsam));
 }
-function lbKapat(){ document.getElementById('lbModal').classList.add('gizli'); }
+function lbKapat(){ document.getElementById('lbModal').classList.add('gizli'); lbTimerDur(); }
+function lbGeriCiz(){   // bugün → yeni kelimelere; bu hafta → hafta kapanışına
+  const el=document.getElementById('lbGeri'); if(!el) return;
+  if(lbKapsam==='tum'){ el.textContent=''; return; }
+  const hedef=(lbKapsam==='gun'?gunTarih(gunSayisi()+1):gunTarih(haftaBas()+7)).getTime();
+  let s=Math.max(0,Math.floor((hedef-Date.now())/1000));
+  const g=Math.floor(s/86400); s-=g*86400; const sa=Math.floor(s/3600); s-=sa*3600; const dk=Math.floor(s/60), sn=s-dk*60;
+  const sure = lbKapsam==='gun' ? sa+'sa '+dk+'dk '+sn+'sn' : g+'g '+sa+'sa '+dk+'dk';
+  el.innerHTML='⏳ '+(lbKapsam==='gun'?'yeni kelimelere':'hafta kapanışına')+' <b>'+sure+'</b>';
+}
+function lbTimerBasla(){ if(lbTimer) clearInterval(lbTimer); lbGeriCiz(); lbTimer=setInterval(lbGeriCiz,1000); }
+function lbTimerDur(){ if(lbTimer){ clearInterval(lbTimer); lbTimer=null; } }
 function lbGoster(kapsam){
   lbKapsam=kapsam;
   document.querySelectorAll('#lbTablar button').forEach(b=>b.classList.toggle('secili',b.dataset.k===kapsam));
+  lbGeriCiz();
   const listeEl=document.getElementById('lbListe'), liderEl=document.getElementById('lbLider');
   liderEl.textContent=''; listeEl.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   const q=new URLSearchParams({fn:'list',oyun:lbOyun(),kapsam});
@@ -786,7 +815,7 @@ function ciz(){
     sek.innerHTML='';
     tahtalar.forEach((t,i)=>{
       const s=document.createElement('button');
-      s.className='sekme'+(i===aktif?' aktif':'')+(t.kazandi?' cozuldu':(t.bitti?' kayip':''));
+      s.className='sekme'+(i===aktif?' aktif':'')+(t.kazandi?' cozuldu':(t.bitti?' kayip':''))+(t.uz===altinUz()?' altin':'');
       s.textContent=t.uz; s.onclick=()=>{ aktif=i; ciz(); };
       sek.appendChild(s);
     });
@@ -847,9 +876,9 @@ function ciz(){
   sonucCiz();
   document.querySelector('.klavye-sar').classList.toggle('gizli', oyunBitti && sonucHazir);   // bitince klavye gitsin (tek SS)
   // başlık / altyazı / ipucu
-  document.getElementById('altYazi').textContent = oyun==='iskelime' ? 'üç’ten sekiz harfe · altı kelime, yedişer deneme'
-    : oyun==='anlamca' ? 'beş harf · üç deneme · yakın anlam ipucuyla'
-    : 'beş harf · altı deneme';
+  const _ay=document.getElementById('altYazi');
+  if(oyun==='iskelime'){ const _a=altinUz(); _ay.innerHTML='üç’ten sekiz harfe · altı kelime'+(_a?' · <b class="altin-et">🌟 '+_a+' harf 2×</b>':', yedişer deneme'); }
+  else _ay.textContent = oyun==='anlamca' ? 'beş harf · üç deneme · yakın anlam ipucuyla' : 'beş harf · altı deneme';
   document.getElementById('ipucu').textContent = oyunBitti ? '' : 'boş bırak, bildiğini yerine koy — yeşiller kendiliğinden gelir';
 }
 
@@ -867,13 +896,14 @@ function sonucCiz(){
       <div class="pay-not" id="payNot"></div>
       <button class="lb-ac-btn" id="lbBtn">🏆 leaderboard</button>`;
   if(oyun==='iskelime'){
-    const s=skorHesapla();
-    const haplar=s.per.map(p=>`<span class="hap ${p.cozuldu?'ok':'yo'}">${p.uz}<b>${p.cozuldu?p.deneme:'—'}</b></span>`).join('');
+    const s=skorHesapla(), altin=altinUz();
+    const haplar=s.per.map(p=>`<span class="hap ${p.cozuldu?'ok':'yo'}${p.uz===altin?' altin':''}">${p.uz}<b>${p.cozuldu?p.deneme:'—'}</b></span>`).join('');
     el.innerHTML=`<div class="baslik ${s.cozulen===6?'ok':''}">${s.cozulen}/6 kelime</div>
       <div class="skor">${s.puan100}<small> / 100</small></div>
       <div class="not">${skorNot(s.puan100/100)}</div>
       <div class="izgara">${haplar}</div>
-      <div class="ozet">${ozetIzgaraHTML()}</div>`+payHTML;
+      <div class="ozet">${ozetIzgaraHTML()}</div>
+      <div class="puan-not">3·7·8 harf 1.5× ağırlık${altin?' · <b class="altin-et">🌟 '+altin+' harf altın 2×</b>':''}</div>`+payHTML;
     payBagla(el);
   } else {   // harfiyat + avlu — tek kelime + 100 puan + paylaş + tablo
     const b=tahtalar[0], s=skorHesapla();
