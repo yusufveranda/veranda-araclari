@@ -758,7 +758,7 @@ function introIcerik(o){
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
-    '<p>Sen bunlarla <b>aynı anlama gelen 5 harfli kelimeyi</b> bul (cevap: <i>deniz</i>). 3 deneme hakkın var.</p>'+
+    '<p>Sen bunların <b>işaret ettiği 5 harfli kelimeyi</b> bul (cevap: <i>deniz</i>). 3 deneme hakkın var.</p>'+
     '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış.</p>'};
   return {bas:'harfiyat nasıl oynanır?', html:
     '<p>Klasik Wordle: <b>5 harfli</b> günün kelimesini <b>6 denemede</b> bul.</p>'+
@@ -878,7 +878,7 @@ function ciz(){
       const goster=ikiHazir?b.ipucu.slice(0,2):b.ipucu.slice(0,1);
       const ET=['çağrışım','yakın anlam','yakın anlam'];
       ip.innerHTML=goster.map((s,i)=>'<div class="ip-grup'+(i===1?' ip-yeni':'')+'"><span class="ip-et">'+ET[i]+'</span><b>'+s+'</b></div>').join('')+
-        '<span class="ip-alt">aynı anlama gelen 5 harfli kelimeyi bul</span>'+
+        '<span class="ip-alt">bu ipuçlarının işaret ettiği 5 harfli kelimeyi bul</span>'+
         (!ikiHazir && b.ipucu.length>=2 && !b.bitti ? '<span class="ip-kilit">2. tahminden sonra "yakın anlam" gelir</span>':'');
     }
   } else { ip.classList.add('gizli'); _ipSig=''; }
