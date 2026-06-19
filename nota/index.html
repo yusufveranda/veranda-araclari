@@ -179,12 +179,12 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .kur .onizleme button{margin-left:auto;background:var(--acc);color:#fff;border:none;border-radius:18px;padding:8px 16px;font-size:14px;font-weight:600}
 .kur .onizleme button:disabled{opacity:.4}
 
-.fav-list{display:flex;gap:8px;flex-wrap:wrap;min-height:10px}
-.fav{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:6px 8px 6px 13px;font-size:14px;cursor:pointer}
+.fav-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-height:10px}
+.fav{display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 11px;font-size:14px;cursor:pointer;overflow:hidden}
 .fav:hover{border-color:var(--acc)}
-.fav b{font-family:'Playfair Display',Georgia,serif;color:var(--acc);font-weight:600}
+.fav b{font-family:'Playfair Display',Georgia,serif;color:var(--acc);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fav .ac{cursor:pointer}
-.fav .sil{border:none;background:transparent;color:var(--muted);font-size:16px;line-height:1;padding:0 2px}
+.fav .sil{border:none;background:transparent;color:var(--muted);font-size:16px;line-height:1;padding:0 2px;flex:0 0 auto}
 .fav .sil:hover{color:#c0392b}
 .fav-bos{font-size:13.5px;color:var(--muted);font-style:italic}
 .skala,.oneri{font-size:14px;margin-top:14px;line-height:1.7}
@@ -192,11 +192,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .skala span{color:var(--muted)}
 .oneri .chip{display:inline-block;background:var(--acc-soft);color:var(--acc);border:none;border-radius:14px;padding:4px 12px;font-size:14px;margin:0 4px 4px 0;font-weight:600}
 .oneri .chip:hover{filter:brightness(.97)}
-/* mobilde kayıtlı akorlar tek satır yatay kaydırma (taban .fav-list'ten SONRA gelmeli) */
-@media(max-width:768px){
-  .fav-list{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:6px}
-  .fav{flex:0 0 auto}
-}
+@media(max-width:768px){.fav-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .fav .gonder{border:none;background:transparent;color:var(--muted);font-size:15px;line-height:1;padding:0 2px;cursor:pointer}
 .fav .gonder:hover{color:var(--acc)}
@@ -234,9 +230,13 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .havuz-sar{margin-top:14px}
 .havuz-bas{font-size:13px;color:var(--muted);font-weight:600}
 .havuz-bas small{font-weight:400;font-style:italic}
-.havuz{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px;min-height:10px}
-@media(max-width:560px){.havuz{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.havuz-cip{font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:600;color:var(--acc);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 2px 6px var(--shadow);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* looper havuzu: yoğun 10 sütunlu grid (dar bloklar, aşağı doğru sonsuz sarar) */
+.havuz{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;margin-top:8px;min-height:10px}
+@media(max-width:960px){.havuz{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:560px){.havuz{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.havuz-cip{display:flex;align-items:center;justify-content:center;gap:4px;font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:600;color:var(--acc);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 6px;box-shadow:0 2px 6px var(--shadow);overflow:hidden}
+.havuz-cip .hc-no{flex:0 0 auto;font-family:Georgia,serif;font-size:10px;font-weight:700;color:var(--vurgu);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:0 4px;line-height:1.5}
+.havuz-cip .hc-ad{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .havuz-cip:hover{border-color:var(--acc);transform:translateY(-1px)}
 .havuz-cip:active{transform:translateY(0)}
 .havuz-bos{font-size:13.5px;color:var(--muted);font-style:italic}
@@ -251,15 +251,21 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .lane-track{position:relative;display:flex;align-items:stretch}
 .lane-bos{display:flex;align-items:center;color:var(--muted);font-style:italic;font-size:13px;padding-left:14px;white-space:nowrap}
 .lane-blok{box-sizing:border-box;position:relative;flex:0 0 auto;border:1px solid var(--line);border-radius:9px;margin:0 2px;background:rgba(20,12,8,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:0 4px;transition:border-color .1s,box-shadow .1s,background .1s}
-.lane-blok .lb-ad{font-family:'Playfair Display',Georgia,serif;font-size:17px;color:var(--acc);font-weight:600;white-space:nowrap;line-height:1;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.lane-blok .lb-sure{font-size:11px;color:var(--muted);white-space:nowrap}
-.lane-blok.arpli .lb-sure{color:var(--vurgu)}
+.lane-blok .lb-ad{font-family:'Playfair Display',Georgia,serif;font-size:18px;color:var(--acc);font-weight:600;white-space:nowrap;line-height:1;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.lane-blok .lb-sure{position:absolute;top:4px;right:5px;z-index:2;display:inline-flex;align-items:baseline;gap:3px;font-family:Georgia,serif;font-size:12px;font-weight:700;color:#f4d6a6;background:linear-gradient(180deg,rgba(232,154,78,.22),rgba(232,154,78,.08));border:1px solid rgba(232,154,78,.36);border-radius:7px;padding:0 7px;line-height:1.7;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.lane-blok .lb-sure i{font-style:normal;font-size:8.5px;font-weight:400;color:#c9a87f;letter-spacing:.03em}
+.lane-blok.arpli .lb-sure{color:#f0b48a;border-color:rgba(192,52,27,.45);background:linear-gradient(180deg,rgba(192,52,27,.2),rgba(192,52,27,.07))}
+.lane-blok.secili .lb-sure,.lane-blok.oynuyor .lb-sure{box-shadow:0 1px 4px rgba(0,0,0,.5)}
+@media(max-width:560px){.lane-blok .lb-sure i{display:none}}
 .lane-blok .lb-eylem{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);display:none;gap:3px;background:rgba(12,7,4,.94);border:1px solid var(--line);border-radius:9px;padding:3px;z-index:7}
 .lane-blok:hover .lb-eylem,.lane-blok.secili .lb-eylem{display:flex}
 .lane-blok .lb-eylem button{width:24px;height:22px;border:none;border-radius:6px;background:rgba(255,255,255,.06);color:var(--muted);font-size:12px;line-height:1}
 .lane-blok .lb-eylem button:hover{color:var(--ink);background:rgba(255,255,255,.12)}
 .lane-blok .lb-arp.on{background:var(--acc);color:#150c08}
 .lane-blok .lb-sil:hover{color:#e0533c;background:rgba(192,52,27,.2)}
+.lane-blok .lb-arpgost{position:absolute;top:2px;left:5px;font-size:12px;color:var(--vurgu);font-weight:700;line-height:1}
+.lane-blok.rest{background:repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0 6px,transparent 6px 12px);border-style:dashed}
+.lane-blok.rest .lb-ad{color:var(--muted);font-size:22px}
 .lane-blok.secili{border-color:var(--vurgu);box-shadow:0 0 0 2px var(--vurgu)}
 .lane-blok.oynuyor{background:var(--acc-soft);border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
 
@@ -453,13 +459,14 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
           <button class="ab-tus" id="abA" type="button">A</button>
           <button class="ab-tus" id="abB" type="button">B</button>
         </div>
+        <button class="tp-temizle" id="lpBosluk" type="button" title="seçili kanala es/boşluk ekle">⎵ Es</button>
         <button class="tp-temizle" id="lpTemizle" type="button" title="tüm blokları sil">🗑 Temizle</button>
       </div>
       <div class="havuz-sar">
         <span class="havuz-bas">Havuz <small>(tıkla → seçili çıkış kanalına ekle + ön dinleme)</small></span>
         <div class="havuz" id="havuz"></div>
       </div>
-      <div class="lp-ipucu">Tıkla seç &amp; çal · <b>WASD</b> gez · <b>←/→</b> taşı · <b>↑/↓</b> süre · <b>Q</b> arpej · <b>Ctrl/Cmd+C/V</b> kopyala/yapıştır · <b>Backspace</b> sil · <b>Boşluk</b> çal/dur</div>
+      <div class="lp-ipucu">Tıkla seç &amp; çal · <b>1–0</b> akor ekle · <b>WASD</b> gez · <b>←/→</b> taşı · <b>↑/↓</b> süre · <b>Q</b> arpej · <b>Ctrl/Cmd+C/V</b> kopyala/yapıştır · <b>Ctrl/Cmd+Z</b> geri al · <b>Backspace</b> sil · <b>Boşluk</b> çal/dur</div>
     </section>
     <div class="lanes" id="lanes">
       <div class="lanes-ic" id="lanesIc">
@@ -533,6 +540,7 @@ const state = {
 /* looper / sequencer durumu — İKİ BAĞIMSIZ KANAL (gitar + piyano) */
 const looper = { gitar: [], piyano: [], bpm: 100, loop: true, drum: false, playing: false, curGitar: -1, curPiyano: -1, selId: null };
 let blokId = 0, clip = null;     // clip = kopyalanan blok (Ctrl+C/V)
+const gecmis = [];               // geri al (Ctrl/Cmd+Z) yığını
 const DUR_BEATS = [0.5, 1, 2, 3, 4, 8, 16];                                    // ölçü: ⅛ ¼ ½ ¾ 1 2 4 (1 ölçü = 4 vuruş)
 const DUR_AD = { 0.5: '⅛', 1: '¼', 2: '½', 3: '¾', 4: '1', 8: '2', 16: '4' };
 const PXB = 60, LABEL_W = 58;                                                  // piksel/vuruş + kanal etiketi genişliği
@@ -1203,43 +1211,75 @@ function favVoicing(f){
   }
   return { gFrets: [], pMidis: [] };
 }
+/* ----- geri al (Ctrl/Cmd+Z) ----- */
+const dkopya = a => JSON.parse(JSON.stringify(a));
+function gecmisAl(){ gecmis.push({ g: dkopya(looper.gitar), p: dkopya(looper.piyano), sel: looper.selId }); if (gecmis.length > 80) gecmis.shift(); }
+function geriAl(){
+  const s = gecmis.pop(); if (!s) return;
+  looper.gitar = dkopya(s.g); looper.piyano = dkopya(s.p); looper.selId = s.sel;
+  if (looper.playing) looperBaslat();
+  lanesCiz(); gamCiz(); blokGorunur();
+}
+/* zaman çizelgesini sonuna / seçili bloğa kaydır */
+function sonaKaydir(){ const l = $('#lanes'); if (l) l.scrollLeft = l.scrollWidth; }
+function blokGorunur(){
+  const el = document.querySelector('.lane-blok.secili'); const l = $('#lanes'); if (!el || !l) return;
+  const er = el.getBoundingClientRect(), lr = l.getBoundingClientRect();
+  if (er.right > lr.right - 12) l.scrollLeft += er.right - lr.right + 48;
+  else if (er.left < lr.left + LABEL_W + 12) l.scrollLeft -= (lr.left + LABEL_W) - er.left + 48;
+}
+/* yeni bloğun süre + arp + diğer özellikleri kanalın SON bloğundan miras alır */
+function sonAyar(lane){ const p = looper[lane][looper[lane].length - 1]; return { dur: p ? p.dur : 4, arp: p ? !!p.arp : false }; }
 /* havuzdan akor tıkla → çıkış anahtarına göre ilgili kanal(lar)a blok düşür + ÖN DİNLEME */
 function poolEkle(f){
+  gecmisAl();
   const v = favVoicing(f);
-  const mk = () => ({ id: ++blokId, symbol: f.symbol || null, label: f.label, noteNames: f.noteNames || [], gFrets: v.gFrets.map(x => ({ ...x })), pMidis: v.pMidis.slice(), dur: 4 });
-  if (state.output !== 'piyano') looper.gitar.push(mk());
-  if (state.output !== 'gitar') looper.piyano.push(mk());
-  cikisCalAkor(v.gFrets.map(x => x.midi), v.pMidis);   // tek seferlik ön dinleme (çıkış kanalına göre)
+  const ekle = lane => { const a = sonAyar(lane); looper[lane].push({ id: ++blokId, symbol: f.symbol || null, label: f.label, noteNames: f.noteNames || [], gFrets: v.gFrets.map(x => ({ ...x })), pMidis: v.pMidis.slice(), dur: a.dur, arp: a.arp }); };
+  if (state.output !== 'piyano') ekle('gitar');
+  if (state.output !== 'gitar') ekle('piyano');
+  cikisCalAkor(v.gFrets.map(x => x.midi), v.pMidis);   // tek seferlik ön dinleme
   if (looper.playing) looperBaslat();
-  lanesCiz(); gamCiz();
+  lanesCiz(); gamCiz(); sonaKaydir();
 }
-/* bir bloğun KENDİ enstrümanını anında çal (tıklama / önizleme — durmuşken de) */
+/* es / boşluk ekle (süresi kanalın son bloğundan; çalarken sessizdir) */
+function boslukEkle(){
+  gecmisAl();
+  const ekle = lane => { const a = sonAyar(lane); looper[lane].push({ id: ++blokId, rest: true, symbol: null, label: '·', noteNames: [], gFrets: [], pMidis: [], dur: a.dur, arp: false }); };
+  if (state.output !== 'piyano') ekle('gitar');
+  if (state.output !== 'gitar') ekle('piyano');
+  if (looper.playing) looperBaslat();
+  lanesCiz(); sonaKaydir();
+}
+/* bir bloğun KENDİ enstrümanını anında çal (es ise sessiz) */
 function blokSesCal(blk, lane){
+  if (blk.rest) return;
   if (lane === 'gitar') calMidis(blk.gFrets.map(x => x.midi), 'gitar');
   else calMidis(blk.pMidis, 'piyano');
 }
 /* seçili bloğun ardına kopyalanan bloğu yapıştır */
 function blokYapistir(){
   if (!clip) return;
+  gecmisAl();
   const yeni = Object.assign(dkopya(clip), { id: ++blokId });
   const f = looper.selId ? bulBlok(looper.selId) : null;
   if (f) f.arr.splice(f.idx + 1, 0, yeni); else looper.gitar.push(yeni);
   looper.selId = yeni.id;
   if (looper.playing) looperBaslat();
-  lanesCiz(); gamCiz();
+  lanesCiz(); gamCiz(); blokGorunur();
 }
 /* WASD ile seçim gezintisi (A/D yatay, W/S kanallar arası) */
 function nav(key){
   const f = looper.selId ? bulBlok(looper.selId) : null;
-  if (!f){ const ln = looper.gitar.length ? 'gitar' : (looper.piyano.length ? 'piyano' : null); if (ln){ looper.selId = looper[ln][0].id; lanesCiz(); } return; }
+  if (!f){ const ln = looper.gitar.length ? 'gitar' : (looper.piyano.length ? 'piyano' : null); if (ln){ looper.selId = looper[ln][0].id; lanesCiz(); blokGorunur(); } return; }
   let { lane, idx } = f;
   if (key === 'a') idx = Math.max(0, idx - 1);
   else if (key === 'd') idx = Math.min(looper[lane].length - 1, idx + 1);
   else if (key === 'w'){ if (lane === 'piyano' && looper.gitar.length){ lane = 'gitar'; idx = Math.min(idx, looper.gitar.length - 1); } }
   else if (key === 's'){ if (lane === 'gitar' && looper.piyano.length){ lane = 'piyano'; idx = Math.min(idx, looper.piyano.length - 1); } }
-  const blk = looper[lane][idx]; if (blk){ looper.selId = blk.id; lanesCiz(); }
+  const blk = looper[lane][idx]; if (blk){ looper.selId = blk.id; lanesCiz(); blokGorunur(); }
 }
 function looperTemizle(){
+  gecmisAl();
   looper.gitar = []; looper.piyano = []; looper.selId = null;
   if (looper.playing) looperDur();
   lanesCiz(); gamCiz();
@@ -1252,14 +1292,22 @@ function poolCiz(){
   const h = $('#havuz'); if (!h) return;
   if (!state.favorites.length){ h.innerHTML = '<span class="havuz-bos">Havuz boş — “Çevirici”de bir akor seçip ★ Kaydet; sonra buradan tıklayıp diziye ekle.</span>'; return; }
   h.innerHTML = '';
-  state.favorites.forEach(f => { const c = document.createElement('button'); c.className = 'havuz-cip'; c.textContent = f.label; c.title = 'diziye ekle'; c.onclick = () => poolEkle(f); h.appendChild(c); });
+  state.favorites.forEach((f, i) => {
+    const c = document.createElement('button'); c.className = 'havuz-cip';
+    const no = i < 10 ? (i + 1) % 10 : null;        // 1..9, 10. için 0
+    c.innerHTML = (no !== null ? `<span class="hc-no">${no}</span>` : '') + `<span class="hc-ad">${f.label}</span>`;
+    c.title = (no !== null ? `${no} tuşu → ` : '') + 'diziye ekle';
+    c.onclick = () => poolEkle(f);
+    h.appendChild(c);
+  });
 }
 function blokTasi(lane, i, yon){
   const arr = looper[lane], j = i + yon;
   if (j < 0 || j >= arr.length) return;
+  gecmisAl();
   [arr[i], arr[j]] = [arr[j], arr[i]];
   if (looper.playing) looperBaslat();
-  lanesCiz();
+  lanesCiz(); blokGorunur();
 }
 function laneCiz(lane){
   const host = $(lane === 'gitar' ? '#laneGitar' : '#lanePiyano'), arr = looper[lane];
@@ -1268,20 +1316,17 @@ function laneCiz(lane){
   if (!arr.length){ host.innerHTML = `<div class="lane-bos">${lane === 'gitar' ? 'gitar' : 'piyano'} dizisi boş</div>`; return; }
   arr.forEach((b, i) => {
     const el = document.createElement('div');
-    el.className = 'lane-blok' + (b.id === looper.selId ? ' secili' : '') + (cur === i ? ' oynuyor' : '') + (b.arp ? ' arpli' : '');
+    el.className = 'lane-blok' + (b.id === looper.selId ? ' secili' : '') + (cur === i ? ' oynuyor' : '') + (b.arp ? ' arpli' : '') + (b.rest ? ' rest' : '');
     el.style.width = (b.dur * PXB) + 'px';
-    el.innerHTML = `<span class="lb-ad">${b.label}</span><span class="lb-sure">${DUR_AD[b.dur]}${b.arp ? ' ≈' : ''}</span>
-      <div class="lb-eylem">
-        <button class="lb-sol" title="sola taşı (←)">◀</button>
-        <button class="lb-arp${b.arp ? ' on' : ''}" title="arpej 1-5-3-5">≈</button>
-        <button class="lb-sag" title="sağa taşı (→)">▶</button>
-        <button class="lb-sil" title="sil (Del)">×</button>
-      </div>`;
-    el.onclick = e => { if (e.target.closest('.lb-eylem')) return; looper.selId = b.id; lanesCiz(); blokSesCal(b, lane); };  // seç + anında çal
-    el.querySelector('.lb-sol').onclick = e => { e.stopPropagation(); looper.selId = b.id; blokTasi(lane, i, -1); };
-    el.querySelector('.lb-sag').onclick = e => { e.stopPropagation(); looper.selId = b.id; blokTasi(lane, i, 1); };
-    el.querySelector('.lb-arp').onclick = e => { e.stopPropagation(); b.arp = !b.arp; if (looper.playing) looperBaslat(); lanesCiz(); };
-    el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); arr.splice(i, 1); if (looper.selId === b.id) looper.selId = null; if (looper.playing) looperBaslat(); lanesCiz(); gamCiz(); };
+    // akor adı + SÜRE rozeti (ölçü) + arpej göstergesi; düzenleme: arpej + ×. Es blokta yok.
+    const arpBtn = b.rest ? '' : `<button class="lb-arp${b.arp ? ' on' : ''}" title="arpej (Q)">≈</button>`;
+    const arpRozet = (b.arp && !b.rest) ? '<span class="lb-arpgost" title="arpejli">≈</span>' : '';
+    const sureRozet = b.rest ? '' : `<span class="lb-sure" title="süre: ${DUR_AD[b.dur]} ölçü (↑/↓ değiştir)">${DUR_AD[b.dur]}<i>ölçü</i></span>`;
+    el.innerHTML = `<span class="lb-ad">${b.rest ? '·' : b.label}</span>${sureRozet}${arpRozet}
+      <div class="lb-eylem">${arpBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div>`;
+    el.onclick = e => { if (e.target.closest('.lb-eylem')) return; looper.selId = b.id; lanesCiz(); blokGorunur(); blokSesCal(b, lane); };  // seç + görünüre kaydır + anında çal
+    if (!b.rest) el.querySelector('.lb-arp').onclick = e => { e.stopPropagation(); gecmisAl(); b.arp = !b.arp; if (looper.playing) looperBaslat(); lanesCiz(); };
+    el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); gecmisAl(); arr.splice(i, 1); if (looper.selId === b.id) looper.selId = null; if (looper.playing) looperBaslat(); lanesCiz(); gamCiz(); };
     host.appendChild(el);
   });
 }
@@ -1336,7 +1381,7 @@ async function looperBaslat(){
     let beat = 0;
     looper[lane].forEach((b, i) => {
       Tone.Transport.schedule(time => {
-        const izin = (kind === 'gitar' && state.output !== 'piyano') || (kind === 'piyano' && state.output !== 'gitar');
+        const izin = !b.rest && ((kind === 'gitar' && state.output !== 'piyano') || (kind === 'piyano' && state.output !== 'gitar'));
         if (izin){
           const baseM = kind === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis;
           if (b.arp){
@@ -1386,10 +1431,10 @@ function cikisCiz(){ document.querySelectorAll('[data-cikis] button').forEach(b 
 /* A/B anlık fotoğraf: o anki diziler (akorlar + süreler + arp) + BPM */
 const snap = { A: null, B: null };
 let snapAktif = null;
-const dkopya = a => JSON.parse(JSON.stringify(a));
 function snapAl(slot){ snap[slot] = { gitar: dkopya(looper.gitar), piyano: dkopya(looper.piyano), bpm: looper.bpm }; }
 function snapYukle(slot){
   const s = snap[slot]; if (!s) return;
+  gecmisAl();
   looper.gitar = dkopya(s.gitar); looper.piyano = dkopya(s.piyano); looper.bpm = s.bpm;
   $('#lpBpm').value = s.bpm; $('#lpBpmVal').textContent = s.bpm; if (sesAcik) Tone.Transport.bpm.value = s.bpm;
   if (looper.playing) looperBaslat();
@@ -1424,6 +1469,7 @@ function looperKur(){
   $('#abA').onclick = () => abTik('A');
   $('#abB').onclick = () => abTik('B');
   $('#lpTemizle').onclick = looperTemizle;
+  $('#lpBosluk').onclick = boslukEkle;
   // klavye-öncelikli besteleme (WASD gez · oklar düzenle · Q arpej · Ctrl/Cmd+C/V · Backspace · Boşluk)
   document.addEventListener('keydown', e => {
     const tag = document.activeElement && document.activeElement.tagName;
@@ -1433,11 +1479,17 @@ function looperKur(){
     const looperAktif = $('#tab-looper') && $('#tab-looper').classList.contains('aktif');
     if (!looperAktif || yaziyor) return;
     const key = e.key.toLowerCase();
-    // kopyala / yapıştır
-    if ((e.ctrlKey || e.metaKey) && (key === 'c' || key === 'v')){
-      if (key === 'c'){ const f = bulBlok(looper.selId); if (f){ clip = dkopya(f.blk); e.preventDefault(); } }
-      else { if (clip){ e.preventDefault(); blokYapistir(); } }
+    // sayı tuşları 1-9,0 → havuzdaki o akoru diziye HEMEN enjekte et
+    if (/^[0-9]$/.test(e.key) && !e.ctrlKey && !e.metaKey){
+      const idx = e.key === '0' ? 9 : (+e.key - 1);
+      if (state.favorites[idx]){ e.preventDefault(); poolEkle(state.favorites[idx]); }
       return;
+    }
+    // geri al (Ctrl/Cmd+Z) · kopyala/yapıştır (Ctrl/Cmd+C/V)
+    if (e.ctrlKey || e.metaKey){
+      if (key === 'z'){ e.preventDefault(); geriAl(); return; }
+      if (key === 'c'){ const f = bulBlok(looper.selId); if (f){ clip = dkopya(f.blk); e.preventDefault(); } return; }
+      if (key === 'v'){ if (clip){ e.preventDefault(); blokYapistir(); } return; }
     }
     // WASD seçim gezintisi
     if (['w', 'a', 's', 'd'].includes(key)){ e.preventDefault(); nav(key); return; }
@@ -1446,11 +1498,11 @@ function looperKur(){
     const f = bulBlok(looper.selId); if (!f) return;
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].includes(e.key) && key !== 'q') return;
     e.preventDefault();
-    if (e.key === 'Backspace' || e.key === 'Delete'){ f.arr.splice(f.idx, 1); looper.selId = null; if (looper.playing) looperBaslat(); lanesCiz(); gamCiz(); }
-    else if (e.key === 'ArrowLeft') blokTasi(f.lane, f.idx, -1);              // diziyi yeniden sırala
+    if (e.key === 'Backspace' || e.key === 'Delete'){ gecmisAl(); f.arr.splice(f.idx, 1); looper.selId = null; if (looper.playing) looperBaslat(); lanesCiz(); gamCiz(); }
+    else if (e.key === 'ArrowLeft') blokTasi(f.lane, f.idx, -1);              // diziyi yeniden sırala (gecmisAl içeride)
     else if (e.key === 'ArrowRight') blokTasi(f.lane, f.idx, 1);
-    else if (key === 'q'){ f.blk.arp = !f.blk.arp; if (looper.playing) looperBaslat(); lanesCiz(); }   // arpej aç/kapa
-    else { const di = DUR_BEATS.indexOf(f.blk.dur); f.blk.dur = DUR_BEATS[e.key === 'ArrowUp' ? Math.min(DUR_BEATS.length - 1, di + 1) : Math.max(0, di - 1)]; if (looper.playing) looperBaslat(); lanesCiz(); }
+    else if (key === 'q'){ gecmisAl(); f.blk.arp = !f.blk.arp; if (looper.playing) looperBaslat(); lanesCiz(); }   // arpej aç/kapa
+    else { gecmisAl(); const di = DUR_BEATS.indexOf(f.blk.dur); f.blk.dur = DUR_BEATS[e.key === 'ArrowUp' ? Math.min(DUR_BEATS.length - 1, di + 1) : Math.max(0, di - 1)]; if (looper.playing) looperBaslat(); lanesCiz(); }
   });
   cikisCiz(); abCiz(); lanesCiz();
 }
