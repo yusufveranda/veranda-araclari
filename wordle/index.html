@@ -611,13 +611,15 @@ function skorHesapla(){
   const per=tahtalar.map(t=>({uz:t.uz,cozuldu:t.kazandi,deneme:t.gecmis.length,puan:t.kazandi?(t.maxSatir+1-t.gecmis.length):0}));
   const toplam=per.reduce((a,b)=>a+b.puan,0), max=tahtalar.reduce((a,t)=>a+t.maxSatir,0);
   const cozulen=per.filter(p=>p.cozuldu).length, toplamDeneme=per.reduce((a,p)=>a+p.deneme,0);
-  // 0–100: çözülen başına taban (84), kalanı (16) az denemeye hız bonusu.
-  // en yavaş 6/6 (84) bile en hızlı 5/6'nın (83.3) üstünde kalır → "kaç kelime" baskın.
-  const n=tahtalar.length||1, taban=84/n, hizPool=16/n;
+  // 0–100: her kelimenin payı uzunluk ağırlığıyla orantılı (3/7/8 harf = 1.5 kat zor).
+  // pay = TABAN (son denemede çözünce alınan oran) + (1-TABAN)·hız. Hepsi 1.de → 100.
+  const TABAN=0.35, agir=uz=>(uz===3||uz===7||uz===8)?1.5:1;
+  const toplamAgir=tahtalar.reduce((a,t)=>a+agir(t.uz),0)||1;
   const puan100=Math.round(per.reduce((a,p,i)=>{
     if(!p.cozuldu) return a;
     const ms=tahtalar[i].maxSatir, hiz=ms>1?(ms-p.deneme)/(ms-1):1;
-    return a+taban+hizPool*hiz;
+    const pay=100*agir(p.uz)/toplamAgir;   // bu kelimenin maksimum payı
+    return a+pay*(TABAN+(1-TABAN)*hiz);
   },0));
   return {per,toplam,max,cozulen,toplamDeneme,puan100};
 }
