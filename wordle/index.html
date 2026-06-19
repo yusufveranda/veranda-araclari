@@ -737,8 +737,9 @@ function lbGoster(kapsam){
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{
     if(kapsam!==lbKapsam) return;   // arada sekme değiştiyse eski cevabı yazma
     const ben=nickAl().toLowerCase(), arr=(j&&j.liste)||[];
-    if(kapsam!=='gun'){   // bu hafta: toplam/7 (kaçırılan gün=0) · tüm zamanlar: toplam/oynanan gün
-      arr.forEach(r=>{ r._gun=r.oyunSayisi||0; r._ort = kapsam==='hafta' ? r.puan/7 : (r._gun?r.puan/r._gun:0); });
+    if(kapsam!=='gun'){   // bu hafta: toplam / o ana dek geçen gün (1..7, kaçırılan geçmiş gün=0) · tüm zamanlar: toplam / oynanan gün
+      const gecen=Math.max(1, gunSayisi()-haftaBas()+1);
+      arr.forEach(r=>{ r._gun=r.oyunSayisi||0; r._ort = kapsam==='hafta' ? r.puan/gecen : (r._gun?r.puan/r._gun:0); });
       arr.sort((a,b)=> b._ort-a._ort || b._gun-a._gun);
     }
     let ust = kapsam==='hafta' ? '<div class="lb-aralik">'+haftaAraligiYazi()+'</div>' : '';
