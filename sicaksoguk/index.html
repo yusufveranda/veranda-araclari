@@ -34,17 +34,7 @@ body.gece{
   --acc:#86B98E; --acc-soft:rgba(134,185,142,.14); --vurgu:#E0935A; --shadow:rgba(0,0,0,.4);
 }
 body{transition:background .4s,color .4s}
-/* ---- kibrit çöpü (sol) + kazanınca ekran ateşi ---- */
-#kibrit{position:fixed;left:clamp(4px,2.5vw,40px);top:50%;transform:translateY(-50%);width:clamp(30px,5.5vw,52px);z-index:5;pointer-events:none}
-#kibrit svg{width:100%;height:auto;display:block;filter:drop-shadow(2px 3px 0 rgba(45,32,18,.12))}
-#kibBas{transition:fill 1.1s ease}
-.kib-duman{position:absolute;left:50%;top:-2px;width:9px;height:9px;border-radius:50%;background:rgba(150,150,150,.0);transform:translateX(-50%);opacity:0}
-#kibrit.tutuyor .kib-duman{opacity:1;background:rgba(150,150,150,.4);animation:kibDuman 2.4s ease-in-out infinite}
-@keyframes kibDuman{0%{transform:translate(-50%,0) scale(.5);opacity:.55}100%{transform:translate(-62%,-30px) scale(1.7);opacity:0}}
-.kib-alev{position:absolute;left:50%;top:-12px;transform:translateX(-50%) scale(0);font-size:clamp(20px,4vw,32px);transition:transform .3s cubic-bezier(.2,1.6,.4,1)}
-#kibrit.yandi .kib-alev{transform:translateX(-50%) scale(1);animation:kibAlev .5s ease-in-out infinite alternate}
-@keyframes kibAlev{from{transform:translateX(-50%) scale(1) rotate(-5deg)}to{transform:translateX(-54%) scale(1.14) rotate(5deg)}}
-@media(prefers-reduced-motion:reduce){.kib-duman,#kibrit.yandi .kib-alev{animation:none}}
+/* ---- kazanınca ekran ateşi ---- */
 #kivilcim{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
 .kiv{position:absolute;bottom:-40px;will-change:transform,opacity;animation:kivYuksel linear forwards;filter:drop-shadow(0 0 4px rgba(255,140,40,.55))}
 @keyframes kivYuksel{0%{transform:translateY(0) scale(.7) rotate(0);opacity:0}12%{opacity:.95}100%{transform:translateY(-115vh) scale(1.15) rotate(40deg);opacity:0}}
@@ -210,14 +200,6 @@ footer a{color:var(--soluk)}
 </head>
 <body>
 <div id="kivilcim"></div>
-<div id="kibrit" aria-hidden="true">
-  <div class="kib-duman"></div>
-  <div class="kib-alev">🔥</div>
-  <svg viewBox="0 0 44 172" xmlns="http://www.w3.org/2000/svg">
-    <rect x="18.5" y="34" width="7" height="132" rx="3.5" fill="#caa46b" stroke="#a9824a" stroke-width="1"/>
-    <ellipse id="kibBas" cx="22" cy="25" rx="13" ry="16.5" fill="#eef0ee" stroke="#b6b09c" stroke-width="1.5"/>
-  </svg>
-</div>
 <div class="oyun">
 
   <div class="tepe-bar">
@@ -413,10 +395,9 @@ function tahminEkle(w, hint){
   if(w===S.gizli){ S.bitti=true; istatYaz(true); }
   kaydet();
   ciz();              // satır + bar/sayı dolma animasyonu başlar
-  kibritHesapla();    // kibrit ucu ısınır
-  if(S.bitti){        // KAZANINCA: önce bar/sayı dolsun, SONRA buldun + alev + tablo
+  if(S.bitti){        // KAZANINCA: önce bar/sayı dolsun, SONRA buldun + ekran ateşi + tablo
     setTimeout(()=>{
-      if(!S.pes){ kibritAtesle(); fiyasko(); }
+      if(!S.pes) fiyasko();
       kutla();
       if(S.mod==='gun' && !S.pes) setTimeout(()=>{ if($('skPerde').hidden) skAc(); }, 800);
     }, ANIM_SURE + 250);
@@ -527,6 +508,8 @@ function ciz(){
           }
           const hedefN = bulundu(son) ? 1000 : son.rut;
           if(no && hedefN!=null) sayiAnim(no, hedefN, ANIM_SURE, 0);  // ‰ sayacı
+          const bingoB = el.querySelector('.s-ilr.bingo b');          // BINGO! yazısı bar dolmadan GÖRÜNMESİN (spoiler)
+          if(bingoB){ bingoB.style.visibility='hidden'; setTimeout(()=>{ bingoB.style.visibility='visible'; }, ANIM_SURE); }
         }
       }
     }
@@ -679,21 +662,8 @@ function skGeriCiz(){
 function skTimerBasla(){ if(skTimer) clearInterval(skTimer); skGeriCiz(); skTimer=setInterval(skGeriCiz,1000); }
 function skTimerDur(){ if(skTimer){ clearInterval(skTimer); skTimer=null; } }
 
-// ---- kibrit çöpü: en yakın tahmine göre ucu ısınır; kazanınca alev + ekran ateşi ----
-let enS=0;
-function isiOl(t){ if(t.w===S.gizli) return 1; if(t.rut!=null) return 0.30+0.62*(t.rut/1000); return Math.max(0,Math.min(1,t.pct/45))*0.28; }
-function kibRenk(s){   // soğuk soluk beyaz → sıcak kırmızı
-  const c=[238,240,238], h=[194,51,31], k=Math.min(1,s*1.06), m=(a,b)=>Math.round(a+(b-a)*k);
-  return 'rgb('+m(c[0],h[0])+','+m(c[1],h[1])+','+m(c[2],h[2])+')';
-}
-function kibritGuncelle(){
-  const bas=document.getElementById('kibBas'), kb=document.getElementById('kibrit');
-  if(bas) bas.setAttribute('fill', kibRenk(enS));
-  if(kb) kb.classList.toggle('tutuyor', enS>=0.55 && !(S.bitti && !S.pes));   // yaklaşınca tütme (kazanınca alev devralır)
-}
-function kibritHesapla(){ let s=0; for(const t of S.tahminler) s=Math.max(s,isiOl(t)); enS=s; kibritGuncelle(); }
-function kibritSifirla(){ enS=0; const kb=document.getElementById('kibrit'); if(kb) kb.classList.remove('tutuyor','yandi'); const c=document.getElementById('kivilcim'); if(c) c.innerHTML=''; kibritGuncelle(); }
-function kibritAtesle(){ const kb=document.getElementById('kibrit'), bas=document.getElementById('kibBas'); if(bas) bas.setAttribute('fill','rgb(194,51,31)'); if(kb){ kb.classList.remove('tutuyor'); kb.classList.add('yandi'); } }
+// ---- kazanınca ekran ateşi ----
+function kivilcimTemizle(){ const c=document.getElementById('kivilcim'); if(c) c.innerHTML=''; }
 function kivSpawn(n){
   const c=document.getElementById('kivilcim'); if(!c) return;
   for(let i=0;i<n;i++){ const e=document.createElement('span'); e.className='kiv';
@@ -726,7 +696,7 @@ function oyunKur(){
   }
   $('oyunAlan').hidden=false;
   ciz();
-  kibritSifirla(); kibritHesapla(); if(S.bitti && !S.pes) kibritAtesle();
+  kivilcimTemizle();
   if(S.bitti){ S.pes ? sonucPanel('gizli kelime',S.gizli,'pes edildi') : kutla(); }
   else { setTimeout(()=>$('tahminGir').focus(),60); }
 }
