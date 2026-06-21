@@ -607,7 +607,7 @@ function sil(){
   sSil(); ciz();
 }
 function imlecTasi(yon){ const b=aktifTahta(); if(!b||b.bitti) return; b.imlec=Math.max(0,Math.min(b.uz-1,b.imlec+yon)); ciz(); }
-function sonrakiBos(from){ for(let i=1;i<=tahtalar.length;i++){ const idx=(from+i)%tahtalar.length; if(!tahtalar[idx].bitti) return idx; } return -1; }
+function sonrakiBosTahta(from){ for(let i=1;i<=tahtalar.length;i++){ const idx=(from+i)%tahtalar.length; if(!tahtalar[idx].bitti) return idx; } return -1; }   // sonraki çözülmemiş TAHTA (imleç sonrakiBos'tan AYRI — isim çakışması harf girişini bozuyordu)
 function tahtaGec(yon){   // alt oklarla elle tahta değiştir
   if(oyun!=='iskelime'||tahtalar.length<2) return;
   clearTimeout(gecisTimer);
@@ -650,7 +650,7 @@ function revealBitti(){
   // İskelime: tahta bitince ~2.6s sonra sıradaki boş tahtaya geç (oyuncu sonucu görsün, oyunun devam ettiğini anlasın)
   if(oyun==='iskelime' && !oyunBitti && sonBitenTahta===aktif){
     sonBitenTahta=-1;
-    const bu=aktif, nx=sonrakiBos(aktif);
+    const bu=aktif, nx=sonrakiBosTahta(aktif);
     if(nx>=0){ clearTimeout(gecisTimer); gecisTimer=setTimeout(()=>{
       if(aktif===bu && !tahtalar[nx].bitti){ aktif=nx; ciz(); mobilGorunur(); window.scrollTo(0,0); }
     }, 2600); }
