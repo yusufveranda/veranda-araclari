@@ -98,7 +98,7 @@ body{transition:background .4s,color .4s}
 .s-ilr .ilr-no{font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--mur);min-width:36px;text-align:right}
 .s-ilr .ilr-cubuk{flex:1;height:24px;background:var(--ince);border-radius:6px;overflow:hidden;position:relative}
 .s-ilr .ilr-cubuk i{position:absolute;left:0;top:0;bottom:0;background-image:linear-gradient(90deg,#FFD23F 0%,#FF8A1E 55%,#E8472E 100%);
-  background-repeat:no-repeat;background-position:left center;border-radius:6px;transition:width 1.1s cubic-bezier(.25,.7,.25,1)}
+  background-repeat:no-repeat;background-position:left center;border-radius:6px}
 .s-ilr.bingo .ilr-cubuk b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-family:'Playfair Display',serif;font-weight:800;font-size:13px;color:#3a1400;letter-spacing:.06em}
 .satir.yeni{animation:vurgula 1.6s ease}
@@ -478,6 +478,17 @@ function sayiAnim(el, hedef, sure, ond){
   })(bas);
   setTimeout(()=>{ if(!bitti){ el.textContent=hedef.toFixed(ond); bitti=true; } }, sure+200); // rAF tetiklenmezse güvence
 }
+function barAnim(el, hedef, sure){   // bar genişliğini 0'dan hedefe kare kare doldur (CSS geçişi DEĞİL — o ters tetikleniyordu)
+  let bitti=false; const bas = performance.now();
+  el.style.width = '0%';
+  (function adim(now){
+    if(bitti) return;
+    const p = Math.min(1, (now-bas)/sure), e = 1-Math.pow(1-p,3);
+    el.style.width = (e*hedef).toFixed(2)+'%';
+    if(p<1) requestAnimationFrame(adim); else { el.style.width = hedef.toFixed(2)+'%'; bitti=true; }
+  })(bas);
+  setTimeout(()=>{ if(!bitti){ el.style.width = hedef.toFixed(2)+'%'; bitti=true; } }, sure+200);
+}
 function ciz(){
   // durum
   $('dTahmin').textContent = S.tahminler.length;
@@ -502,9 +513,7 @@ function ciz(){
         if(son){
           if(sicNo) sayiAnim(sicNo, son.pct, ANIM_SURE, 2);           // °C sayacı 0'dan akar
           if(fill){
-            const hedefW = fill.style.width;                          // hedef genişlik
-            fill.style.width = '0%'; void el.offsetWidth;             // sıfırla + reflow
-            setTimeout(()=>{ fill.style.width = hedefW; }, 40);       // CSS geçişiyle bar dolar (sayıyla senkron)
+            barAnim(fill, bulundu(son) ? 100 : son.rut/10, ANIM_SURE);  // 0'dan hedefe JS ile doldur
           }
           const hedefN = bulundu(son) ? 1000 : son.rut;
           if(no && hedefN!=null) sayiAnim(no, hedefN, ANIM_SURE, 0);  // ‰ sayacı
