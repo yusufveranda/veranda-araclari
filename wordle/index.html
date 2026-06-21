@@ -205,10 +205,19 @@ body{transition:background .4s,color .4s}
 .mesaj{text-align:center;min-height:22px;color:var(--kirmizi);font-family:'Libre Baskerville',serif;font-style:italic;margin-top:8px;font-size:15px}
 
 /* ----- skor / sonuç paneli ----- */
-.sonuc{max-width:380px;margin:14px auto 0;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:10px;
-  box-shadow:5px 6px 0 var(--mat-golge);padding:18px 20px;text-align:center}
-.sonuc.acilis{animation:sonucGel .5s cubic-bezier(.2,.85,.3,1) both}
-@keyframes sonucGel{0%{opacity:0;transform:translateY(-12px) scale(.97)}100%{opacity:1;transform:none}}
+/* sonuç: öne gelen kart (overlay) */
+.sonuc-katman{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:18px;
+  background:rgba(20,14,8,.5);backdrop-filter:blur(2px);overflow:auto}
+.sonuc-katman.gizli{display:none}
+.sonuc{position:relative;max-width:420px;width:100%;background:var(--mat);border:2px solid var(--kirmizi);border-radius:16px;
+  box-shadow:7px 9px 0 var(--mat-golge);padding:26px 22px 22px;text-align:center;animation:sonucGel .42s cubic-bezier(.2,.85,.3,1) both;margin:auto}
+@keyframes sonucGel{0%{opacity:0;transform:translateY(16px) scale(.96)}100%{opacity:1;transform:none}}
+.sonuc-kapat{position:absolute;top:9px;right:11px;width:30px;height:30px;border:none;background:none;font-size:22px;line-height:1;color:var(--soluk);cursor:pointer}
+.sonuc-kapat:hover{color:var(--kirmizi)}
+.sonraki-oyun{display:block;width:100%;margin-top:18px;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:#fff;
+  background:var(--kirmizi);border:none;border-radius:12px;padding:14px;cursor:pointer;box-shadow:3px 4px 0 var(--kirmizi-yum);transition:transform .12s}
+.sonraki-oyun:hover{transform:translateY(-1px)} .sonraki-oyun:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--kirmizi-yum)}
+.sonraki-oyun small{display:block;font-family:'Libre Baskerville',serif;font-weight:400;font-size:11px;opacity:.85;margin-top:2px;letter-spacing:.03em}
 .sonuc .baslik{font-family:'Playfair Display',serif;font-weight:800;font-size:25px;color:var(--mur);letter-spacing:.01em;margin-bottom:5px}
 .sonuc .baslik.ok{color:var(--dogru)}
 .sonuc .baslik.yo{color:var(--yok)}
@@ -453,7 +462,7 @@ body{transition:background .4s,color .4s}
       <button class="tn-ok" id="sonrakiTahta" aria-label="sonraki kelime">›</button>
     </div>
     <div class="mesaj" id="mesaj"></div>
-    <div class="sonuc gizli" id="sonuc"></div>
+    <div class="sonuc-katman gizli" id="sonucKatman"><div class="sonuc" id="sonuc"></div></div>
     <div class="klavye-sar">
       <div class="klavye" id="klavye"></div>
       <div class="klavye-eylem">
@@ -510,6 +519,7 @@ let tahtalar=[], aktif=0, oyunBitti=false;
 let animHarf=null, animCevir=null;
 let gecisTimer=0, sonBitenTahta=-1;   // İskelime: çözünce sonraki boş tahtaya otomatik geçiş
 let sonucHazir=false, sonucYeni=false;   // sonuç paneli: reveal sonrası göster + açılış animasyonu
+let sonucKapali=false;   // sonuç kartı elle kapatıldıysa tekrar açma
 let revealAnim=false, bekleyenMesaj='', bekleyenSes=null;  // reveal bitene kadar hayalet/mesaj/sonuç ertelenir
 let revealTimer=null;   // bekleyen revealBitti zamanlayıcısı (yeni oyun/geçişte temizlenir)
 let _ipSig='';          // ipucu imzası — her tuşta yeniden çizip zıplamasın diye
@@ -564,7 +574,7 @@ function tahtalariKur(){
     const c=mod==='gun'?ks[gunSayisi()%ks.length]:ks[Math.floor(Math.random()*ks.length)];
     const t=yeniTahta(5,c); t.maxSatir=3; t.ipucu=ANLAM_CEVAP[c]; tahtalar=[t];
   } else tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
-  aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false;
+  aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false; sonucKapali=false;
   revealAnim=false; bekleyenMesaj=''; bekleyenSes=null; clearTimeout(revealTimer); revealTimer=null;
 }
 
@@ -612,7 +622,7 @@ function tahtaGec(yon){   // alt oklarla elle tahta değiştir
   if(oyun!=='iskelime'||tahtalar.length<2) return;
   clearTimeout(gecisTimer);
   aktif=(aktif+yon+tahtalar.length)%tahtalar.length;
-  ciz(); mobilGorunur(); window.scrollTo(0,0);
+  ciz(); mobilGorunur();   // scroll seviyesi korunur (en üste atma yok)
 }
 function hucreSec(t,c){
   if(t<0||t>=tahtalar.length) return;
@@ -652,12 +662,10 @@ function revealBitti(){
     sonBitenTahta=-1;
     const bu=aktif, nx=sonrakiBosTahta(aktif);
     if(nx>=0){ clearTimeout(gecisTimer); gecisTimer=setTimeout(()=>{
-      if(aktif===bu && !tahtalar[nx].bitti){ aktif=nx; ciz(); mobilGorunur(); window.scrollTo(0,0); }
+      if(aktif===bu && !tahtalar[nx].bitti){ aktif=nx; ciz(); mobilGorunur(); }   // scroll korunur
     }, 2600); }
   }
-  if(oyunBitti){ const el=document.getElementById('sonuc'); if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'center'});
-    if(mod==='gun' && lbDestekli()) setTimeout(()=>{ if(document.getElementById('lbModal').classList.contains('gizli')) lbAc(); }, 1300);   // çözünce tabloyu göster
-  }
+  // oyun bitince: sonuç kartı (overlay) sonucCiz'de kendiliğinden öne gelir; sayfa kaydırma yok, leaderboard karttaki düğmeden
 }
 function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
   if((window.innerWidth||999)>440) return;
@@ -977,33 +985,46 @@ function payBagla(el){   // isim + kopyala + tablo düğmelerini bağla (taraça
   const lb=el.querySelector('#lbBtn'); if(lb) lb.onclick=lbAc;
 }
 function sonucCiz(){
-  const el=document.getElementById('sonuc');
-  if(!(oyunBitti && sonucHazir)){ el.classList.add('gizli'); el.classList.remove('acilis'); return; }
+  const kat=document.getElementById('sonucKatman'), el=document.getElementById('sonuc');
+  if(!(oyunBitti && sonucHazir) || sonucKapali){ kat.classList.add('gizli'); el.classList.remove('acilis'); return; }
   if(document.activeElement && document.activeElement.id==='nickGir') return;   // isim yazılırken paneli yeniden kurma → odak/klavye kaçmasın, sayfa kaymasın
-  el.classList.remove('gizli');
+  kat.classList.remove('gizli');
+  const kapatBtn=`<button class="sonuc-kapat" id="sonucKapatBtn" aria-label="kapat">×</button>`;
   const payHTML=`<div class="pay"><input id="nickGir" class="nick-gir" maxlength="16" placeholder="ismin"><button class="pay-btn" id="kopyaBtn">📋 kopyala</button></div>
       <div class="pay-not" id="payNot"></div>
       <button class="lb-ac-btn" id="lbBtn">🏆 leaderboard</button>`;
+  const ileriBtn=`<button class="sonraki-oyun" id="sonrakiOyunBtn">${sonrakiOyunAd()} oyna →<small>verandada başka bir oyun da var</small></button>`;
   if(oyun==='iskelime'){
     const s=skorHesapla(), altin=altinUz();
     const haplar=s.per.map(p=>`<span class="hap ${p.cozuldu?'ok':'yo'}${p.uz===altin?' altin':''}">${p.uz}<b>${p.cozuldu?p.deneme:'—'}</b></span>`).join('');
-    el.innerHTML=`<div class="baslik ${s.cozulen===6?'ok':''}">${s.cozulen}/6 kelime</div>
+    el.innerHTML=kapatBtn+`<div class="baslik ${s.cozulen===6?'ok':''}">${s.cozulen}/6 kelime</div>
       <div class="skor">${s.puan100}<small> / 100</small></div>
       <div class="not">${skorNot(s.puan100/100)}</div>
       <div class="izgara">${haplar}</div>
       <div class="ozet">${ozetIzgaraHTML()}</div>
-      <div class="puan-not">3·7·8 harf 1.5× ağırlık${altin?' · <b class="altin-et">🌟 '+altin+' harf altın 2×</b>':''}</div>`+payHTML;
+      <div class="puan-not">3·7·8 harf 1.5× ağırlık${altin?' · <b class="altin-et">🌟 '+altin+' harf altın 2×</b>':''}</div>`+payHTML+ileriBtn;
     payBagla(el);
   } else {   // harfiyat + avlu — tek kelime + 100 puan + paylaş + tablo
     const b=tahtalar[0], s=skorHesapla();
-    el.innerHTML=`<div class="baslik ${b.kazandi?'ok':'yo'}">${b.kazandi?'bildin!':'bilemedin'}</div>
+    el.innerHTML=kapatBtn+`<div class="baslik ${b.kazandi?'ok':'yo'}">${b.kazandi?'bildin!':'bilemedin'}</div>
       <div class="tek">${b.kazandi?'':'cevap '}<b>${b.cevap}</b></div>
       <div class="skor" style="margin-top:9px">${s.puan100}<small> / 100</small></div>
-      <div class="alt2">${b.kazandi?b.gecmis.length+'/'+b.maxSatir+' denemede':'olmadı bu sefer'}</div>`+payHTML;
+      <div class="alt2">${b.kazandi?b.gecmis.length+'/'+b.maxSatir+' denemede':'olmadı bu sefer'}</div>`+payHTML+ileriBtn;
     payBagla(el);
   }
+  document.getElementById('sonrakiOyunBtn').onclick=sonrakiOyunaGec;
+  document.getElementById('sonucKapatBtn').onclick=sonucKapat;
   if(sonucYeni){ el.classList.remove('acilis'); void el.offsetWidth; el.classList.add('acilis'); sonucYeni=false; }
 }
+const OYUN_SIRA=['harfiyat','iskelime','anlamca'];   // sıradaki oyun; sonda Sıcak Soğuk (ayrı sayfa)
+function sonrakiOyunBilgi(){ const i=OYUN_SIRA.indexOf(oyun); return i>=0 && i<OYUN_SIRA.length-1 ? {oyun:OYUN_SIRA[i+1]} : {link:'../sicaksoguk/'}; }
+function sonrakiOyunAd(){
+  const n=sonrakiOyunBilgi(), A=window.ADLAR||{};
+  if(n.link) return A.sicak||'Sıcak Soğuk';
+  return A[{iskelime:'taraca',anlamca:'karine'}[n.oyun]] || n.oyun;
+}
+function sonrakiOyunaGec(){ const n=sonrakiOyunBilgi(); sonucKapali=true; if(n.link) location.href=n.link; else { sonucKapat(); oyunSec(n.oyun); } }
+function sonucKapat(){ sonucKapali=true; document.getElementById('sonucKatman').classList.add('gizli'); }
 
 function klavyeCiz(){
   const b=aktifTahta();
@@ -1023,7 +1044,7 @@ function oyunlaKur(){
   if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'sonsuz oyun';
-  mesaj(''); ciz(); istatGoster(); window.scrollTo(0,0);
+  mesaj(''); ciz(); istatGoster();   // oyun/mod değişiminde scroll seviyesi korunur (en üste atma yok)
   if(oyunBitti) lbGonder();   // bitmiş günlük oyun yeniden açılınca da skoru gönder
   if(oyun==='iskelime' && !localStorage.getItem('harfiyat:taraca-intro')){ localStorage.setItem('harfiyat:taraca-intro','1'); introAc('iskelime'); }   // taraça'ya ilk girişte açıklama
 }
@@ -1032,7 +1053,7 @@ function oyunSec(o){ if(o===oyun) return; durumKaydetBellek(); oyun=o;
 function modSec(m){ if(m===mod) return; durumKaydetBellek(); mod=m;
   document.querySelectorAll('#modSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.mod===m)); oyunlaKur(); }
 function yeniOyun(){ const yb=document.getElementById('yeniBtn'); if(yb) yb.blur();
-  tahtalariKur(); durumKaydetBellek(); mesaj(''); ciz(); window.scrollTo(0,0); }
+  tahtalariKur(); durumKaydetBellek(); mesaj(''); ciz(); }   // yeni kelimede scroll korunur
 
 const IK_SES_ON='<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a3 3 0 010 6"/><path d="M18.5 7a6 6 0 010 10"/>';
 const IK_SES_OFF='<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/>';
@@ -1069,6 +1090,7 @@ document.getElementById('silBtn').onclick=function(){ sil(); this.blur(); };
 document.getElementById('deneBtn').onclick=function(){ dene(); this.blur(); };
 document.getElementById('oncekiTahta').onclick=function(){ tahtaGec(-1); this.blur(); };
 document.getElementById('sonrakiTahta').onclick=function(){ tahtaGec(1); this.blur(); };
+document.getElementById('sonucKatman').onclick=function(e){ if(e.target===this) sonucKapat(); };   // arka plana tıkla = kapat
 document.getElementById('temaBtn').onclick=function(){ tema=tema==='gece'?'aydinlik':'gece'; localStorage.setItem('harfiyat:tema',tema); temaUygula(); this.blur(); };
 document.getElementById('sesBtn').onclick=function(){ ses=!ses; localStorage.setItem('harfiyat:ses',ses?'1':'0'); sesUygula(); if(ses) sGonder(); this.blur(); };
 document.getElementById('lbKapat').onclick=lbKapat;
