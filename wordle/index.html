@@ -100,12 +100,15 @@ body{transition:background .4s,color .4s}
 .vmini{font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--mur);background:none;border:none;cursor:pointer;padding:4px 0;letter-spacing:-.3px}
 .vmini:hover{color:var(--kirmizi)}
 /* büyük, önde oyun tabları */
-.oyun-tablar{display:flex;gap:8px;justify-content:center;margin-top:16px}
-.oyun-tablar button{flex:1;max-width:132px;font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--soluk);
-  background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;padding:13px 6px;cursor:pointer;
+.oyun-tablar-et{text-align:center;font-family:'Libre Baskerville',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soluk);margin-top:14px}
+.oyun-tablar{display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.oyun-tablar button,.oyun-tablar a{flex:1 1 auto;min-width:94px;max-width:150px;font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:var(--soluk);
+  text-decoration:none;text-align:center;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;padding:12px 6px;cursor:pointer;
   box-shadow:3px 4px 0 var(--mat-golge);transition:transform .12s,color .15s,background .15s}
-.oyun-tablar button:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
+.oyun-tablar button:active,.oyun-tablar a:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
 .oyun-tablar button.secili{background:var(--mur);color:var(--mat);border-color:var(--mur);box-shadow:3px 4px 0 var(--kirmizi-yum)}
+.oyun-tablar a.oyun-disi{color:var(--kirmizi);border-color:var(--kirmizi);border-style:dashed}   /* anlam oyunu — farklı tür, dikkat çeksin */
+.oyun-tablar a.oyun-disi:hover{background:var(--kirmizi);color:#fff;border-style:solid}
 .altYazi2{text-align:center;font-family:'Libre Baskerville',serif;font-style:italic;font-size:13px;color:var(--soluk);margin-top:11px;min-height:16px}
 /* mod toggle: tablardan farklı — küçük, hafif çip */
 .segment.mod{background:transparent;border:none;box-shadow:none;padding:0;gap:5px}
@@ -130,6 +133,15 @@ body{transition:background .4s,color .4s}
 .sekme.kayip{background:var(--yok);color:var(--yok-ink);border-color:var(--yok)}
 .sekme .alt-no{position:absolute;bottom:-15px;left:0;right:0;font-family:'Libre Baskerville',serif;font-size:9.5px;color:var(--soluk)}
 .sekme .alt-no.altin{color:var(--altin);font-weight:700}
+/* İskelime: tahta geçiş okları (alt) */
+.tahta-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px auto 0}
+.tahta-nav.gizli{display:none}
+.tn-ok{font-family:'Playfair Display',serif;font-size:24px;line-height:1;width:46px;height:46px;border-radius:50%;
+  border:1.5px solid var(--kutu-cizgi);background:var(--mat);color:var(--mur);cursor:pointer;box-shadow:2px 3px 0 var(--mat-golge);transition:transform .12s}
+.tn-ok:hover{transform:translateY(-1px);border-color:var(--kirmizi);color:var(--kirmizi)}
+.tn-ok:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
+.tn-et{font-family:'Libre Baskerville',serif;font-size:13px;color:var(--soluk);min-width:96px;text-align:center}
+.tn-et b{color:var(--mur)}
 
 /* anlamca: yakın anlam ipuçları */
 .ipuclar{text-align:center;margin:18px auto 0;max-width:360px;background:var(--mat);border:1.5px solid var(--kutu-cizgi);
@@ -413,10 +425,12 @@ body{transition:background .4s,color .4s}
 
   <!-- ===== oyun ekranı ===== -->
   <section id="oyunEkran" class="gizli">
+    <div class="oyun-tablar-et">↹ veranda'nın dört oyunu — dokun, geç</div>
     <div class="oyun-tablar" id="oyunSeg">
       <button data-oyun="harfiyat" class="secili" data-ad="harfiyat">harfiyat</button>
       <button data-oyun="iskelime" data-ad="taraca">taraça</button>
       <button data-oyun="anlamca" data-ad="karine">karine</button>
+      <a class="oyun-disi" href="../sicaksoguk/" data-ad="sicak">Sıcak Soğuk</a>
     </div>
     <div class="altYazi2" id="altYazi"></div>
 
@@ -433,6 +447,11 @@ body{transition:background .4s,color .4s}
     <div class="ipuclar gizli" id="ipuclar"></div>
     <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
     <div class="tahta-alt" id="tahtaAlt"></div>
+    <div class="tahta-nav gizli" id="tahtaNav">
+      <button class="tn-ok" id="oncekiTahta" aria-label="önceki kelime">‹</button>
+      <span class="tn-et" id="tahtaNavEt"></span>
+      <button class="tn-ok" id="sonrakiTahta" aria-label="sonraki kelime">›</button>
+    </div>
     <div class="mesaj" id="mesaj"></div>
     <div class="sonuc gizli" id="sonuc"></div>
     <div class="klavye-sar">
@@ -489,6 +508,7 @@ const GSET={}; for(const L in HARF_GECERLI) GSET[L]=new Set(HARF_GECERLI[L]);
 let oyun='harfiyat', mod='gun';
 let tahtalar=[], aktif=0, oyunBitti=false;
 let animHarf=null, animCevir=null;
+let gecisTimer=0, sonBitenTahta=-1;   // İskelime: çözünce sonraki boş tahtaya otomatik geçiş
 let sonucHazir=false, sonucYeni=false;   // sonuç paneli: reveal sonrası göster + açılış animasyonu
 let revealAnim=false, bekleyenMesaj='', bekleyenSes=null;  // reveal bitene kadar hayalet/mesaj/sonuç ertelenir
 let revealTimer=null;   // bekleyen revealBitti zamanlayıcısı (yeni oyun/geçişte temizlenir)
@@ -587,6 +607,13 @@ function sil(){
   sSil(); ciz();
 }
 function imlecTasi(yon){ const b=aktifTahta(); if(!b||b.bitti) return; b.imlec=Math.max(0,Math.min(b.uz-1,b.imlec+yon)); ciz(); }
+function sonrakiBos(from){ for(let i=1;i<=tahtalar.length;i++){ const idx=(from+i)%tahtalar.length; if(!tahtalar[idx].bitti) return idx; } return -1; }
+function tahtaGec(yon){   // alt oklarla elle tahta değiştir
+  if(oyun!=='iskelime'||tahtalar.length<2) return;
+  clearTimeout(gecisTimer);
+  aktif=(aktif+yon+tahtalar.length)%tahtalar.length;
+  ciz(); mobilGorunur(); window.scrollTo(0,0);
+}
 function hucreSec(t,c){
   if(t<0||t>=tahtalar.length) return;
   if(t!==aktif){ aktif=t; ciz(); return; }
@@ -605,6 +632,7 @@ function dene(){
   b.giris=Array(b.uz).fill(''); b.imlec=0;
   if(kelime===b.cevap){ b.bitti=true; b.kazandi=true; }
   else if(b.gecmis.length>=b.maxSatir){ b.bitti=true; }
+  if(b.bitti) sonBitenTahta=aktif;   // bu tahta bu turda bitti → reveal sonrası otomatik geçiş için
   // reveal sesleri: her harf açılırken (flip ortasında) renk notası, tek tek
   if(ses) renk.forEach((rk,i)=>setTimeout(()=>sReveal(rk),(i*CEVIR_GECIKME+CEVIR_SURE*.5)*1000));
   revealAnim=true;   // bitene kadar hayalet/mesaj/sonuç gizli
@@ -619,6 +647,14 @@ function revealBitti(){
   if(oyunBitti){ sonucHazir=true; sonucYeni=true; lbGonder(); }
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
+  // İskelime: tahta bitince ~2.6s sonra sıradaki boş tahtaya geç (oyuncu sonucu görsün, oyunun devam ettiğini anlasın)
+  if(oyun==='iskelime' && !oyunBitti && sonBitenTahta===aktif){
+    sonBitenTahta=-1;
+    const bu=aktif, nx=sonrakiBos(aktif);
+    if(nx>=0){ clearTimeout(gecisTimer); gecisTimer=setTimeout(()=>{
+      if(aktif===bu && !tahtalar[nx].bitti){ aktif=nx; ciz(); mobilGorunur(); window.scrollTo(0,0); }
+    }, 2600); }
+  }
   if(oyunBitti){ const el=document.getElementById('sonuc'); if(el && !el.classList.contains('gizli')) el.scrollIntoView({behavior:'smooth',block:'center'});
     if(mod==='gun' && lbDestekli()) setTimeout(()=>{ if(document.getElementById('lbModal').classList.contains('gizli')) lbAc(); }, 1300);   // çözünce tabloyu göster
   }
@@ -863,10 +899,14 @@ function ciz(){
       s.className='sekme'+(i===aktif?' aktif':'')+(t.kazandi?' cozuldu':(t.bitti?' kayip':''))+(au?' altin':'');
       s.textContent=t.uz;
       if(w>1){ const no=document.createElement('span'); no.className='alt-no'+(au?' altin':''); no.textContent=w+'×'; s.appendChild(no); }
-      s.onclick=()=>{ aktif=i; ciz(); };
+      s.onclick=()=>{ clearTimeout(gecisTimer); aktif=i; ciz(); };
       sek.appendChild(s);
     });
   }
+  // alt geçiş okları
+  const nav=document.getElementById('tahtaNav');
+  nav.classList.toggle('gizli', oyun!=='iskelime' || tahtalar.length<2);
+  if(oyun==='iskelime') document.getElementById('tahtaNavEt').innerHTML='<b>'+b.uz+'</b> harf · '+(aktif+1)+'/'+tahtalar.length;
   // anlamca ipuçları: 1. ipucu baştan, 2. ipucu 2. tahminden sonra (reveal bitince)
   const ip=document.getElementById('ipuclar');
   if(oyun==='anlamca' && b.ipucu){
@@ -1027,6 +1067,8 @@ document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>{ modSec(x.
 document.getElementById('yeniBtn').onclick=yeniOyun;
 document.getElementById('silBtn').onclick=function(){ sil(); this.blur(); };
 document.getElementById('deneBtn').onclick=function(){ dene(); this.blur(); };
+document.getElementById('oncekiTahta').onclick=function(){ tahtaGec(-1); this.blur(); };
+document.getElementById('sonrakiTahta').onclick=function(){ tahtaGec(1); this.blur(); };
 document.getElementById('temaBtn').onclick=function(){ tema=tema==='gece'?'aydinlik':'gece'; localStorage.setItem('harfiyat:tema',tema); temaUygula(); this.blur(); };
 document.getElementById('sesBtn').onclick=function(){ ses=!ses; localStorage.setItem('harfiyat:ses',ses?'1':'0'); sesUygula(); if(ses) sGonder(); this.blur(); };
 document.getElementById('lbKapat').onclick=lbKapat;
