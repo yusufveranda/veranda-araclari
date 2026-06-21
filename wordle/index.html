@@ -201,6 +201,9 @@ body{transition:background .4s,color .4s}
 .ta-bas.ok{color:var(--dogru)} .ta-bas.yo{color:var(--yok)}
 .ta-kel{display:inline-block;font-family:'Playfair Display',serif;font-size:27px;color:var(--kirmizi);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
 .ta-not{display:block;font-family:'Libre Baskerville',serif;font-style:italic;font-size:12.5px;color:var(--soluk);margin-top:3px}
+.ta-ileri{display:inline-block;margin-top:12px;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;
+  background:var(--kirmizi);border:none;border-radius:11px;padding:11px 22px;cursor:pointer;box-shadow:3px 4px 0 var(--kirmizi-yum);transition:transform .12s}
+.ta-ileri:hover{transform:translateY(-1px)} .ta-ileri:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--kirmizi-yum)}
 
 .mesaj{text-align:center;min-height:22px;color:var(--kirmizi);font-family:'Libre Baskerville',serif;font-style:italic;margin-top:8px;font-size:15px}
 
@@ -624,6 +627,10 @@ function tahtaGec(yon){   // alt oklarla elle tahta değiştir
   aktif=(aktif+yon+tahtalar.length)%tahtalar.length;
   ciz(); mobilGorunur();   // scroll seviyesi korunur (en üste atma yok)
 }
+function tahtaIleri(){   // çözülen tahtadaki "sonraki kelime →" butonu: sıradaki boş tahtaya geç (elle, ışınlanma yok)
+  const nx=sonrakiBosTahta(aktif);
+  if(nx>=0){ aktif=nx; ciz(); mobilGorunur(); }
+}
 function hucreSec(t,c){
   if(t<0||t>=tahtalar.length) return;
   if(t!==aktif){ aktif=t; ciz(); return; }
@@ -657,14 +664,8 @@ function revealBitti(){
   if(oyunBitti){ sonucHazir=true; sonucYeni=true; lbGonder(); }
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
-  // İskelime: tahta bitince ~2.6s sonra sıradaki boş tahtaya geç (oyuncu sonucu görsün, oyunun devam ettiğini anlasın)
-  if(oyun==='iskelime' && !oyunBitti && sonBitenTahta===aktif){
-    sonBitenTahta=-1;
-    const bu=aktif, nx=sonrakiBosTahta(aktif);
-    if(nx>=0){ clearTimeout(gecisTimer); gecisTimer=setTimeout(()=>{
-      if(aktif===bu && !tahtalar[nx].bitti){ aktif=nx; ciz(); mobilGorunur(); }   // scroll korunur
-    }, 2600); }
-  }
+  // İskelime: ZORLA otomatik geçiş YOK (hayalet ipucu kısa kelimeyi erken çözünce "ışınlanma" oluyordu).
+  // Bunun yerine çözülen tahtada "sonraki kelime →" butonu var (ciz'de tahtaAlt); oyuncu kontrol eder.
   // oyun bitince: sonuç kartı (overlay) sonucCiz'de kendiliğinden öne gelir; sayfa kaydırma yok, leaderboard karttaki düğmeden
 }
 function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
@@ -964,9 +965,12 @@ function ciz(){
   // tahta altı — İskelime'de tahta sonucu (Harfiyat #sonuc panelini kullanır)
   const alt=document.getElementById('tahtaAlt');
   if(oyun==='iskelime' && b.bitti && !revealAnim){
+    const nx=sonrakiBosTahta(aktif);
+    const ileri=(!oyunBitti && nx>=0) ? '<button class="ta-ileri" id="taIleriBtn">sonraki kelime ('+tahtalar[nx].uz+' harf) →</button>' : '';
     alt.innerHTML='<div class="ta-sonuc">'+(b.kazandi
       ? '<span class="ta-bas ok">bildin!</span><span class="ta-kel">'+b.cevap+'</span><span class="ta-not">'+b.gecmis.length+' denemede</span>'
-      : '<span class="ta-bas yo">bilemedin</span><span class="ta-kel">'+b.cevap+'</span>')+'</div>';
+      : '<span class="ta-bas yo">bilemedin</span><span class="ta-kel">'+b.cevap+'</span>')+ileri+'</div>';
+    const ib=document.getElementById('taIleriBtn'); if(ib) ib.onclick=()=>tahtaIleri();
   } else alt.innerHTML='';
   klavyeCiz();
   sonucCiz();
