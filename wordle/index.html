@@ -259,7 +259,7 @@ body{transition:background .4s,color .4s}
 .lb-ac-btn:active{transform:translateY(1px)}
 
 /* ----- leaderboard modalı ----- */
-.lb-modal{position:fixed;inset:0;z-index:50;background:rgba(20,14,8,.55);display:flex;align-items:center;justify-content:center;padding:18px}
+.lb-modal{position:fixed;inset:0;z-index:70;background:rgba(20,14,8,.55);display:flex;align-items:center;justify-content:center;padding:18px}
 .lb-kart{background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:14px;box-shadow:6px 8px 0 var(--mat-golge);
   width:100%;max-width:360px;max-height:84vh;overflow:auto;padding:18px 18px 20px}
 .lb-ust{display:flex;align-items:center;justify-content:space-between}
@@ -365,6 +365,7 @@ body{transition:background .4s,color .4s}
   <div class="tepe-bar">
     <button class="vmini sakli" id="hubDon">‹ <span data-ad="verandle">verandle</span></button>
     <div class="ust-araclar">
+      <button class="simge gizli" id="lbTepeBtn" title="leaderboard" aria-label="leaderboard">🏆</button>
       <button class="simge yardim" id="yardimBtn" title="nasıl oynanır" aria-label="nasıl oynanır">?</button>
       <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
       <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
@@ -975,6 +976,7 @@ function ciz(){
   klavyeCiz();
   sonucCiz();
   document.querySelector('.klavye-sar').classList.toggle('gizli', oyunBitti && sonucHazir);   // bitince klavye gitsin (tek SS)
+  document.getElementById('lbTepeBtn').classList.toggle('gizli', !(mod==='gun' && lbDestekli()));   // kalıcı 🏆 sadece günlük + desteklenen oyunda
   // başlık / altyazı / ipucu
   const _ay=document.getElementById('altYazi');
   if(oyun==='iskelime'){ const _a=altinUz(); _ay.innerHTML='üç’ten sekiz harfe · altı kelime'+(_a?' · <b class="altin-et">🌟 '+_a+' harf 2×</b>':', yedişer deneme'); }
@@ -1075,7 +1077,7 @@ function sesUygula(){
 }
 
 /* ===== hub <-> oyun geçişi ===== */
-function hubGoster(){ document.getElementById('oyunEkran').classList.add('gizli'); document.getElementById('hub').classList.remove('gizli'); document.getElementById('hubDon').classList.add('sakli'); window.scrollTo(0,0); }
+function hubGoster(){ document.getElementById('oyunEkran').classList.add('gizli'); document.getElementById('hub').classList.remove('gizli'); document.getElementById('hubDon').classList.add('sakli'); document.getElementById('lbTepeBtn').classList.add('gizli'); window.scrollTo(0,0); }
 function hubaDon(){ if(tahtalar.length) durumKaydetBellek(); hubGoster(); }
 function oyunaGir(g){
   document.getElementById('hub').classList.add('gizli');
@@ -1102,6 +1104,7 @@ document.getElementById('lbModal').addEventListener('click',e=>{ if(e.target.id=
 document.querySelectorAll('#lbTablar button').forEach(b=>b.onclick=()=>lbGoster(b.dataset.k));
 document.getElementById('lbEkleBtn').onclick=lbBeniEkle;
 document.getElementById('yardimBtn').onclick=function(){ introAc(oyun); this.blur(); };
+document.getElementById('lbTepeBtn').onclick=function(){ this.blur(); lbAc(); };   // kalıcı leaderboard erişimi (kart kapansa da)
 document.getElementById('introKapat').onclick=introKapat;
 document.getElementById('introBasla').onclick=introKapat;
 document.getElementById('introModal').addEventListener('click',e=>{ if(e.target.id==='introModal') introKapat(); });
