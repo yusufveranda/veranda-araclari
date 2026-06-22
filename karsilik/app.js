@@ -79,6 +79,47 @@ function trStems(qf){
   return out;
 }
 
+// İngilizce çekim biçimlerini köke indir: went→go, children→child, running→run
+const EN_IRREGULAR = {
+  went:'go', gone:'go', goes:'go', going:'go', took:'take', taken:'take', taking:'take',
+  takes:'take', came:'come', coming:'come', comes:'come', got:'get', gotten:'get',
+  getting:'get', gets:'get', made:'make', making:'make', makes:'make', said:'say',
+  saying:'say', says:'say', had:'have', has:'have', having:'have', was:'be', were:'be',
+  been:'be', being:'be', are:'be', did:'do', done:'do', doing:'do', does:'do', told:'tell',
+  telling:'tell', tells:'tell', knew:'know', known:'know', knowing:'know', knows:'know',
+  saw:'see', seen:'see', seeing:'see', sees:'see', gave:'give', given:'give', giving:'give',
+  gives:'give', found:'find', finding:'find', finds:'find', thought:'think', thinking:'think',
+  thinks:'think', brought:'bring', bought:'buy', caught:'catch', taught:'teach', ran:'run',
+  running:'run', runs:'run', began:'begin', begun:'begin', wrote:'write', written:'write',
+  writing:'write', spoke:'speak', spoken:'speak', broke:'break', broken:'break',
+  chose:'choose', chosen:'choose', drove:'drive', driven:'drive', ate:'eat', eaten:'eat',
+  fell:'fall', fallen:'fall', felt:'feel', kept:'keep', left:'leave', lost:'lose', met:'meet',
+  paid:'pay', sat:'sit', sold:'sell', sent:'send', stood:'stand', won:'win', held:'hold',
+  heard:'hear', led:'lead', meant:'mean', built:'build', spent:'spend', lent:'lend',
+  understood:'understand', became:'become', flew:'fly', grew:'grow', drew:'draw', threw:'throw',
+  wore:'wear', tore:'tear', swam:'swim', sang:'sing', drank:'drink', rang:'ring',
+  children:'child', men:'man', women:'woman', feet:'foot', teeth:'tooth', mice:'mouse',
+  geese:'goose', people:'person', lives:'life', wives:'wife', knives:'knife', leaves:'leaf',
+  better:'good', best:'good', worse:'bad', worst:'bad', further:'far',
+};
+function enStems(qf){
+  const out = new Set();
+  if(EN_IRREGULAR[qf]) out.add(EN_IRREGULAR[qf]);
+  const add = w => { if(w.length >= 2) out.add(w); };
+  const n = qf.length;
+  if(qf.endsWith('ies') && n > 4) add(qf.slice(0, -3) + 'y');
+  if(qf.endsWith('ied') && n > 4) add(qf.slice(0, -3) + 'y');
+  if(qf.endsWith('ier') && n > 4) add(qf.slice(0, -3) + 'y');   // happier→happy
+  if(qf.endsWith('iest') && n > 5) add(qf.slice(0, -4) + 'y');  // happiest→happy
+  if(qf.endsWith('es') && n > 3){ add(qf.slice(0, -2)); add(qf.slice(0, -1)); }
+  if(qf.endsWith('s') && !qf.endsWith('ss') && n > 2) add(qf.slice(0, -1));
+  if(qf.endsWith('ed') && n > 3){ add(qf.slice(0, -2)); add(qf.slice(0, -1)); if(/(.)\1ed$/.test(qf)) add(qf.slice(0, -3)); }
+  if(qf.endsWith('ing') && n > 4){ add(qf.slice(0, -3)); add(qf.slice(0, -3) + 'e'); if(/(.)\1ing$/.test(qf)) add(qf.slice(0, -4)); }
+  if(qf.endsWith('er') && n > 3){ add(qf.slice(0, -2)); add(qf.slice(0, -1)); }
+  if(qf.endsWith('est') && n > 4){ add(qf.slice(0, -3)); add(qf.slice(0, -2)); }
+  return out;
+}
+
 function lev(a, b, max){
   if(Math.abs(a.length - b.length) > max) return max + 1;
   const n = b.length;
@@ -140,7 +181,7 @@ function toRec(w, dir){
 }
 
 /* ----------------------------------------------------------------- arama */
-function scoreRec(rec, qf, stems){
+function scoreRec(rec, qf, stems, enstems){
   let best = null;
   const longEnough = qf.length >= 3;
   for(const key of rec.keys){
@@ -148,6 +189,7 @@ function scoreRec(rec, qf, stems){
     if(key === qf) s = 0;
     else if(key.startsWith(qf)) s = 1 + (key.length - qf.length) / 200;
     else if(rec.dir === 'tr' && stems.has(key)) s = 2;
+    else if(rec.dir === 'en' && enstems.has(key)) s = 2;   // çekim biçimi → kök
     else if(longEnough && key.includes(qf)) s = 3 + (key.length - qf.length) / 200;
     else if(longEnough){
       const max = qf.length <= 4 ? 1 : 2;
@@ -163,10 +205,11 @@ function search(q, limit){
   const qf = fold(q);
   if(!qf) return [];
   const stems = trStems(qf);
+  const enstems = enStems(qf);
   const out = [];
   for(const dir of ['en', 'tr']){
     for(const rec of records[dir]){
-      let s = scoreRec(rec, qf, stems);
+      let s = scoreRec(rec, qf, stems, enstems);
       if(s === null) continue;
       if(dir === prefDir) s -= 0.15;                 // tercih edilen yöne hafif öncelik
       out.push({rec, s});
