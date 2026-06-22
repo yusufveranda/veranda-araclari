@@ -98,9 +98,37 @@ function lev(a, b, max){
 
 /* ----------------------------------------------------------------- durum */
 const records = {en: [], tr: []};
+const foldToRec = {en: new Map(), tr: new Map()};   // çapraz bağ için başlık arama
 const bucketCache = {};
 let meta = null;
 let prefDir = 'en';
+let curCtx = null;
+
+/* yerel hafıza: geçmiş + yıldızlar */
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem('karsilik-' + k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('karsilik-' + k, JSON.stringify(v)); }catch(e){} }
+};
+let recent = LS.get('recent', []);
+let favs = LS.get('favs', []);
+const sameEntry = (a, b) => a.id === b.id && a.dir === b.dir;
+function pushRecent(ctx){
+  const it = {l: ctx.l, id: ctx.id, b: ctx.b, dir: ctx.dir};
+  recent = [it, ...recent.filter(x => !sameEntry(x, it))].slice(0, 12);
+  LS.set('recent', recent);
+}
+const isFav = ctx => favs.some(x => sameEntry(x, ctx));
+function toggleFav(ctx){
+  const it = {l: ctx.l, id: ctx.id, b: ctx.b, dir: ctx.dir};
+  favs = isFav(ctx) ? favs.filter(x => !sameEntry(x, it)) : [it, ...favs].slice(0, 50);
+  LS.set('favs', favs);
+}
+function speak(text, dir){
+  if(!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = dir === 'en' ? 'en-US' : 'tr-TR'; u.rate = 0.95;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
 
 function toRec(w, dir){
   const keys = [fold(w.l)];
@@ -164,6 +192,9 @@ async function loadIndexes(){
   ]);
   records.en = en.words.map(w => toRec(w, 'en'));
   records.tr = tr.words.map(w => toRec(w, 'tr'));
+  for(const dir of ['en', 'tr'])
+    for(const r of records[dir])
+      if(r.ph == null && !foldToRec[dir].has(fold(r.l))) foldToRec[dir].set(fold(r.l), r);
 }
 async function fetchEntry(dir, id, b){
   const k = dir + '/' + b;
@@ -176,6 +207,22 @@ const $ = sel => document.querySelector(sel);
 const main = $('#main'), sugg = $('#sugg'), qEl = $('#q');
 const esc = s => (s == null ? '' : String(s)).replace(/[&<>"]/g,
   c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// bir karşılığı, ters yönde başlık olarak varsa, tıklanır bağ yap
+function findOpp(word, oppDir){
+  const w = trLower(word).trim();
+  let rec = foldToRec[oppDir].get(fold(w));
+  if(rec) return rec;
+  const stripped = w.replace(/^to\s+/, '').replace(/^-\S+\s+/, '').replace(/^bir\s+/, '').trim();
+  if(stripped && stripped !== w) rec = foldToRec[oppDir].get(fold(stripped));
+  return rec || null;
+}
+function linkTrs(list, oppDir){
+  return (list || []).map(w => {
+    const r = findOpp(w, oppDir);
+    return r ? `<span class="tlink" data-li="${esc(r.id)}" data-ld="${r.dir}" data-lb="${r.b}" data-ll="${esc(r.l)}">${esc(w)}</span>` : esc(w);
+  }).join(', ');
+}
 
 function metaLine(pos, domain, tags){
   let h = '';
@@ -192,21 +239,27 @@ function exBlock(ex){
   return `<button class="ex-toggle" type="button"><span class="chev">›</span> örnek</button><div class="ex">${pairs}</div>`;
 }
 
-function renderEntry(entry, dir, hlPhrase){
+const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9 h3 l4.5-3.5 v13 L7 15 H4 Z"/><path d="M15.5 9.5 a3.5 3.5 0 0 1 0 5"/></svg>';
+
+function renderEntry(entry, ctx){
+  const dir = ctx.dir, hlPhrase = ctx.ph, opp = dir === 'en' ? 'tr' : 'en';
+  curCtx = ctx;
   const dirtag = dir === 'en' ? 'EN → TR' : 'TR → EN';
-  const posLine = (entry.pos || []).map(posAbbr).join(' · ');
   const s0 = entry.senses[0] || {};
   const heroTr = (s0.tr || []).join(', ');
+  const fav = isFav(ctx);
 
   let h = `<div class="entry-head">
       <span class="word">${esc(entry.lemma)}</span>
       ${entry.ipa ? `<span class="ipa">${esc(entry.ipa)}</span>` : ''}
+      <button class="say" type="button" data-say="${esc(entry.lemma)}" data-sd="${dir}" title="seslendir" aria-label="seslendir">${SPK}</button>
+      <button class="star${fav ? ' on' : ''}" type="button" data-star="1" title="kaydet" aria-label="kaydet">${fav ? '★' : '☆'}</button>
       <span class="dirtag">${dirtag}</span>
     </div>`;
 
   // hero — baskın karşılık
   h += `<div class="hero">
-      <div class="trs">${esc(heroTr)}<button class="copy" type="button" data-copy="${esc(heroTr)}">kopyala</button></div>
+      <div class="trs">${linkTrs(s0.tr, opp)}<button class="copy" type="button" data-copy="${esc(heroTr)}">kopyala</button></div>
       ${s0.gloss ? `<div class="gloss">${esc(s0.gloss)}</div>` : ''}
       <div class="pos">${metaLine(s0.pos, s0.domain, s0.tags)}</div>
       ${exBlock(s0.ex)}
@@ -216,14 +269,13 @@ function renderEntry(entry, dir, hlPhrase){
   const rest = entry.senses.slice(1);
   if(rest.length){
     h += `<section class="section"><div class="lbl">öteki anlamlar</div>`;
-    for(const sn of rest){
+    for(const sn of rest)
       h += `<div class="sense">
         <div class="meta">${metaLine(sn.pos, sn.domain, sn.tags)}</div>
-        <div class="trs">${esc((sn.tr || []).join(', '))}</div>
+        <div class="trs">${linkTrs(sn.tr, opp)}</div>
         ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
         ${exBlock(sn.ex)}
       </div>`;
-    }
     h += `</section>`;
   }
 
@@ -233,7 +285,7 @@ function renderEntry(entry, dir, hlPhrase){
     entry.phrases.forEach((ph, i) => {
       const tags = (ph.tags || []).map(t => `<span class="tag">${esc(tagLabel(t))}</span>`).join('');
       h += `<div class="phrase${i === hlPhrase ? ' hl' : ''}" data-ph="${i}">
-        <div><span class="ph-lm">${esc(ph.lemma)}</span><span class="ph-tr">${esc((ph.tr || []).join(', '))}</span> ${tags}</div>
+        <div><span class="ph-lm">${esc(ph.lemma)}</span> <span class="ph-tr">${linkTrs(ph.tr, opp)}</span> ${tags}</div>
         ${ph.gloss ? `<div class="gloss">${esc(ph.gloss)}</div>` : ''}
         ${exBlock(ph.ex)}
       </div>`;
@@ -243,7 +295,7 @@ function renderEntry(entry, dir, hlPhrase){
 
   // ilişkili
   const rel = entry.rel || {};
-  const chips = (arr) => arr.map(w => `<span class="chip" data-word="${esc(w)}">${esc(w)}</span>`).join('');
+  const chips = arr => arr.map(w => `<span class="chip" data-word="${esc(w)}">${esc(w)}</span>`).join('');
   if((rel.syn || []).length || (rel.see || []).length){
     h += `<section class="section"><div class="lbl">ilişkili sözcükler</div>`;
     if((rel.syn || []).length) h += `<div class="chips" style="margin-bottom:10px">${chips(rel.syn)}</div>`;
@@ -255,14 +307,21 @@ function renderEntry(entry, dir, hlPhrase){
   if(hlPhrase != null){
     const el = main.querySelector(`.phrase[data-ph="${hlPhrase}"]`);
     if(el) el.scrollIntoView({block: 'center', behavior: 'smooth'});
+  } else {
+    window.scrollTo({top: 0});
   }
 }
 
 function renderLanding(){
-  const seeds = ['run', 'charge', 'bank', 'light', 'yüz', 'göz', 'açmak', 'ocak'];
+  const seeds = ['run', 'charge', 'bank', 'light', 'yüz', 'göz', 'açmak', 'gül'];
+  const jchip = it => `<span class="chip" data-li="${esc(it.id)}" data-ld="${it.dir}" data-lb="${it.b}" data-ll="${esc(it.l)}">${esc(it.l)}<span class="cd">${it.dir}</span></span>`;
+  let saved = '';
+  if(favs.length) saved += `<div class="examples"><div class="lbl">yıldızladıkların</div><div class="chips">${favs.map(jchip).join('')}</div></div>`;
+  if(recent.length) saved += `<div class="examples"><div class="lbl">son baktıkların</div><div class="chips">${recent.map(jchip).join('')}</div></div>`;
   main.innerHTML = `<div class="landing">
     <div class="lead">iki dilin eşiğinde bir sözlük — her kelimenin, bağlamına göre karşılığı.</div>
     <div class="note">yanlış da yazsan, Türkçe ekleriyle de yazsan bulur.<br>“koştular”, “gözlerini”, “adress” → hepsi yerini bulur.</div>
+    ${saved}
     <div class="examples">
       <div class="lbl">deneyebilirsin</div>
       <div class="chips">${seeds.map(w => `<span class="chip" data-word="${esc(w)}">${esc(w)}</span>`).join('')}</div>
@@ -280,15 +339,16 @@ function renderNoResult(q){
 
 /* ----------------------------------------------------------------- gezinme */
 async function openRec(rec, push){
-  const entry = await fetchEntry(rec.dir, rec.id, rec.b);
-  if(!entry){ renderNoResult(rec.l); return; }
+  const entry = await fetchEntry(rec.dir, rec.id, +rec.b);
+  if(!entry){ renderNoResult(rec.l || rec.id); return; }
+  const ctx = {dir: rec.dir, id: rec.id, b: +rec.b, ph: rec.ph, l: entry.lemma};
   setDir(rec.dir);
-  renderEntry(entry, rec.dir, rec.ph);
+  renderEntry(entry, ctx);
+  pushRecent(ctx);
   hideSugg();
-  if(push !== false){
-    const url = `?q=${encodeURIComponent(rec.l)}&d=${rec.dir}`;
-    history.pushState({id: rec.id, b: rec.b, dir: rec.dir, ph: rec.ph ?? null, l: rec.l}, '', url);
-  }
+  if(push !== false)
+    history.pushState({id: ctx.id, b: ctx.b, dir: ctx.dir, ph: ctx.ph ?? null, l: ctx.l}, '',
+      `?q=${encodeURIComponent(ctx.l)}&d=${ctx.dir}`);
 }
 function openWord(q, push){
   const r = search(q, 1)[0];
@@ -298,14 +358,23 @@ function openWord(q, push){
 
 /* ----------------------------------------------------------------- öneriler */
 let selIdx = -1, curSugg = [];
+function hlMatch(lemma, qf){
+  if(!qf) return esc(lemma);
+  const lf = fold(lemma);
+  if(lf.length !== lemma.length) return esc(lemma);
+  const i = lf.indexOf(qf);
+  if(i < 0) return esc(lemma);
+  return esc(lemma.slice(0, i)) + '<b>' + esc(lemma.slice(i, i + qf.length)) + '</b>' + esc(lemma.slice(i + qf.length));
+}
 function showSugg(list){
   curSugg = list; selIdx = -1;
   if(!list.length){ hideSugg(); return; }
+  const qf = fold(qEl.value.trim());
   sugg.innerHTML = list.map((r, i) => {
     const isPh = r.ph != null;
     return `<div class="row" data-i="${i}" role="option">
       <span class="dir ${r.dir}">${r.dir.toUpperCase()}</span>
-      <span class="lm${isPh ? ' ph' : ''}">${esc(r.l)}</span>
+      <span class="lm${isPh ? ' ph' : ''}">${hlMatch(r.l, qf)}</span>
       <span class="hint">${esc(r.h)}</span>
     </div>`;
   }).join('');
@@ -379,14 +448,32 @@ $('#themebtn').addEventListener('click', () =>
 main.addEventListener('click', e => {
   const tog = e.target.closest('.ex-toggle');
   if(tog){ tog.classList.toggle('open'); tog.nextElementSibling.classList.toggle('show'); return; }
+  const say = e.target.closest('[data-say]');
+  if(say){ speak(say.dataset.say, say.dataset.sd); return; }
+  const star = e.target.closest('[data-star]');
+  if(star){
+    if(curCtx){ toggleFav(curCtx); const on = isFav(curCtx);
+      star.classList.toggle('on', on); star.textContent = on ? '★' : '☆'; }
+    return;
+  }
+  const jump = e.target.closest('[data-li]');
+  if(jump){ qEl.value = jump.dataset.ll || ''; $('#clearbtn').style.display = qEl.value ? 'block' : 'none';
+    openRec({dir: jump.dataset.ld, id: jump.dataset.li, b: +jump.dataset.lb, l: jump.dataset.ll}); return; }
   const word = e.target.closest('[data-word]');
-  if(word){ qEl.value = word.dataset.word; openWord(word.dataset.word); return; }
+  if(word){ qEl.value = word.dataset.word; $('#clearbtn').style.display = 'block'; openWord(word.dataset.word); return; }
   const copy = e.target.closest('.copy');
   if(copy && navigator.clipboard){
     navigator.clipboard.writeText(copy.dataset.copy).then(() => {
       copy.textContent = 'kopyalandı'; copy.classList.add('ok');
       setTimeout(() => { copy.textContent = 'kopyala'; copy.classList.remove('ok'); }, 1300);
     });
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if(document.activeElement === qEl) return;
+  if(e.key === '/' || ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K'))){
+    e.preventDefault(); qEl.focus(); qEl.select();
   }
 });
 

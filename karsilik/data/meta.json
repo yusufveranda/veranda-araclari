@@ -2,11 +2,11 @@
   "version": 1,
   "dirs": {
     "en": {
-      "count": 15,
+      "count": 19,
       "buckets": 4
     },
     "tr": {
-      "count": 15,
+      "count": 21,
       "buckets": 4
     }
   },
@@ -15,13 +15,13 @@
     "legal",
     "finance",
     "geography",
-    "computing",
     "botany",
+    "sports",
+    "computing",
+    "military",
     "industry",
     "math",
     "business",
-    "sports",
-    "military",
     "grammar",
     "biology"
   ],
