@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>karşılık — ingilizce ↔ türkçe sözlük</title>
-<meta name="description" content="İngilizce–Türkçe, Türkçe–İngilizce sözlük. Her anlamı bağlamına göre; deyimler, öbek fiiller ve örnek cümlelerle. Hızlı, hatayı ve eki affeden arama.">
+<meta name="description" content="İngilizce–Türkçe, Türkçe–İngilizce sözlük. Her anlamı bağlamına göre; deyimler, öbek fiiller ve örnek cümlelerle. Hızlı, hatayı ve Türkçe ekleri affeden arama.">
 <meta name="theme-color" content="#C2331F">
 <meta property="og:title" content="karşılık">
 <meta property="og:description" content="İngilizce ↔ Türkçe sözlük. Her kelimenin bağlama göre karşılığı.">
@@ -17,29 +17,37 @@
 <body>
 <div class="wrap">
 
-  <a class="eve-don" href="../">veranda</a>
-
-  <header class="brand">
-    <div>
-      <h1>karşılık<span class="dot">.</span></h1>
-      <div class="tag">ingilizce ↔ türkçe · her kelimenin bağlama göre karşılığı</div>
-    </div>
+  <div class="topbar">
+    <a class="eve-don" href="../">veranda</a>
     <button class="themebtn" id="themebtn" type="button" aria-label="gündüz / gece">gece</button>
-  </header>
-
-  <div class="searchwrap">
-    <div class="searchrow">
-      <button class="dirbtn" id="dirbtn" type="button" title="yönü değiştir" aria-label="çeviri yönü">
-        <b id="dirFrom">EN</b>→<span id="dirTo">TR</span>
-      </button>
-      <input id="q" type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
-             spellcheck="false" aria-label="kelime ara" placeholder="bir kelime yaz… run, charge, yüz, göz">
-      <button class="clearbtn" id="clearbtn" type="button" aria-label="temizle">×</button>
-    </div>
-    <div id="sugg" role="listbox" aria-label="öneriler"></div>
   </div>
 
-  <main id="main" aria-live="polite"></main>
+  <div class="layout">
+    <div class="col-main">
+
+      <header class="brand">
+        <h1>karşılık<span class="dot">.</span></h1>
+        <div class="tag">ingilizce ↔ türkçe · her kelimenin bağlama göre karşılığı</div>
+      </header>
+
+      <div class="searchwrap">
+        <div class="searchrow">
+          <button class="dirbtn" id="dirbtn" type="button" title="yönü değiştir" aria-label="çeviri yönü">
+            <b id="dirFrom">EN</b>→<span id="dirTo">TR</span>
+          </button>
+          <input id="q" type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+                 spellcheck="false" aria-label="kelime ara" placeholder="bir kelime yaz…">
+          <kbd class="slashhint" aria-hidden="true">/</kbd>
+          <button class="clearbtn" id="clearbtn" type="button" aria-label="temizle">×</button>
+        </div>
+        <div id="sugg" role="listbox" aria-label="öneriler"></div>
+      </div>
+
+      <main id="main" aria-live="polite"></main>
+    </div>
+
+    <aside class="col-side" id="side" aria-label="yan panel"></aside>
+  </div>
 
   <footer>
     <svg class="kilim" viewBox="0 0 220 14" aria-hidden="true">

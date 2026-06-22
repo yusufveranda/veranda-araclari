@@ -5,11 +5,11 @@
 
 /* ----------------------------------------------------------------- haritalar */
 const POS = {
-  verb:'f.', noun:'i.', adjective:'s.', adverb:'zf.', numeral:'say.',
-  preposition:'e.', conjunction:'bağ.', pronoun:'zm.', interjection:'ünl.',
-  determiner:'blr.', phrase:'öbek'
+  verb:'F.', noun:'İ.', adjective:'S.', adverb:'ZF.', numeral:'SAY.',
+  preposition:'E.', conjunction:'BAĞ.', pronoun:'ZM.', interjection:'ÜNL.',
+  determiner:'BLR.', phrase:'ÖBEK'
 };
-const posAbbr = p => POS[p] || p;
+const posAbbr = p => POS[p] || (p || '').toLocaleUpperCase('tr');
 
 const DOMAIN = {
   computing:['bilişim','dm4'], tech:['teknik','dm4'], science:['bilim','dm4'],
@@ -204,106 +204,88 @@ async function fetchEntry(dir, id, b){
 
 /* ----------------------------------------------------------------- görünüm */
 const $ = sel => document.querySelector(sel);
-const main = $('#main'), sugg = $('#sugg'), qEl = $('#q');
+const main = $('#main'), sugg = $('#sugg'), qEl = $('#q'), side = $('#side');
+let curRel = {};
 const esc = s => (s == null ? '' : String(s)).replace(/[&<>"]/g,
   c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-// bir karşılığı, ters yönde başlık olarak varsa, tıklanır bağ yap
-function findOpp(word, oppDir){
+// arama için karşılığı sadeleştir ("to run"→run, "-e rastlamak"→rastlamak)
+function cleanLookup(word){
   const w = trLower(word).trim();
-  let rec = foldToRec[oppDir].get(fold(w));
-  if(rec) return rec;
-  const stripped = w.replace(/^to\s+/, '').replace(/^-\S+\s+/, '').replace(/^bir\s+/, '').trim();
-  if(stripped && stripped !== w) rec = foldToRec[oppDir].get(fold(stripped));
-  return rec || null;
+  return w.replace(/^to\s+/, '').replace(/^-\S+\s+/, '').replace(/^bir\s+/, '').trim() || w;
 }
+// HER karşılık ters-sözlüğe köprü: tıklanınca o yönde aranır
 function linkTrs(list, oppDir){
-  return (list || []).map(w => {
-    const r = findOpp(w, oppDir);
-    return r ? `<span class="tlink" data-li="${esc(r.id)}" data-ld="${r.dir}" data-lb="${r.b}" data-ll="${esc(r.l)}">${esc(w)}</span>` : esc(w);
-  }).join(', ');
+  return (list || []).map(w =>
+    `<a class="tlink" data-q="${esc(cleanLookup(w))}" data-d="${oppDir}">${esc(w)}</a>`
+  ).join('<span class="sep">, </span>');
 }
 
-function metaLine(pos, domain, tags){
+// Satır 1: POS + domain/kayıt pill'leri (tek tip, BÜYÜK HARF)
+function metaPills(pos, domain, tags){
   let h = '';
   if(pos) h += `<span class="pos">${esc(posAbbr(pos))}</span>`;
   const di = domainInfo(domain);
-  if(di) h += `<span class="badge ${di[1]}">${esc(di[0])}</span>`;
-  for(const t of (tags || [])) h += `<span class="tag">${esc(tagLabel(t))}</span>`;
+  if(di) h += `<span class="pill ${di[1]}">${esc(di[0].toLocaleUpperCase('tr'))}</span>`;
+  for(const t of (tags || [])) h += `<span class="pill tagp">${esc(tagLabel(t).toLocaleUpperCase('tr'))}</span>`;
   return h;
 }
 function exBlock(ex){
   if(!ex || !ex.length) return '';
   let pairs = '';
   for(const e of ex) pairs += `<div class="pair"><div class="s">${esc(e.s)}</div><div class="t">${esc(e.t)}</div></div>`;
-  return `<button class="ex-toggle" type="button"><span class="chev">›</span> örnek</button><div class="ex">${pairs}</div>`;
+  return `<button class="ex-toggle" type="button">${CHEV} örnek</button><div class="ex">${pairs}</div>`;
 }
 
-const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9 h3 l4.5-3.5 v13 L7 15 H4 Z"/><path d="M15.5 9.5 a3.5 3.5 0 0 1 0 5"/></svg>';
+const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9 h3 l4.5-3.5 v13 L7 15 H4 Z"/><path d="M15.5 9.5 a3.5 3.5 0 0 1 0 5"/></svg>';
+const STAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.5 l2.6 5.7 6.2 .6 -4.7 4.1 1.4 6.1 -5.5 -3.2 -5.5 3.2 1.4 -6.1 -4.7 -4.1 6.2 -.6 Z"/></svg>';
+const COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M6 15 H5 a2 2 0 0 1-2-2 V5 a2 2 0 0 1 2-2 h8 a2 2 0 0 1 2 2 v1"/></svg>';
+const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 l6 6 -6 6"/></svg>';
+
+// değişmez yapı: [num][POS][DOMAIN] → karşılık(lar) → tanım → › örnek
+function renderSense(sn, n, opp, withCopy){
+  const copy = withCopy
+    ? `<button class="copy" type="button" data-copy="${esc((sn.tr || []).join(', '))}" aria-label="kopyala">${COPY}</button>`
+    : '';
+  return `<div class="sense">
+      <div class="srow"><span class="num">${n}</span>${metaPills(sn.pos, sn.domain, sn.tags)}<span class="tr">${linkTrs(sn.tr, opp)}</span>${copy}</div>
+      ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
+      ${exBlock(sn.ex)}
+    </div>`;
+}
+function renderPhrase(ph, i, opp, hl){
+  return `<div class="phrase${hl ? ' hl' : ''}" data-ph="${i}">
+      <div class="srow"><span class="ph-lm">${esc(ph.lemma)}</span><span class="tr">${linkTrs(ph.tr, opp)}</span>${metaPills(null, null, ph.tags)}</div>
+      ${ph.gloss ? `<div class="gloss">${esc(ph.gloss)}</div>` : ''}
+      ${exBlock(ph.ex)}
+    </div>`;
+}
 
 function renderEntry(entry, ctx){
   const dir = ctx.dir, hlPhrase = ctx.ph, opp = dir === 'en' ? 'tr' : 'en';
-  curCtx = ctx;
-  const dirtag = dir === 'en' ? 'EN → TR' : 'TR → EN';
-  const s0 = entry.senses[0] || {};
-  const heroTr = (s0.tr || []).join(', ');
+  curCtx = ctx; curRel = entry.rel || {};
+  const dirtag = dir === 'en' ? 'EN→TR' : 'TR→EN';
   const fav = isFav(ctx);
 
   let h = `<div class="entry-head">
       <span class="word">${esc(entry.lemma)}</span>
-      ${entry.ipa ? `<span class="ipa">${esc(entry.ipa)}</span>` : ''}
-      <button class="say" type="button" data-say="${esc(entry.lemma)}" data-sd="${dir}" title="seslendir" aria-label="seslendir">${SPK}</button>
-      <button class="star${fav ? ' on' : ''}" type="button" data-star="1" title="kaydet" aria-label="kaydet">${fav ? '★' : '☆'}</button>
+      <button class="ico fav${fav ? ' on' : ''}" type="button" data-star="1" title="kaydet" aria-label="kaydet">${STAR}</button>
+      <span class="phon"><button class="ico say" type="button" data-say="${esc(entry.lemma)}" data-sd="${dir}" title="seslendir" aria-label="seslendir">${SPK}</button>${entry.ipa ? `<span class="ipa">${esc(entry.ipa)}</span>` : ''}</span>
       <span class="dirtag">${dirtag}</span>
     </div>`;
 
-  // hero — baskın karşılık
-  h += `<div class="hero">
-      <div class="trs">${linkTrs(s0.tr, opp)}<button class="copy" type="button" data-copy="${esc(heroTr)}">kopyala</button></div>
-      ${s0.gloss ? `<div class="gloss">${esc(s0.gloss)}</div>` : ''}
-      <div class="pos">${metaLine(s0.pos, s0.domain, s0.tags)}</div>
-      ${exBlock(s0.ex)}
-    </div>`;
+  h += `<div class="senses">`;
+  entry.senses.forEach((sn, i) => { h += renderSense(sn, i + 1, opp, i === 0); });
+  h += `</div>`;
 
-  // öteki anlamlar
-  const rest = entry.senses.slice(1);
-  if(rest.length){
-    h += `<section class="section"><div class="lbl">öteki anlamlar</div>`;
-    for(const sn of rest)
-      h += `<div class="sense">
-        <div class="meta">${metaLine(sn.pos, sn.domain, sn.tags)}</div>
-        <div class="trs">${linkTrs(sn.tr, opp)}</div>
-        ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
-        ${exBlock(sn.ex)}
-      </div>`;
-    h += `</section>`;
-  }
-
-  // öbekler ve deyimler
   if((entry.phrases || []).length){
-    h += `<section class="section"><div class="lbl">öbekler ve deyimler</div>`;
-    entry.phrases.forEach((ph, i) => {
-      const tags = (ph.tags || []).map(t => `<span class="tag">${esc(tagLabel(t))}</span>`).join('');
-      h += `<div class="phrase${i === hlPhrase ? ' hl' : ''}" data-ph="${i}">
-        <div><span class="ph-lm">${esc(ph.lemma)}</span> <span class="ph-tr">${linkTrs(ph.tr, opp)}</span> ${tags}</div>
-        ${ph.gloss ? `<div class="gloss">${esc(ph.gloss)}</div>` : ''}
-        ${exBlock(ph.ex)}
-      </div>`;
-    });
-    h += `</section>`;
-  }
-
-  // ilişkili
-  const rel = entry.rel || {};
-  const chips = arr => arr.map(w => `<span class="chip" data-word="${esc(w)}">${esc(w)}</span>`).join('');
-  if((rel.syn || []).length || (rel.see || []).length){
-    h += `<section class="section"><div class="lbl">ilişkili sözcükler</div>`;
-    if((rel.syn || []).length) h += `<div class="chips" style="margin-bottom:10px">${chips(rel.syn)}</div>`;
-    if((rel.see || []).length) h += `<div class="chips">${chips(rel.see)}</div>`;
+    h += `<section class="section"><div class="sec-h">öbekler ve deyimler</div>`;
+    entry.phrases.forEach((ph, i) => { h += renderPhrase(ph, i, opp, i === hlPhrase); });
     h += `</section>`;
   }
 
   main.innerHTML = h;
+  renderSide(curRel);
   if(hlPhrase != null){
     const el = main.querySelector(`.phrase[data-ph="${hlPhrase}"]`);
     if(el) el.scrollIntoView({block: 'center', behavior: 'smooth'});
@@ -312,29 +294,41 @@ function renderEntry(entry, ctx){
   }
 }
 
+// yan panel: yıldızlar + son bakılanlar + ilişkili (okuma yolundan uzakta)
+function renderSide(rel){
+  const jitem = it => `<a class="sb-item" data-li="${esc(it.id)}" data-ld="${it.dir}" data-lb="${it.b}" data-ll="${esc(it.l)}">${esc(it.l)}<span class="cd">${it.dir}</span></a>`;
+  const witem = w => `<a class="sb-item" data-word="${esc(w)}">${esc(w)}</a>`;
+  const related = [...new Set([...((rel && rel.syn) || []), ...((rel && rel.see) || [])])];
+  let h = '';
+  if(favs.length) h += `<section class="sb"><div class="sb-h">yıldızlar</div><div class="sb-list">${favs.map(jitem).join('')}</div></section>`;
+  if(recent.length) h += `<section class="sb"><div class="sb-h">son bakılanlar</div><div class="sb-list">${recent.map(jitem).join('')}</div></section>`;
+  if(related.length) h += `<section class="sb"><div class="sb-h">ilişkili sözcükler</div><div class="sb-list">${related.map(witem).join('')}</div></section>`;
+  if(!h) h = `<div class="sb-empty">aradıkların ve yıldızladıkların burada birikecek.</div>`;
+  side.innerHTML = h;
+}
+
 function renderLanding(){
+  curCtx = null; curRel = {};
   const seeds = ['run', 'charge', 'bank', 'light', 'yüz', 'göz', 'açmak', 'gül'];
-  const jchip = it => `<span class="chip" data-li="${esc(it.id)}" data-ld="${it.dir}" data-lb="${it.b}" data-ll="${esc(it.l)}">${esc(it.l)}<span class="cd">${it.dir}</span></span>`;
-  let saved = '';
-  if(favs.length) saved += `<div class="examples"><div class="lbl">yıldızladıkların</div><div class="chips">${favs.map(jchip).join('')}</div></div>`;
-  if(recent.length) saved += `<div class="examples"><div class="lbl">son baktıkların</div><div class="chips">${recent.map(jchip).join('')}</div></div>`;
   main.innerHTML = `<div class="landing">
     <div class="lead">iki dilin eşiğinde bir sözlük — her kelimenin, bağlamına göre karşılığı.</div>
     <div class="note">yanlış da yazsan, Türkçe ekleriyle de yazsan bulur.<br>“koştular”, “gözlerini”, “adress” → hepsi yerini bulur.</div>
-    ${saved}
     <div class="examples">
-      <div class="lbl">deneyebilirsin</div>
+      <div class="sec-h">deneyebilirsin</div>
       <div class="chips">${seeds.map(w => `<span class="chip" data-word="${esc(w)}">${esc(w)}</span>`).join('')}</div>
     </div>
   </div>`;
+  renderSide(curRel);
 }
 
 function renderNoResult(q){
+  curCtx = null; curRel = {};
   const best = search(q, 1)[0];
   main.innerHTML = `<div class="noresult">
     <div class="big">“${esc(q)}” bulunamadı</div>
     ${best ? `<div class="didyou">bunu mu demek istedin: <b data-word="${esc(best.l)}">${esc(best.l)}</b>?</div>` : ''}
   </div>`;
+  renderSide(curRel);
 }
 
 /* ----------------------------------------------------------------- gezinme */
@@ -394,9 +388,7 @@ function setDir(d){
   prefDir = d;
   $('#dirFrom').textContent = d === 'en' ? 'EN' : 'TR';
   $('#dirTo').textContent = d === 'en' ? 'TR' : 'EN';
-  qEl.placeholder = d === 'en'
-    ? 'bir kelime yaz… run, charge, set'
-    : 'bir kelime yaz… yüz, göz, açmak';
+  qEl.placeholder = d === 'en' ? 'ingilizce bir kelime yaz…' : 'türkçe bir kelime yaz…';
 }
 function applyTheme(gece){
   document.body.classList.toggle('gece', gece);
@@ -444,16 +436,24 @@ $('#dirbtn').addEventListener('click', () => {
 $('#themebtn').addEventListener('click', () =>
   applyTheme(!document.body.classList.contains('gece')));
 
-// içerik tıklamaları (delege)
-main.addEventListener('click', e => {
+// içerik tıklamaları (hem ana sütun hem yan panel)
+function onContentClick(e){
   const tog = e.target.closest('.ex-toggle');
   if(tog){ tog.classList.toggle('open'); tog.nextElementSibling.classList.toggle('show'); return; }
   const say = e.target.closest('[data-say]');
   if(say){ speak(say.dataset.say, say.dataset.sd); return; }
   const star = e.target.closest('[data-star]');
   if(star){
-    if(curCtx){ toggleFav(curCtx); const on = isFav(curCtx);
-      star.classList.toggle('on', on); star.textContent = on ? '★' : '☆'; }
+    if(curCtx){ toggleFav(curCtx); star.classList.toggle('on', isFav(curCtx)); renderSide(curRel); }
+    return;
+  }
+  // çapraz bağ: her karşılık ters yönde aranır
+  const tl = e.target.closest('.tlink');
+  if(tl){
+    const q = tl.dataset.q, d = tl.dataset.d;
+    qEl.value = q; $('#clearbtn').style.display = 'block';
+    const rec = foldToRec[d] && foldToRec[d].get(fold(q));
+    if(rec) openRec(rec); else { setDir(d); openWord(q); }
     return;
   }
   const jump = e.target.closest('[data-li]');
@@ -464,11 +464,12 @@ main.addEventListener('click', e => {
   const copy = e.target.closest('.copy');
   if(copy && navigator.clipboard){
     navigator.clipboard.writeText(copy.dataset.copy).then(() => {
-      copy.textContent = 'kopyalandı'; copy.classList.add('ok');
-      setTimeout(() => { copy.textContent = 'kopyala'; copy.classList.remove('ok'); }, 1300);
+      copy.classList.add('ok'); setTimeout(() => copy.classList.remove('ok'), 1100);
     });
   }
-});
+}
+main.addEventListener('click', onContentClick);
+side.addEventListener('click', onContentClick);
 
 document.addEventListener('keydown', e => {
   if(document.activeElement === qEl) return;
