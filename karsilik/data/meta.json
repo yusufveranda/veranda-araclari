@@ -6,8 +6,8 @@
       "buckets": 252
     },
     "tr": {
-      "count": 29239,
-      "buckets": 244
+      "count": 29395,
+      "buckets": 245
     }
   },
   "domains": [
@@ -18,8 +18,8 @@
     "computing",
     "chemistry",
     "math",
-    "grammar",
     "anatomy",
+    "grammar",
     "business",
     "politics",
     "science",
