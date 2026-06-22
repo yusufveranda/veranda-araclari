@@ -2,28 +2,46 @@
   "version": 1,
   "dirs": {
     "en": {
-      "count": 19,
-      "buckets": 4
+      "count": 15760,
+      "buckets": 132
     },
     "tr": {
-      "count": 21,
-      "buckets": 4
+      "count": 19991,
+      "buckets": 167
     }
   },
   "domains": [
     "general",
-    "legal",
-    "finance",
-    "geography",
-    "botany",
-    "sports",
+    "medical",
+    "biology",
     "computing",
-    "military",
-    "industry",
+    "religion",
+    "chemistry",
     "math",
     "business",
+    "anatomy",
+    "politics",
     "grammar",
-    "biology"
+    "science",
+    "tech",
+    "legal",
+    "music",
+    "sports",
+    "geography",
+    "nautical",
+    "games",
+    "architecture",
+    "agriculture",
+    "art",
+    "cooking",
+    "military",
+    "economics",
+    "finance",
+    "accounting",
+    "botany",
+    "nature",
+    "zoology",
+    "industry"
   ],
   "note": "karşılık — ingilizce↔türkçe sözlük. seed build."
 }
