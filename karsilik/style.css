@@ -1,238 +1,207 @@
 /* karşılık — ingilizce ↔ türkçe sözlük
-   Yoğun, taranabilir, tipografi-merkezli. Kırmızı YALNIZ karşılıklara aittir;
-   gerisi antrasit/mürekkep. "dilimin ucunda" ile kardeş kâğıt paleti.        */
+   Editöryel / brutalist dizgi. Ana giriş alanında TEK bir çerçeve, kutu ya da
+   çizgi yok. Yapıyı beyaz boşluk + tipografi kurar; anlam etiketleri kenar
+   boşluğunda (gutter) yüzer, karşılıklar tek bir dikey eksende hizalanır.       */
 
 :root{
   --serif:'Libre Baskerville', Georgia, 'Times New Roman', serif;
   --display:'Playfair Display', Georgia, serif;
   --sans:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  /* gündüz: kâğıt + antrasit mürekkep */
-  --bg:#F2E6CE; --glow:#F9F1DE; --ink:#1F1A12; --muted:#5C5443; --faint:#8A7C63;
-  --line:#E0D2B4; --hair:#E9DCC2;
-  --acc:#BE3A24;                      /* terracotta — yalnız karşılıklar */
-  --acc-soft:rgba(190,58,36,.09); --card:#FBF4E3;
-  --gold:#A8763B; --shadow:rgba(40,20,8,.12);
-  --ex:#574B38;                       /* örnek tetiği — WCAG AA (beyaz kâğıt) */
+  --bg:#F2E6CE; --glow:#F9F1DE; --ink:#1E190F; --muted:#5C5443; --faint:#8E7F64;
+  --acc:#BE3A24; --acc-soft:rgba(190,58,36,.08); --paper:#FBF4E3;
+  --gold:#A8763B; --shadow:rgba(40,20,8,.13); --ex:#574B38;
 
-  /* anlam dalı tonları (mürekkep/toprak) — domain pill'leri */
-  --dm1:#BE3A24; --dm1b:rgba(190,58,36,.10);
-  --dm2:#8A5E22; --dm2b:rgba(138,94,34,.13);
-  --dm3:#4C6038; --dm3b:rgba(76,96,56,.13);
-  --dm4:#3C5067; --dm4b:rgba(60,80,103,.13);
-  --dm5:#79394C; --dm5b:rgba(121,57,76,.13);
-  --dm6:#665030; --dm6b:rgba(102,80,48,.13);
+  --dm1:#BE3A24; --dm2:#8A5E22; --dm3:#4C6038; --dm4:#3C5067; --dm5:#79394C; --dm6:#665030;
+
+  --gut:120px; --gutgap:30px;
 }
 body.gece{
   --bg:#15110D; --glow:#231B12; --ink:#F1E6C9; --muted:#A89A7C; --faint:#7C6F58;
-  --line:#34291B; --hair:#241C12;
-  --acc:#E2603F; --acc-soft:rgba(226,96,63,.14); --card:#1E1811;
+  --acc:#E2603F; --acc-soft:rgba(226,96,63,.12); --paper:#1E1811;
   --gold:#C9A35C; --shadow:rgba(0,0,0,.4); --ex:#C7B894;
-  --dm1:#E2603F; --dm1b:rgba(226,96,63,.15);
-  --dm2:#CBA15A; --dm2b:rgba(203,161,90,.14);
-  --dm3:#96A877; --dm3b:rgba(150,168,119,.14);
-  --dm4:#7E93AB; --dm4b:rgba(126,147,171,.14);
-  --dm5:#C5808F; --dm5b:rgba(197,128,143,.14);
-  --dm6:#B0895C; --dm6b:rgba(176,137,92,.14);
+  --dm1:#E2603F; --dm2:#CBA15A; --dm3:#96A877; --dm4:#7E93AB; --dm5:#C5808F; --dm6:#B0895C;
 }
 
 *{box-sizing:border-box; margin:0; padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
-  background:radial-gradient(1200px 540px at 30% -160px, var(--glow) 0%, var(--bg) 60%) fixed, var(--bg);
-  color:var(--ink); font-family:var(--serif); font-size:15.5px; line-height:1.5;
+  background:radial-gradient(1200px 560px at 28% -180px, var(--glow) 0%, var(--bg) 58%) fixed, var(--bg);
+  color:var(--ink); font-family:var(--serif); font-size:16px; line-height:1.55;
   min-height:100vh; -webkit-font-smoothing:antialiased; transition:background .4s, color .4s;
 }
-.wrap{max-width:1060px; margin:0 auto; padding:14px 22px 90px}
+.wrap{max-width:1060px; margin:0 auto; padding:16px 26px 110px}
 a{color:inherit}
 ::selection{background:var(--acc-soft)}
-kbd{font-family:var(--sans)}
 
 /* ---- üst şerit ---- */
 .topbar{display:flex; align-items:center; justify-content:space-between}
-.eve-don{display:inline-flex; align-items:center; gap:7px; font-family:var(--sans);
-  font-size:12px; letter-spacing:.02em; color:var(--muted); text-decoration:none;
-  padding:5px 12px 5px 10px; border:1px solid var(--line); border-radius:20px;
-  background:var(--card); transition:color .2s, border-color .2s}
+.eve-don{display:inline-flex; align-items:center; gap:8px; font-family:var(--sans); font-size:12px;
+  letter-spacing:.04em; color:var(--muted); text-decoration:none}
 .eve-don::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--acc); flex:none}
-.eve-don:hover{color:var(--acc); border-color:var(--acc)}
-.themebtn{font-family:var(--sans); font-size:12px; padding:6px 13px; border:1px solid var(--line);
-  border-radius:20px; background:var(--card); color:var(--muted); cursor:pointer; transition:color .2s, border-color .2s}
-.themebtn:hover{border-color:var(--acc); color:var(--acc)}
+.eve-don:hover{color:var(--acc)}
+.themebtn{font-family:var(--sans); font-size:12px; letter-spacing:.04em; padding:0; border:none;
+  background:none; color:var(--muted); cursor:pointer}
+.themebtn:hover{color:var(--acc)}
 
-/* ---- iki sütunlu yerleşim ---- */
+/* ---- iki sütun: ana metin + yan panel, ARADA ÇİZGİ YOK, saf boşluk ---- */
 .layout{display:block}
-.col-main{max-width:660px}
-.col-side{margin-top:30px}
-
+.col-main{max-width:680px}
+.col-side{margin-top:46px}
 @media(min-width:1000px){
-  .layout{display:grid; grid-template-columns:minmax(0,660px) 230px; gap:0 30px; align-items:start}
-  .col-main{max-width:none}
-  .col-side{margin-top:0; position:sticky; top:18px; align-self:start;
-    border-left:1px solid var(--hair); padding-left:30px; min-height:60vh}
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) 210px; gap:0 70px; align-items:start}
+  .col-main{max-width:700px}
+  .col-side{margin-top:0; position:sticky; top:24px}
 }
 
 /* ---- başlık ---- */
-header.brand{margin-top:18px}
-header.brand h1{font-family:var(--display); font-weight:600; font-size:32px; letter-spacing:-.01em; line-height:1}
+header.brand{margin-top:22px}
+header.brand h1{font-family:var(--display); font-weight:700; font-size:34px; letter-spacing:-.02em; line-height:1}
 header.brand h1 .dot{color:var(--acc)}
-header.brand .tag{font-family:var(--serif); font-style:italic; color:var(--muted); font-size:13px; margin-top:7px}
+header.brand .tag{font-family:var(--serif); font-style:italic; color:var(--muted); font-size:13px; margin-top:8px}
 
-/* ---- arama (yapışkan) ---- */
-.searchwrap{position:sticky; top:0; z-index:30; background:var(--bg);
-  padding:14px 0 8px; margin-top:14px}
-.searchrow{display:flex; align-items:stretch; border:1px solid var(--line); border-radius:9px;
-  background:var(--card); overflow:hidden; transition:border-color .2s, box-shadow .2s}
-.searchrow:focus-within{border-color:var(--acc); box-shadow:0 6px 20px var(--shadow)}
-.dirbtn{font-family:var(--sans); font-size:11px; font-weight:600; letter-spacing:.06em;
-  color:var(--muted); background:transparent; border:none; border-right:1px solid var(--line);
-  padding:0 13px; cursor:pointer; white-space:nowrap; transition:color .2s}
+/* ---- arama: editöryel alt-çizgi, kutu yok ---- */
+.searchwrap{position:sticky; top:0; z-index:30; background:var(--bg); padding:18px 0 9px; margin-top:16px}
+.searchrow{display:flex; align-items:baseline; gap:16px; border-bottom:2px solid var(--ink);
+  transition:border-color .2s}
+.searchrow:focus-within{border-color:var(--acc)}
+.dirbtn{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--muted);
+  background:none; border:none; padding:0; cursor:pointer; white-space:nowrap}
 .dirbtn b{color:var(--acc)}
 .dirbtn:hover{color:var(--ink)}
-#q{flex:1; font-family:var(--serif); font-size:18px; padding:12px 14px; border:none;
-  background:transparent; color:var(--ink); outline:none; min-width:0}
-#q::placeholder{color:var(--faint); font-style:italic}
-.slashhint{align-self:center; font-size:11px; color:var(--faint); border:1px solid var(--line);
-  border-radius:5px; padding:1px 7px; margin-right:10px; line-height:1.5}
+#q{flex:1; font-family:var(--display); font-size:25px; padding:6px 0; border:none; background:none;
+  color:var(--ink); outline:none; min-width:0}
+#q::placeholder{color:var(--faint); font-style:italic; font-family:var(--serif); font-size:19px}
+.slashhint{align-self:center; font-family:var(--sans); font-size:11px; color:var(--faint)}
 #q:not(:placeholder-shown) + .slashhint, .searchrow:focus-within .slashhint{display:none}
-.clearbtn{border:none; background:transparent; color:var(--faint); font-size:19px; cursor:pointer;
-  padding:0 14px; display:none}
+.clearbtn{border:none; background:none; color:var(--faint); font-size:22px; cursor:pointer; padding:0 2px}
 .clearbtn:hover{color:var(--acc)}
 
-#sugg{position:absolute; left:0; right:0; margin-top:5px; background:var(--card);
-  border:1px solid var(--line); border-radius:9px; box-shadow:0 12px 28px var(--shadow);
-  overflow:hidden; z-index:31; display:none}
-#sugg .row{display:flex; align-items:baseline; gap:10px; padding:9px 14px; cursor:pointer; border-top:1px solid var(--hair)}
-#sugg .row:first-child{border-top:none}
+#sugg{position:absolute; left:0; right:0; margin-top:8px; background:var(--paper);
+  box-shadow:0 16px 40px var(--shadow); overflow:hidden; z-index:31; display:none; border-radius:2px}
+#sugg .row{display:flex; align-items:baseline; gap:12px; padding:9px 16px; cursor:pointer}
 #sugg .row.sel, #sugg .row:hover{background:var(--acc-soft)}
-#sugg .row .dir{font-family:var(--sans); font-size:9px; font-weight:700; letter-spacing:.05em;
-  color:var(--card); background:var(--faint); border-radius:4px; padding:2px 5px; flex:none; position:relative; top:-2px}
-#sugg .row .dir.en{background:var(--dm4)} #sugg .row .dir.tr{background:var(--dm2)}
-#sugg .row .lm{font-family:var(--display); font-size:17px}
+#sugg .row .dir{font-family:var(--sans); font-size:9px; font-weight:700; letter-spacing:.08em; color:var(--faint)}
+#sugg .row .dir.en{color:var(--dm4)} #sugg .row .dir.tr{color:var(--dm2)}
+#sugg .row .lm{font-family:var(--display); font-size:18px}
 #sugg .row .lm b{color:var(--acc); font-weight:inherit}
 #sugg .row .ph{font-style:italic}
-#sugg .row .hint{color:var(--muted); font-size:13px; margin-left:auto; text-align:right;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:46%}
+#sugg .row .hint{color:var(--muted); font-size:13px; font-style:italic; margin-left:auto; text-align:right;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:48%}
 
-/* ====================  GİRİŞ (yoğun)  ==================== */
-main{margin-top:8px}
+/* ====================  GİRİŞ — saf akış, çerçevesiz  ==================== */
+main{margin-top:10px}
 
-.entry-head{display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 10px; padding-bottom:6px}
-.entry-head .word{font-family:var(--display); font-weight:600; font-size:33px; line-height:1.05; letter-spacing:-.01em}
-.entry-head .phon{display:inline-flex; align-items:center; gap:5px; color:var(--faint); font-family:var(--sans); font-size:13px}
-.entry-head .ipa{font-size:13.5px}
+.entry-head{display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:34px}
+.entry-head .word{font-family:var(--display); font-weight:700; font-size:50px; line-height:.98; letter-spacing:-.025em}
+.entry-head .phon{display:inline-flex; align-items:center; gap:6px; color:var(--faint); font-family:var(--sans); font-size:14px}
+.entry-head .ipa{font-size:14px}
 .entry-head .dirtag{margin-left:auto; align-self:center; font-family:var(--sans); font-size:10px;
-  font-weight:700; letter-spacing:.07em; color:var(--muted); border:1px solid var(--line); border-radius:20px; padding:2px 9px}
-/* çıplak, çerçevesiz simge düğmeleri */
-.ico{background:none; border:none; padding:2px; cursor:pointer; color:var(--faint); line-height:0;
-  display:inline-flex; align-items:center; transition:color .2s}
-.ico svg{width:16px; height:16px}
+  font-weight:700; letter-spacing:.16em; color:var(--faint)}
+.ico{background:none; border:none; padding:1px; cursor:pointer; color:var(--faint); line-height:0;
+  display:inline-flex; transition:color .2s}
+.ico svg{width:17px; height:17px}
 .ico:hover{color:var(--acc)}
-.ico.fav.on{color:var(--gold)}
-.ico.fav.on svg{fill:var(--gold)}
+.ico.fav.on{color:var(--gold)} .ico.fav.on svg{fill:var(--gold)}
 
-/* anlam blokları — değişmez yapı, sıkı dikey ritim */
-.senses{margin-top:4px}
-.sense{padding:9px 0; border-top:1px solid var(--hair)}
-.sense:first-child{border-top:none}
-.srow{display:flex; align-items:baseline; flex-wrap:wrap; gap:5px 9px}
-.num{font-family:var(--sans); font-size:11px; color:var(--faint); font-variant-numeric:tabular-nums;
-  min-width:11px; align-self:baseline}
-.pos{font-family:var(--sans); font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--muted);
-  align-self:center}
-/* domain + kayıt: tek tip minik pill */
-.pill{font-family:var(--sans); font-size:9.5px; font-weight:700; letter-spacing:.05em;
-  padding:1.5px 6px; border-radius:4px; align-self:center; color:var(--dm6); background:var(--dm6b); white-space:nowrap}
-.pill.dm1{color:var(--dm1); background:var(--dm1b)} .pill.dm2{color:var(--dm2); background:var(--dm2b)}
-.pill.dm3{color:var(--dm3); background:var(--dm3b)} .pill.dm4{color:var(--dm4); background:var(--dm4b)}
-.pill.dm5{color:var(--dm5); background:var(--dm5b)} .pill.dm6{color:var(--dm6); background:var(--dm6b)}
-.pill.tagp{color:var(--muted); background:transparent; border:1px solid var(--line)}
-/* karşılık dizesi — TEK kırmızı; her biri çapraz bağ */
-.tr{font-family:var(--display); font-size:18px; line-height:1.25; color:var(--acc)}
-.tr a.tlink{color:var(--acc); text-decoration:none; cursor:pointer; border-bottom:1px solid transparent; transition:border-color .15s}
-.tr a.tlink:hover{border-bottom-color:var(--acc)}
-.copy{border:none; background:none; padding:0 2px; margin-left:2px; cursor:pointer; color:var(--faint);
-  line-height:0; vertical-align:middle; opacity:0; transition:opacity .15s, color .2s}
+/* anlamlar: gutter (kenar boşluğu) + gövde; karşılıklar tek eksende */
+.sense{display:grid; grid-template-columns:var(--gut) 1fr; column-gap:var(--gutgap); margin-top:26px}
+.sense:first-child{margin-top:0}
+.gut{text-align:right; padding-top:7px; line-height:1.25}
+.gut .dom{display:block; font-family:var(--sans); font-size:10px; font-weight:700; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--dm6)}
+.gut .dom.dm1{color:var(--dm1)} .gut .dom.dm2{color:var(--dm2)} .gut .dom.dm3{color:var(--dm3)}
+.gut .dom.dm4{color:var(--dm4)} .gut .dom.dm5{color:var(--dm5)} .gut .dom.dm6{color:var(--dm6)}
+.gut .pos{display:block; font-family:var(--serif); font-style:italic; font-size:12.5px; color:var(--faint); margin-top:3px}
+.bod .tr{font-family:var(--display); font-size:23px; line-height:1.28; color:var(--acc); font-weight:600}
+.bod .tr a.tlink{color:var(--acc); text-decoration:none; border-bottom:1px solid transparent; transition:border-color .15s}
+.bod .tr a.tlink:hover{border-bottom-color:currentColor}
+.bod .tr .reg{font-family:var(--serif); font-style:italic; font-weight:400; font-size:13px; color:var(--faint)}
+.bod .gloss{font-family:var(--serif); font-style:italic; color:var(--muted); font-size:14.5px; margin-top:5px; max-width:54ch}
+.copy{border:none; background:none; padding:0 4px; cursor:pointer; color:var(--faint); line-height:0;
+  vertical-align:middle; opacity:0; transition:opacity .15s, color .2s}
 .copy svg{width:13px; height:13px}
-.sense:hover .copy, .copy:focus{opacity:.7}
-.copy:hover{color:var(--acc); opacity:1}
-.copy.ok{color:var(--gold); opacity:1}
-.gloss{font-style:italic; color:var(--muted); font-size:13px; margin-top:2px; padding-left:20px}
-.srow + .gloss{margin-top:3px}
+.sense:hover .copy, .copy:focus{opacity:.6}
+.copy:hover, .copy.ok{opacity:1; color:var(--acc)} .copy.ok{color:var(--gold)}
 
-/* örnek — kompakt, erişilebilir kontrast, chevron */
+/* örnek — çizgisiz, alıntı tipografisi */
 .ex-toggle{font-family:var(--sans); font-size:11.5px; color:var(--ex); cursor:pointer; background:none;
-  border:none; padding:4px 0 0 20px; letter-spacing:.02em; display:inline-flex; align-items:center; gap:5px}
+  border:none; padding:8px 0 0; letter-spacing:.04em; display:inline-flex; align-items:center; gap:6px}
 .ex-toggle:hover{color:var(--acc)}
-.ex-toggle .chev{width:10px; height:10px; transition:transform .2s}
+.ex-toggle .chev{width:9px; height:9px; transition:transform .2s}
 .ex-toggle.open .chev{transform:rotate(90deg)}
-.ex{margin:7px 0 2px 20px; padding-left:12px; border-left:2px solid var(--line); display:none}
+.ex{display:none; margin-top:9px}
 .ex.show{display:block}
-.ex .s{font-size:14px; line-height:1.45}
-.ex .t{color:var(--muted); font-style:italic; font-size:13.5px; margin-top:1px}
-.ex .pair + .pair{margin-top:8px}
+.ex .pair{margin-top:9px}
+.ex .pair:first-child{margin-top:0}
+.ex .s{display:block; font-size:15px; line-height:1.5}
+.ex .t{display:block; color:var(--muted); font-style:italic; font-size:14px; margin-top:1px}
 
-/* öbekler ve deyimler */
-.section{margin-top:22px}
-.sec-h{font-family:var(--sans); font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--faint); margin-bottom:9px}
-.phrase{padding:8px 0; border-top:1px solid var(--hair)}
-.phrase:first-of-type{border-top:none}
-.phrase.hl{background:var(--acc-soft); border-radius:7px; padding:8px 10px; margin:0 -10px}
-.phrase .ph-lm{font-family:var(--display); font-size:16px; font-style:italic; color:var(--ink)}
+/* bölüm geçişi: kutu yok, italik dizgi başlık + bol boşluk */
+.section{margin-top:52px}
+.sec-h{font-family:var(--display); font-style:italic; font-size:18px; color:var(--muted); margin-bottom:24px; letter-spacing:.01em}
+.sec-h::before{content:"— "; color:var(--faint)}
 
-/* ====================  YAN PANEL  ==================== */
-.sb{margin-bottom:22px}
-.sb-h{font-family:var(--sans); font-size:9.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
-  color:var(--faint); margin-bottom:8px}
-.sb-list{display:flex; flex-direction:column}
-.sb-item{display:flex; align-items:baseline; gap:7px; font-size:14.5px; color:var(--ink);
+/* öbekler: aynı gutter düzeni */
+.phrase{display:grid; grid-template-columns:var(--gut) 1fr; column-gap:var(--gutgap); margin-top:22px}
+.phrase:first-of-type{margin-top:0}
+.phrase .bod .ph-lm{font-family:var(--display); font-style:italic; font-size:18px; color:var(--ink)}
+.phrase .bod .tr{display:inline; font-size:18px}
+.phrase.hl .bod .ph-lm{color:var(--acc)}
+
+/* ====================  YAN PANEL — kutusuz, saf metin  ==================== */
+.sb{margin-bottom:30px}
+.sb-h{font-family:var(--sans); font-size:9.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--faint); margin-bottom:11px}
+.sb-list{display:flex; flex-direction:column; gap:1px}
+.sb-item{display:flex; align-items:baseline; gap:8px; font-family:var(--serif); font-size:14px; color:var(--ink);
   text-decoration:none; cursor:pointer; padding:3px 0; transition:color .2s}
 .sb-item:hover{color:var(--acc)}
-.sb-item .cd{font-family:var(--sans); font-size:8px; font-weight:700; letter-spacing:.05em;
-  text-transform:uppercase; color:var(--faint); border:1px solid var(--line); border-radius:3px; padding:0 4px}
+.sb-item .cd{font-family:var(--sans); font-size:8px; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--faint)}
 .sb-empty{font-family:var(--serif); font-style:italic; color:var(--faint); font-size:13px; line-height:1.6}
-@media(min-width:1000px){ .col-side .sb-list{margin-bottom:0} }
-/* dar ekranda yan panel için yatay sarmal liste */
 @media(max-width:999px){
-  .col-side{border-top:1px solid var(--hair); padding-top:22px}
-  .sb-list{flex-direction:row; flex-wrap:wrap; gap:6px}
-  .sb-item{border:1px solid var(--line); border-radius:20px; padding:4px 12px; background:var(--card)}
+  .sb-list{flex-direction:row; flex-wrap:wrap; gap:4px 18px}
 }
 
-/* ---- karşılama (boş) ---- */
-.landing{margin-top:18px}
-.landing .lead{font-family:var(--display); font-size:20px; color:var(--muted); font-style:italic;
-  line-height:1.45; max-width:34ch}
-.landing .note{font-family:var(--sans); font-size:12px; color:var(--faint); margin-top:16px; letter-spacing:.01em; line-height:1.7}
-.landing .examples{margin-top:24px}
-.chips{display:flex; flex-wrap:wrap; gap:7px}
-.chip{font-family:var(--serif); font-size:14px; color:var(--ink); text-decoration:none;
-  border:1px solid var(--line); border-radius:20px; padding:4px 12px; cursor:pointer; background:var(--card);
-  transition:border-color .2s, color .2s}
-.chip:hover{border-color:var(--acc); color:var(--acc)}
+/* ---- karşılama ---- */
+.landing{margin-top:14px}
+.landing .lead{font-family:var(--display); font-size:27px; font-style:italic; color:var(--muted);
+  line-height:1.38; max-width:20ch; letter-spacing:-.01em}
+.landing .note{font-family:var(--sans); font-size:12px; color:var(--faint); margin-top:22px; line-height:1.8}
+.landing .examples{margin-top:32px}
+.chips{display:flex; flex-wrap:wrap; gap:6px 20px}
+.chip{font-family:var(--display); font-size:17px; color:var(--ink); text-decoration:none; cursor:pointer;
+  border-bottom:1px solid transparent; transition:color .2s, border-color .2s}
+.chip:hover{color:var(--acc); border-color:var(--acc)}
+.chip .cd{display:none}
 
 /* ---- sonuç yok ---- */
-.noresult{margin-top:26px}
-.noresult .big{font-family:var(--display); font-size:22px; color:var(--ink)}
-.noresult .didyou{margin-top:12px; font-style:italic; color:var(--muted)}
+.noresult{margin-top:24px}
+.noresult .big{font-family:var(--display); font-size:26px; color:var(--ink)}
+.noresult .didyou{margin-top:14px; font-style:italic; color:var(--muted)}
 .noresult .didyou b{color:var(--acc); cursor:pointer; font-style:normal; border-bottom:1px solid currentColor}
 
 /* ---- altlık ---- */
-footer{margin-top:60px; text-align:center; color:var(--faint); font-family:var(--sans);
-  font-size:11px; letter-spacing:.03em; line-height:1.8}
-footer .kilim{width:150px; height:10px; color:var(--line); margin-bottom:9px}
-footer a{color:var(--muted); text-decoration:none; border-bottom:1px solid var(--line)}
+footer{margin-top:80px; color:var(--faint); font-family:var(--sans); font-size:11px; letter-spacing:.04em; line-height:1.9}
+footer .kilim{display:none}
+footer a{color:var(--muted); text-decoration:none; border-bottom:1px solid var(--faint)}
 footer a:hover{color:var(--acc)}
 
 /* ---- yumuşak giriş ---- */
 @keyframes fadein{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
-.entry-head, .senses, .section, .landing, .noresult{animation:fadein .26s ease both}
+.entry-head, .senses, .section, .landing, .noresult{animation:fadein .3s ease both}
 
+/* ---- gutter'ı dar ekranda satıriçi etikete indir ---- */
+@media(max-width:720px){
+  .sense, .phrase{grid-template-columns:1fr; row-gap:0}
+  .gut{text-align:left; padding-top:0; margin-bottom:5px; display:flex; gap:12px; align-items:baseline}
+  .gut .pos{margin-top:0}
+}
 @media(max-width:560px){
-  .wrap{padding:12px 16px 80px}
-  header.brand h1{font-size:28px}
-  .entry-head .word{font-size:29px}
-  #sugg .row .hint{max-width:40%}
+  .wrap{padding:12px 18px 80px}
+  header.brand h1{font-size:30px}
+  .entry-head .word{font-size:40px}
+  #q{font-size:21px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important}}

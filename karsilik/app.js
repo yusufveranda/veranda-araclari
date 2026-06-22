@@ -221,19 +221,30 @@ function linkTrs(list, oppDir){
   ).join('<span class="sep">, </span>');
 }
 
-// Satır 1: POS + domain/kayıt pill'leri (tek tip, BÜYÜK HARF)
-function metaPills(pos, domain, tags){
+const POSWORD = {
+  verb:'fiil', noun:'isim', adjective:'sıfat', adverb:'zarf', numeral:'sayı',
+  preposition:'edat', conjunction:'bağlaç', pronoun:'zamir', interjection:'ünlem',
+  determiner:'belirteç', phrase:'öbek'
+};
+const posWord = p => POSWORD[p] || (p || '');
+
+// kenar boşluğu (gutter): domain (renkli, BÜYÜK) + POS (italik). general'da yalnız POS.
+function gutterMeta(pos, domain){
   let h = '';
-  if(pos) h += `<span class="pos">${esc(posAbbr(pos))}</span>`;
   const di = domainInfo(domain);
-  if(di) h += `<span class="pill ${di[1]}">${esc(di[0].toLocaleUpperCase('tr'))}</span>`;
-  for(const t of (tags || [])) h += `<span class="pill tagp">${esc(tagLabel(t).toLocaleUpperCase('tr'))}</span>`;
+  if(di) h += `<span class="dom ${di[1]}">${esc(di[0].toLocaleUpperCase('tr'))}</span>`;
+  if(pos) h += `<span class="pos">${esc(posWord(pos))}</span>`;
   return h;
+}
+// kayıt etiketi (argo, mecaz…) karşılığın yanında küçük italik
+function tagInline(tags){
+  const t = (tags || []).map(tagLabel);
+  return t.length ? ` <span class="reg">· ${esc(t.join(', '))}</span>` : '';
 }
 function exBlock(ex){
   if(!ex || !ex.length) return '';
   let pairs = '';
-  for(const e of ex) pairs += `<div class="pair"><div class="s">${esc(e.s)}</div><div class="t">${esc(e.t)}</div></div>`;
+  for(const e of ex) pairs += `<div class="pair"><span class="s">“${esc(e.s)}”</span><span class="t">${esc(e.t)}</span></div>`;
   return `<button class="ex-toggle" type="button">${CHEV} örnek</button><div class="ex">${pairs}</div>`;
 }
 
@@ -242,22 +253,30 @@ const STAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M6 15 H5 a2 2 0 0 1-2-2 V5 a2 2 0 0 1 2-2 h8 a2 2 0 0 1 2 2 v1"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 l6 6 -6 6"/></svg>';
 
-// değişmez yapı: [num][POS][DOMAIN] → karşılık(lar) → tanım → › örnek
-function renderSense(sn, n, opp, withCopy){
+// kenar boşluğu (domain/POS) + gövde (karşılık → tanım → örnek). Çerçeve yok.
+function renderSense(sn, opp, withCopy){
   const copy = withCopy
     ? `<button class="copy" type="button" data-copy="${esc((sn.tr || []).join(', '))}" aria-label="kopyala">${COPY}</button>`
     : '';
   return `<div class="sense">
-      <div class="srow"><span class="num">${n}</span>${metaPills(sn.pos, sn.domain, sn.tags)}<span class="tr">${linkTrs(sn.tr, opp)}</span>${copy}</div>
-      ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
-      ${exBlock(sn.ex)}
+      <div class="gut">${gutterMeta(sn.pos, sn.domain)}</div>
+      <div class="bod">
+        <div class="tr">${linkTrs(sn.tr, opp)}${tagInline(sn.tags)}${copy}</div>
+        ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
+        ${exBlock(sn.ex)}
+      </div>
     </div>`;
 }
 function renderPhrase(ph, i, opp, hl){
+  const tg = (ph.tags && ph.tags.length)
+    ? `<span class="dom dm1">${esc(tagLabel(ph.tags[0]).toLocaleUpperCase('tr'))}</span>` : '';
   return `<div class="phrase${hl ? ' hl' : ''}" data-ph="${i}">
-      <div class="srow"><span class="ph-lm">${esc(ph.lemma)}</span><span class="tr">${linkTrs(ph.tr, opp)}</span>${metaPills(null, null, ph.tags)}</div>
-      ${ph.gloss ? `<div class="gloss">${esc(ph.gloss)}</div>` : ''}
-      ${exBlock(ph.ex)}
+      <div class="gut">${tg}</div>
+      <div class="bod">
+        <span class="ph-lm">${esc(ph.lemma)}</span> — <span class="tr">${linkTrs(ph.tr, opp)}</span>
+        ${ph.gloss ? `<div class="gloss">${esc(ph.gloss)}</div>` : ''}
+        ${exBlock(ph.ex)}
+      </div>
     </div>`;
 }
 
@@ -275,7 +294,7 @@ function renderEntry(entry, ctx){
     </div>`;
 
   h += `<div class="senses">`;
-  entry.senses.forEach((sn, i) => { h += renderSense(sn, i + 1, opp, i === 0); });
+  entry.senses.forEach((sn, i) => { h += renderSense(sn, opp, i === 0); });
   h += `</div>`;
 
   if((entry.phrases || []).length){
