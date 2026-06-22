@@ -2,26 +2,26 @@
   "version": 1,
   "dirs": {
     "en": {
-      "count": 30000,
-      "buckets": 250
+      "count": 30144,
+      "buckets": 252
     },
     "tr": {
-      "count": 23863,
-      "buckets": 200
+      "count": 29239,
+      "buckets": 244
     }
   },
   "domains": [
     "general",
     "medical",
     "biology",
-    "computing",
     "religion",
+    "computing",
     "chemistry",
-    "business",
     "math",
-    "politics",
-    "anatomy",
     "grammar",
+    "anatomy",
+    "business",
+    "politics",
     "science",
     "tech",
     "legal",
@@ -34,11 +34,11 @@
     "agriculture",
     "art",
     "cooking",
-    "military",
     "economics",
+    "military",
     "finance",
-    "accounting",
     "botany",
+    "accounting",
     "nature",
     "zoology",
     "industry"
