@@ -65,6 +65,14 @@ body{transition:background .4s,color .4s}
 .modlar button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--mat-golge)}
 .modlar button.secili{background:var(--kirmizi);color:#fff;border-color:var(--kirmizi);box-shadow:2px 3px 0 var(--kirmizi-yum)}
 
+/* dünkü kelime kartı — geniş ekranda sol yan, dar ekranda satıriçi */
+.dun-kart{position:fixed;left:20px;top:92px;z-index:5;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:13px;
+  padding:12px 16px;box-shadow:3px 4px 0 var(--mat-golge);text-align:center;width:fit-content;max-width:150px}
+.dun-kart.gizli{display:none}
+.dun-kart .dun-et{display:block;font-family:'Libre Baskerville',serif;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--soluk)}
+.dun-kart b{display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:var(--kirmizi);margin-top:4px;letter-spacing:.01em}
+@media(max-width:1120px){ .dun-kart{position:static;left:auto;top:auto;max-width:none;margin:14px auto 0} }
+
 /* ---- durum satırı ---- */
 .durum{display:flex;justify-content:center;gap:22px;margin-top:18px;font-family:'Libre Baskerville',serif;font-size:12.5px;color:var(--soluk);flex-wrap:wrap}
 .durum b{font-weight:700;color:var(--mur);font-size:15px}
@@ -221,6 +229,11 @@ footer a{color:var(--soluk)}
     <button data-mod="serbest" data-ad="mod_sonsuz">sonsuz</button>
   </div>
 
+  <div class="dun-kart gizli" id="dunKart">
+    <span class="dun-et">dünkü kelime</span>
+    <b id="dunKel"></b>
+  </div>
+
   <div id="oyunAlan" hidden>
     <div class="durum">
       <span><b id="dTahmin">0</b>tahmin</span>
@@ -321,11 +334,12 @@ function gunNumarasi(){
   const now = new Date();
   return Math.floor((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()) - Date.UTC(2026,0,1))/86400000);
 }
-function gunlukGizli(){
-  const g = gunNumarasi();
+function gunKelime(g){
   const i = ((g*131+7)%HAVUZ.length + HAVUZ.length)%HAVUZ.length;
-  return {kelime:HAVUZ[i], gun:g};
+  return HAVUZ[i];
 }
+function gunlukGizli(){ const g = gunNumarasi(); return {kelime:gunKelime(g), gun:g}; }
+function dunkuKelime(){ const g = gunNumarasi(); return g>=1 ? gunKelime(g-1) : null; }
 function rastgeleGizli(){ return HAVUZ[Math.floor(Math.random()*HAVUZ.length)]; }
 
 // gizli kelimenin tüm dağarcığa benzerliğini hesapla → rütbe haritası + eşikler
@@ -686,6 +700,11 @@ function fiyasko(){ let n=0; const t=setInterval(()=>{ kivSpawn(5); if(++n>=18) 
 function durumYukle(){
   try{ return JSON.parse(localStorage.getItem(anahtar())||'null'); }catch(e){ return null; }
 }
+function dunKartGuncelle(){   // sadece günlük modda, dünkü gizli kelimeyi göster
+  const dk = dunkuKelime();
+  if(S.mod==='gun' && dk){ $('dunKel').textContent=dk; $('dunKart').classList.remove('gizli'); }
+  else $('dunKart').classList.add('gizli');
+}
 function oyunKur(){
   S.tahminler=[]; S.bitti=false; S.pes=false; S.sonW=null; S.animYeni=false;
   $('sonucYer').innerHTML='';
@@ -704,6 +723,7 @@ function oyunKur(){
     if(S.tahminler.length) S.sonW = S.tahminler[S.tahminler.length-1].w;
   }
   $('oyunAlan').hidden=false;
+  dunKartGuncelle();
   ciz();
   kivilcimTemizle();
   if(S.bitti){ S.pes ? sonucPanel('gizli kelime',S.gizli,'pes edildi') : kutla(); }
