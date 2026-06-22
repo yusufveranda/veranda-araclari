@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>karşılık — ingilizce ↔ türkçe sözlük</title>
+<meta name="description" content="İngilizce–Türkçe, Türkçe–İngilizce sözlük. Her anlamı bağlamına göre; deyimler, öbek fiiller ve örnek cümlelerle. Hızlı, hatayı ve eki affeden arama.">
+<meta name="theme-color" content="#C2331F">
+<meta property="og:title" content="karşılık">
+<meta property="og:description" content="İngilizce ↔ Türkçe sözlük. Her kelimenin bağlama göre karşılığı.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23F2E6CE'/%3E%3Ccircle cx='32' cy='27' r='15' fill='%23C2331F'/%3E%3Cpath d='M14 46 h36 M14 46 l7-7 M14 46 l7 7' stroke='%23221C16' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <a class="eve-don" href="../">veranda</a>
+
+  <header class="brand">
+    <div>
+      <h1>karşılık<span class="dot">.</span></h1>
+      <div class="tag">ingilizce ↔ türkçe · her kelimenin bağlama göre karşılığı</div>
+    </div>
+    <button class="themebtn" id="themebtn" type="button" aria-label="gündüz / gece">gece</button>
+  </header>
+
+  <div class="searchwrap">
+    <div class="searchrow">
+      <button class="dirbtn" id="dirbtn" type="button" title="yönü değiştir" aria-label="çeviri yönü">
+        <b id="dirFrom">EN</b>→<span id="dirTo">TR</span>
+      </button>
+      <input id="q" type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+             spellcheck="false" aria-label="kelime ara" placeholder="bir kelime yaz… run, charge, yüz, göz">
+      <button class="clearbtn" id="clearbtn" type="button" aria-label="temizle">×</button>
+    </div>
+    <div id="sugg" role="listbox" aria-label="öneriler"></div>
+  </div>
+
+  <main id="main" aria-live="polite"></main>
+
+  <footer>
+    <svg class="kilim" viewBox="0 0 220 14" aria-hidden="true">
+      <g fill="currentColor">
+        <path d="M10,0 L17,7 L10,14 L3,7 Z"/><path d="M40,0 L47,7 L40,14 L33,7 Z" opacity=".55"/>
+        <path d="M70,0 L77,7 L70,14 L63,7 Z"/><path d="M100,0 L107,7 L100,14 L93,7 Z" opacity=".55"/>
+        <path d="M130,0 L137,7 L130,14 L123,7 Z"/><path d="M160,0 L167,7 L160,14 L153,7 Z" opacity=".55"/>
+        <path d="M190,0 L197,7 L190,14 L183,7 Z"/><path d="M212,0 L219,7 L212,14 L205,7 Z" opacity=".55"/>
+      </g>
+    </svg>
+    <div>karşılık · veranda — <span id="stat">yükleniyor…</span></div>
+    <div style="margin-top:6px">veriler <a href="https://www.wiktionary.org/" target="_blank" rel="noopener">Wiktionary</a>
+      ve <a href="https://tatoeba.org/" target="_blank" rel="noopener">Tatoeba</a>'dan · CC BY-SA</div>
+  </footer>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

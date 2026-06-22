@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "dirs": {
+    "en": {
+      "count": 15,
+      "buckets": 4
+    },
+    "tr": {
+      "count": 15,
+      "buckets": 4
+    }
+  },
+  "domains": [
+    "general",
+    "legal",
+    "finance",
+    "geography",
+    "computing",
+    "botany",
+    "industry",
+    "math",
+    "business",
+    "sports",
+    "military",
+    "grammar",
+    "biology"
+  ],
+  "note": "karşılık — ingilizce↔türkçe sözlük. seed build."
+}
