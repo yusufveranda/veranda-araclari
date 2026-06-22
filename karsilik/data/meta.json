@@ -2,12 +2,12 @@
   "version": 1,
   "dirs": {
     "en": {
-      "count": 15760,
-      "buckets": 132
+      "count": 30000,
+      "buckets": 250
     },
     "tr": {
-      "count": 19991,
-      "buckets": 167
+      "count": 23863,
+      "buckets": 200
     }
   },
   "domains": [
@@ -17,10 +17,10 @@
     "computing",
     "religion",
     "chemistry",
-    "math",
     "business",
-    "anatomy",
+    "math",
     "politics",
+    "anatomy",
     "grammar",
     "science",
     "tech",
