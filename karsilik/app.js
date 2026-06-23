@@ -372,9 +372,9 @@ function renderSide(rel){
     (clear ? `<button class="sb-clear" type="button" data-clear="${clear}">temizle</button>` : '') + `</div>`;
   const related = [...new Set([...((rel && rel.syn) || []), ...((rel && rel.see) || [])])];
   let h = '';
-  if(favs.length) h += `<section class="sb">${head('yıldızlar', 'favs')}<div class="sb-list">${favs.map((it, i) => jitem(it, 'favs', i)).join('')}</div></section>`;
-  if(recent.length) h += `<section class="sb">${head('son bakılanlar', 'recent')}<div class="sb-list">${recent.map((it, i) => jitem(it, 'recent', i)).join('')}</div></section>`;
-  if(related.length) h += `<section class="sb">${head('ilişkili sözcükler', null)}<div class="sb-list">${related.map(witem).join('')}</div></section>`;
+  if(favs.length) h += `<section class="sb sb-archive">${head('yıldızlar', 'favs')}<div class="sb-list">${favs.map((it, i) => jitem(it, 'favs', i)).join('')}</div></section>`;
+  if(recent.length) h += `<section class="sb sb-archive">${head('son bakılanlar', 'recent')}<div class="sb-list">${recent.map((it, i) => jitem(it, 'recent', i)).join('')}</div></section>`;
+  if(related.length) h += `<section class="sb sb-nav">${head('ilişkili sözcükler', null)}<div class="sb-list">${related.map(witem).join('')}</div></section>`;
   if(!h) h = `<div class="sb-empty">aradıkların ve yıldızladıkların burada birikecek.</div>`;
   side.innerHTML = h;
 }

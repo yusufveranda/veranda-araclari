@@ -167,6 +167,21 @@ main{margin-top:10px}
 .sb-item{display:flex; align-items:baseline; gap:8px; font-family:var(--serif); font-size:14px; color:var(--ink);
   text-decoration:none; cursor:pointer; padding:3px 0; transition:color .2s}
 .sb-item:hover{color:var(--acc)}
+
+/* ARŞİV (yıldızlar + son bakılanlar): sessiz, ikincil referans listesi —
+   küçük, soluk, statik. */
+.sb-archive .sb-h{color:var(--faint)}
+.sb-archive .sb-item{font-size:12.5px; color:var(--muted); font-weight:400}
+.sb-archive .sb-item:hover{color:var(--acc)}
+.sb-archive .sb-item .cd{color:var(--faint)}
+
+/* NAVİGASYON (ilişkili sözcükler): aracın gezinme motoru — daha güçlü,
+   koyu, tıklanır kısayollar. Bol boşlukla arşivden ayrılır. */
+.sb-nav{margin-top:42px}
+.sb-nav .sb-h{color:var(--muted)}
+.sb-nav .sb-item{font-size:16px; color:var(--ink); padding:5px 0; line-height:1.25}
+.sb-nav .sb-item:hover{color:var(--acc); text-decoration:underline;
+  text-decoration-thickness:1px; text-underline-offset:3px}
 .sb-item .cd{font-family:var(--sans); font-size:8px; font-weight:700; letter-spacing:.08em;
   text-transform:uppercase; color:var(--faint)}
 .sb-empty{font-family:var(--serif); font-style:italic; color:var(--faint); font-size:13px; line-height:1.6}
