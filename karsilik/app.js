@@ -308,13 +308,13 @@ const POSWORD = {
 };
 const posWord = p => POSWORD[p] || (p || '');
 
-// kenar boşluğu (gutter): domain (renkli, BÜYÜK) + POS (italik). general'da yalnız POS.
-function gutterMeta(pos, domain){
+// anlam başlığı: domain (renkli) + POS (italik) — karşılığın ÜSTÜNDE, sola dayalı (gutter yok).
+function senseHead(pos, domain){
   let h = '';
   const di = domainInfo(domain);
-  if(di) h += `<span class="dom ${di[1]}">${esc(di[0].toLocaleUpperCase('tr'))}</span>`;
-  if(pos) h += `<span class="pos">${esc(posWord(pos))}</span>`;
-  return h;
+  if(di) h += `<span class="s-dom ${di[1]}">${esc(di[0].toLocaleUpperCase('tr'))}</span>`;
+  if(pos) h += `<span class="s-pos">${esc(posWord(pos))}</span>`;
+  return h ? `<div class="s-head">${h}</div>` : '';
 }
 // kayıt etiketi (argo, mecaz…) karşılığın yanında küçük italik
 function tagInline(tags){
@@ -340,7 +340,7 @@ function renderSense(sn, opp, withCopy){
     ? `<button class="copy" type="button" data-copy="${esc((sn.tr || []).join(', '))}" aria-label="kopyala">${COPY}</button>`
     : '';
   return `<div class="sense">
-      <div class="gut">${gutterMeta(sn.pos, sn.domain)}</div>
+      ${senseHead(sn.pos, sn.domain)}
       <div class="bod">
         <div class="tr">${linkTrs(sn.tr, opp)}${tagInline(sn.tags)}${copy}</div>
         ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
@@ -353,9 +353,9 @@ function renderSense(sn, opp, withCopy){
 }
 function renderPhrase(ph, i, opp, hl){
   const tg = (ph.tags && ph.tags.length)
-    ? `<span class="dom dm1">${esc(tagLabel(ph.tags[0]).toLocaleUpperCase('tr'))}</span>` : '';
+    ? `<div class="s-head"><span class="s-dom dm1">${esc(tagLabel(ph.tags[0]).toLocaleUpperCase('tr'))}</span></div>` : '';
   return `<div class="phrase${hl ? ' hl' : ''}" data-ph="${i}">
-      <div class="gut">${tg}</div>
+      ${tg}
       <div class="bod">
         <span class="ph-lm">${esc(ph.lemma)}</span> — <span class="tr">${linkTrs(ph.tr, opp)}</span>
         ${ph.gloss ? `<div class="gloss">${esc(ph.gloss)}</div>` : ''}
@@ -476,15 +476,7 @@ function renderSide(){
 
 function renderLanding(){
   curCtx = null; curRel = {};
-  const seeds = ['run', 'charge', 'bank', 'light', 'yüz', 'göz', 'açmak', 'gül'];
-  main.innerHTML = `<div class="landing">
-    <div class="lead">iki dilin eşiğinde bir sözlük — her kelimenin, bağlamına göre karşılığı.</div>
-    <div class="note">yanlış da yazsan, Türkçe ekleriyle de yazsan bulur.<br>“koştular”, “gözlerini”, “adress” → hepsi yerini bulur.</div>
-    <div class="examples">
-      <div class="sec-h">deneyebilirsin</div>
-      <div class="chips">${seeds.map(w => `<span class="chip" data-word="${esc(w)}">${esc(w)}</span>`).join('')}</div>
-    </div>
-  </div>`;
+  main.innerHTML = '';            // saf boşluk — karşılama metni/öğretici yok
   renderSide(curRel);
 }
 
@@ -524,6 +516,15 @@ function openWord(q, push){
   const r = search(q, 1)[0];
   if(r) openRec(r, push);
   else { renderNoResult(q); if(push !== false) history.pushState({nf: q}, '', `?q=${encodeURIComponent(q)}`); }
+}
+// rastgele: TÜM indekslenmiş başlıklardan (en+tr, öbek hariç) eşit olasılıkla — en nadir
+// akademik terim ya da seyrek fiil de gelebilir; sahte küçük liste YOK.
+function randomWord(){
+  const all = records.en.concat(records.tr).filter(r => r.ph == null);
+  if(!all.length) return;
+  const r = all[Math.floor(Math.random() * all.length)];
+  qEl.value = r.l; $('#clearbtn').style.display = 'block';
+  setDir(r.dir); openRec(r); qEl.blur();
 }
 
 /* ----------------------------------------------------------------- öneriler */
@@ -593,6 +594,7 @@ qEl.addEventListener('keydown', e => {
     // hızlı yazıp Enter'a basınca bayat ilk öneri (ör. 'vermek') asla otomatik seçilmez.
     if(selIdx >= 0 && curSugg[selIdx]) openRec(curSugg[selIdx]);
     else if(qEl.value.trim()) openWord(qEl.value.trim());
+    qEl.blur();                                        // mobil klavyeyi kapat
   } else if(e.key === 'Escape'){ hideSugg(); }
 });
 sugg.addEventListener('mousedown', e => {              // mousedown: blur'dan önce
@@ -622,6 +624,7 @@ $('#dirbtn').addEventListener('click', () => {
 });
 $('#themebtn').addEventListener('click', () =>
   applyTheme(!document.body.classList.contains('gece')));
+$('#randbtn').addEventListener('click', randomWord);
 
 // içerik tıklamaları (hem ana sütun hem yan panel)
 function onContentClick(e){
