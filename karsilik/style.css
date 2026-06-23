@@ -105,7 +105,7 @@ main{margin-top:10px}
 .ico.fav.on{color:var(--gold)} .ico.fav.on svg{fill:var(--gold)}
 
 /* anlamlar: gutter (kenar boşluğu) + gövde; karşılıklar tek eksende */
-.sense{display:grid; grid-template-columns:var(--gut) 1fr; column-gap:var(--gutgap); margin-top:26px}
+.sense{display:grid; grid-template-columns:var(--gut) minmax(0,1fr); column-gap:var(--gutgap); margin-top:26px}
 .sense:first-child{margin-top:0}
 .gut{text-align:right; padding-top:7px; line-height:1.25}
 .gut .dom{display:block; font-family:var(--sans); font-size:10px; font-weight:700; letter-spacing:.13em;
@@ -113,7 +113,8 @@ main{margin-top:10px}
 .gut .dom.dm1{color:var(--dm1)} .gut .dom.dm2{color:var(--dm2)} .gut .dom.dm3{color:var(--dm3)}
 .gut .dom.dm4{color:var(--dm4)} .gut .dom.dm5{color:var(--dm5)} .gut .dom.dm6{color:var(--dm6)}
 .gut .pos{display:block; font-family:var(--serif); font-style:italic; font-size:12.5px; color:var(--faint); margin-top:3px}
-.bod .tr{font-family:var(--display); font-size:23px; line-height:1.28; color:var(--acc); font-weight:600}
+.bod .tr{font-family:var(--display); font-size:23px; line-height:1.28; color:var(--acc); font-weight:600;
+  overflow-wrap:break-word}
 .bod .tr a.tlink{color:var(--acc); text-decoration:none; border-bottom:1px solid transparent;
   transition:border-color .15s, color .15s}
 .bod .tr a.tlink:hover{border-bottom-color:currentColor; color:var(--ink)}
@@ -169,7 +170,7 @@ main{margin-top:10px}
 .sec-h::before{content:"— "; color:var(--faint)}
 
 /* öbekler: aynı gutter düzeni */
-.phrase{display:grid; grid-template-columns:var(--gut) 1fr; column-gap:var(--gutgap); margin-top:22px}
+.phrase{display:grid; grid-template-columns:var(--gut) minmax(0,1fr); column-gap:var(--gutgap); margin-top:22px}
 .phrase:first-of-type{margin-top:0}
 .phrase .bod .ph-lm{font-family:var(--display); font-style:italic; font-size:18px; color:var(--ink)}
 .phrase .bod .tr{display:inline; font-size:18px}

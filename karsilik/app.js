@@ -270,7 +270,7 @@ function cleanLookup(word){
 function linkTrs(list, oppDir){
   return (list || []).map(w =>
     `<a class="tlink" data-q="${esc(cleanLookup(w))}" data-d="${oppDir}">${esc(w)}</a>`
-  ).join('<span class="sep">·</span>');
+  ).join('<span class="sep">·</span>​');   // ​: ayraçtan sonra kırılma fırsatı → uzun listeler sarsın
 }
 // EŞ/YAN ANLAMLILAR — aynı dilde alternatifler, ait oldukları anlamın altında.
 // Aynı yönde (kendi dilinde) aranır, çünkü eş anlamlı çeviri değil komşu sözcüktür.
@@ -278,7 +278,7 @@ function linkSyns(list, dir){
   if(!list || !list.length) return '';
   const links = list.map(w =>
     `<a class="tlink syn" data-q="${esc(cleanLookup(w))}" data-d="${dir}">${esc(w)}</a>`
-  ).join('<span class="sep">·</span>');
+  ).join('<span class="sep">·</span>​');   // ​: ayraçtan sonra kırılma fırsatı → uzun listeler sarsın
   return `<div class="syn-line"><span class="syn-k">eş · yan anlam</span>${links}</div>`;
 }
 // İLGİLİ — çapraz dildeki ilişkili sözcükler. Çeviri DEĞİL: 'vergi' isim ama 'levy'
@@ -287,7 +287,7 @@ function linkRel(list, dir){
   if(!list || !list.length) return '';
   const links = list.map(w =>
     `<a class="tlink rel" data-q="${esc(cleanLookup(w))}" data-d="${dir}">${esc(w)}</a>`
-  ).join('<span class="sep">·</span>');
+  ).join('<span class="sep">·</span>​');   // ​: ayraçtan sonra kırılma fırsatı → uzun listeler sarsın
   return `<div class="syn-line rel-line"><span class="syn-k">ilgili</span>${links}</div>`;
 }
 
