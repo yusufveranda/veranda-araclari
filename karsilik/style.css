@@ -132,6 +132,12 @@ main{margin-top:10px}
   border-bottom:1px solid transparent; transition:color .15s, border-color .15s}
 .syn-line a.tlink.syn:hover{color:var(--acc); border-bottom-color:var(--acc)}
 .syn-line .sep{font-size:.85em}
+/* ilgili (çapraz-dil köprü): eş anlamlıdan ayırt edilsin — düz (italik değil), gold tonu */
+.rel-line{margin-top:5px}
+.rel-line .syn-k{color:var(--gold)}
+.rel-line a.tlink.rel{color:var(--muted); font-style:normal; text-decoration:none;
+  border-bottom:1px solid transparent; transition:color .15s, border-color .15s}
+.rel-line a.tlink.rel:hover{color:var(--gold); border-bottom-color:var(--gold)}
 .copy{border:none; background:none; padding:0 4px; cursor:pointer; color:var(--faint); line-height:0;
   vertical-align:middle; opacity:0; transition:opacity .15s, color .2s}
 .copy svg{width:13px; height:13px}

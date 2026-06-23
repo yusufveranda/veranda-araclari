@@ -281,6 +281,15 @@ function linkSyns(list, dir){
   ).join('<span class="sep">·</span>');
   return `<div class="syn-line"><span class="syn-k">eş · yan anlam</span>${links}</div>`;
 }
+// İLGİLİ — çapraz dildeki ilişkili sözcükler. Çeviri DEĞİL: 'vergi' isim ama 'levy'
+// fiil ('vergi toplamak') olduğundan doğrudan karşılık değil, ilişkili olarak geçer.
+function linkRel(list, dir){
+  if(!list || !list.length) return '';
+  const links = list.map(w =>
+    `<a class="tlink rel" data-q="${esc(cleanLookup(w))}" data-d="${dir}">${esc(w)}</a>`
+  ).join('<span class="sep">·</span>');
+  return `<div class="syn-line rel-line"><span class="syn-k">ilgili</span>${links}</div>`;
+}
 
 const POSWORD = {
   verb:'fiil', noun:'isim', adjective:'sıfat', adverb:'zarf', numeral:'sayı',
@@ -326,6 +335,7 @@ function renderSense(sn, opp, withCopy){
         <div class="tr">${linkTrs(sn.tr, opp)}${tagInline(sn.tags)}${copy}</div>
         ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
         ${linkSyns(sn.syn, dir)}
+        ${linkRel(sn.rel, opp)}
         ${exBlock(sn.ex)}
       </div>
     </div>`;
@@ -384,6 +394,7 @@ function renderAcademic(entry, ctx){
         <div class="tr">${linkTrs(s.tr, opp)}${tagInline(tags)}</div>
         ${s.gloss ? `<div class="gloss">${esc(s.gloss)}</div>` : ''}
         ${linkSyns(s.syn, dir)}
+        ${linkRel(s.rel, opp)}
         ${s.note ? `<div class="acnote">${esc(s.note)}</div>` : ''}
         ${exBlock(s.ex)}
       </div>`;
