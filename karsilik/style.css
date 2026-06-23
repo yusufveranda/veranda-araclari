@@ -124,20 +124,26 @@ main{margin-top:10px}
 .sep{color:var(--faint); margin:0 .26em; font-weight:400; font-style:normal; font-size:.7em;
   vertical-align:.08em; -webkit-user-select:none; user-select:none}
 
-/* eş/yan anlamlılar — ait olduğu anlamın altında, sessiz ikincil dizgi */
-.syn-line{margin-top:8px; font-family:var(--serif); font-size:13.5px; line-height:1.65; color:var(--muted)}
-.syn-k{font-family:var(--sans); font-size:8.5px; font-weight:700; letter-spacing:.12em;
-  text-transform:uppercase; color:var(--faint); margin-right:11px}
-.syn-line a.tlink.syn{color:var(--muted); font-style:italic; text-decoration:none;
-  border-bottom:1px solid transparent; transition:color .15s, border-color .15s}
-.syn-line a.tlink.syn:hover{color:var(--acc); border-bottom-color:var(--acc)}
-.syn-line .sep{font-size:.85em}
-/* ilgili (çapraz-dil köprü): eş anlamlıdan ayırt edilsin — düz (italik değil), gold tonu */
-.rel-line{margin-top:5px}
+/* eş/yan anlamlılar — keskin, dik, tıklanır çapraz-başvurular (soluk dipnot DEĞİL).
+   Sözcükler: Playfair 500, koyu mürekkep; etiket: keskin terracotta çapa;
+   ayraç (·): sessiz, tıklanmaz; alt-çizgi yalnız :hover'da, zarif ofsetli. */
+.syn-line{margin-top:9px; line-height:1.6}
+.syn-k{font-family:var(--sans); font-size:9.5px; font-weight:700; letter-spacing:.18em;
+  text-transform:uppercase; margin-right:13px; white-space:nowrap;
+  color:#9A4A33; color:color-mix(in srgb, var(--acc) 58%, var(--muted))}
+.syn-line a.tlink.syn{font-family:var(--display); font-weight:500; font-style:normal; font-size:15px;
+  color:var(--ink); text-decoration:none; text-underline-offset:3px; text-decoration-thickness:1px;
+  transition:color .15s}
+.syn-line a.tlink.syn:hover{color:var(--acc); text-decoration:underline}
+.syn-line .sep{font-size:.78em}
+
+/* ilgili (çapraz-dil köprü): eş anlamlıyla aynı sağlamlıkta ama gold etiket+hover ile ayrı */
+.rel-line{margin-top:6px}
 .rel-line .syn-k{color:var(--gold)}
-.rel-line a.tlink.rel{color:var(--muted); font-style:normal; text-decoration:none;
-  border-bottom:1px solid transparent; transition:color .15s, border-color .15s}
-.rel-line a.tlink.rel:hover{color:var(--gold); border-bottom-color:var(--gold)}
+.rel-line a.tlink.rel{font-family:var(--display); font-weight:500; font-style:normal; font-size:15px;
+  color:var(--ink); text-decoration:none; text-underline-offset:3px; text-decoration-thickness:1px;
+  transition:color .15s}
+.rel-line a.tlink.rel:hover{color:var(--gold); text-decoration:underline}
 .copy{border:none; background:none; padding:0 4px; cursor:pointer; color:var(--faint); line-height:0;
   vertical-align:middle; opacity:0; transition:opacity .15s, color .2s}
 .copy svg{width:13px; height:13px}
