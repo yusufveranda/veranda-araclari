@@ -3,11 +3,11 @@
   "dirs": {
     "en": {
       "count": 31803,
-      "buckets": 266
+      "buckets": 360
     },
     "tr": {
       "count": 30061,
-      "buckets": 251
+      "buckets": 320
     }
   },
   "domains": [
