@@ -2,7 +2,7 @@
   "version": 1,
   "dirs": {
     "en": {
-      "count": 31674,
+      "count": 31675,
       "buckets": 264
     },
     "tr": {
@@ -44,7 +44,9 @@
     "nature",
     "philosophy",
     "industry",
+    "sociology",
     "linguistics",
+    "history",
     "figurative"
   ],
   "note": "karşılık — ingilizce↔türkçe sözlük. seed build."
