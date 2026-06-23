@@ -149,6 +149,38 @@ main{margin-top:10px}
 .phrase .bod .tr{display:inline; font-size:18px}
 .phrase.hl .bod .ph-lm{color:var(--acc)}
 
+/* ====================  AKADEMİK KART  ==================== */
+.acdot{align-self:center; font-family:var(--sans); font-size:9px; font-weight:700; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--acc)}
+.ctx-toggle{margin-top:14px}
+.ctx-hint{color:var(--faint); font-style:italic; letter-spacing:0; text-transform:none}
+.ctx{display:none; margin:14px 0 4px; max-width:64ch}
+.ctx.show{display:block}
+.ctx-row{display:flex; gap:16px; margin-top:10px}
+.ctx-row:first-child{margin-top:0}
+.ctx-k{flex:none; width:118px; text-align:right; padding-top:4px; line-height:1.4;
+  font-family:var(--sans); font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--faint)}
+.ctx-v{flex:1; min-width:0; font-family:var(--serif); font-size:13.5px; line-height:1.55; color:var(--muted); font-style:italic}
+.coll-list{display:flex; flex-wrap:wrap; gap:4px 14px; font-style:normal}
+.coll{font-family:var(--serif); font-style:italic; font-size:13.5px; color:var(--ink)}
+
+.acbody{margin-top:34px}
+.acdom{font-family:var(--sans); font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--dm6); margin:32px 0 12px}
+.acdom:first-child{margin-top:0}
+.acdom.dm1{color:var(--dm1)} .acdom.dm2{color:var(--dm2)} .acdom.dm3{color:var(--dm3)}
+.acdom.dm4{color:var(--dm4)} .acdom.dm5{color:var(--dm5)} .acdom.dm6{color:var(--dm6)}
+.acsense{margin-top:16px}
+.acsense:first-of-type{margin-top:0}
+.acsense .tr{font-family:var(--display); font-size:23px; line-height:1.28; color:var(--acc); font-weight:600}
+.acsense .tr a.tlink{color:var(--acc); text-decoration:none; border-bottom:1px solid transparent; transition:border-color .15s}
+.acsense .tr a.tlink:hover{border-bottom-color:currentColor}
+.acsense .gloss{font-family:var(--serif); font-style:italic; color:var(--muted); font-size:14.5px; margin-top:5px; max-width:56ch}
+.acnote{font-family:var(--serif); font-size:13px; line-height:1.55; color:var(--muted); margin-top:7px;
+  padding-left:15px; max-width:58ch}
+.acnote::before{content:"—"; color:var(--faint); margin-left:-15px; margin-right:7px}
+@media(max-width:720px){ .ctx-k{width:auto; text-align:left} .ctx-row{flex-direction:column; gap:2px} }
+
 /* ====================  YAN PANEL — kutusuz, saf metin  ==================== */
 .sb{margin-bottom:30px}
 .sb-h{display:flex; align-items:baseline; justify-content:space-between; gap:10px;

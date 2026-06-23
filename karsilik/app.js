@@ -329,7 +329,66 @@ function renderPhrase(ph, i, opp, hl){
     </div>`;
 }
 
+// AKADEMİK KART — disiplinlerarası bölümler + bağlam (köken/kullanım/eşdizim) toggle
+function renderAcademic(entry, ctx){
+  const dir = ctx.dir, opp = dir === 'en' ? 'tr' : 'en';
+  curCtx = ctx; curRel = entry.rel || {};
+  const fav = isFav(ctx), dirtag = dir === 'en' ? 'EN→TR' : 'TR→EN';
+
+  let h = `<div class="entry-head">
+      <span class="word">${esc(entry.lemma)}</span>
+      <span class="phon"><button class="ico say" type="button" data-say="${esc(entry.lemma)}" data-sd="${dir}" aria-label="seslendir">${SPK}</button>${entry.ipa ? `<span class="ipa">${esc(entry.ipa)}</span>` : ''}</span>
+      <button class="ico fav${fav ? ' on' : ''}" type="button" data-star="1" aria-label="kaydet">${STAR}</button>
+      <span class="acdot">akademik</span>
+      <span class="dirtag">${dirtag}</span>
+    </div>`;
+
+  // bağlam: köken + akademik kullanım + eşdizimler (varsayılan KAPALI → giriş temiz)
+  const coll = entry.collocations || [];
+  if(entry.etymology || entry.usage || coll.length){
+    let c = '';
+    if(entry.etymology) c += `<div class="ctx-row"><span class="ctx-k">kökeni</span><span class="ctx-v">${esc(entry.etymology)}</span></div>`;
+    if(entry.usage) c += `<div class="ctx-row"><span class="ctx-k">akademik kullanım</span><span class="ctx-v">${esc(entry.usage)}</span></div>`;
+    if(coll.length) c += `<div class="ctx-row"><span class="ctx-k">eşdizimler</span><span class="ctx-v coll-list">${coll.map(x => `<span class="coll">${esc(x)}</span>`).join('')}</span></div>`;
+    h += `<button class="ex-toggle ctx-toggle" type="button">${CHEV} bağlam<span class="ctx-hint"> · köken · kullanım · eşdizim</span></button><div class="ctx">${c}</div>`;
+  }
+
+  // anlamlar domain'e göre bölümlenir (disiplinlerarası anlam kayması)
+  const groups = [], gi = {};
+  for(const s of entry.senses){
+    const di = domainInfo(s.domain);
+    const label = s.domlabel || (di ? di[0] : 'Genel'), fam = di ? di[1] : 'dm6';
+    if(!(label in gi)){ gi[label] = groups.length; groups.push({label, fam, senses: []}); }
+    groups[gi[label]].senses.push(s);
+  }
+  h += `<div class="acbody">`;
+  for(const g of groups){
+    h += `<div class="acdom ${g.fam}">${esc(g.label.toLocaleUpperCase('tr'))}</div>`;
+    for(const s of g.senses){
+      const tags = [...(s.tags || []), ...(s.register ? [s.register] : [])];
+      h += `<div class="acsense">
+        <div class="tr">${linkTrs(s.tr, opp)}${tagInline(tags)}</div>
+        ${s.gloss ? `<div class="gloss">${esc(s.gloss)}</div>` : ''}
+        ${s.note ? `<div class="acnote">${esc(s.note)}</div>` : ''}
+        ${exBlock(s.ex)}
+      </div>`;
+    }
+  }
+  h += `</div>`;
+
+  if((entry.phrases || []).length){
+    h += `<section class="section"><div class="sec-h">öbekler ve deyimler</div>`;
+    entry.phrases.forEach((ph, i) => { h += renderPhrase(ph, i, opp, false); });
+    h += `</section>`;
+  }
+
+  main.innerHTML = h;
+  renderSide(curRel);
+  window.scrollTo({top: 0});
+}
+
 function renderEntry(entry, ctx){
+  if(entry.academic){ renderAcademic(entry, ctx); return; }
   const dir = ctx.dir, hlPhrase = ctx.ph, opp = dir === 'en' ? 'tr' : 'en';
   curCtx = ctx; curRel = entry.rel || {};
   const dirtag = dir === 'en' ? 'EN→TR' : 'TR→EN';
