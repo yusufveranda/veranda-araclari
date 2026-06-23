@@ -24,6 +24,7 @@ const DOMAIN = {
   politics:['siyaset','dm5'], government:['devlet','dm5'], grammar:['dilbilgisi','dm5'],
   linguistics:['dilbilim','dm5'], music:['müzik','dm5'], art:['sanat','dm5'],
   religion:['din','dm5'], architecture:['mimari','dm5'],
+  philosophy:['felsefe','dm5'], academic:['akademik','dm5'],
   sports:['spor','dm1'], games:['oyun','dm1'],
   geography:['coğrafya','dm6'], industry:['sanayi','dm6'], cooking:['mutfak','dm6'],
   food:['mutfak','dm6']
@@ -182,7 +183,7 @@ function toRec(w, dir){
     const low = trLower(w.l);
     if(low.endsWith('mak') || low.endsWith('mek')) keys.push(fold(w.l.slice(0, -3)));
   }
-  return {l: w.l, id: w.id, b: w.b, ph: w.ph, p: w.p || [], f: w.f || 0, h: w.h || '', dir, keys};
+  return {l: w.l, id: w.id, b: w.b, ph: w.ph, p: w.p || [], f: w.f || 0, h: w.h || '', ac: w.ac || 0, dir, keys};
 }
 
 /* ----------------------------------------------------------------- arama */
@@ -220,7 +221,8 @@ function search(q, limit){
       out.push({rec, s});
     }
   }
-  out.sort((a, b) => a.s - b.s || a.rec.f - b.rec.f || a.rec.l.length - b.rec.l.length);
+  // skor → akademik öncelik (eşitlikte akademik/hukuk terimi öne) → sıklık → kısalık
+  out.sort((a, b) => a.s - b.s || (b.rec.ac - a.rec.ac) || a.rec.f - b.rec.f || a.rec.l.length - b.rec.l.length);
   const seen = new Set(), res = [];
   for(const o of out){
     const k = o.rec.dir + '/' + o.rec.id + '/' + (o.rec.ph ?? '');
@@ -263,11 +265,21 @@ function cleanLookup(word){
   const w = trLower(word).trim();
   return w.replace(/^to\s+/, '').replace(/^-\S+\s+/, '').replace(/^bir\s+/, '').trim() || w;
 }
-// HER karşılık ters-sözlüğe köprü: tıklanınca o yönde aranır
+// HER karşılık ters-sözlüğe köprü: tıklanınca o yönde aranır.
+// Ayraç: ince gri orta-nokta (·) — her sözcük ayrı, izole tıklanır bağlantı.
 function linkTrs(list, oppDir){
   return (list || []).map(w =>
     `<a class="tlink" data-q="${esc(cleanLookup(w))}" data-d="${oppDir}">${esc(w)}</a>`
-  ).join('<span class="sep">, </span>');
+  ).join('<span class="sep">·</span>');
+}
+// EŞ/YAN ANLAMLILAR — aynı dilde alternatifler, ait oldukları anlamın altında.
+// Aynı yönde (kendi dilinde) aranır, çünkü eş anlamlı çeviri değil komşu sözcüktür.
+function linkSyns(list, dir){
+  if(!list || !list.length) return '';
+  const links = list.map(w =>
+    `<a class="tlink syn" data-q="${esc(cleanLookup(w))}" data-d="${dir}">${esc(w)}</a>`
+  ).join('<span class="sep">·</span>');
+  return `<div class="syn-line"><span class="syn-k">eş · yan anlam</span>${links}</div>`;
 }
 
 const POSWORD = {
@@ -302,8 +314,9 @@ const STAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M6 15 H5 a2 2 0 0 1-2-2 V5 a2 2 0 0 1 2-2 h8 a2 2 0 0 1 2 2 v1"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 l6 6 -6 6"/></svg>';
 
-// kenar boşluğu (domain/POS) + gövde (karşılık → tanım → örnek). Çerçeve yok.
+// kenar boşluğu (domain/POS) + gövde (karşılık → tanım → eş anlam → örnek). Çerçeve yok.
 function renderSense(sn, opp, withCopy){
+  const dir = opp === 'en' ? 'tr' : 'en';          // girişin kendi yönü (eş anlamlılar için)
   const copy = withCopy
     ? `<button class="copy" type="button" data-copy="${esc((sn.tr || []).join(', '))}" aria-label="kopyala">${COPY}</button>`
     : '';
@@ -312,6 +325,7 @@ function renderSense(sn, opp, withCopy){
       <div class="bod">
         <div class="tr">${linkTrs(sn.tr, opp)}${tagInline(sn.tags)}${copy}</div>
         ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
+        ${linkSyns(sn.syn, dir)}
         ${exBlock(sn.ex)}
       </div>
     </div>`;
@@ -369,6 +383,7 @@ function renderAcademic(entry, ctx){
       h += `<div class="acsense">
         <div class="tr">${linkTrs(s.tr, opp)}${tagInline(tags)}</div>
         ${s.gloss ? `<div class="gloss">${esc(s.gloss)}</div>` : ''}
+        ${linkSyns(s.syn, dir)}
         ${s.note ? `<div class="acnote">${esc(s.note)}</div>` : ''}
         ${exBlock(s.ex)}
       </div>`;
@@ -421,19 +436,17 @@ function renderEntry(entry, ctx){
   }
 }
 
-// yan panel: yıldızlar + son bakılanlar + ilişkili (okuma yolundan uzakta)
-function renderSide(rel){
+// yan panel: yalnız arşiv — yıldızlar + son bakılanlar. (Eş/yan anlamlılar artık
+// ait oldukları anlamın altında, ana kartta; sağ panel okuma yolundan uzak kalır.)
+function renderSide(){
   const jitem = (it, list, i) => `<div class="sb-row">` +
     `<a class="sb-item" data-li="${esc(it.id)}" data-ld="${it.dir}" data-lb="${it.b}" data-ll="${esc(it.l)}">${esc(it.l)}<span class="cd">${it.dir}</span></a>` +
     `<button class="sb-del" type="button" data-del="${list}" data-i="${i}" title="kaldır" aria-label="${esc(it.l)} kaldır">×</button></div>`;
-  const witem = w => `<a class="sb-item" data-word="${esc(w)}">${esc(w)}</a>`;
   const head = (label, clear) => `<div class="sb-h">${label}` +
     (clear ? `<button class="sb-clear" type="button" data-clear="${clear}">temizle</button>` : '') + `</div>`;
-  const related = [...new Set([...((rel && rel.syn) || []), ...((rel && rel.see) || [])])];
   let h = '';
   if(favs.length) h += `<section class="sb sb-archive">${head('yıldızlar', 'favs')}<div class="sb-list">${favs.map((it, i) => jitem(it, 'favs', i)).join('')}</div></section>`;
   if(recent.length) h += `<section class="sb sb-archive">${head('son bakılanlar', 'recent')}<div class="sb-list">${recent.map((it, i) => jitem(it, 'recent', i)).join('')}</div></section>`;
-  if(related.length) h += `<section class="sb sb-nav">${head('ilişkili sözcükler', null)}<div class="sb-list">${related.map(witem).join('')}</div></section>`;
   if(!h) h = `<div class="sb-empty">aradıkların ve yıldızladıkların burada birikecek.</div>`;
   side.innerHTML = h;
 }
@@ -552,8 +565,10 @@ qEl.addEventListener('keydown', e => {
   else if(e.key === 'ArrowUp'){ e.preventDefault(); moveSel(-1); }
   else if(e.key === 'Enter'){
     e.preventDefault();
+    clearTimeout(t);                                   // bekleyen (bayat) öneri güncellemesini iptal et
+    // Enter TAM girdiyi arar. Açılır öneri YALNIZCA ArrowDown ile açıkça seçildiyse kullanılır;
+    // hızlı yazıp Enter'a basınca bayat ilk öneri (ör. 'vermek') asla otomatik seçilmez.
     if(selIdx >= 0 && curSugg[selIdx]) openRec(curSugg[selIdx]);
-    else if(curSugg.length) openRec(curSugg[0]);
     else if(qEl.value.trim()) openWord(qEl.value.trim());
   } else if(e.key === 'Escape'){ hideSugg(); }
 });
@@ -563,6 +578,15 @@ sugg.addEventListener('mousedown', e => {              // mousedown: blur'dan ö
 });
 qEl.addEventListener('blur', () => setTimeout(hideSugg, 120));
 qEl.addEventListener('focus', () => { if(qEl.value.trim()) showSugg(search(qEl.value.trim(), 8)); });
+
+// tıkla-tümünü-seç: dolu arama kutusuna İLK tık tüm metni seçer (yeni kelime yazmaya
+// hazır); İKİNCİ tık seçimi bırakıp imleci tıklanan yere koyar (yazım düzeltmek için).
+let selectAllNext = false;
+qEl.addEventListener('mousedown', () => { selectAllNext = (document.activeElement !== qEl); });
+qEl.addEventListener('mouseup', e => {
+  if(selectAllNext && qEl.value){ e.preventDefault(); qEl.select(); }
+  selectAllNext = false;
+});
 
 $('#clearbtn').addEventListener('click', () => {
   qEl.value = ''; $('#clearbtn').style.display = 'none'; hideSugg(); qEl.focus();

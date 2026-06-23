@@ -2,8 +2,8 @@
   "version": 1,
   "dirs": {
     "en": {
-      "count": 33536,
-      "buckets": 280
+      "count": 31674,
+      "buckets": 264
     },
     "tr": {
       "count": 29992,
@@ -13,28 +13,29 @@
   "domains": [
     "general",
     "medical",
+    "academic",
+    "politics",
     "biology",
     "computing",
     "religion",
     "chemistry",
+    "legal",
     "math",
     "anatomy",
     "science",
     "business",
-    "politics",
     "grammar",
     "tech",
     "music",
     "sports",
-    "legal",
     "geography",
     "nautical",
     "games",
     "architecture",
     "agriculture",
     "art",
-    "cooking",
     "economics",
+    "cooking",
     "military",
     "finance",
     "botany",

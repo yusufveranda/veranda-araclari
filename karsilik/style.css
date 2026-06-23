@@ -114,10 +114,24 @@ main{margin-top:10px}
 .gut .dom.dm4{color:var(--dm4)} .gut .dom.dm5{color:var(--dm5)} .gut .dom.dm6{color:var(--dm6)}
 .gut .pos{display:block; font-family:var(--serif); font-style:italic; font-size:12.5px; color:var(--faint); margin-top:3px}
 .bod .tr{font-family:var(--display); font-size:23px; line-height:1.28; color:var(--acc); font-weight:600}
-.bod .tr a.tlink{color:var(--acc); text-decoration:none; border-bottom:1px solid transparent; transition:border-color .15s}
-.bod .tr a.tlink:hover{border-bottom-color:currentColor}
+.bod .tr a.tlink{color:var(--acc); text-decoration:none; border-bottom:1px solid transparent;
+  transition:border-color .15s, color .15s}
+.bod .tr a.tlink:hover{border-bottom-color:currentColor; color:var(--ink)}
 .bod .tr .reg{font-family:var(--serif); font-style:italic; font-weight:400; font-size:13px; color:var(--faint)}
 .bod .gloss{font-family:var(--serif); font-style:italic; color:var(--muted); font-size:14.5px; margin-top:5px; max-width:54ch}
+
+/* karşılık ayracı: ince gri orta-nokta — virgül değil; her sözcük ayrı tıklanır bağlantı */
+.sep{color:var(--faint); margin:0 .26em; font-weight:400; font-style:normal; font-size:.7em;
+  vertical-align:.08em; -webkit-user-select:none; user-select:none}
+
+/* eş/yan anlamlılar — ait olduğu anlamın altında, sessiz ikincil dizgi */
+.syn-line{margin-top:8px; font-family:var(--serif); font-size:13.5px; line-height:1.65; color:var(--muted)}
+.syn-k{font-family:var(--sans); font-size:8.5px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--faint); margin-right:11px}
+.syn-line a.tlink.syn{color:var(--muted); font-style:italic; text-decoration:none;
+  border-bottom:1px solid transparent; transition:color .15s, border-color .15s}
+.syn-line a.tlink.syn:hover{color:var(--acc); border-bottom-color:var(--acc)}
+.syn-line .sep{font-size:.85em}
 .copy{border:none; background:none; padding:0 4px; cursor:pointer; color:var(--faint); line-height:0;
   vertical-align:middle; opacity:0; transition:opacity .15s, color .2s}
 .copy svg{width:13px; height:13px}
