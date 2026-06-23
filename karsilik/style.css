@@ -138,6 +138,14 @@ main{margin-top:10px}
 .syn-line a.tlink.syn:hover{color:var(--acc); text-decoration:underline}
 .syn-line .sep{font-size:.78em}
 
+/* zıt anlam: slate-mavi etiket+hover ile eş anlamlıdan ayrı */
+.ant-line{margin-top:5px}
+.ant-line .syn-k{color:var(--dm4)}
+.ant-line a.tlink.ant{font-family:var(--display); font-weight:500; font-style:normal; font-size:15px;
+  color:var(--ink); text-decoration:none; text-underline-offset:3px; text-decoration-thickness:1px;
+  transition:color .15s}
+.ant-line a.tlink.ant:hover{color:var(--dm4); text-decoration:underline}
+
 /* ilgili (çapraz-dil köprü): eş anlamlıyla aynı sağlamlıkta ama gold etiket+hover ile ayrı */
 .rel-line{margin-top:6px}
 .rel-line .syn-k{color:var(--gold)}

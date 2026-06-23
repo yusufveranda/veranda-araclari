@@ -25,6 +25,8 @@ const DOMAIN = {
   linguistics:['dilbilim','dm5'], music:['müzik','dm5'], art:['sanat','dm5'],
   religion:['din','dm5'], architecture:['mimari','dm5'],
   philosophy:['felsefe','dm5'], academic:['akademik','dm5'],
+  physics:['fizik','dm4'], statistics:['istatistik','dm4'], psychology:['psikoloji','dm3'],
+  anthropology:['antropoloji','dm3'], sociology:['toplumbilim','dm5'], history:['tarih','dm6'],
   sports:['spor','dm1'], games:['oyun','dm1'],
   geography:['coğrafya','dm6'], industry:['sanayi','dm6'], cooking:['mutfak','dm6'],
   food:['mutfak','dm6']
@@ -290,6 +292,14 @@ function linkRel(list, dir){
   ).join('<span class="sep">·</span>​');   // ​: ayraçtan sonra kırılma fırsatı → uzun listeler sarsın
   return `<div class="syn-line rel-line"><span class="syn-k">ilgili</span>${links}</div>`;
 }
+// ZIT ANLAM — aynı dilde karşıt sözcükler, anlamın altında.
+function linkAnt(list, dir){
+  if(!list || !list.length) return '';
+  const links = list.map(w =>
+    `<a class="tlink ant" data-q="${esc(cleanLookup(w))}" data-d="${dir}">${esc(w)}</a>`
+  ).join('<span class="sep">·</span>​');
+  return `<div class="syn-line ant-line"><span class="syn-k">zıt anlam</span>${links}</div>`;
+}
 
 const POSWORD = {
   verb:'fiil', noun:'isim', adjective:'sıfat', adverb:'zarf', numeral:'sayı',
@@ -335,6 +345,7 @@ function renderSense(sn, opp, withCopy){
         <div class="tr">${linkTrs(sn.tr, opp)}${tagInline(sn.tags)}${copy}</div>
         ${sn.gloss ? `<div class="gloss">${esc(sn.gloss)}</div>` : ''}
         ${linkSyns(sn.syn, dir)}
+        ${linkAnt(sn.ant, dir)}
         ${linkRel(sn.rel, opp)}
         ${exBlock(sn.ex)}
       </div>
@@ -394,6 +405,7 @@ function renderAcademic(entry, ctx){
         <div class="tr">${linkTrs(s.tr, opp)}${tagInline(tags)}</div>
         ${s.gloss ? `<div class="gloss">${esc(s.gloss)}</div>` : ''}
         ${linkSyns(s.syn, dir)}
+        ${linkAnt(s.ant, dir)}
         ${linkRel(s.rel, opp)}
         ${s.note ? `<div class="acnote">${esc(s.note)}</div>` : ''}
         ${exBlock(s.ex)}
