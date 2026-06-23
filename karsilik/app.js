@@ -158,6 +158,11 @@ function pushRecent(ctx){
   recent = [it, ...recent.filter(x => !sameEntry(x, it))].slice(0, 12);
   LS.set('recent', recent);
 }
+function pruneSaved(rec){               // artık var olmayan kaydı geçmiş + yıldızlardan sil
+  recent = recent.filter(x => !(x.l === rec.l && x.dir === rec.dir));
+  favs = favs.filter(x => !(x.l === rec.l && x.dir === rec.dir));
+  LS.set('recent', recent); LS.set('favs', favs);
+}
 const isFav = ctx => favs.some(x => sameEntry(x, ctx));
 function toggleFav(ctx){
   const it = {l: ctx.l, id: ctx.id, b: ctx.b, dir: ctx.dir};
@@ -241,7 +246,8 @@ async function loadIndexes(){
 }
 async function fetchEntry(dir, id, b){
   const k = dir + '/' + b;
-  if(!bucketCache[k]) bucketCache[k] = fetch(`data/entries/${dir}/${b}.json`).then(r => r.json());
+  if(!bucketCache[k])                       // 404/ağ hatasında patlamasın → {} (openRec yeniden çözer)
+    bucketCache[k] = fetch(`data/entries/${dir}/${b}.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}));
   return (await bucketCache[k])[id];
 }
 
@@ -358,13 +364,17 @@ function renderEntry(entry, ctx){
 
 // yan panel: yıldızlar + son bakılanlar + ilişkili (okuma yolundan uzakta)
 function renderSide(rel){
-  const jitem = it => `<a class="sb-item" data-li="${esc(it.id)}" data-ld="${it.dir}" data-lb="${it.b}" data-ll="${esc(it.l)}">${esc(it.l)}<span class="cd">${it.dir}</span></a>`;
+  const jitem = (it, list, i) => `<div class="sb-row">` +
+    `<a class="sb-item" data-li="${esc(it.id)}" data-ld="${it.dir}" data-lb="${it.b}" data-ll="${esc(it.l)}">${esc(it.l)}<span class="cd">${it.dir}</span></a>` +
+    `<button class="sb-del" type="button" data-del="${list}" data-i="${i}" title="kaldır" aria-label="${esc(it.l)} kaldır">×</button></div>`;
   const witem = w => `<a class="sb-item" data-word="${esc(w)}">${esc(w)}</a>`;
+  const head = (label, clear) => `<div class="sb-h">${label}` +
+    (clear ? `<button class="sb-clear" type="button" data-clear="${clear}">temizle</button>` : '') + `</div>`;
   const related = [...new Set([...((rel && rel.syn) || []), ...((rel && rel.see) || [])])];
   let h = '';
-  if(favs.length) h += `<section class="sb"><div class="sb-h">yıldızlar</div><div class="sb-list">${favs.map(jitem).join('')}</div></section>`;
-  if(recent.length) h += `<section class="sb"><div class="sb-h">son bakılanlar</div><div class="sb-list">${recent.map(jitem).join('')}</div></section>`;
-  if(related.length) h += `<section class="sb"><div class="sb-h">ilişkili sözcükler</div><div class="sb-list">${related.map(witem).join('')}</div></section>`;
+  if(favs.length) h += `<section class="sb">${head('yıldızlar', 'favs')}<div class="sb-list">${favs.map((it, i) => jitem(it, 'favs', i)).join('')}</div></section>`;
+  if(recent.length) h += `<section class="sb">${head('son bakılanlar', 'recent')}<div class="sb-list">${recent.map((it, i) => jitem(it, 'recent', i)).join('')}</div></section>`;
+  if(related.length) h += `<section class="sb">${head('ilişkili sözcükler', null)}<div class="sb-list">${related.map(witem).join('')}</div></section>`;
   if(!h) h = `<div class="sb-empty">aradıkların ve yıldızladıkların burada birikecek.</div>`;
   side.innerHTML = h;
 }
@@ -395,10 +405,19 @@ function renderNoResult(q){
 
 /* ----------------------------------------------------------------- gezinme */
 async function openRec(rec, push){
-  const entry = await fetchEntry(rec.dir, rec.id, +rec.b);
-  if(!entry){ renderNoResult(rec.l || rec.id); return; }
-  const ctx = {dir: rec.dir, id: rec.id, b: +rec.b, ph: rec.ph, l: entry.lemma};
-  setDir(rec.dir);
+  let dir = rec.dir, id = rec.id, b = +rec.b, ph = rec.ph;
+  let entry = await fetchEntry(dir, id, b);
+  if(!entry && rec.l){                      // veri güncellendiyse bucket değişmiş olabilir → indeksten çöz
+    const cur = foldToRec[dir] && foldToRec[dir].get(fold(rec.l));
+    if(cur){ id = cur.id; b = cur.b; entry = await fetchEntry(dir, id, b); }
+  }
+  if(!entry){                               // hâlâ yok → ölü kaydı düş, aramaya düş
+    if(rec.l){ pruneSaved(rec); openWord(rec.l, push); }
+    else renderNoResult(rec.l || rec.id);
+    return;
+  }
+  const ctx = {dir, id, b, ph, l: entry.lemma};
+  setDir(dir);
   renderEntry(entry, ctx);
   pushRecent(ctx);
   hideSugg();
@@ -500,6 +519,21 @@ $('#themebtn').addEventListener('click', () =>
 
 // içerik tıklamaları (hem ana sütun hem yan panel)
 function onContentClick(e){
+  const del = e.target.closest('[data-del]');            // tek tek geçmiş/yıldız sil
+  if(del){
+    e.preventDefault(); e.stopPropagation();
+    const arr = del.dataset.del === 'favs' ? favs : recent;
+    arr.splice(+del.dataset.i, 1);
+    LS.set(del.dataset.del === 'favs' ? 'favs' : 'recent', arr);
+    renderSide(curRel); return;
+  }
+  const clr = e.target.closest('[data-clear]');          // hepsini temizle
+  if(clr){
+    e.preventDefault();
+    if(clr.dataset.clear === 'favs'){ favs = []; LS.set('favs', favs); }
+    else { recent = []; LS.set('recent', recent); }
+    renderSide(curRel); return;
+  }
   const tog = e.target.closest('.ex-toggle');
   if(tog){ tog.classList.toggle('open'); tog.nextElementSibling.classList.toggle('show'); return; }
   const say = e.target.closest('[data-say]');
