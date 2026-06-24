@@ -236,11 +236,14 @@ function search(q, limit){
 }
 
 /* ----------------------------------------------------------------- veri yükleme */
+let DV = '';                                  // veri sürüm etiketi (cache-bust)
 async function loadIndexes(){
-  meta = await fetch('data/meta.json').then(r => r.json());
+  // meta her zaman tazeden doğrulansın (küçük dosya) → build damgasını al
+  meta = await fetch('data/meta.json', {cache: 'no-cache'}).then(r => r.json());
+  DV = '?v=' + (meta.build || meta.version || '');
   const [en, tr] = await Promise.all([
-    fetch('data/index.en.json').then(r => r.json()),
-    fetch('data/index.tr.json').then(r => r.json())
+    fetch('data/index.en.json' + DV).then(r => r.json()),
+    fetch('data/index.tr.json' + DV).then(r => r.json())
   ]);
   records.en = en.words.map(w => toRec(w, 'en'));
   records.tr = tr.words.map(w => toRec(w, 'tr'));
@@ -251,7 +254,7 @@ async function loadIndexes(){
 async function fetchEntry(dir, id, b){
   const k = dir + '/' + b;
   if(!bucketCache[k])                       // 404/ağ hatasında patlamasın → {} (openRec yeniden çözer)
-    bucketCache[k] = fetch(`data/entries/${dir}/${b}.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+    bucketCache[k] = fetch(`data/entries/${dir}/${b}.json` + DV).then(r => r.ok ? r.json() : {}).catch(() => ({}));
   return (await bucketCache[k])[id];
 }
 
