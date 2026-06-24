@@ -403,7 +403,9 @@ function renderAcademic(entry, ctx){
   for(const g of groups){
     h += `<div class="acdom ${g.fam}">${esc(g.label.toLocaleUpperCase('tr'))}</div>`;
     for(const s of g.senses){
-      const tags = [...(s.tags || []), ...(s.register ? [s.register] : [])];
+      // register: 'neutral'/'formal' varsayılan-gürültü, gösterme; argo/konuşma/eski gibi anlamlı olanları göster
+      const showReg = s.register && !['neutral', 'formal'].includes(s.register);
+      const tags = [...(s.tags || []), ...(showReg ? [s.register] : [])];
       h += `<div class="acsense">
         <div class="tr">${linkTrs(s.tr, opp)}${tagInline(tags)}</div>
         ${s.gloss ? `<div class="gloss">${esc(s.gloss)}</div>` : ''}
