@@ -2,11 +2,11 @@
   "version": 1,
   "dirs": {
     "en": {
-      "count": 31803,
+      "count": 31816,
       "buckets": 360
     },
     "tr": {
-      "count": 30062,
+      "count": 30080,
       "buckets": 320
     }
   },
@@ -38,8 +38,8 @@
     "architecture",
     "agriculture",
     "art",
-    "cooking",
     "military",
+    "cooking",
     "government",
     "finance",
     "linguistics",
