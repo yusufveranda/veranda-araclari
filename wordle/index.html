@@ -43,6 +43,7 @@ body.gece{
 body{transition:background .4s,color .4s}
 
 .oyun{max-width:464px;margin:0 auto;padding:0 4px;position:relative}
+.oyun:has(#hub:not(.gizli)){max-width:760px}
 
 /* ----- üst: ortalı başlık + köşe araç düğmeleri ----- */
 .ust-araclar{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
@@ -78,7 +79,7 @@ body{transition:background .4s,color .4s}
 .vhero-ad{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(42px,12vw,60px);color:var(--mur);letter-spacing:-1.2px;line-height:.9;margin-top:2px}
 .vhero-ad .nokta{color:var(--kirmizi)}
 .vhero-slogan{font-family:'Libre Baskerville',serif;font-style:italic;color:var(--soluk);font-size:14px;margin-top:9px}
-.kartlar-oyun{display:flex;flex-direction:column;gap:14px;max-width:430px;margin:30px auto 0}
+.kartlar-oyun{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:720px;margin:30px auto 0}
 .okart{display:block;text-align:left;width:100%;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:13px;
   padding:16px 18px;box-shadow:5px 6px 0 var(--mat-golge);cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s}
 .okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)} .okart:nth-child(4){transform:rotate(.45deg)}
