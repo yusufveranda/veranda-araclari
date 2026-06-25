@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
-<link rel="stylesheet" href="ortak/stil.css">
+<link rel="stylesheet" href="ortak/stil.css?v=2">
 <script src="ortak/adlar.js"></script>
 </head>
 <body class="vitrin">
@@ -63,7 +63,6 @@
       <path d="M450,120 q10,-11 20,0 q10,-11 20,0"/>
       <path d="M530,86 q8,-9 16,0 q8,-9 16,0"/>
       <path d="M800,250 q7,-8 14,0 q7,-8 14,0"/>
-      <path class="kus-ucan" d="M1280,150 q9,-10 18,0 q9,-10 18,0"/>
     </g>
 
     <!-- uzakta şehir -->
@@ -262,53 +261,72 @@
 </section>
 
 <main>
-  <div class="kartlar">
-    <a class="kart" href="sozluk/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6 C10 4.4 7.5 4 4 4 v14 c3.5 0 6 .4 8 2 c2-1.6 4.5-2 8-2 V4 c-3.5 0-6 .4-8 2 Z"/><path d="M12 6 v14"/></svg></span>
-      <h2 data-ad="sozluk">Dilimin Ucunda</h2>
-      <p>Çağrışımlar, uyaklar ve anlam ağları.</p>
-    </a>
-    <a class="kart" href="karsilik/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 H18 M15 5 L18 8 L15 11"/><path d="M20 16 H6 M9 13 L6 16 L9 19"/></svg></span>
-      <h2>Karşılık</h2>
-      <p>Çift yönlü İngilizce–Türkçe sözlük.</p>
-    </a>
-    <a class="kart" href="wordle/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="currentColor" stroke="none" opacity=".85"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="currentColor" stroke="none" opacity=".35"/></svg></span>
-      <h2 data-ad="verandle">verandle</h2>
-      <p>Wordle benzeri kelime oyunları.</p>
-    </a>
-    <a class="kart" href="bulmaca/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3 v18 M15 3 v18 M3 9 h18 M3 15 h18"/><rect x="9" y="9" width="6" height="6" fill="currentColor" stroke="none" opacity=".55"/></svg></span>
-      <h2 data-ad="bulmaca">Bulmaca Yardımcısı</h2>
-      <p>Kelime bulmaca çözücü.</p>
-    </a>
-    <a class="kart kart-kilitli" href="karakapli/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10 V7 a4 4 0 0 1 8 0 v3"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg></span>
-      <h2>Kara Kaplı<span class="yakinda kilit-rozet">kilitli</span></h2>
-      <p>Gizli defterin.</p>
-    </a>
-    <a class="kart" href="politika/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5 a2 2 0 0 1 2-2 h6 v16 H6 a2 2 0 0 0-2 2 Z"/><path d="M20 5 a2 2 0 0 0-2-2 h-6 v16 h6 a2 2 0 0 1 2 2 Z"/></svg></span>
-      <h2 data-ad="politika">Siyaset Bilimi</h2>
-      <p>Çalışma kartları.</p>
-    </a>
-    <a class="kart" href="siir-defteri/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5c-7 0-12 4-14 11l2 2c7-2 11-7 12-13Z"/><path d="M6 18 4 20"/><path d="M9 13h5"/></svg></span>
-      <h2 data-ad="siir">Bitmeyen Şiir</h2>
-      <p>Şiirin o bitmeyen düzenleme mesaisi için geliştirilmiş dijital defter.</p>
-    </a>
-    <a class="kart" href="nota/">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18 V6 l11-2 v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></span>
-      <h2 data-ad="nota">Veranda Band</h2>
-      <p>Müzisyenler için interaktif beste yardımcısı.</p>
-    </a>
-    <a class="kart" href="#">
-      <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 C12 14 15 8 21 5 C20 13 17 18 12 21 Z"/><path d="M12 21 C11 16 8 12 4 10 C5 16 8 19 12 21 Z"/></svg></span>
-      <h2>Bitki Bilimi<span class="yakinda">yakında</span></h2>
-      <p>Bitkileri tanıma kartları.</p>
-    </a>
-  </div>
+  <section class="grup grup-one">
+    <div class="kartlar">
+      <a class="kart" href="sozluk/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6 C10 4.4 7.5 4 4 4 v14 c3.5 0 6 .4 8 2 c2-1.6 4.5-2 8-2 V4 c-3.5 0-6 .4-8 2 Z"/><path d="M12 6 v14"/></svg></span>
+        <h2 data-ad="sozluk">Dilimin Ucunda</h2>
+        <p>Çağrışımlar, uyaklar ve anlam ağları.</p>
+      </a>
+      <a class="kart" href="karsilik/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 H18 M15 5 L18 8 L15 11"/><path d="M20 16 H6 M9 13 L6 16 L9 19"/></svg></span>
+        <h2>Karşılık</h2>
+        <p>Çift yönlü İngilizce–Türkçe sözlük.</p>
+      </a>
+      <a class="kart" href="wordle/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="currentColor" stroke="none" opacity=".85"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="currentColor" stroke="none" opacity=".35"/></svg></span>
+        <h2 data-ad="verandle">verandle</h2>
+        <p>Wordle benzeri kelime oyunları.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="grup">
+    <h2 class="grup-bas">Defterler</h2>
+    <div class="kartlar">
+      <a class="kart kart-kilitli" href="karakapli/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10 V7 a4 4 0 0 1 8 0 v3"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg></span>
+        <h2>Kara Kaplı<span class="yakinda kilit-rozet">kilitli</span></h2>
+        <p>Gizli defterin.</p>
+      </a>
+      <a class="kart" href="siir-defteri/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5c-7 0-12 4-14 11l2 2c7-2 11-7 12-13Z"/><path d="M6 18 4 20"/><path d="M9 13h5"/></svg></span>
+        <h2 data-ad="siir">Bitmeyen Şiir</h2>
+        <p>Şiirin o bitmeyen düzenleme mesaisi için geliştirilmiş dijital defter.</p>
+      </a>
+      <a class="kart" href="bulmaca/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3 v18 M15 3 v18 M3 9 h18 M3 15 h18"/><rect x="9" y="9" width="6" height="6" fill="currentColor" stroke="none" opacity=".55"/></svg></span>
+        <h2 data-ad="bulmaca">Bulmaca Yardımcısı</h2>
+        <p>Kelime bulmaca çözücü.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="grup">
+    <h2 class="grup-bas">Çalışma</h2>
+    <div class="kartlar">
+      <a class="kart" href="politika/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5 a2 2 0 0 1 2-2 h6 v16 H6 a2 2 0 0 0-2 2 Z"/><path d="M20 5 a2 2 0 0 0-2-2 h-6 v16 h6 a2 2 0 0 1 2 2 Z"/></svg></span>
+        <h2 data-ad="politika">Siyaset Bilimi</h2>
+        <p>Çalışma kartları.</p>
+      </a>
+      <a class="kart" href="#">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 C12 14 15 8 21 5 C20 13 17 18 12 21 Z"/><path d="M12 21 C11 16 8 12 4 10 C5 16 8 19 12 21 Z"/></svg></span>
+        <h2>Bitki Bilimi<span class="yakinda">yakında</span></h2>
+        <p>Bitkileri tanıma kartları.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="grup">
+    <div class="kartlar">
+      <a class="kart kart-genis" href="nota/">
+        <span class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18 V6 l11-2 v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></span>
+        <h2 data-ad="nota">Veranda Band</h2>
+        <p>Müzisyenler için interaktif beste yardımcısı.</p>
+      </a>
+    </div>
+  </section>
 </main>
 
 <footer>

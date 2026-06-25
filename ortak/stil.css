@@ -72,8 +72,6 @@ body.t-gece .kayan{animation:kayan 31s linear infinite}
 body.t-gece .pervane{opacity:1;animation:pervane 5.5s ease-in-out infinite}
 body.t-gece.lamba-kapali .pervane{opacity:0;animation:none}
 @keyframes pervane{0%{transform:translate(-13px,5px)}25%{transform:translate(7px,-9px)}50%{transform:translate(15px,7px)}75%{transform:translate(-5px,-13px)}100%{transform:translate(-13px,5px)}}
-.kus-ucan{animation:ucus 42s linear infinite}
-@keyframes ucus{0%,55%{transform:translate(0,0)}100%{transform:translate(-1480px,-40px)}}
 @media(prefers-reduced-motion:reduce){.kirp,.buhar,.kayan,.pervane,.kus-ucan{animation:none}.gunes-k,.kapi{transition:none}}
 
 .afis-yazi{position:absolute;top:0;left:0;width:100%;padding:clamp(22px,4.5vw,52px) clamp(20px,5vw,56px);pointer-events:none}
@@ -92,8 +90,15 @@ body.vitrin .gunun .gk a{color:var(--kirmizi);text-decoration:none;white-space:n
 
 /* kartlar — kâğıt kesikleri */
 body.vitrin main{margin-top:30px}
-body.vitrin .kartlar{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-@media(max-width:640px){body.vitrin .kartlar{grid-template-columns:1fr}}
+body.vitrin .wrap{max-width:1100px}
+body.vitrin .gunun{max-width:720px}
+body.vitrin .grup{margin-top:44px}
+body.vitrin .grup-one{margin-top:30px}
+body.vitrin .grup-bas{font-family:'Playfair Display',Georgia,serif;font-size:15px;font-weight:600;color:var(--alan-ink);letter-spacing:.04em;margin:0 0 16px 2px;display:flex;align-items:center;gap:10px}
+body.vitrin .grup-bas::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--gunes);flex:none}
+body.vitrin .kartlar{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media(max-width:900px){body.vitrin .kartlar{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){body.vitrin .kartlar{grid-template-columns:1fr}}
 body.vitrin .kart{background:var(--kagit);border:none;border-radius:4px;padding:22px;box-shadow:5px 6px 0 rgba(15,8,4,.25);text-decoration:none;color:var(--kagit-ink);display:block;transition:transform .22s,box-shadow .22s}
 body.vitrin .kart:nth-child(1){transform:rotate(-1.1deg)}
 body.vitrin .kart:nth-child(2){transform:rotate(.9deg)}
@@ -104,6 +109,7 @@ body.vitrin .kart:nth-child(6){transform:rotate(.8deg)}
 body.vitrin .kart:nth-child(7){transform:rotate(-.6deg)}
 body.vitrin .kart:nth-child(8){transform:rotate(.9deg)}
 body.vitrin .kart:nth-child(9){transform:rotate(-.7deg)}
+body.vitrin .kart-genis{grid-column:1/-1;transform:none}
 body.vitrin .kart:hover,body.vitrin .kart:focus-visible{transform:rotate(0) translateY(-4px);box-shadow:7px 9px 0 rgba(15,8,4,.3)}
 body.vitrin .kart:focus-visible{outline:3px solid var(--kagit);outline-offset:3px}
 body.vitrin .kart .ikon{width:46px;height:46px;border-radius:50%;background:var(--gunes);color:var(--kagit);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
