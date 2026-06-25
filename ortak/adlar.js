@@ -18,8 +18,8 @@ window.ADLAR = {
   "sicak_slogan": "gizli kelimeyi anlam yakınlığıyla yakala",
   "sozluk": "Dilimin Ucunda",
   "bulmaca": "Bulmaca Yardımcısı",
-  "siir": "Şiir Defteri",
-  "politika": "Siyaset Bilimi Çalışma",
+  "siir": "Bitmeyen Şiir",
+  "politika": "Siyaset Bilimi",
   "nota": "Veranda Band",
   "sicak_tahmin": "tahmin"
 };

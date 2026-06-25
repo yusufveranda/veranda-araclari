@@ -438,7 +438,7 @@ body{transition:background .4s,color .4s}
 
   <!-- ===== oyun ekranı ===== -->
   <section id="oyunEkran" class="gizli">
-    <div class="oyun-tablar-et">↹ veranda'nın dört oyunu — dokun, geç</div>
+    <div class="oyun-tablar-et"></div>
     <div class="oyun-tablar" id="oyunSeg">
       <button data-oyun="harfiyat" class="secili" data-ad="harfiyat">harfiyat</button>
       <button data-oyun="iskelime" data-ad="taraca">taraça</button>
@@ -455,7 +455,7 @@ body{transition:background .4s,color .4s}
       <button class="yenibtn gizli" id="yeniBtn">yeni ↻</button>
     </div>
 
-    <div class="sekme-ipucu gizli" id="sekmeIpucu">↔ 6 ayrı kelime — sekmeye dokunup geç</div>
+    <div class="sekme-ipucu gizli" id="sekmeIpucu">↔ 6 ayrı kelime</div>
     <div class="sekmeler gizli" id="sekmeler"></div>
     <div class="ipuclar gizli" id="ipuclar"></div>
     <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
@@ -981,7 +981,7 @@ function ciz(){
   const _ay=document.getElementById('altYazi');
   if(oyun==='iskelime'){ const _a=altinUz(); _ay.innerHTML='üç’ten sekiz harfe · altı kelime'+(_a?' · <b class="altin-et">🌟 '+_a+' harf 2×</b>':', yedişer deneme'); }
   else _ay.textContent = oyun==='anlamca' ? 'beş harf · üç deneme · yakın anlam ipucuyla' : 'beş harf · altı deneme';
-  document.getElementById('ipucu').textContent = oyunBitti ? '' : 'boş bırak, bildiğini yerine koy — yeşiller kendiliğinden gelir';
+  document.getElementById('ipucu').textContent = oyunBitti ? '' : '';
 }
 
 function payBagla(el){   // isim + kopyala + tablo düğmelerini bağla (taraça & avlu ortak)
