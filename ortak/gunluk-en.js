@@ -1,0 +1,57 @@
+/* günün İngilizce kelimesi — vitrin için seçme EN→TR sözcükler (Karşılık'a derin bağlanır) */
+const GUNLUK_EN = [
+  {en:"serendipity", tr:"hoş tesadüf, şans eseri güzel buluş"},
+  {en:"ephemeral", tr:"gelip geçici, kısa ömürlü"},
+  {en:"solitude", tr:"yalnızlık, inziva"},
+  {en:"twilight", tr:"akşam/tan alacası, alacakaranlık"},
+  {en:"dusk", tr:"akşam karanlığı"},
+  {en:"glimmer", tr:"hafif ışıltı, parıltı"},
+  {en:"longing", tr:"özlem, hasret"},
+  {en:"wander", tr:"amaçsızca gezinmek, dolaşmak"},
+  {en:"melancholy", tr:"hüzün, melankoli"},
+  {en:"serene", tr:"dingin, sakin"},
+  {en:"fleeting", tr:"bir anlık, geçip giden"},
+  {en:"whisper", tr:"fısıltı; fısıldamak"},
+  {en:"embrace", tr:"kucaklamak; sarıp sarmalamak"},
+  {en:"yearn", tr:"özlemek, can atmak"},
+  {en:"dawn", tr:"şafak, tan vakti"},
+  {en:"shimmer", tr:"titrek parıltı"},
+  {en:"linger", tr:"oyalanmak; iz/etki bırakmak"},
+  {en:"tender", tr:"şefkatli, müşfik; nazik"},
+  {en:"distant", tr:"uzak, ırak"},
+  {en:"fade", tr:"solmak, sönmek"},
+  {en:"glow", tr:"ışımak; sıcak parıltı"},
+  {en:"ember", tr:"kor, köz"},
+  {en:"bloom", tr:"çiçek açmak; açılış"},
+  {en:"mellow", tr:"yumuşamış, olgun; dingin"},
+  {en:"hush", tr:"sessizlik; susmak"},
+  {en:"vivid", tr:"canlı, parlak"},
+  {en:"fragile", tr:"kırılgan, narin"},
+  {en:"weary", tr:"yorgun, bezgin"},
+  {en:"soothe", tr:"yatıştırmak, teskin etmek"},
+  {en:"gaze", tr:"dik dik bakmak; bakış"},
+  {en:"murmur", tr:"mırıltı; uğultu"},
+  {en:"breeze", tr:"meltem, hafif esinti"},
+  {en:"mist", tr:"ince sis, pus"},
+  {en:"dwell", tr:"ikamet etmek; üzerinde durmak"},
+  {en:"roam", tr:"başıboş dolaşmak"},
+  {en:"solace", tr:"teselli, avunç"},
+  {en:"kindle", tr:"tutuşturmak; alevlendirmek"},
+  {en:"velvet", tr:"kadife"},
+  {en:"amber", tr:"kehribar; koyu sarı"},
+  {en:"harbor", tr:"liman; içinde barındırmak"},
+  {en:"weave", tr:"dokumak; örmek"},
+  {en:"quiver", tr:"titremek, ürpermek"},
+  {en:"radiant", tr:"ışıl ışıl, parlak"},
+  {en:"wistful", tr:"hüzünlü özlem dolu"},
+  {en:"nestle", tr:"sokulmak, yuvalanmak"},
+  {en:"drowsy", tr:"uykulu, mahmur"},
+  {en:"meadow", tr:"çayır, çimenlik"},
+  {en:"ripple", tr:"su halkası; dalgalanmak"}
+];
+
+function gununKelimesiEN(){
+  const baslangic = new Date(2026, 0, 1);
+  const gun = Math.floor((Date.now() - baslangic) / 86400000);
+  return GUNLUK_EN[((gun * 53 + 11) % GUNLUK_EN.length + GUNLUK_EN.length) % GUNLUK_EN.length];
+}

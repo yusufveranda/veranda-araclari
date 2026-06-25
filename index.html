@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
-<link rel="stylesheet" href="ortak/stil.css?v=5">
+<link rel="stylesheet" href="ortak/stil.css?v=6">
 <script src="ortak/adlar.js"></script>
 </head>
 <body class="vitrin">
@@ -252,13 +252,22 @@
 
 <div class="wrap">
 
-<section class="gunun">
-  <span class="nokta" aria-hidden="true"></span>
-  <div>
-    <div class="selam" id="selam">iyi günler.</div>
-    <div class="gk" id="gununKelimesi"></div>
-  </div>
-</section>
+<div class="gunun-satir">
+  <section class="gunun">
+    <span class="nokta" aria-hidden="true"></span>
+    <div>
+      <div class="selam" id="selam">iyi günler.</div>
+      <div class="gk" id="gununKelimesi"></div>
+    </div>
+  </section>
+  <section class="gunun gunun-en">
+    <span class="nokta" aria-hidden="true"></span>
+    <div>
+      <div class="selam">İngilizce–Türkçe</div>
+      <div class="gk" id="gununKelimesiEN"></div>
+    </div>
+  </section>
+</div>
 
 <main>
   <section class="grup grup-one">
@@ -344,6 +353,7 @@
 </div>
 
 <script src="ortak/gunluk.js"></script>
+<script src="ortak/gunluk-en.js"></script>
 <script>
 (function(){
   var DILIMLER = ['t-sabah','t-gunduz','t-aksam','t-gece'];
@@ -371,6 +381,11 @@
   document.getElementById('gununKelimesi').innerHTML =
     'günün kelimesi: <b>' + g.k + '</b> <span class="anlam">· ' + g.a + '</span> ' +
     '<a href="sozluk/?q=' + encodeURIComponent(g.k) + '">sözlükte aç →</a>';
+
+  var ge = gununKelimesiEN();
+  document.getElementById('gununKelimesiEN').innerHTML =
+    'günün kelimesi: <b>' + ge.en + '</b> <span class="anlam">· ' + ge.tr + '</span> ' +
+    '<a href="karsilik/?q=' + encodeURIComponent(ge.en) + '&d=en">Karşılık\'ta aç →</a>';
 
   /* kedi: tıklayınca konuşur, sonra başka pozda başka yere geçer */
   var KEDI = [

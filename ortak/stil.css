@@ -81,7 +81,7 @@ body.t-gece.lamba-kapali .pervane{opacity:0;animation:none}
 .afis-yazi .alt{color:var(--baslik-ink);opacity:.82;font-style:italic;font-size:clamp(13px,1.6vw,17px);margin-top:10px;transition:color 1s}
 
 /* günün kelimesi — yapıştırılmış kâğıt şerit */
-body.vitrin .gunun{display:flex;gap:14px;align-items:flex-start;margin-top:26px;background:var(--kagit);border-radius:4px;padding:16px 20px;box-shadow:5px 6px 0 rgba(15,8,4,.25);transform:rotate(-.4deg)}
+body.vitrin .gunun{display:flex;gap:14px;align-items:flex-start;background:var(--kagit);border-radius:4px;padding:16px 20px;box-shadow:5px 6px 0 rgba(15,8,4,.25);transform:rotate(-.4deg)}
 body.vitrin .gunun .nokta{flex:none;width:18px;height:18px;border-radius:50%;background:var(--gunes);margin-top:4px}
 body.vitrin .gunun .selam{color:var(--kagit-soluk);font-size:13.5px;font-style:italic}
 body.vitrin .gunun .gk{margin-top:5px;font-size:16.5px;line-height:1.55}
@@ -92,14 +92,16 @@ body.vitrin .gunun .gk a{color:var(--kirmizi);text-decoration:none;white-space:n
 /* kartlar — kâğıt kesikleri */
 body.vitrin main{margin-top:30px}
 body.vitrin .wrap{max-width:1100px}
-body.vitrin .gunun{max-width:720px}
+body.vitrin .gunun-satir{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px;align-items:stretch}
+body.vitrin .gunun-satir .gunun{margin-top:0;height:100%}
+body.vitrin .gunun.gunun-en{transform:rotate(.5deg)}
 body.vitrin .grup{margin-top:44px}
 body.vitrin .grup-one{margin-top:30px}
 body.vitrin .grup-bas{font-family:'Playfair Display',Georgia,serif;font-size:15px;font-weight:600;color:var(--alan-ink);letter-spacing:.04em;margin:0 0 16px 2px;display:flex;align-items:center;gap:10px}
 body.vitrin .grup-bas::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--gunes);flex:none}
 body.vitrin .kartlar{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 @media(max-width:900px){body.vitrin .kartlar{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){body.vitrin .kartlar{grid-template-columns:1fr}}
+@media(max-width:600px){body.vitrin .kartlar{grid-template-columns:1fr}body.vitrin .gunun-satir{grid-template-columns:1fr}}
 body.vitrin .kart{background:var(--kagit);border:none;border-radius:4px;padding:22px;box-shadow:5px 6px 0 rgba(15,8,4,.25);text-decoration:none;color:var(--kagit-ink);display:block;transition:transform .22s,box-shadow .22s}
 body.vitrin .kart:nth-child(1){transform:rotate(-1.1deg)}
 body.vitrin .kart:nth-child(2){transform:rotate(.9deg)}
