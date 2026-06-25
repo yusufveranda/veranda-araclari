@@ -14,7 +14,7 @@ window.ADLAR = {
   "karine_aciklama": "İpuculu \nKısa",
   "sicak": "Sıcak Soğuk",
   "sicak_rozet": "anlam oyunu · sınırsız tahmin",
-  "sicak_aciklama": "harfini değil anlamını bul. her tahmin gizli kelimeye ne kadar yakın? yaklaştıkça ısınırsın.",
+  "sicak_aciklama": "Saklı kelimeyi bulmaya çalış.",
   "sicak_slogan": "gizli kelimeyi anlam yakınlığıyla yakala",
   "sozluk": "Dilimin Ucunda",
   "bulmaca": "Bulmaca Yardımcısı",
