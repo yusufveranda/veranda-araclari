@@ -55,7 +55,7 @@ a{color:inherit}
 @media(min-width:1000px){
   .layout{display:grid; grid-template-columns:minmax(0,1fr) 210px; gap:0 70px; align-items:start}
   .col-main{max-width:700px}
-  .col-side{margin-top:0; position:sticky; top:24px}
+  .col-side{margin-top:92px; position:sticky; top:24px}
 }
 
 /* ---- başlık ---- */
