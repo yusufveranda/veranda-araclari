@@ -72,7 +72,7 @@ body{transition:background .4s,color .4s}
 
 /* ===== HUB: Verandle başlık + darağacı + oyun kartları ===== */
 #hub{text-align:center;padding-top:6px}
-.vhero-art{display:block;width:100%;max-width:340px;height:auto;margin:0 auto}
+.vhero-art{display:block;width:100vw;max-width:none;margin-left:calc(50% - 50vw);height:auto}
 .vhero-art .asili{transform-box:fill-box;transform-origin:50% 0%;animation:sallan 3.8s ease-in-out infinite}
 @keyframes sallan{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-3deg)}}
 @media(prefers-reduced-motion:reduce){.vhero-art .asili{animation:none}}
@@ -368,37 +368,42 @@ body{transition:background .4s,color .4s}
   <!-- ===== HUB (vitrin) ===== -->
   <section id="hub">
     <div class="vhero">
-      <svg class="vhero-art" viewBox="0 0 360 196" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Verandada sevimli bir darağacında sallanan çöp adam">
-        <circle cx="236" cy="92" r="60" fill="var(--gunes)" opacity=".9"/>
-        <!-- veranda zemini + korkuluk -->
-        <rect x="0" y="168" width="360" height="28" fill="var(--mur)"/>
-        <g stroke="var(--mur)" stroke-width="5" stroke-linecap="round">
-          <line x1="16" y1="146" x2="16" y2="168"/><line x1="42" y1="146" x2="42" y2="168"/>
-          <line x1="68" y1="146" x2="68" y2="168"/><line x1="8" y1="146" x2="76" y2="146"/>
+      <svg class="vhero-art" viewBox="0 0 1600 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Verandada, akşam kırmızı güneşinin önünde sevimli bir darağacında sallanan çöp adam">
+        <circle cx="800" cy="118" r="104" fill="var(--gunes)" opacity=".9"/>
+        <!-- veranda zemini + korkuluk (tüm genişlik) -->
+        <rect x="0" y="260" width="1600" height="40" fill="var(--mur)"/>
+        <rect x="0" y="208" width="1600" height="9" fill="var(--mur)"/>
+        <g stroke="var(--mur)" stroke-width="6" stroke-linecap="round">
+          <line x1="40" y1="217" x2="40" y2="260"/><line x1="140" y1="217" x2="140" y2="260"/>
+          <line x1="240" y1="217" x2="240" y2="260"/><line x1="340" y1="217" x2="340" y2="260"/>
+          <line x1="440" y1="217" x2="440" y2="260"/><line x1="540" y1="217" x2="540" y2="260"/>
+          <line x1="1060" y1="217" x2="1060" y2="260"/><line x1="1160" y1="217" x2="1160" y2="260"/>
+          <line x1="1260" y1="217" x2="1260" y2="260"/><line x1="1360" y1="217" x2="1360" y2="260"/>
+          <line x1="1460" y1="217" x2="1460" y2="260"/><line x1="1560" y1="217" x2="1560" y2="260"/>
         </g>
-        <!-- saksı -->
-        <path d="M326 168 l4 -15 h17 l4 15 z" fill="var(--mur)"/>
-        <g stroke="var(--gunes)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".9">
-          <path d="M337 153 q-7 -13 -2 -23"/><path d="M340 153 q1 -16 7 -21"/><path d="M339 153 q0 -17 0 -25"/>
+        <!-- saksı (sağda) -->
+        <path d="M1330 260 l6 -22 h26 l6 22 z" fill="var(--mur)"/>
+        <g stroke="var(--gunes)" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".9">
+          <path d="M1346 238 q-10 -19 -3 -33"/><path d="M1350 238 q1 -23 10 -30"/><path d="M1348 238 q0 -25 0 -36"/>
         </g>
         <!-- darağacı -->
-        <g stroke="var(--mur)" stroke-width="8" stroke-linecap="round" fill="none">
-          <line x1="150" y1="168" x2="150" y2="34"/>
-          <line x1="146" y1="34" x2="234" y2="34"/>
-          <line x1="150" y1="58" x2="174" y2="34"/>
+        <g stroke="var(--mur)" stroke-width="12" stroke-linecap="round" fill="none">
+          <line x1="690" y1="260" x2="690" y2="56"/>
+          <line x1="684" y1="56" x2="846" y2="56"/>
+          <line x1="690" y1="92" x2="726" y2="56"/>
         </g>
-        <!-- ip + sevimli çöp adam (hafif sallanır) -->
+        <!-- ip + sevimli çöp adam (sallanır) -->
         <g class="asili">
-          <line x1="223" y1="38" x2="223" y2="78" stroke="var(--mur)" stroke-width="3"/>
-          <g stroke="var(--mur)" stroke-width="3.4" stroke-linecap="round" fill="none">
-            <path d="M223 80 L214 105"/><path d="M223 80 L232 105"/>
-            <line x1="223" y1="107" x2="223" y2="134"/>
-            <path d="M223 134 L209 147 l-3 6"/><path d="M223 134 L237 145 l4 5"/>
+          <line x1="832" y1="60" x2="832" y2="118" stroke="var(--mur)" stroke-width="4.5"/>
+          <g stroke="var(--mur)" stroke-width="5" stroke-linecap="round" fill="none">
+            <path d="M832 120 L818 158"/><path d="M832 120 L846 158"/>
+            <line x1="832" y1="160" x2="832" y2="202"/>
+            <path d="M832 202 L812 222 l-5 9"/><path d="M832 202 L852 220 l6 8"/>
           </g>
-          <circle cx="223" cy="95" r="11" fill="var(--kutu-bos)" stroke="var(--mur)" stroke-width="3"/>
-          <circle cx="219" cy="93" r="1.6" fill="var(--mur)"/><circle cx="227" cy="93" r="1.6" fill="var(--mur)"/>
-          <path d="M218 98 q5 5 10 0" stroke="var(--mur)" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <circle cx="214" cy="98" r="2.1" fill="var(--gunes)" opacity=".45"/><circle cx="232" cy="98" r="2.1" fill="var(--gunes)" opacity=".45"/>
+          <circle cx="832" cy="136" r="16" fill="var(--kutu-bos)" stroke="var(--mur)" stroke-width="4.5"/>
+          <circle cx="826" cy="133" r="2.4" fill="var(--mur)"/><circle cx="838" cy="133" r="2.4" fill="var(--mur)"/>
+          <path d="M825 141 q7 7 14 0" stroke="var(--mur)" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <circle cx="822" cy="142" r="2.6" fill="var(--gunes)" opacity=".4"/><circle cx="842" cy="142" r="2.6" fill="var(--gunes)" opacity=".4"/>
         </g>
       </svg>
       <h1 class="vhero-ad"><span data-ad="verandle">verandle</span><span class="nokta">.</span></h1>
