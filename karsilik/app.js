@@ -481,7 +481,10 @@ function renderSide(){
 
 function renderLanding(){
   curCtx = null; curRel = {};
-  main.innerHTML = '';            // saf boşluk — karşılama metni/öğretici yok
+  main.innerHTML = `<div class="landing">
+    <div class="lead">bir kelimenin öteki dildeki karşılığı.</div>
+    <div class="note">İngilizce ↔ Türkçe · her anlam bağlamına göre, deyimler ve örnek cümlelerle. Yazım hatasını ve Türkçe ekleri affeder — yukarıya bir kelime yaz.</div>
+  </div>`;
   renderSide(curRel);
 }
 
