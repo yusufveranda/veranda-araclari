@@ -117,6 +117,9 @@ body.vitrin .kart .ikon{width:46px;height:46px;border-radius:50%;background:var(
 body.vitrin .kart .ikon svg{width:24px;height:24px}
 body.vitrin .kart .kart-gorsel{margin:-22px -22px 18px;height:122px;overflow:hidden;border-radius:4px 4px 0 0}
 body.vitrin .kart .kart-gorsel svg{display:block;width:100%;height:100%}
+body.vitrin .kart .kart-gorsel:has(img){height:auto;aspect-ratio:800/410}
+body.vitrin .kart-genis .kart-gorsel:has(img){aspect-ratio:120/53}
+body.vitrin .kart .kart-gorsel img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 body.vitrin .kart h2{font-family:'Playfair Display',Georgia,serif;font-size:21px;font-weight:600;color:var(--kagit-ink)}
 body.vitrin .kart p{font-size:14.5px;color:var(--kagit-soluk);margin-top:7px;line-height:1.55}
 body.vitrin .kart .yakinda{font-family:'Libre Baskerville',Georgia,serif;font-size:11px;color:var(--kirmizi);border:1px solid var(--kirmizi);border-radius:12px;padding:1px 9px;margin-left:8px;vertical-align:middle;font-weight:400}
