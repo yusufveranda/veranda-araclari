@@ -348,6 +348,23 @@ body{transition:background .4s,color .4s}
   .sekme{width:38px;height:38px}
   .mat{margin:12px auto 0;padding:8px}
 }
+/* ===== geçen haftanın galipleri (sol sabit panel) ===== */
+.gecen-hafta{position:fixed;top:92px;left:calc(50% - 512px);width:250px;max-height:calc(100vh - 124px);overflow:auto;
+  background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;box-shadow:5px 6px 0 var(--mat-golge);
+  padding:14px 15px 13px;display:none;z-index:5}
+@media(min-width:1120px){.gecen-hafta:not(.gizli){display:block}}
+.gh-bas{font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--mur);line-height:1.25;margin-bottom:2px}
+.gh-alt{font-family:'Libre Baskerville',serif;font-size:11px;font-style:italic;color:var(--soluk);margin-bottom:11px}
+.gh-sat{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-top:1px solid var(--ince);font-size:14px}
+.gh-sat:first-child{border-top:none}
+.gh-sira{font-family:'Libre Baskerville',serif;font-size:12px;color:var(--soluk);min-width:15px}
+.gh-nick{flex:1;min-width:0;font-family:'Playfair Display',serif;color:var(--mur);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-puan{font-size:12.5px;color:var(--soluk)}
+.gh-sat.kral{font-size:15.5px}
+.gh-sat.kral .gh-nick{color:var(--kirmizi);font-weight:700}
+.gh-tum{display:block;width:100%;margin-top:10px;font-family:'Libre Baskerville',serif;font-size:12px;color:var(--soluk);
+  background:none;border:1px solid var(--kutu-cizgi);border-radius:8px;padding:6px;cursor:pointer}
+.gh-tum:hover{border-color:var(--kirmizi);color:var(--kirmizi)}
 </style>
 </head>
 <body>
@@ -437,6 +454,12 @@ body{transition:background .4s,color .4s}
 
   <!-- ===== oyun ekranı ===== -->
   <section id="oyunEkran" class="gizli">
+    <aside class="gecen-hafta gizli" id="gecenHafta">
+      <div class="gh-bas">👑 Geçen Haftanın Galipleri</div>
+      <div class="gh-alt" id="ghAlt"></div>
+      <div class="gh-liste" id="ghListe"></div>
+      <button class="gh-tum gizli" id="ghTum" type="button">tümünü gör</button>
+    </aside>
     <div class="oyun-tablar-et"></div>
     <div class="oyun-tablar" id="oyunSeg">
       <button data-oyun="harfiyat" class="secili" data-ad="harfiyat">harfiyat</button>
@@ -793,6 +816,36 @@ function lbGeriCiz(){   // bugün → yeni kelimelere; bu hafta → hafta kapan�
 function lbTimerBasla(){ if(lbTimer) clearInterval(lbTimer); lbGeriCiz(); lbTimer=setInterval(lbGeriCiz,1000); }
 function lbTimerDur(){ if(lbTimer){ clearInterval(lbTimer); lbTimer=null; } }
 
+/* ===== geçen haftanın galipleri (sol panel · achievement) ===== */
+let ghCache={}, ghAcik=false;
+function gecenHaftaBas(){ return haftaBas()-7; }
+function gecenHaftaAralik(){ const b=gecenHaftaBas(), f=g=>gunTarih(g).toLocaleDateString('tr-TR',{day:'numeric',month:'long'}); return f(b)+' – '+f(b+6); }
+function ghCiz(arr){
+  const panel=document.getElementById('gecenHafta'), liste=document.getElementById('ghListe'), tumBtn=document.getElementById('ghTum');
+  if(!arr || !arr.length){ panel.classList.add('gizli'); return; }
+  panel.classList.remove('gizli');
+  document.getElementById('ghAlt').textContent = oyunAdi()+' · '+gecenHaftaAralik();
+  const goster = ghAcik ? arr : arr.slice(0,3);
+  liste.innerHTML = goster.map((r,i)=>
+    '<div class="gh-sat'+(i===0?' kral':'')+'"><span class="gh-sira">'+(i+1)+'</span>'+
+    '<span class="gh-nick">'+(i===0?'👑 ':'')+kacis(r.nick)+'</span>'+
+    '<span class="gh-puan">'+r.puan+'</span></div>').join('');
+  if(arr.length>3){ tumBtn.classList.remove('gizli'); tumBtn.textContent = ghAcik ? 'küçült' : 'tümünü gör ('+arr.length+')'; }
+  else tumBtn.classList.add('gizli');
+}
+function gecenHaftaGetir(){
+  const panel=document.getElementById('gecenHafta');
+  if(!lbDestekli()){ panel.classList.add('gizli'); return; }
+  const key=lbOyun();
+  if(ghCache[key]){ ghCiz(ghCache[key]); return; }
+  panel.classList.remove('gizli');
+  document.getElementById('ghAlt').textContent='';
+  document.getElementById('ghListe').innerHTML='<div class="gh-sat" style="border:none;color:var(--soluk)">yükleniyor…</div>';
+  document.getElementById('ghTum').classList.add('gizli');
+  const q=new URLSearchParams({fn:'list',oyun:key,kapsam:'hafta',hbas:String(gecenHaftaBas())});
+  fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{ const arr=(j&&j.liste)||[]; ghCache[key]=arr; if(key===lbOyun()) ghCiz(arr); }).catch(()=>{ if(key===lbOyun()) panel.classList.add('gizli'); });
+}
+
 /* ===== nasıl oynanır (açıklama) ===== */
 function introIcerik(o){
   if(o==='iskelime') return {bas:'taraça nasıl oynanır?', html:
@@ -1051,6 +1104,7 @@ function oyunlaKur(){
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'sonsuz oyun';
   mesaj(''); ciz(); istatGoster();   // oyun/mod değişiminde scroll seviyesi korunur (en üste atma yok)
   if(oyunBitti) lbGonder();   // bitmiş günlük oyun yeniden açılınca da skoru gönder
+  ghAcik=false; gecenHaftaGetir();   // sol panel: geçen haftanın galipleri (o oyun için)
   if(oyun==='iskelime' && !localStorage.getItem('harfiyat:taraca-intro')){ localStorage.setItem('harfiyat:taraca-intro','1'); introAc('iskelime'); }   // taraça'ya ilk girişte açıklama
 }
 function oyunSec(o){ if(o===oyun) return; durumKaydetBellek(); oyun=o;
@@ -1089,6 +1143,7 @@ function oyunaGir(g){
 document.querySelectorAll('.okart[data-git]').forEach(k=>k.onclick=()=>oyunaGir(k.dataset.git));
 document.getElementById('hubDon').onclick=function(){ this.blur(); hubaDon(); };
 document.querySelectorAll('#oyunSeg button').forEach(x=>x.onclick=()=>{ oyunSec(x.dataset.oyun); x.blur(); });
+document.getElementById('ghTum').onclick=function(){ this.blur(); ghAcik=!ghAcik; ghCiz(ghCache[lbOyun()]||[]); };
 document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>{ modSec(x.dataset.mod); x.blur(); });
 document.getElementById('yeniBtn').onclick=yeniOyun;
 document.getElementById('silBtn').onclick=function(){ sil(); this.blur(); };
