@@ -10,7 +10,7 @@
 
   --bg:#F2E6CE; --glow:#F9F1DE; --ink:#1E190F; --muted:#5C5443; --faint:#8E7F64;
   --acc:#BE3A24; --acc-soft:rgba(190,58,36,.08); --paper:#FBF4E3;
-  --gold:#A8763B; --shadow:rgba(40,20,8,.13); --ex:#574B38;
+  --gold:#A8763B; --shadow:rgba(40,20,8,.13); --ex:#574B38; --line:#D9C7A3;
 
   --dm1:#BE3A24; --dm2:#8A5E22; --dm3:#4C6038; --dm4:#3C5067; --dm5:#79394C; --dm6:#665030;
 
@@ -19,7 +19,7 @@
 body.gece{
   --bg:#15110D; --glow:#231B12; --ink:#F1E6C9; --muted:#A89A7C; --faint:#7C6F58;
   --acc:#E2603F; --acc-soft:rgba(226,96,63,.12); --paper:#1E1811;
-  --gold:#C9A35C; --shadow:rgba(0,0,0,.4); --ex:#C7B894;
+  --gold:#C9A35C; --shadow:rgba(0,0,0,.4); --ex:#C7B894; --line:#3F3525;
   --dm1:#E2603F; --dm2:#CBA15A; --dm3:#96A877; --dm4:#7E93AB; --dm5:#C5808F; --dm6:#B0895C;
 }
 
@@ -36,17 +36,18 @@ a{color:inherit}
 
 /* ---- üst şerit ---- */
 .topbar{display:flex; align-items:center; justify-content:space-between}
-.eve-don{display:inline-flex; align-items:center; gap:8px; font-family:var(--sans); font-size:12px;
-  letter-spacing:.04em; color:var(--muted); text-decoration:none}
-.eve-don::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--acc); flex:none}
-.eve-don:hover{color:var(--acc)}
-.themebtn{font-family:var(--sans); font-size:12px; letter-spacing:.04em; padding:0; border:none;
-  background:none; color:var(--muted); cursor:pointer}
-.themebtn:hover{color:var(--acc)}
-.topright{display:inline-flex; align-items:center; gap:18px}
-.randbtn{font-family:var(--sans); font-size:12px; letter-spacing:.04em; padding:0; border:none;
-  background:none; color:var(--muted); cursor:pointer}
-.randbtn:hover{color:var(--acc); text-decoration:underline; text-underline-offset:3px}
+.eve-don{display:inline-flex; align-items:center; gap:7px; font-family:var(--serif); font-size:14px;
+  color:#FBF4E3; text-decoration:none; background:var(--acc); padding:7px 15px 7px 12px;
+  border-radius:20px; box-shadow:2px 3px 0 var(--shadow); margin-top:14px}
+.eve-don::before{content:""; width:11px; height:11px; border-radius:50%; background:#FBF4E3; flex:none}
+.eve-don:hover{color:#FBF4E3; filter:brightness(1.06)}
+.themebtn{font-family:var(--serif); font-size:14px; padding:5px 14px; border:1px solid var(--line);
+  border-radius:20px; background:var(--paper); color:var(--muted); cursor:pointer}
+.themebtn:hover{border-color:var(--acc); color:var(--acc)}
+.topright{display:inline-flex; align-items:center; gap:10px; margin-top:14px}
+.randbtn{font-family:var(--serif); font-size:14px; padding:5px 14px; border:1px solid var(--line);
+  border-radius:20px; background:var(--paper); color:var(--muted); cursor:pointer}
+.randbtn:hover{border-color:var(--acc); color:var(--acc)}
 
 /* ---- iki sütun: ana metin + yan panel, ARADA ÇİZGİ YOK, saf boşluk ---- */
 .layout{display:block}
@@ -66,16 +67,16 @@ header.brand .tag{font-family:var(--serif); font-style:italic; color:var(--muted
 
 /* ---- arama: editöryel alt-çizgi, kutu yok ---- */
 .searchwrap{position:sticky; top:0; z-index:30; background:var(--bg); padding:18px 0 9px; margin-top:16px}
-.searchrow{display:flex; align-items:baseline; gap:16px; border-bottom:2px solid var(--ink);
-  transition:border-color .2s}
+.searchrow{display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:6px;
+  background:var(--paper); padding:0 16px; transition:border-color .2s}
 .searchrow:focus-within{border-color:var(--acc)}
 .dirbtn{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--muted);
-  background:none; border:none; padding:0; cursor:pointer; white-space:nowrap}
+  background:none; border:none; border-right:1px solid var(--line); padding:0 12px 0 0; cursor:pointer; white-space:nowrap}
 .dirbtn b{color:var(--acc)}
-.dirbtn:hover{color:var(--ink)}
-#q{flex:1; font-family:var(--display); font-size:25px; padding:6px 0; border:none; background:none;
+.dirbtn:hover{color:var(--acc)}
+#q{flex:1; font-family:var(--display); font-size:21px; padding:13px 0; border:none; background:none;
   color:var(--ink); outline:none; min-width:0}
-#q::placeholder{color:var(--faint); font-style:italic; font-family:var(--serif); font-size:19px}
+#q::placeholder{color:var(--faint); font-style:italic; font-family:var(--serif); font-size:17px}
 .slashhint{align-self:center; font-family:var(--sans); font-size:11px; color:var(--faint)}
 #q:not(:placeholder-shown) + .slashhint, .searchrow:focus-within .slashhint{display:none}
 .clearbtn{border:none; background:none; color:var(--faint); font-size:22px; cursor:pointer; padding:0 2px}
@@ -279,9 +280,10 @@ main{margin-top:10px}
 .noresult .didyou b{color:var(--acc); cursor:pointer; font-style:normal; border-bottom:1px solid currentColor}
 
 /* ---- altlık ---- */
-footer{margin-top:80px; color:var(--faint); font-family:var(--sans); font-size:11px; letter-spacing:.04em; line-height:1.9}
+footer{margin-top:70px; color:var(--muted); font-family:var(--serif); font-size:12.5px; line-height:1.8;
+  text-align:center; border-top:1px solid var(--line); padding-top:18px}
 footer .kilim{display:none}
-footer a{color:var(--muted); text-decoration:none; border-bottom:1px solid var(--faint)}
+footer a{color:var(--muted); text-decoration:none; border-bottom:1px solid var(--line)}
 footer a:hover{color:var(--acc)}
 
 /* ---- yumuşak giriş ---- */

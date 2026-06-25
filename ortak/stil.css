@@ -123,6 +123,7 @@ body.vitrin .kart .kart-gorsel:has(img){height:auto;aspect-ratio:800/410}
 body.vitrin .kart-genis .kart-gorsel:has(img){aspect-ratio:120/53}
 body.vitrin .kart .kart-gorsel img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 body.vitrin .kart h2{font-family:'Playfair Display',Georgia,serif;font-size:21px;font-weight:600;color:var(--kagit-ink)}
+body.vitrin .kart[href="wordle/"] h2::first-letter{font-size:1.75em;font-weight:700}
 body.vitrin .kart p{font-size:14.5px;color:var(--kagit-soluk);margin-top:7px;line-height:1.55}
 body.vitrin .kart .yakinda{font-family:'Libre Baskerville',Georgia,serif;font-size:11px;color:var(--kirmizi);border:1px solid var(--kirmizi);border-radius:12px;padding:1px 9px;margin-left:8px;vertical-align:middle;font-weight:400}
 
