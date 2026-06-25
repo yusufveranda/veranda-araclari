@@ -68,7 +68,8 @@ body.t-gece .kayan{animation:kayan 31s linear infinite}
 .kapi{cursor:pointer;outline:none;transform-box:fill-box;transform-origin:left center;transition:transform .8s cubic-bezier(.34,1.25,.45,1)}
 .kapi.acik{transform:rotate(-3deg) scaleX(.16)}
 .kapi:focus-visible{outline:2px dashed #F2E6CE;outline-offset:4px}
-.pervane{opacity:0}
+.lamba-par{pointer-events:none}
+.pervane{opacity:0;pointer-events:none}
 body.t-gece .pervane{opacity:1;animation:pervane 5.5s ease-in-out infinite}
 body.t-gece.lamba-kapali .pervane{opacity:0;animation:none}
 @keyframes pervane{0%{transform:translate(-13px,5px)}25%{transform:translate(7px,-9px)}50%{transform:translate(15px,7px)}75%{transform:translate(-5px,-13px)}100%{transform:translate(-13px,5px)}}
@@ -76,7 +77,7 @@ body.t-gece.lamba-kapali .pervane{opacity:0;animation:none}
 
 .afis-yazi{position:absolute;top:0;left:0;width:100%;padding:clamp(22px,4.5vw,52px) clamp(20px,5vw,56px);pointer-events:none}
 .afis-yazi a{color:var(--baslik-ink);text-decoration:none;pointer-events:auto;transition:color 1s}
-.afis-yazi h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(38px,6.4vw,72px);line-height:1.02;letter-spacing:-.5px}
+.afis-yazi h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(38px,6.4vw,72px);line-height:1.02;letter-spacing:-.5px;display:inline-block}
 .afis-yazi .alt{color:var(--baslik-ink);opacity:.82;font-style:italic;font-size:clamp(13px,1.6vw,17px);margin-top:10px;transition:color 1s}
 
 /* günün kelimesi — yapıştırılmış kâğıt şerit */
