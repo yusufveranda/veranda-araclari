@@ -30,7 +30,7 @@ body{
   color:var(--ink); font-family:var(--serif); font-size:16px; line-height:1.55;
   min-height:100vh; -webkit-font-smoothing:antialiased; transition:background .4s, color .4s;
 }
-.wrap{max-width:1060px; margin:0 auto; padding:16px 26px 110px}
+.wrap{max-width:min(95vw,1760px); margin:0 auto; padding:16px 44px 110px}
 a{color:inherit}
 ::selection{background:var(--acc-soft)}
 
@@ -51,11 +51,11 @@ a{color:inherit}
 
 /* ---- iki sütun: ana metin + yan panel, ARADA ÇİZGİ YOK, saf boşluk ---- */
 .layout{display:block}
-.col-main{max-width:680px}
+.col-main{max-width:none}
 .col-side{margin-top:46px}
 @media(min-width:1000px){
-  .layout{display:grid; grid-template-columns:minmax(0,1fr) 210px; gap:0 70px; align-items:start}
-  .col-main{max-width:700px}
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:0 120px; align-items:start}
+  .col-main{max-width:none}
   .col-side{margin-top:92px; position:sticky; top:24px}
 }
 
@@ -289,6 +289,16 @@ footer a:hover{color:var(--acc)}
 /* ---- yumuşak giriş ---- */
 @keyframes fadein{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
 .entry-head, .senses, .section, .landing, .noresult{animation:fadein .3s ease both}
+
+/* geniş ekran: anlamları çok sütuna yay, alanı doldur */
+@media(min-width:1280px){
+  .senses, .acbody{column-count:2; column-gap:80px}
+  .senses .sense, .acbody .acsense{break-inside:avoid}
+  .acbody .acdom{column-span:all}
+}
+@media(min-width:1700px){
+  .senses, .acbody{column-count:3; column-gap:72px}
+}
 
 @media(max-width:560px){
   .wrap{padding:12px 18px 80px}

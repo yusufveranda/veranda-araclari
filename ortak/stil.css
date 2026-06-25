@@ -91,7 +91,7 @@ body.vitrin .gunun .gk a{color:var(--kirmizi);text-decoration:none;white-space:n
 
 /* kartlar — kâğıt kesikleri */
 body.vitrin main{margin-top:30px}
-body.vitrin .wrap{max-width:1100px}
+body.vitrin .wrap{max-width:min(95vw,1760px)}
 body.vitrin .gunun-satir{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px;align-items:stretch}
 body.vitrin .gunun-satir .gunun{margin-top:0;height:100%}
 body.vitrin .gunun.gunun-en{transform:rotate(.5deg)}
