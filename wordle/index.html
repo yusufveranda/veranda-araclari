@@ -74,8 +74,12 @@ body{transition:background .4s,color .4s}
 /* ===== HUB: Verandle başlık + darağacı + oyun kartları ===== */
 #hub{text-align:center;padding-top:6px}
 .vhero-art{display:block;width:100vw;max-width:none;margin-left:calc(50% - 50vw);height:auto}
-.vhero-art .asili{transform-box:fill-box;transform-origin:50% 0%;animation:sallan 3.8s ease-in-out infinite}
+.vhero-art .asili{transform-box:fill-box;transform-origin:50% 0%;animation:sallan 3.8s ease-in-out infinite;cursor:pointer}
 @keyframes sallan{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-3deg)}}
+@keyframes sallanCok{0%{transform:rotate(0)}14%{transform:rotate(36deg)}36%{transform:rotate(-27deg)}57%{transform:rotate(17deg)}76%{transform:rotate(-9deg)}90%{transform:rotate(4deg)}100%{transform:rotate(0)}}
+@keyframes tamTur{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.vhero-art .asili.salla-cok{animation:sallanCok 1.5s cubic-bezier(.25,.7,.4,1) both}
+.vhero-art .asili.tam-tur{animation:tamTur 1.15s cubic-bezier(.5,.04,.45,1) both}
 @media(prefers-reduced-motion:reduce){.vhero-art .asili{animation:none}}
 .vhero-ad{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(42px,12vw,60px);color:var(--mur);letter-spacing:-1.2px;line-height:.9;margin-top:2px}
 .vhero-ad .nokta{color:var(--kirmizi)}
@@ -349,10 +353,13 @@ body{transition:background .4s,color .4s}
   .mat{margin:12px auto 0;padding:8px}
 }
 /* ===== geçen haftanın galipleri (sol sabit panel) ===== */
-.gecen-hafta{position:fixed;top:92px;left:calc(50% - 512px);width:250px;max-height:calc(100vh - 124px);overflow:auto;
-  background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;box-shadow:5px 6px 0 var(--mat-golge);
-  padding:14px 15px 13px;display:none;z-index:5}
-@media(min-width:1120px){.gecen-hafta:not(.gizli){display:block}}
+.gecen-hafta{margin:0 auto 16px;max-width:464px;background:var(--mat);border:1.5px solid var(--kutu-cizgi);
+  border-radius:12px;box-shadow:5px 6px 0 var(--mat-golge);padding:13px 15px 12px;display:none;z-index:5}
+.gecen-hafta:not(.gizli){display:block}
+@media(min-width:1120px){
+  .gecen-hafta{position:fixed;top:92px;left:calc(50% - 512px);width:250px;max-width:none;margin:0;
+    max-height:calc(100vh - 124px);overflow:auto}
+}
 .gh-bas{font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--mur);line-height:1.25;margin-bottom:2px}
 .gh-alt{font-family:'Libre Baskerville',serif;font-size:11px;font-style:italic;color:var(--soluk);margin-bottom:11px}
 .gh-sat{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-top:1px solid var(--ince);font-size:14px}
@@ -412,11 +419,12 @@ body{transition:background .4s,color .4s}
         </g>
         <!-- ip + sevimli çöp adam (sallanır) -->
         <g class="asili">
+          <rect class="asili-hit" x="790" y="116" width="84" height="126" fill="transparent"/>
           <line x1="832" y1="60" x2="832" y2="118" stroke="var(--mur)" stroke-width="4.5"/>
           <g stroke="var(--mur)" stroke-width="5" stroke-linecap="round" fill="none">
-            <path d="M832 120 L818 158"/><path d="M832 120 L846 158"/>
-            <line x1="832" y1="160" x2="832" y2="202"/>
-            <path d="M832 202 L812 222 l-5 9"/><path d="M832 202 L852 220 l6 8"/>
+            <path d="M832 166 Q806 182 802 210"/><path d="M832 166 Q858 182 862 210"/>
+            <line x1="832" y1="160" x2="832" y2="204"/>
+            <path d="M832 204 L810 226 l-5 9"/><path d="M832 204 L854 224 l6 8"/>
           </g>
           <circle cx="832" cy="136" r="16" fill="var(--kutu-bos)" stroke="var(--mur)" stroke-width="4.5"/>
           <circle cx="826" cy="133" r="2.4" fill="var(--mur)"/><circle cx="838" cy="133" r="2.4" fill="var(--mur)"/>
@@ -825,12 +833,13 @@ function ghCiz(arr){
   if(!arr || !arr.length){ panel.classList.add('gizli'); return; }
   panel.classList.remove('gizli');
   document.getElementById('ghAlt').textContent = oyunAdi()+' · '+gecenHaftaAralik();
-  const goster = ghAcik ? arr : arr.slice(0,3);
+  const limit = window.matchMedia('(min-width:1120px)').matches ? 3 : 1;   // masaüstü ilk 3, mobil ilk 1
+  const goster = ghAcik ? arr : arr.slice(0,limit);
   liste.innerHTML = goster.map((r,i)=>
     '<div class="gh-sat'+(i===0?' kral':'')+'"><span class="gh-sira">'+(i+1)+'</span>'+
     '<span class="gh-nick">'+(i===0?'👑 ':'')+kacis(r.nick)+'</span>'+
     '<span class="gh-puan">'+r.puan+'</span></div>').join('');
-  if(arr.length>3){ tumBtn.classList.remove('gizli'); tumBtn.textContent = ghAcik ? 'küçült' : 'tümünü gör ('+arr.length+')'; }
+  if(arr.length>limit){ tumBtn.classList.remove('gizli'); tumBtn.textContent = ghAcik ? 'küçült' : 'tümünü gör ('+arr.length+')'; }
   else tumBtn.classList.add('gizli');
 }
 function gecenHaftaGetir(){
@@ -1144,6 +1153,12 @@ document.querySelectorAll('.okart[data-git]').forEach(k=>k.onclick=()=>oyunaGir(
 document.getElementById('hubDon').onclick=function(){ this.blur(); hubaDon(); };
 document.querySelectorAll('#oyunSeg button').forEach(x=>x.onclick=()=>{ oyunSec(x.dataset.oyun); x.blur(); });
 document.getElementById('ghTum').onclick=function(){ this.blur(); ghAcik=!ghAcik; ghCiz(ghCache[lbOyun()]||[]); };
+window.addEventListener('resize',function(){ if(!document.getElementById('oyunEkran').classList.contains('gizli') && ghCache[lbOyun()]) ghCiz(ghCache[lbOyun()]); });
+/* çöp adam: tıkla → güçlü sallan, ara sıra (~%28) tam tur */
+(function(){ var fig=document.querySelector('.vhero-art .asili'); if(!fig) return;
+  fig.addEventListener('animationend',function(e){ if(e.animationName==='sallanCok'||e.animationName==='tamTur') fig.classList.remove('salla-cok','tam-tur'); });
+  fig.addEventListener('click',function(){ fig.classList.remove('salla-cok','tam-tur'); void fig.getBoundingClientRect(); fig.classList.add(Math.random()<0.28?'tam-tur':'salla-cok'); });
+})();
 document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>{ modSec(x.dataset.mod); x.blur(); });
 document.getElementById('yeniBtn').onclick=yeniOyun;
 document.getElementById('silBtn').onclick=function(){ sil(); this.blur(); };

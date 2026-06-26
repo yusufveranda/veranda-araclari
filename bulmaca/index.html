@@ -9,19 +9,46 @@
 <link rel="stylesheet" href="../ortak/stil.css">
 <script src="../ortak/adlar.js"></script>
 <style>
-:root{--bg:#F2E6CE;--card:#F9F1DE;--ink:#221C16;--muted:#6E6353;--line:#D9C7A3;--acc:#C2331F;--acc-soft:rgba(194,51,31,.10);--vurgu:#A8763B;--shadow:rgba(40,20,8,.12)}
+:root{--bg:#F2E6CE;--card:#F9F1DE;--ink:#221C16;--muted:#6E6353;--line:#D9C7A3;--acc:#C2331F;--acc-soft:rgba(194,51,31,.10);
+  --vurgu:#A8763B;--shadow:rgba(40,20,8,.12);--yesil:#5E7F4B;--yesil-yum:rgba(94,127,75,.14);--sari:#B58A1E;--sari-yum:rgba(181,138,30,.14);--gri:#8C8170;--gri-yum:rgba(140,129,112,.14)}
 body{font-family:'Libre Baskerville',Georgia,serif}
-.arac{max-width:560px;margin:0 auto}
-.arac-baslik{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:32px;color:var(--ink);margin-top:8px}
-.arac label{font-size:14px;color:var(--muted);display:block;margin:14px 0 4px;font-style:italic}
-.arac input{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:18px;letter-spacing:2px}
-.arac input:focus{outline:none;border-color:var(--acc)}
-.arac .kucuk{font-size:15px;letter-spacing:1px}
-.sonuclar{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.kelime{border:1px solid var(--acc);color:var(--acc);border-radius:18px;padding:5px 13px;font-size:16px;background:var(--card)}
-.bilgi{color:var(--muted);font-size:13.5px;font-style:italic;margin-top:12px}
-.iki{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:520px){.iki{grid-template-columns:1fr}}
+.arac{max-width:min(94vw,1180px);margin:0 auto}
+.arac-baslik{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:34px;color:var(--ink);margin-top:8px}
+.arac-girisi{color:var(--muted);font-size:14.5px;margin-top:6px;max-width:62ch}
+.bul-duzen{display:grid;gap:40px;margin-top:26px}
+@media(min-width:900px){.bul-duzen{grid-template-columns:430px minmax(0,1fr);align-items:start}}
+/* sol kontroller */
+.blok{margin-bottom:22px}
+.blok-bas{font-family:'Playfair Display',Georgia,serif;font-size:15px;color:var(--ink);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.blok-bas .nokta{width:11px;height:11px;border-radius:3px;flex:none}
+.blok-not{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:7px}
+/* harf sayısı stepper */
+.uzunluk{display:inline-flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
+.uzunluk button{font-family:'Libre Baskerville',serif;font-size:20px;width:42px;height:42px;border:none;background:none;color:var(--acc);cursor:pointer;line-height:1}
+.uzunluk button:hover{background:var(--acc-soft)}
+.uzunluk .uzN{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:var(--ink);min-width:40px;text-align:center;border-left:1px solid var(--line);border-right:1px solid var(--line);height:42px;display:flex;align-items:center;justify-content:center}
+/* kutular (yeri belli harfler = yeşil) */
+.kutular{display:flex;flex-wrap:wrap;gap:8px}
+.bk{width:50px;height:54px;text-align:center;font-family:'Playfair Display',serif;font-weight:600;font-size:26px;text-transform:uppercase;
+  color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:9px;outline:none;padding:0;caret-color:var(--acc)}
+.bk:focus{border-color:var(--acc)}
+.bk.dolu{border-color:var(--yesil);background:var(--yesil-yum);color:var(--yesil)}
+@media(max-width:430px){.bk{width:42px;height:48px;font-size:22px}}
+/* var / yok inputları */
+.harf-girdi{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);
+  font-family:'Playfair Display',serif;font-size:19px;letter-spacing:3px;text-transform:uppercase;color:var(--ink)}
+.harf-girdi:focus{outline:none}
+#varH{border-color:var(--sari)}#varH:focus{box-shadow:0 0 0 3px var(--sari-yum)}
+#yokH{border-color:var(--gri)}#yokH:focus{box-shadow:0 0 0 3px var(--gri-yum)}
+.harf-girdi::placeholder{color:var(--muted);opacity:.6;letter-spacing:1px;text-transform:none;font-family:'Libre Baskerville',serif;font-size:14px}
+.temizle{margin-top:4px;font-family:'Libre Baskerville',serif;font-size:13px;color:var(--muted);background:none;border:1px solid var(--line);border-radius:9px;padding:7px 15px;cursor:pointer}
+.temizle:hover{border-color:var(--acc);color:var(--acc)}
+/* sonuçlar */
+.bilgi{color:var(--muted);font-size:13.5px;font-style:italic;margin-bottom:14px}
+.bilgi b{color:var(--acc);font-style:normal}
+.sonuclar{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+.kelime{border:1px solid var(--acc);color:var(--acc);border-radius:18px;padding:5px 14px;font-size:16.5px;background:var(--card);text-decoration:none;transition:transform .1s,background .15s}
+.kelime:hover{transform:translateY(-1px);background:var(--acc-soft)}
 </style>
 </head>
 <body>
@@ -30,61 +57,115 @@ body{font-family:'Libre Baskerville',Georgia,serif}
 <div class="wrap">
 <main class="arac">
   <h2 class="arac-baslik">bulmaca yardımcısı</h2>
-  <p style="color:var(--muted);font-size:14.5px;margin-top:6px">
-    Bilmediğin harfler yerine nokta ya da alt çizgi koy: <i>k.t.p</i> yazınca beş harfli uyanlar gelir.
-  </p>
-  <label for="desen">desen</label>
-  <input id="desen" placeholder="k.t.p" autocomplete="off" autofocus>
-  <div class="iki">
-    <div>
-      <label for="iceren">şu harfleri içersin (sırasız)</label>
-      <input id="iceren" class="kucuk" placeholder="örn: ae" autocomplete="off">
+  <p class="arac-girisi">Kaç harf olduğunu seç, bildiğin harfleri yerlerine yaz. Olduğunu bilip de yerini bilmediğin harfleri ve hiç olmayan harfleri aşağıya ekle — sonuçlar anında gelir.</p>
+
+  <div class="bul-duzen">
+    <div class="bul-kontrol">
+      <div class="blok">
+        <div class="blok-bas">kaç harf?</div>
+        <div class="uzunluk">
+          <button id="uzEksi" type="button" aria-label="azalt">−</button>
+          <span class="uzN" id="uzN">5</span>
+          <button id="uzArti" type="button" aria-label="artır">+</button>
+        </div>
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><span class="nokta" style="background:var(--yesil)"></span>yeri belli harfler</div>
+        <div class="kutular" id="kutular"></div>
+        <div class="blok-not">kutuya harf yaz; boş kutular bilinmeyen yerlerdir.</div>
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><span class="nokta" style="background:var(--sari)"></span>var ama yeri belli değil</div>
+        <input id="varH" class="harf-girdi" placeholder="kelimede geçen ama yeri belirsiz harfler — örn: ae" autocomplete="off">
+      </div>
+
+      <div class="blok">
+        <div class="blok-bas"><span class="nokta" style="background:var(--gri)"></span>kesinlikle yok</div>
+        <input id="yokH" class="harf-girdi" placeholder="kelimede olmayan harfler — örn: rstk" autocomplete="off">
+      </div>
+
+      <button class="temizle" id="temizle" type="button">temizle</button>
     </div>
-    <div>
-      <label for="icermeyen">şu harfler olmasın</label>
-      <input id="icermeyen" class="kucuk" placeholder="örn: rs" autocomplete="off">
+
+    <div class="bul-sonuc">
+      <div class="bilgi" id="bilgi">harf sayısını seç, kutuları doldur</div>
+      <div class="sonuclar" id="sonuclar"></div>
     </div>
   </div>
-  <div class="bilgi" id="bilgi">desen yaz, sonuçlar anında gelir</div>
-  <div class="sonuclar" id="sonuclar"></div>
 </main>
 <footer>47 bin kelimelik sözlükten arar · dilimin ucunda ile aynı dağarcık</footer>
 </div>
 <script src="../ortak/kelimeler.js"></script>
 <script>
-const TRMAP = {"İ":"i","I":"ı","Ş":"ş","Ğ":"ğ","Ü":"ü","Ö":"ö","Ç":"ç"};
-const trLower = s => s.replace(/[İIŞĞÜÖÇ]/g,c=>TRMAP[c]).toLowerCase();
-const desenK = document.getElementById('desen');
-const icerenK = document.getElementById('iceren');
-const icermeyenK = document.getElementById('icermeyen');
-const sonucK = document.getElementById('sonuclar');
-const bilgiK = document.getElementById('bilgi');
+const TRMAP={"İ":"i","I":"ı","Ş":"ş","Ğ":"ğ","Ü":"ü","Ö":"ö","Ç":"ç"};
+const trLower = s => String(s).replace(/[İIŞĞÜÖÇ]/g,c=>TRMAP[c]).toLowerCase();
+const HARF = /[a-zçğıöşüA-ZÇĞİIÖŞÜ]/;
+const kutularEl=document.getElementById('kutular');
+const varK=document.getElementById('varH'), yokK=document.getElementById('yokH');
+const sonucK=document.getElementById('sonuclar'), bilgiK=document.getElementById('bilgi'), uzN=document.getElementById('uzN');
+let uz=5;
+
+function kutulariCiz(eski){
+  kutularEl.innerHTML='';
+  for(let i=0;i<uz;i++){
+    const inp=document.createElement('input');
+    inp.className='bk'; inp.maxLength=1; inp.autocomplete='off'; inp.setAttribute('inputmode','text');
+    if(eski && eski[i]){ inp.value=eski[i]; if(eski[i]) inp.classList.add('dolu'); }
+    kutularEl.appendChild(inp);
+  }
+  const arr=[...kutularEl.querySelectorAll('.bk')];
+  arr.forEach((inp,i)=>{
+    inp.addEventListener('input',()=>{
+      inp.value=(inp.value.match(HARF)||[''])[0];
+      inp.classList.toggle('dolu',!!inp.value);
+      if(inp.value && arr[i+1]) arr[i+1].focus();
+      ara();
+    });
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Backspace' && !inp.value && arr[i-1]){ arr[i-1].focus(); e.preventDefault(); }
+      else if(e.key==='ArrowLeft' && arr[i-1]){ arr[i-1].focus(); e.preventDefault(); }
+      else if(e.key==='ArrowRight' && arr[i+1]){ arr[i+1].focus(); e.preventDefault(); }
+    });
+  });
+}
+function uzDegis(d){
+  const eski=[...kutularEl.querySelectorAll('.bk')].map(b=>b.value);
+  uz=Math.max(2,Math.min(12,uz+d)); uzN.textContent=uz;
+  kutulariCiz(eski); ara();
+  const ilk=kutularEl.querySelector('.bk'); if(ilk && d>0) ; // odak değiştirme
+}
+document.getElementById('uzArti').onclick=()=>uzDegis(1);
+document.getElementById('uzEksi').onclick=()=>uzDegis(-1);
+document.getElementById('temizle').onclick=()=>{ varK.value=''; yokK.value=''; kutulariCiz([]); ara(); kutularEl.querySelector('.bk').focus(); };
 
 function ara(){
-  const ham = trLower(desenK.value.trim()).replace(/[_?*]/g, '.');
-  const iceren = trLower(icerenK.value.trim());
-  const icermeyen = trLower(icermeyenK.value.trim());
-  sonucK.innerHTML = '';
-  if(!ham){ bilgiK.textContent = 'desen yaz, sonuçlar anında gelir'; return; }
-  if(!/^[a-zçğıöşü.]+$/.test(ham)){ bilgiK.textContent = 'yalnız harf ve nokta kullan'; return; }
-  let rx;
-  try{ rx = new RegExp('^' + ham + '$'); }catch(e){ return; }
-  const bulunan = [];
+  const desen=[...kutularEl.querySelectorAll('.bk')].map(b=> trLower(b.value)||'.').join('');
+  const iceren=trLower(varK.value).replace(/[^a-zçğıöşü]/g,'');
+  const icermeyen=trLower(yokK.value).replace(/[^a-zçğıöşü]/g,'');
+  sonucK.innerHTML='';
+  let rx; try{ rx=new RegExp('^'+desen+'$'); }catch(e){ return; }
+  const dolu = desen.replace(/\./g,'').length>0 || iceren.length>0;
+  const bulunan=[];
   for(const w of KELIMELER){
-    if(w.length !== ham.length) continue;
+    if(w.length!==uz) continue;
     if(!rx.test(w)) continue;
-    let uygun = true;
-    for(const h of iceren) if(!w.includes(h)){ uygun = false; break; }
-    if(uygun) for(const h of icermeyen) if(w.includes(h)){ uygun = false; break; }
-    if(uygun){ bulunan.push(w); if(bulunan.length >= 300) break; }
+    let uygun=true;
+    for(const h of iceren) if(!w.includes(h)){ uygun=false; break; }
+    if(uygun) for(const h of icermeyen) if(w.includes(h)){ uygun=false; break; }
+    if(uygun){ bulunan.push(w); if(bulunan.length>=400) break; }
   }
-  bilgiK.textContent = bulunan.length
-    ? bulunan.length + (bulunan.length >= 300 ? '+ sonuç (ilk 300)' : ' sonuç')
+  if(!dolu){ bilgiK.innerHTML='<b>'+uz+'</b> harfli kelimeler — bir harf yaz, daralt'; }
+  else bilgiK.innerHTML = bulunan.length
+    ? '<b>'+bulunan.length+(bulunan.length>=400?'+':'')+'</b> sonuç'
     : 'eşleşen kelime yok';
-  sonucK.innerHTML = bulunan.slice(0,300).map(w=>
-    `<a class="kelime" href="../sozluk/#${encodeURIComponent(w)}" title="sözlükte aç">${w}</a>`).join('');
+  sonucK.innerHTML = bulunan.slice(0,400).map(w=>
+    '<a class="kelime" href="../sozluk/?q='+encodeURIComponent(w)+'" title="sözlükte aç">'+w+'</a>').join('');
 }
-[desenK, icerenK, icermeyenK].forEach(k=>k.addEventListener('input', ara));
+[varK,yokK].forEach(k=>k.addEventListener('input',ara));
+kutulariCiz([]); ara();
+kutularEl.querySelector('.bk').focus();
 </script>
 </body>
 </html>
