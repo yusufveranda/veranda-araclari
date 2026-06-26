@@ -4,7 +4,7 @@
   --acc:#1f6f5c; --acc-soft:rgba(31,111,92,.1); --vurgu:#c8743c; --shadow:rgba(35,39,43,.08);
 
   /* afiş paleti — gündüz varsayılan */
-  --gok:#F09A36; --alan:#C8502C; --dag:#221A14; --siluet:#1C1510;
+  --gok:#F09A36; --alan:#B84B2A; --dag:#221A14; --siluet:#1C1510;
   --gunes:#D7261D; --gunes-op:1; --ay-op:0; --yildiz-op:0; --kus-op:1;
   --lamba-op:0; --ampul:#3A2E22;
   --kagit:#F2E6CE; --kagit-ink:#221C16; --kagit-soluk:#6E6353;
@@ -15,7 +15,7 @@
   --sehir:#4F3A26; --pencere:#E8472E; --pencere-op:0;
 }
 body.t-sabah{
-  --gok:#F4AC4C; --alan:#C8502C; --gunes:#D7261D;
+  --gok:#F4AC4C; --alan:#B84B2A; --gunes:#D7261D;
 }
 body.t-aksam{
   --gok:#DE6E2E; --alan:#9E3A20; --gunes:#C61E16;
@@ -40,6 +40,7 @@ body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman'
 
 /* ================= vitrin (afiş sayfası) ================= */
 body.vitrin{background:var(--alan);color:var(--kagit-ink);font-family:'Libre Baskerville',Georgia,serif;transition:background 1s}
+body.vitrin::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url(../gorsel/doku.jpg) center/cover;opacity:.18;mix-blend-mode:soft-light}
 body.vitrin, body.vitrin *{-webkit-tap-highlight-color:transparent}
 .kposz:focus:not(:focus-visible),.kapi:focus:not(:focus-visible){outline:none}
 
