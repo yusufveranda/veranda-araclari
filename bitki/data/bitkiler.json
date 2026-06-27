@@ -796,12 +796,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A2006-10-18Mirabilis_jalapa06.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Interacci%C3%B3n_planta-insecto_-_Flor_maravilla_%28Mirabilis_jalapa%29.jpg/1280px-Interacci%C3%B3n_planta-insecto_-_Flor_maravilla_%28Mirabilis_jalapa%29.jpg",
-    "tip": "cicek",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/2015-09-06_Mirabilis_jalapa%EF%BC%86Salvia_splendens_%E3%82%AA%E3%82%B7%E3%83%AD%E3%82%A4%E3%83%90%E3%83%8A%E3%81%A8%E3%82%B5%E3%83%AB%E3%83%93%E3%82%A2_DSCF3034.JPG/1280px-2015-09-06_Mirabilis_jalapa%EF%BC%86Salvia_splendens_%E3%82%AA%E3%82%B7%E3%83%AD%E3%82%A4%E3%83%90%E3%83%8A%E3%81%A8%E3%82%B5%E3%83%AB%E3%83%93%E3%82%A2_DSCF3034.JPG",
+    "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Juan Carlos Fonseca Mata — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AInteracci%C3%B3n_planta-insecto_-_Flor_maravilla_%28Mirabilis_jalapa%29.jpg"
+    "atif": "Foto: 松岡明芳 — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2015-09-06_Mirabilis_jalapa%EF%BC%86Salvia_splendens_%E3%82%AA%E3%82%B7%E3%83%AD%E3%82%A4%E3%83%90%E3%83%8A%E3%81%A8%E3%82%B5%E3%83%AB%E3%83%93%E3%82%A2_DSCF3034.JPG"
    }
   ],
   "bolge": "tr"
@@ -2379,20 +2379,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ARosemary_%28Salvia_rosmarinus%29_-_Pollen%C3%A7a%2C_Spain_2022-04-15_%2803%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/IMRosmarinus_officinalis_with_bees_a.JPG/1280px-IMRosmarinus_officinalis_with_bees_a.JPG",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Daniel Ventura — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AIMRosmarinus_officinalis_with_bees_a.JPG"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/P1090247%284x3%29-Rosmarinus_officinalis_%2841960388224%29.jpg/1280px-P1090247%284x3%29-Rosmarinus_officinalis_%2841960388224%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY 2.0",
     "atif": "Foto: Miguel Angel Masegosa Martínez — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AP1090247%284x3%29-Rosmarinus_officinalis_%2841960388224%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Romarin_Rosmarinus_officinalis_2.jpg/1280px-Romarin_Rosmarinus_officinalis_2.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Lionel Allorge — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARomarin_Rosmarinus_officinalis_2.jpg"
    }
   ],
   "bolge": "tr"
@@ -4194,6 +4194,14 @@
     "lisans": "CC-BY",
     "atif": "(c) Wynand Uys, some rights reserved (CC BY), uploaded by Wynand Uys",
     "sayfa": "https://www.inaturalist.org/photos/15793969"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Flower%2C_Gerbera_Jamesonii_-_Flickr_-_nekonomania.jpg/1280px-Flower%2C_Gerbera_Jamesonii_-_Flickr_-_nekonomania.jpg",
+    "tip": "cicek",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: Yoko Nekonomania — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFlower%2C_Gerbera_Jamesonii_-_Flickr_-_nekonomania.jpg"
    }
   ],
   "bolge": "tr"
@@ -6430,6 +6438,22 @@
     "lisans": "CC-BY",
     "atif": "(c) Patrick Hacker, some rights reserved (CC BY), uploaded by Patrick Hacker",
     "sayfa": "https://www.inaturalist.org/photos/113413383"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Jard%C3%ADn_Bot%C3%A1nico_Olarizu_-_Pinus_nigra_-_Hojas_y_pi%C3%B1a_01.jpg/1280px-Jard%C3%ADn_Bot%C3%A1nico_Olarizu_-_Pinus_nigra_-_Hojas_y_pi%C3%B1a_01.jpg",
+    "tip": "yaprak",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Basotxerri — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AJard%C3%ADn_Bot%C3%A1nico_Olarizu_-_Pinus_nigra_-_Hojas_y_pi%C3%B1a_01.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Alnus-cordata_and_Pinus-nigra-ssp-laricio.JPG/1280px-Alnus-cordata_and_Pinus-nigra-ssp-laricio.JPG",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Sten Porse — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlnus-cordata_and_Pinus-nigra-ssp-laricio.JPG"
    }
   ],
   "bolge": "tr"
@@ -8202,14 +8226,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/%28MHNT%29_Bombus_pascuorum_on_Lavandula_angustifolia.jpg/1280px-%28MHNT%29_Bombus_pascuorum_on_Lavandula_angustifolia.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Didier Descouens — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%28MHNT%29_Bombus_pascuorum_on_Lavandula_angustifolia.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Coastal_Georgia_Botanical_Gardens%2C_Lavender_Lavandula_angustifolia_%27Elegance_Sky%27.jpg/1280px-Coastal_Georgia_Botanical_Gardens%2C_Lavender_Lavandula_angustifolia_%27Elegance_Sky%27.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -8232,6 +8248,30 @@
     "lisans": "CC-BY",
     "atif": "(c) Andrey Zharkikh, some rights reserved (CC BY)",
     "sayfa": "https://www.inaturalist.org/photos/2697773"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ciruelo_floreciendo.jpg/1280px-Ciruelo_floreciendo.jpg",
+    "tip": "cicek",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Juanggiovan — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACiruelo_floreciendo.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/03-05_Primorska_Provansa_v_Pregari.jpg/1280px-03-05_Primorska_Provansa_v_Pregari.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: TICKoper — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A03-05_Primorska_Provansa_v_Pregari.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/1-Rinc%C3%B3nademuz-paisaje-Ademuz_%282016%293524.jpg/1280px-1-Rinc%C3%B3nademuz-paisaje-Ademuz_%282016%293524.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Alfredo SÁNCHEZ GARZÓN — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A1-Rinc%C3%B3nademuz-paisaje-Ademuz_%282016%293524.jpg"
    }
   ],
   "bolge": "tr"
@@ -8602,14 +8642,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACupressus_arizonica_Chiricahua.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/1/14/Cupressus_arizonica_var._arizonica_seeds.jpg",
-    "tip": "meyve",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "Public domain",
-    "atif": "Foto: Steve Hurst @ USDA-NRCS PLANTS Database — Public domain · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACupressus_arizonica_var._arizonica_seeds.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Cupressus_arizonica_Chiricahua1.jpg/1280px-Cupressus_arizonica_Chiricahua1.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -8632,6 +8664,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Krzysztof Ziarnek, Kenraiz — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACupressus_arizonica_kz02.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Cupressus_arizonica_kz03.jpg/1280px-Cupressus_arizonica_kz03.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Krzysztof Ziarnek, Kenraiz — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACupressus_arizonica_kz03.jpg"
    }
   ],
   "bolge": "tr"
@@ -8753,20 +8793,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABrambling_in_Platycladus_orientalis%2C_University_of_Chinese_Academy_of_Sciences%2C_Beijing_P1665908_%2849118822473%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Platycladus_orientalis_seeds_-_Kunming_Botanical_Garden_-_DSC03215.JPG/1280px-Platycladus_orientalis_seeds_-_Kunming_Botanical_Garden_-_DSC03215.JPG",
-    "tip": "meyve",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "Public domain",
-    "atif": "Foto: Daderot — Public domain · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3APlatycladus_orientalis_seeds_-_Kunming_Botanical_Garden_-_DSC03215.JPG"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/HK_%E4%B8%AD%E7%92%B0_Central_%E6%84%9B%E4%B8%81%E5%A0%A1%E5%BB%A3%E5%A0%B4_Edinburgh_Place_%E9%A6%99%E6%B8%AF%E5%A4%A7%E6%9C%83%E5%A0%82%E7%B4%80%E5%BF%B5%E8%8A%B1%E5%9C%92_Hong_Kong_City_Hall_Memorial_Garden_flora_%E6%9D%BE%E6%9F%8F_Oriental_Arborvitae_n_Platycladus_orientalis_March_2026_N13P_03.jpg/1280px-thumbnail.jpg",
     "tip": "cicek",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC0",
     "atif": "Foto: Luksongm MWLLOPPEE — CC0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AHK_%E4%B8%AD%E7%92%B0_Central_%E6%84%9B%E4%B8%81%E5%A0%A1%E5%BB%A3%E5%A0%B4_Edinburgh_Place_%E9%A6%99%E6%B8%AF%E5%A4%A7%E6%9C%83%E5%A0%82%E7%B4%80%E5%BF%B5%E8%8A%B1%E5%9C%92_Hong_Kong_City_Hall_Memorial_Garden_flora_%E6%9D%BE%E6%9F%8F_Oriental_Arborvitae_n_Platycladus_orientalis_March_2026_N13P_03.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/HK_%E4%B8%AD%E7%92%B0_Central_%E6%84%9B%E4%B8%81%E5%A0%A1%E5%BB%A3%E5%A0%B4_Edinburgh_Place_%E9%A6%99%E6%B8%AF%E5%A4%A7%E6%9C%83%E5%A0%82%E7%B4%80%E5%BF%B5%E8%8A%B1%E5%9C%92_Hong_Kong_City_Hall_Memorial_Garden_flora_%E6%9D%BE%E6%9F%8F_Oriental_Arborvitae_n_Platycladus_orientalis_March_2026_N13P_04.jpg/1280px-thumbnail.jpg",
+    "tip": "cicek",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC0",
+    "atif": "Foto: Luksongm MWLLOPPEE — CC0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AHK_%E4%B8%AD%E7%92%B0_Central_%E6%84%9B%E4%B8%81%E5%A0%A1%E5%BB%A3%E5%A0%B4_Edinburgh_Place_%E9%A6%99%E6%B8%AF%E5%A4%A7%E6%9C%83%E5%A0%82%E7%B4%80%E5%BF%B5%E8%8A%B1%E5%9C%92_Hong_Kong_City_Hall_Memorial_Garden_flora_%E6%9D%BE%E6%9F%8F_Oriental_Arborvitae_n_Platycladus_orientalis_March_2026_N13P_04.jpg"
    }
   ],
   "bolge": "tr"
@@ -11394,20 +11434,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ADettaglio_-_Anacardiaceae_Pistacia_lentiscus_Lin._Erbario_Frizzi_Perugia_n._3752.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Giant_African_Mantis_%28Sphodromantis_viridis%29_Ootheca_on_Mastic_%28Pistacia_lentiscus%29_-_Parc_Natural_de_s%27Albufera%2C_Spain_2022-04-18.jpg/1280px-Giant_African_Mantis_%28Sphodromantis_viridis%29_Ootheca_on_Mastic_%28Pistacia_lentiscus%29_-_Parc_Natural_de_s%27Albufera%2C_Spain_2022-04-18.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Lentisco%2C_Pistacia_Lentiscus.jpg/1280px-Lentisco%2C_Pistacia_Lentiscus.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Ryan Hodnett — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGiant_African_Mantis_%28Sphodromantis_viridis%29_Ootheca_on_Mastic_%28Pistacia_lentiscus%29_-_Parc_Natural_de_s%27Albufera%2C_Spain_2022-04-18.jpg"
+    "atif": "Foto: Al*from*Lig — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ALentisco%2C_Pistacia_Lentiscus.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Japanese_garden_Pistacia_Lentiscus_Bonsai_in_Planetanya.jpg/1280px-Japanese_garden_Pistacia_Lentiscus_Bonsai_in_Planetanya.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Llentiscle_PistaciaLentiscus.jpg/1280px-Llentiscle_PistaciaLentiscus.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC0",
-    "atif": "Foto: McKaby — CC0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AJapanese_garden_Pistacia_Lentiscus_Bonsai_in_Planetanya.jpg"
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Friviere — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ALlentiscle_PistaciaLentiscus.jpg"
    }
   ],
   "bolge": "tr"
@@ -14267,14 +14307,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ADahlia_flower_%28Dahlia_pinnata_cultivar%2C_family_Asteraceae%29_in_red_and_white_coloration.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/%220_3898_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29_mit_Besuch_einer_Hummel.jpg/1280px-%220_3898_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29_mit_Besuch_einer_Hummel.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: W. Bulach — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%220_3898_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29_mit_Besuch_einer_Hummel.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/%2C00_0904_Dahlia_%C3%97_pinnata.jpg/1280px-%2C00_0904_Dahlia_%C3%97_pinnata.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -14291,12 +14323,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AGarden_Dahlia_flower.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/.00_4862_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29_mit_Besuch_einer_Hummel.jpg/1280px-.00_4862_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29_mit_Besuch_einer_Hummel.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/00_0804_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29.jpg/1280px-00_0804_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: W. Bulach — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A.00_4862_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29_mit_Besuch_einer_Hummel.jpg"
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A00_0804_Gro%C3%9Ffiedrige_Dahlie_%28Dahlia_pinnata%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/00_4793_Gro%C3%9Ffiedrige_Dahlia_%28Dahli_pinnata%29.jpg/1280px-00_4793_Gro%C3%9Ffiedrige_Dahlia_%28Dahli_pinnata%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: W. Bulach — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A00_4793_Gro%C3%9Ffiedrige_Dahlia_%28Dahli_pinnata%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -14633,28 +14673,52 @@
   "guven": "yuksek",
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/2023_Bonsai_Olea_Europaea_Josef_Valuch_D.jpg/1280px-2023_Bonsai_Olea_Europaea_Josef_Valuch_D.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Mojmir Churavy — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2023_Bonsai_Olea_Europaea_Josef_Valuch_D.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/2023_Bonsai_Olea_Europaea_Josef_Valuch.jpg/1280px-2023_Bonsai_Olea_Europaea_Josef_Valuch.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Mojmir Churavy — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2023_Bonsai_Olea_Europaea_Josef_Valuch.jpg"
-   },
-   {
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/95624108/large.jpeg",
     "tip": "butun",
     "kaynak": "iNaturalist",
     "lisans": "CC0",
     "atif": "no rights reserved, uploaded by viridian",
     "sayfa": "https://www.inaturalist.org/photos/95624108"
+   },
+   {
+    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Jeuwre — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADe-Olivenbaum.ogg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/%27Bringing_in_the_sheaves%27_LOC_matpc.05398.jpg/1280px-%27Bringing_in_the_sheaves%27_LOC_matpc.05398.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "Public domain",
+    "atif": "Foto: Matson Collection — Public domain · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%27Bringing_in_the_sheaves%27_LOC_matpc.05398.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/1600_Jahre_alter_Olivenbaum_%286201545220%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: VillageHero from Ulm, Germany — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A1600_Jahre_alter_Olivenbaum_%286201545220%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/2012_08_22_f_IMG_0616.jpg/1280px-2012_08_22_f_IMG_0616.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Joao Paulo Q — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2012_08_22_f_IMG_0616.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/2026-04-20_Budapest_Zoo_22.jpg/1280px-2026-04-20_Budapest_Zoo_22.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Szilas — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2026-04-20_Budapest_Zoo_22.jpg"
    }
   ],
   "bolge": "tr"
@@ -19269,20 +19333,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AKing_Protea_%28Protea_cynaroides%29_%28Photo_JC_PLE%29_%2852681937421%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Protea_cynaroides_seeds.jpg",
-    "tip": "meyve",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: Greenplanet.co.za — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AProtea_cynaroides_seeds.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/King_Protea_%28Protea_cynaroides%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Lip Kee Yap — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AKing_Protea_%28Protea_cynaroides%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Phytoplasma_on_Protea_cynaroides_Hottentots_Holland_01.jpg/1280px-Phytoplasma_on_Protea_cynaroides_Hottentots_Holland_01.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Dwergenpaartje — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3APhytoplasma_on_Protea_cynaroides_Hottentots_Holland_01.jpg"
    }
   ]
  },
@@ -19759,14 +19823,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AFlowers_of_a_mango_tree%28Mangifera_indica%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/A_leaf_beetle_%28Chrysomelidae%29_captured_on_a_leaf_of_Mangifera_indica.jpg/1280px-A_leaf_beetle_%28Chrysomelidae%29_captured_on_a_leaf_of_Mangifera_indica.jpg",
-    "tip": "yaprak",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Billjones94 — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AA_leaf_beetle_%28Chrysomelidae%29_captured_on_a_leaf_of_Mangifera_indica.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Arbusto_Mangifera_Indica_en_pucp.jpg/1280px-Arbusto_Mangifera_Indica_en_pucp.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -19797,6 +19853,14 @@
     "lisans": "Public domain",
     "atif": "Foto: S. K. Gawali — Public domain · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABark_of_Mangifera_indica.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Ficus_sp._%28%3F%29_and_Mangifera_indica_%282428133699%29.jpg/1280px-Ficus_sp._%28%3F%29_and_Mangifera_indica_%282428133699%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Dinesh Valke from Thane, India — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicus_sp._%28%3F%29_and_Mangifera_indica_%282428133699%29.jpg"
    }
   ]
  },
@@ -20731,12 +20795,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AModel_of_Rafflesia_arnoldii%2C_Lee_Kong_Chian_Natural_History_Museum_%28100445%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Rafflesia_arnoldii_-_Choix_des_plantes_rares_ou_nouvelles_-_plate_01_%281864%29.jpg/1280px-Rafflesia_arnoldii_-_Choix_des_plantes_rares_ou_nouvelles_-_plate_01_%281864%29.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Rafflesia_arnoldii_and_buds.JPG",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "Public domain",
-    "atif": "Foto: Unknown authorUnknown author — Public domain · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARafflesia_arnoldii_-_Choix_des_plantes_rares_ou_nouvelles_-_plate_01_%281864%29.jpg"
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Raphaelhui (talk) — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARafflesia_arnoldii_and_buds.JPG"
    }
   ]
  },

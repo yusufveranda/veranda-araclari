@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '2';
+  const BUILD = '3';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -77,9 +77,61 @@
   }
   document.querySelectorAll('.bsec').forEach(b => b.addEventListener('click', () => bolgeKur(b.dataset.bolge)));
 
+  /* ---------- görsel raporlama (🚩 bayrak) ---------- */
+  // İleride Google Apps Script web-app URL'i konursa raporlar oraya da POST edilir.
+  const RAPOR_URL = '';
+  const SEBEPLER = [
+    ['yanlis', '🌿 Yanlış bitki'], ['bocek', '🐝 Böcek / hayvan var'],
+    ['kalitesiz', '🌫️ Kalitesiz / bulanık'], ['alakasiz', '❓ Konu dışı / saçma'],
+    ['kalabalik', '🖼️ Yanında başka şeyler var'], ['diger', '✏️ Başka sorun']
+  ];
+  const sebepAd = Object.fromEntries(SEBEPLER.map(s => s));
+  function raporlariAl() { try { return JSON.parse(localStorage.getItem('bitki-raporlar') || '[]'); } catch (e) { return []; } }
+  function raporKaydet(k) {
+    const r = raporlariAl(); r.push(k);
+    try { localStorage.setItem('bitki-raporlar', JSON.stringify(r)); } catch (e) { }
+    if (RAPOR_URL) { try { fetch(RAPOR_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(k) }); } catch (e) { } }
+  }
+  function toast(msg) {
+    let el = document.getElementById('toast');
+    if (!el) { el = document.createElement('div'); el.id = 'toast'; document.body.appendChild(el); }
+    el.textContent = msg; el.className = 'goster';
+    clearTimeout(toast._t); toast._t = setTimeout(() => { el.className = ''; }, 2400);
+  }
+  function bayrakHTML(tur, g, mod) {
+    return `<button class="bayrak" data-id="${esc(tur.id)}" data-url="${esc(g.url)}" data-tip="${esc(g.tip || '')}" data-mod="${mod}" title="bu fotoğrafı bildir" aria-label="fotoğrafı bildir">⚐</button>`;
+  }
+  function menuKapat() { const m = document.getElementById('rapor-menu'); if (m) m.remove(); }
+  function raporMenuAc(btn) {
+    menuKapat();
+    const m = document.createElement('div'); m.id = 'rapor-menu';
+    m.innerHTML = `<div class="rm-bas">Bu fotoğrafta sorun ne?</div>` +
+      SEBEPLER.map(s => `<button data-s="${s[0]}">${esc(s[1])}</button>`).join('');
+    document.body.appendChild(m);
+    const r = btn.getBoundingClientRect();
+    m.style.top = (window.scrollY + r.bottom + 6) + 'px';
+    m.style.left = Math.max(8, Math.min(window.scrollX + r.left - 40, window.scrollX + document.documentElement.clientWidth - m.offsetWidth - 10)) + 'px';
+    m.querySelectorAll('button').forEach(x => x.addEventListener('click', () => {
+      const t = byId[btn.dataset.id] || {};
+      raporKaydet({
+        id: btn.dataset.id, ad: (t.ad || {}).tr || '', la: (t.ad || {}).la || '',
+        url: btn.dataset.url, tip: btn.dataset.tip, sebep: x.dataset.s, mod: btn.dataset.mod,
+        t: new Date().toISOString()
+      });
+      menuKapat(); btn.classList.add('bildirildi'); toast('Teşekkürler — rapor alındı 🌿');
+    }));
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.bayrak');
+    if (b) { e.preventDefault(); e.stopPropagation(); raporMenuAc(b); return; }
+    if (!e.target.closest('#rapor-menu')) menuKapat();
+  });
+
   /* ===================== ROUTER ===================== */
   function router() {
     const h = location.hash.replace(/^#/, '');
+    menuKapat();
+    if (h === 'raporlar') { aktifSekme(''); return raporlarGoster(); }
     if (h.startsWith('tur=')) { aktifSekme('ansiklopedi'); return turDetay(decodeURIComponent(h.slice(4))); }
     const mod = ['tani', 'ansiklopedi', 'mitoloji'].includes(h) ? h : 'tani';
     aktifSekme(mod);
@@ -158,6 +210,7 @@
         <div class="levha">
           <div class="foto">
             <span class="tip-rozet">${TIP[foto.tip] || 'Fotoğraf'}</span>
+            ${bayrakHTML(quizHedef, foto, 'tani')}
             <img id="quizFoto" src="${esc(foto.url)}" alt="tanınacak bitki">
           </div>
           <div class="atif-ust"><span>Bu hangi bitki?</span></div>
@@ -319,7 +372,7 @@
       <div class="detay-ust"><button class="geri-btn" id="geri">← geri</button></div>
       <div class="detay">
         <div class="galeri">
-          <div class="ana-foto"><img id="anaFoto" src="${esc(g[0] ? g[0].url : YAPRAK_SVG)}" alt="${esc(t.ad.tr)}" onerror="this.src='${YAPRAK_SVG}'"></div>
+          <div class="ana-foto">${g[0] ? bayrakHTML(t, g[0], 'ansiklopedi') : ''}<img id="anaFoto" src="${esc(g[0] ? g[0].url : YAPRAK_SVG)}" alt="${esc(t.ad.tr)}" onerror="this.src='${YAPRAK_SVG}'"></div>
           <div class="atif" id="anaAtif">${g[0] ? atifHTML(g[0]) : ''}</div>
           ${g.length > 1 ? `<div class="kucukler" id="kucukler">${g.map((x, i) =>
         `<button class="${i === 0 ? 'sec' : ''}" data-i="${i}"><img src="${esc(x.url)}" alt="" loading="lazy" onerror="this.src='${YAPRAK_SVG}'"></button>`).join('')}</div>` : ''}
@@ -381,8 +434,10 @@
     document.getElementById('geri').addEventListener('click', () => history.length > 1 ? history.back() : (location.hash = 'ansiklopedi'));
     if (g.length > 1) {
       const ana = document.getElementById('anaFoto'), atif = document.getElementById('anaAtif');
+      const anaBayrak = document.querySelector('.ana-foto .bayrak');
       document.querySelectorAll('#kucukler button').forEach(b => b.addEventListener('click', () => {
         const x = g[+b.dataset.i]; ana.src = x.url; atif.innerHTML = atifHTML(x);
+        if (anaBayrak) { anaBayrak.dataset.url = x.url; anaBayrak.dataset.tip = x.tip || ''; anaBayrak.classList.remove('bildirildi'); }
         document.querySelectorAll('#kucukler button').forEach(z => z.classList.toggle('sec', z === b));
       }));
     }
@@ -473,6 +528,51 @@
       });
     }
     ciz();
+  }
+
+  /* ===================== RAPORLAR (yönetim) ===================== */
+  function raporlarGoster() {
+    const r = raporlariAl();
+    ekran.innerHTML = `
+      <div class="mit-ust">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--yesil-koyu);margin-bottom:4px">Bildirilen fotoğraflar (${r.length})</h2>
+        <p>İşaretlediğin sorunlu görseller burada toplanır. <b>JSON indir</b>'e bas, dosyayı geliştiriciye ver; o düzeltsin/silsin. (Dosya bu tarayıcıda saklanır.)</p>
+        <div class="gb-alt" style="margin-top:14px">
+          <button class="btn-ana" id="rIndir">JSON indir</button>
+          <button class="ikonbtn" id="rKopya">Panoya kopyala</button>
+          <button class="ikonbtn" id="rTemiz">Tümünü temizle</button>
+          <a class="btn-link" href="#ansiklopedi">← ansiklopediye dön</a>
+        </div>
+      </div>
+      ${r.length ? `<div class="izgara">${r.map((x, i) => `
+        <div class="tur-kart">
+          <div class="tk-foto"><img src="${esc(x.url)}" alt="" loading="lazy" onerror="this.src='${YAPRAK_SVG}'"></div>
+          <div class="tk-yz">
+            <div class="tk-tr">${esc(x.ad || '?')}</div>
+            <div class="tk-la">${esc(x.la || '')}</div>
+            <div class="tk-fam">${esc(sebepAd[x.sebep] || x.sebep)} · ${esc(x.mod || '')}</div>
+            <button class="cip" data-sil="${i}" style="margin-top:8px">kaldır</button>
+          </div>
+        </div>`).join('')}</div>` : `<p class="bos-uyari">Henüz rapor yok. Tanı ya da ansiklopedide bir fotoğrafın köşesindeki ⚐ işaretine bas.</p>`}`;
+
+    document.getElementById('rIndir').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(r, null, 1)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'bitki-raporlar.json'; document.body.appendChild(a); a.click(); a.remove();
+    });
+    document.getElementById('rKopya').addEventListener('click', () => {
+      const s = JSON.stringify(r, null, 1);
+      (navigator.clipboard ? navigator.clipboard.writeText(s) : Promise.reject())
+        .then(() => toast('Panoya kopyalandı')).catch(() => toast('Kopyalanamadı — JSON indir kullan'));
+    });
+    document.getElementById('rTemiz').addEventListener('click', () => {
+      if (confirm('Tüm raporlar silinsin mi?')) { localStorage.removeItem('bitki-raporlar'); raporlarGoster(); }
+    });
+    ekran.querySelectorAll('[data-sil]').forEach(b => b.addEventListener('click', () => {
+      const arr = raporlariAl(); arr.splice(+b.dataset.sil, 1);
+      try { localStorage.setItem('bitki-raporlar', JSON.stringify(arr)); } catch (e) { }
+      raporlarGoster();
+    }));
   }
 
   /* ===================== BAŞLAT ===================== */
