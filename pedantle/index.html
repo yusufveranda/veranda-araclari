@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<title>üstü kapalı — verandle</title>
-<meta name="description" content="Üstü Kapalı: günün gizli Vikipedi maddesini kelime kelime aç. Tahminlerin anlamca yaklaştıkça metin ısınır.">
+<title>parsel — verandle</title>
+<meta name="description" content="Parsel: günün gizli Vikipedi maddesini kelime kelime aç. Tahminlerin anlamca yaklaştıkça metin ısınır.">
 <meta name="theme-color" content="#EFE4CB">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23EFE4CB'/%3E%3Crect x='12' y='16' width='40' height='7' rx='3.5' fill='%23B6A079'/%3E%3Crect x='12' y='29' width='28' height='7' rx='3.5' fill='%23C2331F'/%3E%3Crect x='12' y='42' width='34' height='7' rx='3.5' fill='%23B6A079'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
@@ -159,7 +159,7 @@ body.gece .kutu.k1{background:#6E5A30;border-color:#7E6838}
 .sk-nick{font-family:'Libre Baskerville',serif;font-size:13px;width:130px;padding:8px 10px;border:1.5px solid var(--kutu-cizgi);border-radius:9px;background:var(--kutu-bos);color:var(--mur);text-align:center}
 .sk-nick::placeholder{color:var(--soluk);font-style:italic}
 
-/* leaderboard (Sıcak Soğuk ile aynı kalıp) */
+/* leaderboard (Şömine ile aynı kalıp) */
 .lb-tablar{display:flex;gap:6px;justify-content:center;margin-top:14px}
 .lb-tablar button{font-family:'Libre Baskerville',serif;font-size:12px;padding:6px 11px;border:1px solid var(--kutu-cizgi);border-radius:14px;background:var(--kutu-bos);color:var(--soluk);cursor:pointer}
 .lb-tablar button.secili{background:var(--kirmizi-yum);color:var(--kirmizi);border-color:var(--kirmizi)}
@@ -218,7 +218,7 @@ footer a{color:var(--soluk)}
 
   <div class="adlik">
     <div class="ust"><span data-ad="verandle">verandle</span></div>
-    <h1>üstü kapalı<span class="nokta">.</span></h1>
+    <h1>parsel<span class="nokta">.</span></h1>
     <div class="alt">gizli Vikipedi maddesini kelime kelime aç</div>
   </div>
 
@@ -249,7 +249,7 @@ footer a{color:var(--soluk)}
           <div class="govde" id="kGovde"></div>
         </div>
         <footer>
-          <span data-ad="verandle">verandle</span> · üstü kapalı ·
+          <span data-ad="verandle">verandle</span> · parsel ·
           içerik: <span id="ftKaynak">Türkçe Vikipedi</span>
           <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.tr" target="_blank" rel="noopener">CC BY-SA 4.0</a>
         </footer>
@@ -272,7 +272,7 @@ footer a{color:var(--soluk)}
 
 <div class="perde" id="yardim" hidden>
   <div class="modal">
-    <h2>üstü kapalı<span class="nokta">.</span></h2>
+    <h2>parsel<span class="nokta">.</span></h2>
     <p>Karşında günün gizli <b>Vikipedi maddesi</b> var — başlığı ve giriş metni, her kelimesi <b>kutuyla örtülü</b>. Boşluklar, sayılar ve noktalama görünür; bir kutuya tıklarsan kaç harfli olduğunu gösterir.</p>
     <p>Aklına gelen kelimeleri yaz. Tahminin metinde <b>geçiyorsa</b> (çekimli halleriyle birlikte) o kelimenin <b>tüm geçtiği yerler açılır</b> 🟩. Geçmiyor ama metindeki gizli bir kelimeye <b>anlamca yakınsa</b>, o kutu <b>ısınır</b>: <b>🧊 soğuk</b> → <b>🥵 sıcak</b>. Isınan kutular sana doğru bölgeyi gösterir ama kelimeyi ele vermez.</p>
     <p>Amaç: <b>başlığı</b> tamamen açmak. Tahmin sınırın yok; ne kadar az tahminde bulursan o kadar iyi. Tıkandıysan <b>💡 ipucu</b> başlıktan bir harf/kelime açar (sıralamada cezalı sayılır).</p>
@@ -284,7 +284,7 @@ footer a{color:var(--soluk)}
 
 <div class="perde" id="skPerde" hidden>
   <div class="modal">
-    <h2>🏆 üstü kapalı tablosu</h2>
+    <h2>🏆 parsel tablosu</h2>
     <div class="lb-tablar" id="skTablar">
       <button data-k="gun" class="secili">bugün</button>
       <button data-k="hafta">bu hafta</button>
@@ -548,14 +548,14 @@ function sonucPanel(bas,kel,det,kazandi){
 }
 function paylas(){
   const n=S.tahminler.length;
-  const kafa=S.mod==='gun'?'Üstü Kapalı #'+(S.gunNo-MILAT_DISP+1):'Üstü Kapalı';
+  const kafa=S.mod==='gun'?'Parsel #'+(S.gunNo-MILAT_DISP+1):'Parsel';
   const sonuc=S.pes?'pes ettim':(n+' tahminde 🟩');
   const metin=kafa+' — '+sonuc+'\nverandatools.com/pedantle/';
   if(navigator.clipboard){ navigator.clipboard.writeText(metin).then(()=>mesajVer('kopyalandı ✓'),()=>mesajVer('kopyalanamadı')); }
   else mesajVer('kopyalandı ✓');
 }
 
-// ---- leaderboard (Sıcak Soğuk ile aynı backend) ----
+// ---- leaderboard (Şömine ile aynı backend) ----
 const LB_URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeNH7-M9udtLovpo7Wh_vdTTz9sc31ccdZ050IJdgqt2/exec';
 function lbNick(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function lbGun(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }

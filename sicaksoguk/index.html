@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<title>sıcak soğuk — verandle</title>
-<meta name="description" content="Sıcak Soğuk: gizli kelimeyi anlam yakınlığıyla bul. Her tahmin ne kadar sıcak? verandle'ın anlam oyunu.">
+<title>şömine — verandle</title>
+<meta name="description" content="Şömine: gizli kelimeyi anlam yakınlığıyla bul. Her tahmin ne kadar sıcak? verandle'ın anlam oyunu.">
 <meta name="theme-color" content="#EFE4CB">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23EFE4CB'/%3E%3Ccircle cx='32' cy='40' r='13' fill='%23C2331F'/%3E%3Crect x='27' y='10' width='10' height='30' rx='5' fill='%23C2331F'/%3E%3Crect x='29.5' y='14' width='5' height='26' rx='2.5' fill='%23F09A36'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
@@ -220,7 +220,7 @@ footer a{color:var(--soluk)}
 
   <div class="adlik">
     <div class="ust"><span data-ad="verandle">verandle</span></div>
-    <h1 data-ad="sicak">sıcak soğuk<span class="nokta">.</span></h1>
+    <h1>şömine<span class="nokta">.</span></h1>
     <div class="alt" data-ad="sicak_slogan">gizli kelimeyi anlam yakınlığıyla yakala</div>
   </div>
 
@@ -265,12 +265,12 @@ footer a{color:var(--soluk)}
 
   <div id="yukleniyor" class="yukleniyor">kelimeler yükleniyor…</div>
 
-  <footer><span data-ad="verandle">verandle</span> · sıcak soğuk · <span id="ftnot">her gün yeni bir kelime</span></footer>
+  <footer><span data-ad="verandle">verandle</span> · şömine · <span id="ftnot">her gün yeni bir kelime</span></footer>
 </div>
 
 <div class="perde" id="yardim" hidden>
   <div class="modal">
-    <h2>sıcak soğuk<span class="nokta">.</span></h2>
+    <h2>şömine<span class="nokta">.</span></h2>
     <p>Gizli bir kelime var. Aklına gelen kelimeleri yaz; her tahmin, gizli kelimeye <b>anlamca ne kadar yakın</b> olduğuna göre bir <b>°C sıcaklık</b> alır. Yaklaştıkça ısınırsın: <b>🧊 buz gibi</b> → <b>🥶 soğuk</b> → <b>😅 sıcak</b> → <b>🥵 yanıyor</b>, doğru kelime <b>🔥 100°C</b>. Çok alakasızlar <b>eksiye</b> düşer.</p>
     <p>Tahmin gizli kelimenin <b>en yakın 1000 komşusundan</b> biriyse, sağda bir <b>‰ ilerleme çubuğu</b> dolar: <b>1000</b> doğru kelime (BINGO), <b>999</b> en yakın komşu, <b>1</b> en uzak. Çubuğu gördüysen artık yakınsın; o sütun boşsa henüz ilk 1000'in dışındasın.</p>
     <p>Liste sıcaktan soğuğa sıralanır; <b>#</b> kaçıncı tahminin olduğunu gösterir. Tıkandıysan <b>💡 ipucu al</b>; seni biraz yaklaştıran bir kelime verir ama cevabı ele vermez — <b>sıralamada +10 tahmin</b> sayılır. Oyun bitince <b>en yakın kelimeler</b> listesinden komşuluğu inceleyebilirsin. Tahmin sınırın yok.</p>
@@ -282,7 +282,7 @@ footer a{color:var(--soluk)}
 
 <div class="perde" id="skPerde" hidden>
   <div class="modal">
-    <h2>🏆 sıcak soğuk tablosu</h2>
+    <h2>🏆 şömine tablosu</h2>
     <div class="lb-tablar" id="skTablar">
       <button data-k="gun" class="secili">bugün</button>
       <button data-k="hafta">bu hafta</button>
@@ -605,7 +605,7 @@ function yakinlariGoster(){
 function paylas(){
   const n = S.tahminler.length;
   const enIyi = S.tahminler.reduce((m,t)=>Math.max(m,t.pct),0);
-  const kafa = S.mod==='gun' ? 'Sıcak Soğuk #'+(S.gunNo-168) : 'Sıcak Soğuk';
+  const kafa = S.mod==='gun' ? 'Şömine #'+(S.gunNo-168) : 'Şömine';
   const sonuc = S.pes ? 'pes ettim' : (n+' tahminde 🔥');
   // küçük termometre: en sıcak tahminlerin yüz emojileri
   const top = S.tahminler.slice().sort((a,b)=>b.pct-a.pct).slice(0,6);
