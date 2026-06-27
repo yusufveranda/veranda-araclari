@@ -414,7 +414,14 @@ function gunNumarasi(){ const n=new Date();
 // ---- veri yükleme ----
 let MANIFEST=null;
 function manifestYukle(){ return fetch('data/index.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{MANIFEST=j;return j;}); }
-function gunId(g){ const it=MANIFEST.items; const i=((g*167+23)%it.length+it.length)%it.length; return it[i].id; }
+function gunId(g){
+  const sc=MANIFEST.schedule;                 // donmuş takvim: geçmiş+bugün sabit, gelecek çeşitlilik
+  if(sc && sc.length){ if(g<0) g=0;
+    if(g<sc.length) return sc[g];
+    const lf=MANIFEST.loopFrom||0, span=Math.max(1,sc.length-lf);
+    return sc[lf+(((g-lf)%span)+span)%span]; }
+  const it=MANIFEST.items; const i=((g*167+23)%it.length+it.length)%it.length; return it[i].id;  // yedek
+}
 function rastId(){ const it=MANIFEST.items; return it[Math.floor(Math.random()*it.length)].id; }
 function shardYukle(id){ return fetch('data/'+id+'.json',{cache:'no-cache'}).then(r=>r.json()); }
 
