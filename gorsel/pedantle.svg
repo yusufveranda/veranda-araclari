@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 410" width="800" height="410">
+  <defs>
+    <linearGradient id="kagit" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0" stop-color="#F4EAD0"/>
+      <stop offset="1" stop-color="#E4D2AC"/>
+    </linearGradient>
+    <radialGradient id="vinyet" cx="48%" cy="40%" r="78%">
+      <stop offset="0.55" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#3A2A14" stop-opacity="0.22"/>
+    </radialGradient>
+    <filter id="kumas" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.02" numOctaves="2" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.06"/></feComponentTransfer>
+      <feComposite operator="over" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="410" fill="url(#kagit)"/>
+  <rect width="800" height="410" fill="url(#kagit)" filter="url(#kumas)" opacity="0.9"/>
+
+  <!-- redakte satırları: gizli kelime kutuları + ısı/açılan tonları -->
+  <!-- başlık -->
+  <rect x="262" y="50" width="276" height="40" rx="9" fill="#B0935F"/>
+  <line x1="120" y1="114" x2="680" y2="114" stroke="#CBB88E" stroke-width="2"/>
+
+  <g fill="#C9B488">
+    <rect x="120" y="144" width="92"  height="22" rx="6"/>
+    <rect x="222" y="144" width="60"  height="22" rx="6"/>
+    <rect x="292" y="144" width="138" height="22" rx="6"/>
+    <rect x="556" y="144" width="124" height="22" rx="6"/>
+    <rect x="120" y="188" width="120" height="22" rx="6"/>
+    <rect x="360" y="188" width="78"  height="22" rx="6"/>
+    <rect x="448" y="188" width="104" height="22" rx="6"/>
+    <rect x="562" y="188" width="118" height="22" rx="6"/>
+    <rect x="120" y="232" width="70"  height="22" rx="6"/>
+    <rect x="470" y="232" width="92"  height="22" rx="6"/>
+    <rect x="120" y="276" width="110" height="22" rx="6"/>
+    <rect x="318" y="276" width="64"  height="22" rx="6"/>
+    <rect x="392" y="276" width="130" height="22" rx="6"/>
+    <rect x="600" y="276" width="80"  height="22" rx="6"/>
+    <rect x="120" y="320" width="86"  height="22" rx="6"/>
+    <rect x="216" y="320" width="116" height="22" rx="6"/>
+    <rect x="486" y="320" width="194" height="22" rx="6"/>
+  </g>
+
+  <!-- ısınan kutular (altın → turuncu → kırmızı) -->
+  <rect x="440" y="144" width="106" height="22" rx="6" fill="#CF9A3C"/>
+  <rect x="250" y="232" width="210" height="22" rx="6" fill="#E07B2E"/>
+  <rect x="342" y="320" width="134" height="22" rx="6" fill="#C2331F"/>
+  <rect x="240" y="276" width="68"  height="22" rx="6" fill="#D9B96B"/>
+
+  <!-- açılan kelime (yeşil çerçeve) -->
+  <rect x="360" y="188" width="78" height="22" rx="6" fill="none" stroke="#5E8C53" stroke-width="2.5"/>
+
+  <rect width="800" height="410" fill="url(#vinyet)"/>
+</svg>
