@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '3';
+  const BUILD = '4';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -79,7 +79,7 @@
 
   /* ---------- görsel raporlama (🚩 bayrak) ---------- */
   // İleride Google Apps Script web-app URL'i konursa raporlar oraya da POST edilir.
-  const RAPOR_URL = '';
+  const RAPOR_URL = 'https://script.google.com/macros/s/AKfycbwuAfnAIHaUS5rH0TNOFN_dSNVT7nmhMfeO_UjOrIqCavANKxtla7DCasOUyKSwtK39/exec';
   const SEBEPLER = [
     ['yanlis', '🌿 Yanlış bitki'], ['bocek', '🐝 Böcek / hayvan var'],
     ['kalitesiz', '🌫️ Kalitesiz / bulanık'], ['alakasiz', '❓ Konu dışı / saçma'],
@@ -90,7 +90,12 @@
   function raporKaydet(k) {
     const r = raporlariAl(); r.push(k);
     try { localStorage.setItem('bitki-raporlar', JSON.stringify(r)); } catch (e) { }
-    if (RAPOR_URL) { try { fetch(RAPOR_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(k) }); } catch (e) { } }
+    if (RAPOR_URL) {
+      try {
+        fetch(RAPOR_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify(Object.assign({}, k, { ua: (navigator.userAgent || '').slice(0, 140) })) });
+      } catch (e) { }
+    }
   }
   function toast(msg) {
     let el = document.getElementById('toast');
