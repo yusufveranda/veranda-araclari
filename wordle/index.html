@@ -87,7 +87,7 @@ body{transition:background .4s,color .4s}
 .kartlar-oyun{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:720px;margin:30px auto 0}
 .okart{display:block;text-align:left;width:100%;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:13px;
   padding:16px 18px;box-shadow:5px 6px 0 var(--mat-golge);cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s}
-.okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)} .okart:nth-child(4){transform:rotate(.45deg)}
+.okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)} .okart:nth-child(4){transform:rotate(.45deg)} .okart:nth-child(5){transform:rotate(-.45deg)} .okart:nth-child(6){transform:rotate(.4deg)}
 .okart-anlam{text-decoration:none} .okart-anlam .okart-rozet{color:var(--kirmizi)}
 .okart:hover{transform:rotate(0) translateY(-3px);box-shadow:7px 9px 0 var(--mat-golge)}
 .okart:active{transform:translate(1px,2px);box-shadow:2px 2px 0 var(--mat-golge)}
@@ -454,8 +454,13 @@ body{transition:background .4s,color .4s}
       </button>
       <a class="okart okart-anlam" href="../sicaksoguk/">
         <span class="okart-rozet" data-ad="sicak_rozet">anlam oyunu · sınırsız tahmin</span>
-        <h3 data-ad="sicak">sıcak soğuk</h3>
+        <h3 data-ad="sicak">Şömine</h3>
         <p data-ad="sicak_aciklama">harfini değil anlamını bul. her tahmin gizli kelimeye ne kadar yakın? yaklaştıkça ısınırsın.</p>
+      </a>
+      <a class="okart okart-anlam" href="../pedantle/">
+        <span class="okart-rozet">gizli madde · sınırsız tahmin</span>
+        <h3 data-ad="pedantle">Parsel</h3>
+        <p>günün gizli Vikipedi maddesini kelime kelime aç. tahminlerin anlamca yaklaştıkça metin ısınır.</p>
       </a>
     </div>
   </section>
@@ -473,7 +478,8 @@ body{transition:background .4s,color .4s}
       <button data-oyun="harfiyat" class="secili" data-ad="harfiyat">harfiyat</button>
       <button data-oyun="iskelime" data-ad="taraca">taraça</button>
       <button data-oyun="anlamca" data-ad="karine">karine</button>
-      <a class="oyun-disi" href="../sicaksoguk/" data-ad="sicak">Sıcak Soğuk</a>
+      <a class="oyun-disi" href="../sicaksoguk/" data-ad="sicak">Şömine</a>
+      <a class="oyun-disi" href="../pedantle/" data-ad="pedantle">Parsel</a>
     </div>
     <div class="altYazi2" id="altYazi"></div>
 
