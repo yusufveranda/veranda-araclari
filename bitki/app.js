@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '1';
+  const BUILD = '2';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -56,6 +56,27 @@
   function zorEkle(id) { const s = zorlar(); s.add(id); try { localStorage.setItem('bitki-zor', JSON.stringify([...s].slice(-60))); } catch (e) { } }
   function zorCikar(id) { const s = zorlar(); if (s.delete(id)) try { localStorage.setItem('bitki-zor', JSON.stringify([...s])); } catch (e) { } }
 
+  /* ---------- bölge (kapsam): Türkiye / Dünya geneli ---------- */
+  let bolge;
+  try { bolge = localStorage.getItem('bitki-bolge'); } catch (e) { }
+  if (bolge !== 'dunya' && bolge !== 'tr') bolge = 'tr';
+  function veri() { return bolge === 'dunya' ? DATA : DATA.filter(t => t.bolge === 'tr'); }
+  function bolgeSayiGuncelle() {
+    const n = veri().length;
+    const el = document.getElementById('sayiTur'); if (el) el.textContent = '(' + n + ')';
+    const bs = document.getElementById('bolgeSayi');
+    if (bs) bs.textContent = bolge === 'dunya' ? n + ' tür · Türkiye dahil' : n + ' tür';
+    document.querySelectorAll('.bsec').forEach(x => x.classList.toggle('aktif', x.dataset.bolge === bolge));
+  }
+  function bolgeKur(b) {
+    bolge = b;
+    try { localStorage.setItem('bitki-bolge', b); } catch (e) { }
+    bolgeSayiGuncelle();
+    ekran.dataset.cevaplandi = '0';
+    router();
+  }
+  document.querySelectorAll('.bsec').forEach(b => b.addEventListener('click', () => bolgeKur(b.dataset.bolge)));
+
   /* ===================== ROUTER ===================== */
   function router() {
     const h = location.hash.replace(/^#/, '');
@@ -77,7 +98,7 @@
   let quizHedef = null, sonId = null;
 
   function quizSec() {
-    const havuz = DATA.filter(t => quizFotolari(t).length);
+    const havuz = veri().filter(t => quizFotolari(t).length);
     if (!havuz.length) return null;
     let aday;
     const zor = [...zorlar()].map(id => byId[id]).filter(t => t && quizFotolari(t).length);
@@ -88,7 +109,7 @@
   }
 
   function celdiriciler(hedef, n) {
-    const diger = DATA.filter(t => t.id !== hedef.id);
+    const diger = veri().filter(t => t.id !== hedef.id);
     const gorulen = new Set([adAnahtar(hedef)]);
     const sec = [];
     const havuzlar = [
@@ -116,7 +137,7 @@
   }
 
   function quizGoster() {
-    const havuz = DATA.filter(t => quizFotolari(t).length);
+    const havuz = veri().filter(t => quizFotolari(t).length);
     if (!havuz.length) { ekran.innerHTML = `<p class="bos-uyari">Henüz görselli tür yok.</p>`; return; }
     quizHedef = quizSec();
     sonId = quizHedef.id;
@@ -192,7 +213,7 @@
   function quizKategoriCipleri() {
     const kutu = document.getElementById('quizKat');
     if (!kutu) return;
-    const katlar = [...new Set(DATA.filter(t => quizFotolari(t).length).map(t => t.kategori))];
+    const katlar = [...new Set(veri().filter(t => quizFotolari(t).length).map(t => t.kategori))];
     if (katlar.length < 2) return;
     kutu.innerHTML = `<button class="cip${!quizFiltre ? ' aktif' : ''}" data-k="">Hepsi</button>` +
       katlar.map(k => `<button class="cip${quizFiltre === k ? ' aktif' : ''}" data-k="${esc(k)}">${esc(katAd(k))}</button>`).join('');
@@ -204,10 +225,11 @@
   // filtreyi quizSec içine bağla
   const _quizSec = quizSec;
   quizSec = function () {
-    const havuz = DATA.filter(t => quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
+    const bolgede = t => bolge === 'dunya' || (t && t.bolge === 'tr');
+    const havuz = veri().filter(t => quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
     if (!havuz.length) return _quizSec();
     let aday;
-    const zor = [...zorlar()].map(id => byId[id]).filter(t => t && quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
+    const zor = [...zorlar()].map(id => byId[id]).filter(t => t && bolgede(t) && quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
     if (zor.length && Math.random() < 0.4) aday = rast(zor); else aday = rast(havuz);
     if (havuz.length > 1 && aday.id === sonId) return quizSec();
     return aday;
@@ -215,7 +237,7 @@
 
   /* bugünün bitkisi — tarihe göre sabit */
   function gununBitki() {
-    const g = DATA.filter(gorselli);
+    const g = veri().filter(gorselli);
     if (!g.length) return null;
     const d = new Date(); const s = '' + d.getFullYear() + d.getMonth() + d.getDate();
     let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
@@ -244,7 +266,7 @@
       </div>
       <div class="cipler" id="ansKat"></div>
       <div id="ansListe"></div>`;
-    const katlar = [...new Set(DATA.map(t => t.kategori))];
+    const katlar = [...new Set(veri().map(t => t.kategori))];
     const kk = document.getElementById('ansKat');
     kk.innerHTML = `<button class="cip${!ansKat ? ' aktif' : ''}" data-k="">Hepsi</button>` +
       katlar.map(k => `<button class="cip${ansKat === k ? ' aktif' : ''}" data-k="${esc(k)}">${esc(katAd(k))}</button>`).join('');
@@ -256,7 +278,7 @@
   }
   function ansiklopediListe() {
     const q = ansAra.toLowerCase().trim();
-    const list = DATA.filter(t => {
+    const list = veri().filter(t => {
       if (ansKat && t.kategori !== ansKat) return false;
       if (!q) return true;
       const hay = [t.ad.tr, t.ad.en, t.ad.la, t.taksonomi && t.taksonomi.familya, ...(t.tr_alt || [])].join(' ').toLowerCase();
@@ -373,9 +395,9 @@
 
   /* ===================== MİTOLOJİ & KÜLTÜR ===================== */
   function mitolojiGoster() {
-    const hikayeli = DATA.filter(t => t.kultur && (t.kultur.mit || t.kultur.tarih || t.kultur.ozet))
+    const hikayeli = veri().filter(t => t.kultur && (t.kultur.mit || t.kultur.tarih || t.kultur.ozet))
       .sort((a, b) => (b.kultur.mit ? 1 : 0) - (a.kultur.mit ? 1 : 0));
-    const sorulu = DATA.filter(t => t.ipuclari_quiz && t.ipuclari_quiz.length);
+    const sorulu = veri().filter(t => t.ipuclari_quiz && t.ipuclari_quiz.length);
     ekran.innerHTML = `
       <div class="mit-ust">
         <p>Her bitkinin bir hikâyesi var — mitolojide, tarihte, deyimlerde. Önce oku, sonra kendini sına.</p>
@@ -460,9 +482,9 @@
       DATA = (Array.isArray(j) ? j : (j.turler || [])).filter(t => t && t.ad && t.ad.la && t.ad.tr);
       DATA.forEach(t => byId[t.id] = t);
       skorYukle();
-      const gs = DATA.filter(gorselli).length;
-      document.getElementById('sayiTur').textContent = '(' + DATA.length + ')';
-      document.getElementById('stat').textContent = `${DATA.length} tür · ${gs} görselli`;
+      const trN = DATA.filter(t => t.bolge === 'tr').length;
+      document.getElementById('stat').textContent = `${DATA.length} tür · ${trN} Türkiye · ${DATA.length - trN} dünya`;
+      bolgeSayiGuncelle();
       router();
     })
     .catch(e => { ekran.innerHTML = `<p class="bos-uyari">Veri yüklenemedi. (${esc(e.message)})</p>`; });

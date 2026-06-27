@@ -57,6 +57,16 @@ img{display:block}
 .marka .tag{color:var(--soluk);font-style:italic;font-family:'Libre Baskerville',Georgia,serif;
   font-size:15px;padding-bottom:5px}
 
+/* ----- bölge (kapsam) seçici ----- */
+.bolge-bar{display:flex;align-items:center;gap:12px;margin:22px 0 0;flex-wrap:wrap}
+.bolge-et{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--soluk);font-family:'Libre Baskerville',serif}
+.bolge-secim{display:inline-flex;background:var(--kagit-2);border:1px solid var(--cizgi);border-radius:24px;padding:3px}
+.bsec{background:none;border:none;border-radius:20px;padding:7px 18px;font-size:14.5px;color:var(--soluk);
+  font-family:'Playfair Display',serif;transition:background .15s,color .15s}
+.bsec:hover{color:var(--yesil)}
+.bsec.aktif{background:var(--yesil);color:#f6efe0;box-shadow:1px 2px 0 var(--golge)}
+.bolge-sayi{font-size:13px;color:var(--soluk);font-style:italic}
+
 /* ----- mod sekmeleri ----- */
 .sekmeler{display:flex;gap:6px;margin:22px 0 26px;border-bottom:2px solid var(--cizgi);flex-wrap:wrap}
 .sekme{background:none;border:none;padding:11px 20px 13px;font-size:16.5px;color:var(--soluk);
