@@ -175,6 +175,19 @@ img{display:block}
 .rozet-kat{display:inline-block;font-size:11px;background:var(--yesil-soft);color:var(--yesil-koyu);
   border-radius:10px;padding:1px 9px;margin-top:8px}
 
+/* ----- yıldızlama (favoriler) ----- */
+.tur-kart{position:relative}
+.yildiz-btn{position:absolute;top:8px;right:8px;z-index:2;width:32px;height:32px;border-radius:50%;border:none;
+  background:rgba(20,28,20,.42);color:#fff;font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .1s,background .15s,color .15s}
+.yildiz-btn:hover{transform:scale(1.12);background:rgba(20,28,20,.68)}
+.yildiz-btn.dolu{color:#f3c34e;background:rgba(20,28,20,.55)}
+.yildiz-detay{background:var(--kart);border:1px solid var(--cizgi);border-radius:20px;padding:8px 18px;
+  font-size:14.5px;color:var(--soluk);cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.yildiz-detay:hover{border-color:#e0a92e;color:var(--murekkep)}
+.yildiz-detay.dolu{background:rgba(243,195,78,.16);border-color:#e0a92e;color:var(--murekkep)}
+.cip-yildiz.aktif{background:#e0a92e;border-color:#e0a92e;color:#33240a}
+
 .bos-uyari{color:var(--soluk);font-style:italic;padding:40px 0;text-align:center}
 
 /* ----- detay ----- */

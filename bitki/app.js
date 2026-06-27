@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '9';
+  const BUILD = '10';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -62,6 +62,11 @@
     s.son = qNo; istKaydet();
   }
   function ogrenilenSayisi() { return Object.values(IST).filter(s => (s.d - s.y) >= 2).length; }
+
+  /* ---------- yıldızlananlar (favoriler) ---------- */
+  let YILDIZ; try { YILDIZ = new Set(JSON.parse(localStorage.getItem('bitki-yildiz') || '[]')); } catch (e) { YILDIZ = new Set(); }
+  function yildizKaydet() { try { localStorage.setItem('bitki-yildiz', JSON.stringify([...YILDIZ])); } catch (e) { } }
+  function yildizToggle(id) { if (YILDIZ.has(id)) YILDIZ.delete(id); else YILDIZ.add(id); yildizKaydet(); return YILDIZ.has(id); }
 
   /* ---------- bölge (kapsam): Türkiye / Dünya geneli ---------- */
   let bolge;
@@ -133,7 +138,18 @@
       menuKapat(); btn.classList.add('bildirildi'); toast('Teşekkürler — rapor alındı 🌿');
     }));
   }
+  function yildizSayiGuncelle() { const c = document.getElementById('yildizChipSay'); if (c) c.textContent = YILDIZ.size; }
   document.addEventListener('click', e => {
+    const y = e.target.closest('.yildiz-btn');
+    if (y) {
+      e.preventDefault(); e.stopPropagation();
+      const dolu = yildizToggle(y.dataset.yid);
+      y.classList.toggle('dolu', dolu); y.setAttribute('aria-pressed', dolu);
+      y.textContent = dolu ? '★' : '☆';
+      yildizSayiGuncelle();
+      if (location.hash.replace(/^#/, '') === 'ansiklopedi' && ansKat === '__yildiz__') ansiklopediListe();
+      return;
+    }
     const b = e.target.closest('.bayrak');
     if (b) { e.preventDefault(); e.stopPropagation(); raporMenuAc(b); return; }
     if (!e.target.closest('#rapor-menu')) menuKapat();
@@ -368,6 +384,7 @@
     const katlar = [...new Set(veri().map(t => t.kategori))];
     const kk = document.getElementById('ansKat');
     kk.innerHTML = `<button class="cip${!ansKat ? ' aktif' : ''}" data-k="">Hepsi</button>` +
+      `<button class="cip cip-yildiz${ansKat === '__yildiz__' ? ' aktif' : ''}" data-k="__yildiz__">⭐ Favoriler (<span id="yildizChipSay">${YILDIZ.size}</span>)</button>` +
       katlar.map(k => `<button class="cip${ansKat === k ? ' aktif' : ''}" data-k="${esc(k)}">${esc(katAd(k))}</button>`).join('');
     kk.querySelectorAll('.cip').forEach(c => c.addEventListener('click', () => { ansKat = c.dataset.k || null; ansiklopediListe(); kk.querySelectorAll('.cip').forEach(x => x.classList.toggle('aktif', x.dataset.k === (ansKat || ''))); }));
     const inp = document.getElementById('ansArama');
@@ -378,18 +395,25 @@
   function ansiklopediListe() {
     const q = ansAra.toLowerCase().trim();
     const list = veri().filter(t => {
-      if (ansKat && t.kategori !== ansKat) return false;
+      if (ansKat === '__yildiz__') { if (!YILDIZ.has(t.id)) return false; }
+      else if (ansKat && t.kategori !== ansKat) return false;
       if (!q) return true;
       const hay = [t.ad.tr, t.ad.en, t.ad.la, t.taksonomi && t.taksonomi.familya, ...(t.tr_alt || [])].join(' ').toLowerCase();
       return hay.includes(q);
     }).sort((a, b) => a.ad.tr.localeCompare(b.ad.tr, 'tr'));
     const kutu = document.getElementById('ansListe');
-    if (!list.length) { kutu.innerHTML = `<p class="bos-uyari">Eşleşen tür yok.</p>`; return; }
+    if (!list.length) {
+      kutu.innerHTML = (ansKat === '__yildiz__' && !q)
+        ? `<p class="bos-uyari">Henüz favori yok. Bir türün köşesindeki ☆ yıldıza basarak beğendiklerini buraya ekle.</p>`
+        : `<p class="bos-uyari">Eşleşen tür yok.</p>`;
+      return;
+    }
     kutu.innerHTML = `<div class="izgara">${list.map(turKartHTML).join('')}</div>`;
   }
   function turKartHTML(t) {
     const f = gorselli(t) ? t.gorsel[0].url : YAPRAK_SVG;
     return `<a class="tur-kart" href="#tur=${esc(t.id)}">
+      <button class="yildiz-btn${YILDIZ.has(t.id) ? ' dolu' : ''}" data-yid="${esc(t.id)}" aria-pressed="${YILDIZ.has(t.id)}" title="favorilere ekle">${YILDIZ.has(t.id) ? '★' : '☆'}</button>
       <div class="tk-foto"><img src="${esc(f)}" alt="${esc(t.ad.tr)}" loading="lazy" onerror="this.src='${YAPRAK_SVG}'"></div>
       <div class="tk-yz">
         <div class="tk-tr">${esc(t.ad.tr)}</div>
@@ -429,6 +453,7 @@
             <span class="la">${esc(t.ad.la)}</span>
             ${(t.tr_alt && t.tr_alt.length) ? `<div class="alt-adlar">diğer adları: ${t.tr_alt.map(esc).join(', ')}</div>` : ''}
             <span class="rozet-kat">${esc(katAd(t.kategori))}${t.form ? ' · ' + esc(t.form) : ''}</span>
+            <div><button class="yildiz-detay${YILDIZ.has(t.id) ? ' dolu' : ''}" id="yildizDetay" type="button">${YILDIZ.has(t.id) ? '★ Favorilerde' : '☆ Favorilere ekle'}</button></div>
           </div>
 
           <div class="blok"><h3>Tanıma — sokakta nasıl ayırt edilir</h3>
@@ -478,6 +503,12 @@
       </div>`;
 
     document.getElementById('geri').addEventListener('click', () => history.length > 1 ? history.back() : (location.hash = 'ansiklopedi'));
+    const yd = document.getElementById('yildizDetay');
+    if (yd) yd.addEventListener('click', () => {
+      const dolu = yildizToggle(t.id);
+      yd.classList.toggle('dolu', dolu);
+      yd.textContent = dolu ? '★ Favorilerde' : '☆ Favorilere ekle';
+    });
     if (g.length > 1) {
       const ana = document.getElementById('anaFoto'), atif = document.getElementById('anaAtif');
       const anaBayrak = document.querySelector('.ana-foto .bayrak');
