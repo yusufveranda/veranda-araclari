@@ -85,12 +85,20 @@ body{transition:background .4s,color .4s}
   white-space:pre-wrap;word-break:break-word;hyphens:none}
 
 /* gizli kelime kutusu */
-.kutu{display:inline-block;height:1.02em;vertical-align:-0.18em;border-radius:4px;
+.kutu{display:inline-flex;align-items:center;justify-content:center;overflow:hidden;
+  height:1.62em;vertical-align:-0.5em;border-radius:5px;
   background:var(--kutu-dolu);border:1px solid var(--kutu-cizgi);cursor:pointer;
-  margin:0 1px;transition:background .35s,box-shadow .2s;position:relative}
+  margin:0 1px;transition:background .35s,box-shadow .2s,width .25s;position:relative}
 .kutu:hover{box-shadow:0 0 0 2px var(--kirmizi-yum)}
+/* ısınan kutuda: o gizli kelimeye en yakın tahminin SOLUK izi (yakınlık arttıkça font büyür) */
+.kutu .kw{font-family:'Libre Baskerville',serif;font-weight:700;line-height:1;white-space:nowrap;
+  color:rgba(36,26,14,.5);pointer-events:none;letter-spacing:-.01em}
+body.gece .kutu .kw{color:rgba(12,7,2,.52)}
+.kutu.k1 .kw,body.gece .kutu.k1 .kw{color:rgba(70,54,24,.62)}
+.kutu.gizharf .kw{visibility:hidden}
 .kutu.gizharf::after{content:attr(data-h);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-size:.62em;font-weight:700;color:rgba(255,255,255,.85)}
+  font-family:'Playfair Display',serif;font-size:.92em;font-weight:800;color:#2A1E10}
+body.gece .kutu.gizharf::after{color:#EADAB6}
 /* ısı haritası: nötr → sıcak (tek yönlü, Pedantle gibi) */
 .kutu.k1{background:#E2D4A6;border-color:#D3C088}
 .kutu.k2{background:var(--ilik); border-color:var(--ilik)}
@@ -274,7 +282,7 @@ footer a{color:var(--soluk)}
   <div class="modal">
     <h2>parsel<span class="nokta">.</span></h2>
     <p>Karşında günün gizli <b>Vikipedi maddesi</b> var — başlığı ve giriş metni, her kelimesi <b>kutuyla örtülü</b>. Boşluklar, sayılar ve noktalama görünür; bir kutuya tıklarsan kaç harfli olduğunu gösterir.</p>
-    <p>Aklına gelen kelimeleri yaz. Tahminin metinde <b>geçiyorsa</b> (çekimli halleriyle birlikte) o kelimenin <b>tüm geçtiği yerler açılır</b> 🟩. Geçmiyor ama metindeki gizli bir kelimeye <b>anlamca yakınsa</b>, o kutu <b>ısınır</b>: <b>🧊 soğuk</b> → <b>🥵 sıcak</b>. Isınan kutular sana doğru bölgeyi gösterir ama kelimeyi ele vermez.</p>
+    <p>Aklına gelen kelimeleri yaz. Tahminin metinde <b>geçiyorsa</b> (çekimli halleriyle birlikte) o kelimenin <b>tüm geçtiği yerler açılır</b> 🟩. Geçmiyor ama metindeki gizli bir kelimeye <b>anlamca yakınsa</b>, o kutu <b>ısınır</b> (<b>🧊 soğuk</b> → <b>🥵 sıcak</b>) ve üstünde <b>o gizli kelimeye en yakın tahminin</b> soluk bir izi belirir — ne kadar yakınsa o kadar büyük yazılır. Böylece hangi tahminin nereye yakın olduğunu görürsün; gizli kelime yine de açılmaz. Bir kutuya <b>tıklarsan</b> kaç harfli olduğunu gösterir.</p>
     <p>Amaç: <b>başlığı</b> tamamen açmak. Tahmin sınırın yok; ne kadar az tahminde bulursan o kadar iyi. Tıkandıysan <b>💡 ipucu</b> başlıktan bir harf/kelime açar (sıralamada cezalı sayılır).</p>
     <div class="olcek" id="olcekOrnek"></div>
     <p style="font-size:12px;color:var(--soluk)">Yakınlık, Türkçe metinlerden öğrenilmiş anlam vektörlerinden gelir (fastText) — bazen şaşırtıcı ama hep bir mantığı var.</p>
@@ -382,10 +390,10 @@ function gunId(g){ const it=MANIFEST.items; const i=((g*167+23)%it.length+it.len
 function rastId(){ const it=MANIFEST.items; return it[Math.floor(Math.random()*it.length)].id; }
 function shardYukle(id){ return fetch('data/'+id+'.json',{cache:'no-cache'}).then(r=>r.json()); }
 
-function tokDurum(toks){ return toks.map(t=>({rev:!!t.o, best:-2, base:baseForm(t.s), len:harfSay(t.s)})); }
+function tokDurum(toks){ return toks.map(t=>({rev:!!t.o, best:-2, bw:'', base:baseForm(t.s), len:harfSay(t.s)})); }
 
 // ---- açma + ısıtma (her tahmin İKİSİNİ de yapar; Pedantle gibi) ----
-function uygula(gBase){
+function uygula(gBase, gDisp){
   // 1) açma: kök eşleşen tüm açılmamış tokenları aç
   let acilan=0; const acIdx={b:[],g:[]};
   function tara(toks,st,tag){ for(let i=0;i<toks.length;i++){ const s=st[i]; if(s.rev) continue;
@@ -398,7 +406,7 @@ function uygula(gBase){
   let enSim=-2, odak=null;
   if(vekVar){ [['b',S.bSt,S.art.b.toks],['g',S.gSt,S.art.g.toks]].forEach(([tag,st,toks])=>{
     for(let i=0;i<toks.length;i++){ const t=toks[i],s=st[i]; if(s.rev||t.vi<0||t.o) continue;
-      const sim=cos(gvi,t.vi); if(sim>s.best) s.best=sim;
+      const sim=cos(gvi,t.vi); if(sim>s.best){ s.best=sim; s.bw=gDisp||gBase; }
       if(sim>enSim){ enSim=sim; odak={tag,ix:i}; } } }); }
   if(acilan===0 && odak) S.sonOdak=odak;            // odak nabzı yalnız saf ısı tahmininde
   return {acilan, sim: acilan?null:(enSim>-2?enSim:null), vekYok:(!vekVar && acilan===0)};
@@ -414,8 +422,14 @@ function diziHTML(parts,toks,st,baslikMi){
     else if(s.rev){ const yeni=s._yeni?' yeni':''; const bk=baslikMi?' baslik-acik':'';
       h+='<span class="acik'+yeni+bk+'">'+escHTML(t.s)+'</span>'; s._yeni=false; }
     else { const b=boxBand(s.best); const od=s._odak?' odak':''; s._odak=false;
-      const w=Math.max(1.4, s.len*0.66+0.5).toFixed(2);
-      h+='<span class="kutu'+(b?' '+b:'')+od+'" data-h="'+s.len+'" style="width:'+w+'em"></span>'; }
+      const lenW=s.len*0.66+0.5;
+      if(b && s.bw){ const fs=({k1:.62,k2:.76,k3:.9,k4:1.06})[b];          // yakınlık arttıkça font büyür
+        const wordW=s.bw.length*fs*0.62+0.7;
+        const w=Math.max(lenW, wordW).toFixed(2);
+        h+='<span class="kutu '+b+od+'" data-h="'+s.len+'" style="width:'+w+'em">'
+          +'<i class="kw" style="font-size:'+fs+'em">'+escHTML(s.bw)+'</i></span>';
+      } else { const w=Math.max(1.4, lenW).toFixed(2);
+        h+='<span class="kutu'+(b?' '+b:'')+od+'" data-h="'+s.len+'" style="width:'+w+'em"></span>'; } }
   }
   return h;
 }
@@ -460,13 +474,14 @@ function tahminYap(ham, hint){
   const gBase=baseForm(ham);
   if(!gBase){ return; }
   if(!hint && S.tahminler.find(t=>t.base===gBase)){ mesajVer('bunu zaten denedin'); return; }
-  const r=uygula(gBase);
+  const gDisp=trLower(ham.trim());
+  const r=uygula(gBase, gDisp);
   if(r.vekYok && r.acilan===0){ mesajVer('bu kelimeyi bilmiyorum 🤷'); }
   else mesajVer('');
   // odak/yeni işaretle
   for(const grp of S.sonAcan){ const st=grp.tag==='b'?S.bSt:S.gSt; for(const i of grp.ix) st[i]._yeni=true; }
   if(S.sonOdak){ (S.sonOdak.tag==='b'?S.bSt:S.gSt)[S.sonOdak.ix]._odak=true; }
-  S.tahminler.push({w:trLower(ham.trim()), base:gBase, no:S.tahminler.length+1, ac:r.acilan, sim:(r.sim===1?null:r.sim), hint:!!hint});
+  S.tahminler.push({w:gDisp, base:gBase, no:S.tahminler.length+1, ac:r.acilan, sim:(r.sim===1?null:r.sim), hint:!!hint});
   // kazanma: başlık tamamen açık mı?
   if(!S.bitti && S.bSt.every(s=>s.rev)){ S.bitti=true; }
   kaydet(); ciz();
@@ -510,7 +525,7 @@ function tekrarUygula(){
         const hi=parseInt(t.base.slice(4),10);
         if(S.bSt[hi]){ S.bSt[hi].rev=true; const kb=S.bSt[hi].base;
           for(let i=0;i<S.art.g.toks.length;i++){ const s=S.gSt[i]; if(!s.rev&&acmaEslesir(kb,s.base)) s.rev=true; } } }
-    } else uygula(t.base);
+    } else uygula(t.base, t.w);
   }
   S.sonAcan=[]; S.sonOdak=null;
 }
