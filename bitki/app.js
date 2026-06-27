@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '6';
+  const BUILD = '7';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -52,9 +52,16 @@
   const skor = { dogru: 0, toplam: 0, seri: 0, enSeri: 0 };
   function skorYukle() { try { skor.enSeri = JSON.parse(localStorage.getItem('bitki-skor') || '{}').enSeri || 0; } catch (e) { } }
   function skorKaydet() { try { localStorage.setItem('bitki-skor', JSON.stringify({ enSeri: skor.enSeri })); } catch (e) { } }
-  function zorlar() { try { return new Set(JSON.parse(localStorage.getItem('bitki-zor') || '[]')); } catch (e) { return new Set(); } }
-  function zorEkle(id) { const s = zorlar(); s.add(id); try { localStorage.setItem('bitki-zor', JSON.stringify([...s].slice(-60))); } catch (e) { } }
-  function zorCikar(id) { const s = zorlar(); if (s.delete(id)) try { localStorage.setItem('bitki-zor', JSON.stringify([...s])); } catch (e) { } }
+  /* öğrenme istatistiği (kalıcı, aralıklı tekrar için): id -> {d:doğru, y:yanlış, son:soruNo} */
+  let qNo = 0;
+  let IST; try { IST = JSON.parse(localStorage.getItem('bitki-ist') || '{}'); } catch (e) { IST = {}; }
+  function istKaydet() { try { localStorage.setItem('bitki-ist', JSON.stringify(IST)); } catch (e) { } }
+  function istGuncelle(id, dogruMu) {
+    const s = IST[id] || (IST[id] = { d: 0, y: 0, son: 0 });
+    if (dogruMu) s.d++; else s.y++;
+    s.son = qNo; istKaydet();
+  }
+  function ogrenilenSayisi() { return Object.values(IST).filter(s => (s.d - s.y) >= 2).length; }
 
   /* ---------- bölge (kapsam): Türkiye / Dünya geneli ---------- */
   let bolge;
@@ -154,13 +161,10 @@
   /* ===================== TANI (QUIZ) ===================== */
   let quizHedef = null, sonId = null, gecmis = [];   // gecmis = son gösterilen id'ler (en yeni başta)
 
-  function quizSec() {
+  function quizSec() {                                // yedek seçici (override edilir)
     const havuz = veri().filter(t => quizFotolari(t).length);
     if (!havuz.length) return null;
-    let aday;
-    const zor = [...zorlar()].map(id => byId[id]).filter(t => t && quizFotolari(t).length);
-    if (zor.length && Math.random() < 0.4) aday = rast(zor);
-    else aday = rast(havuz);
+    let aday = rast(havuz);
     if (havuz.length > 1 && aday.id === sonId) return quizSec();
     return aday;
   }
@@ -200,8 +204,9 @@
     if (!havuz.length) { ekran.innerHTML = `<p class="bos-uyari">Henüz görselli tür yok.</p>`; return; }
     quizHedef = quizSec();
     sonId = quizHedef.id;
-    gecmis.unshift(quizHedef.id);                     // tekrar penceresine ekle
-    if (gecmis.length > 250) gecmis.length = 250;
+    qNo++;
+    gecmis.unshift(quizHedef.id);                     // arka arkaya tekrarı engelle
+    if (gecmis.length > 60) gecmis.length = 60;
     const foto = rast(quizFotolari(quizHedef).slice(0, 3));
     const siklar = karistir([quizHedef, ...celdiriciler(quizHedef, 3)]);
     const harfler = ['A', 'B', 'C', 'D'];
@@ -212,6 +217,7 @@
         <div class="skor-kutu"><b id="sDogru">${skor.dogru}</b><span>doğru</span></div>
         <div class="skor-kutu"><b id="sToplam">${skor.toplam}</b><span>soru</span></div>
         <div class="skor-kutu"><b class="seri-alev" id="sSeri">${skor.seri}🔥</b><span>seri</span></div>
+        <div class="skor-kutu"><b id="sOgr">${ogrenilenSayisi()}</b><span>öğrenilen</span></div>
         <div class="skor-kutu"><b id="sEn">${skor.enSeri}</b><span>en iyi seri</span></div>
       </div>
       <div class="cipler" id="quizKat"></div>
@@ -250,11 +256,13 @@
       if (b.dataset.id === quizHedef.id) b.classList.add('dogru');
       else if (b.dataset.id === secId) b.classList.add('yanlis');
     });
-    if (dogruMu) { skor.dogru++; skor.seri++; if (skor.seri > skor.enSeri) { skor.enSeri = skor.seri; skorKaydet(); } zorCikar(quizHedef.id); }
-    else { skor.seri = 0; zorEkle(quizHedef.id); }
+    if (dogruMu) { skor.dogru++; skor.seri++; if (skor.seri > skor.enSeri) { skor.enSeri = skor.seri; skorKaydet(); } }
+    else { skor.seri = 0; }
+    istGuncelle(quizHedef.id, dogruMu);              // aralıklı tekrar için kaydet
     document.getElementById('sDogru').textContent = skor.dogru;
     document.getElementById('sToplam').textContent = skor.toplam;
     document.getElementById('sSeri').textContent = skor.seri + '🔥';
+    const og = document.getElementById('sOgr'); if (og) og.textContent = ogrenilenSayisi();
     document.getElementById('sEn').textContent = skor.enSeri;
 
     const t = quizHedef;
@@ -289,16 +297,24 @@
   quizSec = function () {
     const havuz = veri().filter(t => quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
     if (!havuz.length) return _quizSec();
-    // havuzun büyük kısmı gösterilmeden hiçbir tür tekrarlamasın
-    const W = Math.max(0, Math.min(havuz.length - 3, Math.floor(havuz.length * 0.7)));
+    // sadece arka arkaya tekrarı engelle (küçük pencere) — öğrenmeye yer bırak
+    const W = Math.min(havuz.length - 1, 10);
     const yakin = new Set(gecmis.slice(0, W));
-    let taze = havuz.filter(t => !yakin.has(t.id));
-    if (!taze.length) taze = havuz;
-    // ara sıra zorlanılan türü geri getir — ama yakın geçmişte değilse, az sıklıkla
-    const zor = [...zorlar()].map(id => byId[id])
-      .filter(t => t && !yakin.has(t.id) && quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
-    if (zor.length && Math.random() < 0.2) return rast(zor);
-    return rast(taze);
+    let aday = havuz.filter(t => !yakin.has(t.id));
+    if (!aday.length) aday = havuz;
+    // ağırlık: hiç görülmemiş + yanlış yapılanlar öne; ustalaşılan seyrek (aralıklı tekrar)
+    const agirlik = t => {
+      const s = IST[t.id];
+      if (!s || (s.d + s.y) === 0) return 3;        // yeni → öğret
+      const net = s.d - s.y;
+      if (net <= 0) return 4;                        // zorlanılan → pekiştir
+      if (net === 1) return 1.4;                     // yeni öğrenilen → ara sıra
+      return 0.35;                                   // ustalaşılan → nadiren
+    };
+    let toplam = 0; for (const t of aday) toplam += agirlik(t);
+    let r = Math.random() * toplam;
+    for (const t of aday) { r -= agirlik(t); if (r <= 0) return t; }
+    return aday[aday.length - 1];
   };
 
   /* bugünün bitkisi — tarihe göre sabit */
