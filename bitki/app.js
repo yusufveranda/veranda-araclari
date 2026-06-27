@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '4';
+  const BUILD = '5';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -167,7 +167,9 @@
 
   function celdiriciler(hedef, n) {
     const diger = veri().filter(t => t.id !== hedef.id);
-    const gorulen = new Set([adAnahtar(hedef)]);
+    // bir şık başka bir şıkla aynı adı (TR ya da EN) taşımasın — kafa karışmasın
+    const adlar = t => [t.ad.tr, t.ad.en].map(x => (x || '').toLowerCase().trim()).filter(Boolean);
+    const gorulen = new Set(adlar(hedef));
     const sec = [];
     const havuzlar = [
       diger.filter(t => (hedef.karistirilan || []).includes(t.ad.la)),
@@ -178,9 +180,9 @@
     for (const hv of havuzlar) {
       for (const t of karistir(hv)) {
         if (sec.length >= n) break;
-        const k = adAnahtar(t);
-        if (gorulen.has(k)) continue;
-        gorulen.add(k); sec.push(t);
+        const ks = adlar(t);
+        if (ks.some(k => gorulen.has(k))) continue;
+        ks.forEach(k => gorulen.add(k)); sec.push(t);
       }
       if (sec.length >= n) break;
     }
