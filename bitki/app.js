@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '10';
+  const BUILD = '11';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -93,9 +93,17 @@
   // İleride Google Apps Script web-app URL'i konursa raporlar oraya da POST edilir.
   const RAPOR_URL = 'https://script.google.com/macros/s/AKfycbwuAfnAIHaUS5rH0TNOFN_dSNVT7nmhMfeO_UjOrIqCavANKxtla7DCasOUyKSwtK39/exec';
   const SEBEPLER = [
-    ['yanlis', '🌿 Yanlış bitki'], ['bocek', '🐝 Böcek / hayvan var'],
-    ['kalitesiz', '🌫️ Kalitesiz / bulanık'], ['alakasiz', '❓ Konu dışı / saçma'],
-    ['kalabalik', '🖼️ Yanında başka şeyler var'], ['diger', '✏️ Başka sorun']
+    ['yanlis', '🌿 Yanlış bitki'],
+    ['bocek', '🐝 Böcek / hayvan var'],
+    ['kotu_kirpma', '✂️ Kötü kırpılmış'],
+    ['uzak', '🔭 Bitki çok küçük / uzakta'],
+    ['kalabalik', '🖼️ Yanında başka şeyler var'],
+    ['ayni', '🔁 Aynı fotoğraf tekrar var'],
+    ['kalitesiz', '🌫️ Bulanık / düşük kalite'],
+    ['harita', '🗺️ Harita / çizim / şema'],
+    ['yazi', '🔖 Üzerinde yazı / filigran'],
+    ['alakasiz', '❓ Konu dışı / saçma'],
+    ['diger', '✏️ Başka sorun']
   ];
   const sebepAd = Object.fromEntries(SEBEPLER.map(s => s));
   function raporlariAl() { try { return JSON.parse(localStorage.getItem('bitki-raporlar') || '[]'); } catch (e) { return []; } }
