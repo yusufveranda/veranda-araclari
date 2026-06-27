@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '5';
+  const BUILD = '6';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -152,7 +152,7 @@
   window.addEventListener('hashchange', router);
 
   /* ===================== TANI (QUIZ) ===================== */
-  let quizHedef = null, sonId = null;
+  let quizHedef = null, sonId = null, gecmis = [];   // gecmis = son gösterilen id'ler (en yeni başta)
 
   function quizSec() {
     const havuz = veri().filter(t => quizFotolari(t).length);
@@ -200,6 +200,8 @@
     if (!havuz.length) { ekran.innerHTML = `<p class="bos-uyari">Henüz görselli tür yok.</p>`; return; }
     quizHedef = quizSec();
     sonId = quizHedef.id;
+    gecmis.unshift(quizHedef.id);                     // tekrar penceresine ekle
+    if (gecmis.length > 250) gecmis.length = 250;
     const foto = rast(quizFotolari(quizHedef).slice(0, 3));
     const siklar = karistir([quizHedef, ...celdiriciler(quizHedef, 3)]);
     const harfler = ['A', 'B', 'C', 'D'];
@@ -285,14 +287,18 @@
   // filtreyi quizSec içine bağla
   const _quizSec = quizSec;
   quizSec = function () {
-    const bolgede = t => bolge === 'dunya' || (t && t.bolge === 'tr');
     const havuz = veri().filter(t => quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
     if (!havuz.length) return _quizSec();
-    let aday;
-    const zor = [...zorlar()].map(id => byId[id]).filter(t => t && bolgede(t) && quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
-    if (zor.length && Math.random() < 0.4) aday = rast(zor); else aday = rast(havuz);
-    if (havuz.length > 1 && aday.id === sonId) return quizSec();
-    return aday;
+    // havuzun büyük kısmı gösterilmeden hiçbir tür tekrarlamasın
+    const W = Math.max(0, Math.min(havuz.length - 3, Math.floor(havuz.length * 0.7)));
+    const yakin = new Set(gecmis.slice(0, W));
+    let taze = havuz.filter(t => !yakin.has(t.id));
+    if (!taze.length) taze = havuz;
+    // ara sıra zorlanılan türü geri getir — ama yakın geçmişte değilse, az sıklıkla
+    const zor = [...zorlar()].map(id => byId[id])
+      .filter(t => t && !yakin.has(t.id) && quizFotolari(t).length && (!quizFiltre || t.kategori === quizFiltre));
+    if (zor.length && Math.random() < 0.2) return rast(zor);
+    return rast(taze);
   };
 
   /* bugünün bitkisi — tarihe göre sabit */
