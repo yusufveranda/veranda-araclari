@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '7';
+  const BUILD = '9';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',
@@ -160,6 +160,8 @@
 
   /* ===================== TANI (QUIZ) ===================== */
   let quizHedef = null, sonId = null, gecmis = [];   // gecmis = son gösterilen id'ler (en yeni başta)
+  let sonFoto = {};                                  // tür id -> son gösterilen foto url (tekrarda farklı açı)
+  let zorMod; try { zorMod = localStorage.getItem('bitki-zormod') === '1'; } catch (e) { zorMod = false; }
 
   function quizSec() {                                // yedek seçici (override edilir)
     const havuz = veri().filter(t => quizFotolari(t).length);
@@ -207,7 +209,13 @@
     qNo++;
     gecmis.unshift(quizHedef.id);                     // arka arkaya tekrarı engelle
     if (gecmis.length > 60) gecmis.length = 60;
-    const foto = rast(quizFotolari(quizHedef).slice(0, 3));
+    // kolay: en tanınır 3 foto (genel/çiçek/yaprak); zor mod: 6'sı da (kabuk/meyve/yakın çekim dahil)
+    const tumFoto = quizFotolari(quizHedef);
+    const havuzFoto = zorMod ? tumFoto : tumFoto.slice(0, 3);
+    let fotoSec = havuzFoto.filter(f => f.url !== sonFoto[quizHedef.id]);
+    if (!fotoSec.length) fotoSec = havuzFoto;
+    const foto = rast(fotoSec);
+    sonFoto[quizHedef.id] = foto.url;
     const siklar = karistir([quizHedef, ...celdiriciler(quizHedef, 3)]);
     const harfler = ['A', 'B', 'C', 'D'];
 
@@ -219,6 +227,10 @@
         <div class="skor-kutu"><b class="seri-alev" id="sSeri">${skor.seri}🔥</b><span>seri</span></div>
         <div class="skor-kutu"><b id="sOgr">${ogrenilenSayisi()}</b><span>öğrenilen</span></div>
         <div class="skor-kutu"><b id="sEn">${skor.enSeri}</b><span>en iyi seri</span></div>
+      </div>
+      <div class="quiz-ayar">
+        <button class="zor-btn${zorMod ? ' acik' : ''}" id="zorBtn" type="button">🔥 Zor mod${zorMod ? ' · açık' : ''}</button>
+        <span class="zor-ipucu">${zorMod ? 'yaprak · kabuk · meyve gibi zor açılardan da sorar' : 'en tanınır fotoğraflar — zor modda tüm açılar gelir'}</span>
       </div>
       <div class="cipler" id="quizKat"></div>
       <div class="quiz-duzen">
@@ -241,6 +253,11 @@
       </div>`;
 
     document.getElementById('quizFoto').onerror = function () { this.src = YAPRAK_SVG; };
+    document.getElementById('zorBtn').addEventListener('click', () => {
+      zorMod = !zorMod;
+      try { localStorage.setItem('bitki-zormod', zorMod ? '1' : '0'); } catch (e) { }
+      ekran.dataset.cevaplandi = '0'; quizGoster();
+    });
     quizKategoriCipleri();
     const btnlar = [...document.querySelectorAll('#siklar .sik')];
     btnlar.forEach(b => b.addEventListener('click', () => quizCevapla(b.dataset.id, btnlar)));

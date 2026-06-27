@@ -94,6 +94,13 @@ img{display:block}
 .skor-kutu span{font-size:12px;color:var(--soluk);text-transform:uppercase;letter-spacing:.06em}
 .seri-alev{color:var(--vurgu)}
 
+.quiz-ayar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.zor-btn{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:6px 16px;
+  font-size:13.5px;color:var(--soluk);transition:background .15s,color .15s,border-color .15s}
+.zor-btn:hover{border-color:var(--vurgu);color:var(--vurgu)}
+.zor-btn.acik{background:var(--vurgu);border-color:var(--vurgu);color:#f6efe0;box-shadow:1px 2px 0 var(--golge)}
+.zor-ipucu{font-size:12.5px;color:var(--soluk);font-style:italic}
+
 /* foto çerçevesi — herbaryum levhası */
 .levha{background:var(--etiket);padding:14px 14px 0;border-radius:4px;
   box-shadow:6px 8px 0 var(--golge-sert);border:1px solid var(--cizgi);position:relative;transform:rotate(-.5deg)}
