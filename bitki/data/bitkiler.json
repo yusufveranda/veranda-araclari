@@ -2616,14 +2616,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Juglans_regia_%28Flora_of_Tajikistan%29.png",
-    "tip": "cicek",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Arkadiusz Nowak, Marcin Nobis, Sylwia Nowak, Agnieszka Nobis, Anna Wróbel, Sebastian Świerszcz, Ewelina Klichowska, Iwona Dembicz Grzegorz Kusza — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AJuglans_regia_%28Flora_of_Tajikistan%29.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Juglans_regia_hoja.jpg/1280px-Juglans_regia_hoja.jpg",
     "tip": "yaprak",
     "kaynak": "Wikimedia Commons",
@@ -2662,6 +2654,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: MOs810 — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AJuglans_regia%2C_Harvest_nuts_in_Witkowo_%282%29.JPG"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Juglans_regia_Walnut_leaf_epidermis_print_and_stomata_100x.jpg/1280px-Juglans_regia_Walnut_leaf_epidermis_print_and_stomata_100x.jpg",
+    "tip": "yaprak",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: ChrisInMilton — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AJuglans_regia_Walnut_leaf_epidermis_print_and_stomata_100x.jpg"
    }
   ],
   "bolge": "tr"
@@ -2749,14 +2749,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Achillea_millefolium_%28Flora_of_Tajikistan%29.png",
-    "tip": "cicek",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Arkadiusz Nowak, Marcin Nobis, Sylwia Nowak, Agnieszka Nobis, Anna Wróbel, Sebastian Świerszcz, Ewelina Klichowska, Iwona Dembicz Grzegorz Kusza — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAchillea_millefolium_%28Flora_of_Tajikistan%29.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/20170428Achillea_millefolium6.jpg/1280px-20170428Achillea_millefolium6.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -2795,6 +2787,14 @@
     "lisans": "CC0",
     "atif": "Foto: AnRo0002 — CC0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A20181117Achillea_millefolium1.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Achillea_millefolium_%2814995844061%29.jpg/1280px-Achillea_millefolium_%2814995844061%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: jillllybean — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAchillea_millefolium_%2814995844061%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -3528,20 +3528,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACercis_siliquastrum_bi.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Cercis_siliquastrum_Dormancy-breaking_treatments_copy.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Cercis_siliquastrum_hiru.jpg/1280px-Cercis_siliquastrum_hiru.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0 rs",
-    "atif": "Foto: Gmihail at Serbian Wikipedia — CC BY-SA 3.0 rs · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACercis_siliquastrum_Dormancy-breaking_treatments_copy.jpg"
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Jose Angel Urquia Goitia — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACercis_siliquastrum_hiru.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Cercis_siliquastrum_Dormancy-breaking_treatments.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Cercis_siliquastrum_lau.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0 rs",
-    "atif": "Foto: Gmihail at Serbian Wikipedia — CC BY-SA 3.0 rs · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACercis_siliquastrum_Dormancy-breaking_treatments.jpg"
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Jose Angel Urquia Goitia — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACercis_siliquastrum_lau.jpg"
    }
   ],
   "bolge": "tr"
@@ -5661,20 +5661,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAfrican_Marigold_%28Tagetes_erecta%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/African_marigold_tagetes_erecta.jpg/1280px-African_marigold_tagetes_erecta.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "Public domain",
-    "atif": "Foto: Luke — Public domain · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAfrican_marigold_tagetes_erecta.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Arbusto_de_la_Rosa_Sisa_%28Tagetes_erecta%29%2C_Tarapoto%2C_Per%C3%BA.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Centro Takiwasi — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AArbusto_de_la_Rosa_Sisa_%28Tagetes_erecta%29%2C_Tarapoto%2C_Per%C3%BA.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Aksamitka_rozpierzch%C5%82a_%28Tagetes_patula_L.%29.jpg/1280px-Aksamitka_rozpierzch%C5%82a_%28Tagetes_patula_L.%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Tomekgg08 — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAksamitka_rozpierzch%C5%82a_%28Tagetes_patula_L.%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -6283,14 +6283,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ADianthus_caryophyllus_%28flowers_white%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/%28MHNT%29_Dysmachus_trigonus_on_Dianthus_caryophyllus.jpg/1280px-%28MHNT%29_Dysmachus_trigonus_on_Dianthus_caryophyllus.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Didier Descouens — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%28MHNT%29_Dysmachus_trigonus_on_Dianthus_caryophyllus.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Carnation_%28Dianthus_Caryophyllus%29_in_Athens_on_25_May_2023.jpg/1280px-Carnation_%28Dianthus_Caryophyllus%29_in_Athens_on_25_May_2023.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -6321,6 +6313,14 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: George E. Koronaios — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACarnation_%28Dianthus_Caryophyllus%29_in_Athens_on_May_17%2C_2023.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Carnation_%28Dianthus_Caryophyllus%29_in_Athens_on_May_25%2C_2023.jpg/1280px-Carnation_%28Dianthus_Caryophyllus%29_in_Athens_on_May_25%2C_2023.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: George E. Koronaios — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACarnation_%28Dianthus_Caryophyllus%29_in_Athens_on_May_25%2C_2023.jpg"
    }
   ],
   "bolge": "tr"
@@ -6926,14 +6926,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A20180710Prunus_armeniaca8.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/20180710Prunusarmeniaca.Reader.png/1280px-20180710Prunusarmeniaca.Reader.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC0",
-    "atif": "Foto: AnRo0002 — CC0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A20180710Prunusarmeniaca.Reader.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Bark_of_Prunus_armeniaca_Luoyang.jpg/1280px-Bark_of_Prunus_armeniaca_Luoyang.jpg",
     "tip": "kabuk",
     "kaynak": "Wikimedia Commons",
@@ -7074,20 +7066,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AStarr-080812-9700-Thymus_vulgaris-leaves-Makawao-Maui_%2824807095872%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Carteder%C3%A9partitionThymusvulgaris%28France%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: Abalg — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACarteder%C3%A9partitionThymusvulgaris%28France%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Eristalinus_aeneus_on_Thymus_vulgaris%2C_S%C3%A8te_01.jpg/1280px-Eristalinus_aeneus_on_Thymus_vulgaris%2C_S%C3%A8te_01.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Christian Ferrer — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEristalinus_aeneus_on_Thymus_vulgaris%2C_S%C3%A8te_01.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Eristalinus_aeneus_on_Thymus_vulgaris%2C_S%C3%A8te_02.jpg/1280px-Eristalinus_aeneus_on_Thymus_vulgaris%2C_S%C3%A8te_02.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Christian Ferrer — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEristalinus_aeneus_on_Thymus_vulgaris%2C_S%C3%A8te_02.jpg"
    }
   ],
   "bolge": "tr"
@@ -11655,14 +11647,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Artificial-regeneration-of-oak--Quercus-robur-L.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Emil Klimo, Jiří Kulhavý, Alois Prax, Ladislav Menšík, Pavel Hadaš, Oldřich Mauer — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArtificial-regeneration-of-oak--Quercus-robur-L.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/English_Oak_%28Quercus_robur%29%2C_Elgood%27s_Brewery_Garden%2C_Wisbech.jpg/1280px-English_Oak_%28Quercus_robur%29%2C_Elgood%27s_Brewery_Garden%2C_Wisbech.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -11701,6 +11685,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Emőke Dénes — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AFagales_-_Quercus_robur_-_013.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Fagales_-_Quercus_robur_-_52.jpg/1280px-Fagales_-_Quercus_robur_-_52.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Emőke Dénes — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFagales_-_Quercus_robur_-_52.jpg"
    }
   ],
   "bolge": "tr"
@@ -11792,14 +11784,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A%27Hortorum%27_pelargonium_Gibberd_Garden_Essex_England.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%27Hortorum%27_pelargonium_with_cafe_tables_and_chairs_Gibberd_Garden_Essex_England_01.JPG/1280px-%27Hortorum%27_pelargonium_with_cafe_tables_and_chairs_Gibberd_Garden_Essex_England_01.JPG",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Acabashi — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%27Hortorum%27_pelargonium_with_cafe_tables_and_chairs_Gibberd_Garden_Essex_England_01.JPG"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/%27Hortorum%27_pelargonium_with_cafe_tables_and_chairs_Gibberd_Garden_Essex_England_02.JPG/1280px-%27Hortorum%27_pelargonium_with_cafe_tables_and_chairs_Gibberd_Garden_Essex_England_02.JPG",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -11808,20 +11792,28 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A%27Hortorum%27_pelargonium_with_cafe_tables_and_chairs_Gibberd_Garden_Essex_England_02.JPG"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/%28Pelargonium%29_Sadzonka_pelargonii_w_s%C5%82oiku_z_wod%C4%85%2C_Pozna%C5%84_-_marzec_2015.jpg/1280px-%28Pelargonium%29_Sadzonka_pelargonii_w_s%C5%82oiku_z_wod%C4%85%2C_Pozna%C5%84_-_marzec_2015.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Kapsuglan — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%28Pelargonium%29_Sadzonka_pelargonii_w_s%C5%82oiku_z_wod%C4%85%2C_Pozna%C5%84_-_marzec_2015.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/-44_100_Geraniums_%28Pelargonium_x_hortorum%29_%2850095047988%29.jpg/1280px--44_100_Geraniums_%28Pelargonium_x_hortorum%29_%2850095047988%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Carol VanHook — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A-44_100_Geraniums_%28Pelargonium_x_hortorum%29_%2850095047988%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Androceo_Pelargonium_hortorum.jpg/1280px-Androceo_Pelargonium_hortorum.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: DeltaReplexer — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAndroceo_Pelargonium_hortorum.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Bud_of_Pelargonium.jpg/1280px-Bud_of_Pelargonium.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: No machine-readable author provided. Patnac assumed (based on copyright claims). — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABud_of_Pelargonium.jpg"
    }
   ],
   "bolge": "tr"
@@ -12712,14 +12704,6 @@
   "guven": "yuksek",
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Blossom_and_breadth_of_Iris_Germanica_%27Midgard%27_of_the_Barbata_Eliator_group_in_the_Merian_Gardens.jpg/1280px-Blossom_and_breadth_of_Iris_Germanica_%27Midgard%27_of_the_Barbata_Eliator_group_in_the_Merian_Gardens.jpg",
-    "tip": "cicek",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Paradise Chronicle — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABlossom_and_breadth_of_Iris_Germanica_%27Midgard%27_of_the_Barbata_Eliator_group_in_the_Merian_Gardens.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Blossom_of_Iris_Germanica_%27Sandia%27_of_the_Barbata_Eliator_group_in_the_Merian_Gardens.jpg/1280px-Blossom_of_Iris_Germanica_%27Sandia%27_of_the_Barbata_Eliator_group_in_the_Merian_Gardens.jpg",
     "tip": "cicek",
     "kaynak": "Wikimedia Commons",
@@ -12758,6 +12742,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Paradise Chronicle — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABreadth_and_blossom_of_Iris_Germanica_%27Cosette%27_of_the_IB_group_in_the_Merian_Gardens.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/2014-05-14_11_43_37_Iris_in_bloom_in_Ewing%2C_New_Jersey.JPG/1280px-2014-05-14_11_43_37_Iris_in_bloom_in_Ewing%2C_New_Jersey.JPG",
+    "tip": "cicek",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Famartin — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2014-05-14_11_43_37_Iris_in_bloom_in_Ewing%2C_New_Jersey.JPG"
    }
   ],
   "bolge": "tr"
@@ -13099,14 +13091,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/4/4d/00_2262_Kleinbl%C3%BCtige_K%C3%B6nigskerze_%28Verbascum_thapsus%29.gif",
-    "tip": "cicek",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: W. Bulach — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A00_2262_Kleinbl%C3%BCtige_K%C3%B6nigskerze_%28Verbascum_thapsus%29.gif"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/00_2263_Kleinbl%C3%BCtige_K%C3%B6nigskerze_%28Verbascum_thapsus%29.jpg/1280px-00_2263_Kleinbl%C3%BCtige_K%C3%B6nigskerze_%28Verbascum_thapsus%29.jpg",
     "tip": "cicek",
     "kaynak": "Wikimedia Commons",
@@ -13145,6 +13129,14 @@
     "lisans": "CC0",
     "atif": "Foto: AnRo0002 — CC0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A20180619Verbascum_thapsus1.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/20180619Verbascum_thapsus2.jpg/1280px-20180619Verbascum_thapsus2.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC0",
+    "atif": "Foto: AnRo0002 — CC0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A20180619Verbascum_thapsus2.jpg"
    }
   ],
   "bolge": "tr"
@@ -13803,12 +13795,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A20200414Prunus_cerasus10.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Hybridation_Prunus_cerasus.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Modell_von_Prunus_avium_-_Prunus_cerasus_%28Kirschbaum%29_-Osterloh_Nr._30-_%282%29.jpg/1280px-Modell_von_Prunus_avium_-_Prunus_cerasus_%28Kirschbaum%29_-Osterloh_Nr._30-_%282%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: Pancrat — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AHybridation_Prunus_cerasus.png"
+    "atif": "Foto: David Ludwig — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AModell_von_Prunus_avium_-_Prunus_cerasus_%28Kirschbaum%29_-Osterloh_Nr._30-_%282%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -14681,14 +14673,6 @@
     "sayfa": "https://www.inaturalist.org/photos/95624108"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Jeuwre — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADe-Olivenbaum.ogg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/%27Bringing_in_the_sheaves%27_LOC_matpc.05398.jpg/1280px-%27Bringing_in_the_sheaves%27_LOC_matpc.05398.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -14719,6 +14703,14 @@
     "lisans": "CC BY 4.0",
     "atif": "Foto: Szilas — CC BY 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A2026-04-20_Budapest_Zoo_22.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/300-%D0%BB%D0%B5%D1%82%D0%BD%D0%B8%D0%B5_%D0%BE%D0%BB%D0%B8%D0%B2%D1%8B._%D0%9D%D0%B8%D0%BA%D0%B8%D1%82%D1%81%D0%BA%D0%B8%D0%B9_%D0%B1%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4._%D0%9D%D0%B8%D0%BA%D0%B8%D1%82%D0%B0._%D0%AF%D0%BB%D1%82%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_%D0%B3%D0%BE%D1%80%D1%81%D0%BE%D0%B2%D0%B5%D1%82._%D0%9A%D1%80%D1%8B%D0%BC._%D0%98%D1%8E%D0%BD%D1%8C_2009_-_panoramio.jpg/1280px-thumbnail.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Vadim Indeikin — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A300-%D0%BB%D0%B5%D1%82%D0%BD%D0%B8%D0%B5_%D0%BE%D0%BB%D0%B8%D0%B2%D1%8B._%D0%9D%D0%B8%D0%BA%D0%B8%D1%82%D1%81%D0%BA%D0%B8%D0%B9_%D0%B1%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4._%D0%9D%D0%B8%D0%BA%D0%B8%D1%82%D0%B0._%D0%AF%D0%BB%D1%82%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_%D0%B3%D0%BE%D1%80%D1%81%D0%BE%D0%B2%D0%B5%D1%82._%D0%9A%D1%80%D1%8B%D0%BC._%D0%98%D1%8E%D0%BD%D1%8C_2009_-_panoramio.jpg"
    }
   ],
   "bolge": "tr"
@@ -15873,14 +15865,6 @@
   "bolge": "dunya",
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/20210605_Hortus_botanicus_Leiden_-_Ananas_comosus.jpg/1280px-20210605_Hortus_botanicus_Leiden_-_Ananas_comosus.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Rudolphous — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A20210605_Hortus_botanicus_Leiden_-_Ananas_comosus.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Ananas_comosus_%285287190633%29.jpg/1280px-Ananas_comosus_%285287190633%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -15919,6 +15903,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Silviculture South — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAnanas_comosus_%28Linn.%29_Merrill.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Ananas_comosus_-_Jardim_Bot%C3%A2nico_de_S%C3%A3o_Paulo_-_IMG_0247.jpg/1280px-Ananas_comosus_-_Jardim_Bot%C3%A2nico_de_S%C3%A3o_Paulo_-_IMG_0247.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "Public domain",
+    "atif": "Foto: Daderot — Public domain · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAnanas_comosus_-_Jardim_Bot%C3%A2nico_de_S%C3%A3o_Paulo_-_IMG_0247.jpg"
    }
   ]
  },
@@ -16516,14 +16508,6 @@
   "bolge": "dunya",
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Air_de_r%C3%A9partitions_Adansonia_digitata.jpg/1280px-Air_de_r%C3%A9partitions_Adansonia_digitata.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: KLEIN Benjamin — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAir_de_r%C3%A9partitions_Adansonia_digitata.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Le_grand_baobab_Adansonia_digitata_01.jpg/1280px-Le_grand_baobab_Adansonia_digitata_01.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -16562,6 +16546,14 @@
     "lisans": "CC0",
     "atif": "Foto: Adansonia rayanne2 — CC0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ALe_grand_baobab_Adansonia_digitata_03.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Adansonia_digitata_en_Jard%C3%ADn_Bot%C3%A1nico_Xer%C3%B3fito_Dr_Le%C3%B3n_Croizat.jpg/1280px-Adansonia_digitata_en_Jard%C3%ADn_Bot%C3%A1nico_Xer%C3%B3fito_Dr_Le%C3%B3n_Croizat.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Aramburu Carlos — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAdansonia_digitata_en_Jard%C3%ADn_Bot%C3%A1nico_Xer%C3%B3fito_Dr_Le%C3%B3n_Croizat.jpg"
    }
   ]
  },
@@ -17211,14 +17203,6 @@
     "lisans": "CC-BY-SA",
     "atif": "(c) Laura Camp, some rights reserved (CC BY-SA)",
     "sayfa": "https://www.inaturalist.org/photos/84769950"
-   },
-   {
-    "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/50434/large.jpg",
-    "tip": "butun",
-    "kaynak": "iNaturalist",
-    "lisans": "CC-BY",
-    "atif": "(c) folini, some rights reserved (CC BY), uploaded by folini",
-    "sayfa": "https://www.inaturalist.org/photos/50434"
    }
   ]
  },
@@ -17841,14 +17825,6 @@
   "bolge": "dunya",
   "gorsel": [
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Jeuwre — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADe-Ginkgo_biloba.ogg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/20240602_Ginkgo_biloba_Mi%C5%82orz%C4%85b_dwuklapowy_Katowice_Panewniki.jpg/1280px-20240602_Ginkgo_biloba_Mi%C5%82orz%C4%85b_dwuklapowy_Katowice_Panewniki.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -17865,14 +17841,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABudai_Arbor%C3%A9tum._Fels%C5%91_kert._P%C3%A1fr%C3%A1nyfeny%C5%91_avagy_halfarkfa_%28Ginkgo_biloba%29._-_Budapest.JPG"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Flavono%C3%AFdes_complexes_du_Ginkgo_biloba.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Pancrat — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFlavono%C3%AFdes_complexes_du_Ginkgo_biloba.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Ginkgo_%28Ginkgo_biloba_L.%29_%E2%99%80_%2C_Botanic_Garden_of_the_Jagiellonian_University%2C_27_Kopernika_street%2C_Krak%C3%B3w%2C_Poland.jpg/1280px-Ginkgo_%28Ginkgo_biloba_L.%29_%E2%99%80_%2C_Botanic_Garden_of_the_Jagiellonian_University%2C_27_Kopernika_street%2C_Krak%C3%B3w%2C_Poland.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -17887,6 +17855,22 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Zygmunt Put — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AGinkgo_%28Ginkgo_biloba_L.%29_%E2%99%82%2C_Botanic_Garden_of_the_Jagiellonian_University%2C_27_Kopernika_street%2C_Krak%C3%B3w%2C_Poland.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ginkgo_biloba_%281%29.JPG/1280px-Ginkgo_biloba_%281%29.JPG",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Marija Gajić — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGinkgo_biloba_%281%29.JPG"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Ginkgo_biloba_%282%29.JPG/1280px-Ginkgo_biloba_%282%29.JPG",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Marija Gajić — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGinkgo_biloba_%282%29.JPG"
    }
   ]
  },
@@ -19823,14 +19807,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AFlowers_of_a_mango_tree%28Mangifera_indica%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Arbusto_Mangifera_Indica_en_pucp.jpg/1280px-Arbusto_Mangifera_Indica_en_pucp.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: S.N.Aquino — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArbusto_Mangifera_Indica_en_pucp.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/B%C3%A9nin-Mangifera_indica_et_hyphaene_thebaica.jpg/1280px-B%C3%A9nin-Mangifera_indica_et_hyphaene_thebaica.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -19861,6 +19837,14 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Dinesh Valke from Thane, India — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicus_sp._%28%3F%29_and_Mangifera_indica_%282428133699%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ficus_sp._%28%3F%29_and_Mangifera_indica_%282428141977%29.jpg/1280px-Ficus_sp._%28%3F%29_and_Mangifera_indica_%282428141977%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Dinesh Valke from Thane, India — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicus_sp._%28%3F%29_and_Mangifera_indica_%282428141977%29.jpg"
    }
   ]
  },
@@ -21039,14 +21023,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACarnegiea_gigantea_con_flor_01.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Carnegiea_gigantea_%2816763075667%29.gif",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: Homer Edward Price — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACarnegiea_gigantea_%2816763075667%29.gif"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Carnegiea_gigantea_%283208037025%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -21069,6 +21045,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: WendyAvilesR — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACarnegiea_gigantea_con_flor_03.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Carnegiea_gigantea_%286843269674%29.jpg/1280px-Carnegiea_gigantea_%286843269674%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: Daniel Ramirez from Honolulu, USA — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACarnegiea_gigantea_%286843269674%29.jpg"
    }
   ]
  },
@@ -21959,14 +21943,6 @@
   "bolge": "dunya",
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Welwitschia_Mirabilis_Area_of_Circulation.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: Thomas Schoch — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AWelwitschia_Mirabilis_Area_of_Circulation.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Namib%2C_Welwitschia_mirabilis.jpg/1280px-Namib%2C_Welwitschia_mirabilis.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -21991,20 +21967,28 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AStem_of_a_Welwitschia_which_according_to_a_C14_test_was_far_more_then_1000_years_old_on_display_at_the_Swakopmund_Museum%2C_Namibia.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Welwitschia_mirabilis_%2816692836034%29.jpg/1280px-Welwitschia_mirabilis_%2816692836034%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 2.0",
-    "atif": "Foto: Domenico Convertini from Zurich, Schweiz — CC BY-SA 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AWelwitschia_mirabilis_%2816692836034%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Welwitschia_mirabilis_%2816702098514%29.jpg/1280px-Welwitschia_mirabilis_%2816702098514%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Domenico Convertini from Zurich, Schweiz — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AWelwitschia_mirabilis_%2816702098514%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Welwitschia_mirabilis_%2816704211043%29.jpg/1280px-Welwitschia_mirabilis_%2816704211043%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Domenico Convertini from Zurich, Schweiz — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AWelwitschia_mirabilis_%2816704211043%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Welwitschia_mirabilis_%2816704290753%29.jpg/1280px-Welwitschia_mirabilis_%2816704290753%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Domenico Convertini from Zurich, Schweiz — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AWelwitschia_mirabilis_%2816704290753%29.jpg"
    }
   ]
  },
@@ -23184,14 +23168,6 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: MARCO AURÉLIO ESPARZ… — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AIp%C3%AA_Amarelo_%28Tabebuia_chrysotricha%29_e_canavial_de_cana-de-a%C3%A7%C3%BAcar_%28Saccharum_officinarum%29_na_rodovia_SP-333_entre_Jaboticabal_e_Taquaritinga._-_panoramio.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/5/53/Karyotype_of_Sugarcane_%28Saccharum_officinarum_LA_Purple%29.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Wenpan Zhang, Sheng Zuo, Zhanjie Li, Zhuang Meng, Jinlei Han, Junqi Song, Yong-Bao Pan Kai Wang — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AKaryotype_of_Sugarcane_%28Saccharum_officinarum_LA_Purple%29.png"
    },
    {
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/30552377/large.jpeg",
