@@ -112,6 +112,9 @@ body{transition:background .4s,color .4s}
 .satir.yeni{animation:vurgula 1.6s ease}
 @keyframes vurgula{0%{border-color:var(--kirmizi);box-shadow:0 0 0 2px var(--kirmizi-yum);transform:translateY(-3px)}55%{border-color:var(--kirmizi);box-shadow:0 0 0 2px var(--kirmizi-yum);transform:none}100%{border-color:transparent;box-shadow:none}}
 .satir.son{border-color:var(--kirmizi)}
+/* son tahminin: en üstte sabit satır (listeyi taramadan gör) */
+.son-etiket{font-family:'Libre Baskerville',serif;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--kirmizi);font-weight:700;margin:16px 0 4px}
+#sonTahminYer .satir{border-color:var(--kirmizi);border-width:2px}
 .satir .s-no.ip{color:var(--kirmizi)}     /* ipucuyla gelen tahmin */
 
 /* °C metin rengi (sıcak → soğuk) */
@@ -248,6 +251,9 @@ footer a{color:var(--soluk)}
     <div class="mesaj" id="mesaj"></div>
 
     <div id="sonucYer"></div>
+
+    <div id="sonEtiket" class="son-etiket" hidden>son tahminin</div>
+    <div id="sonTahminYer"></div>
 
     <div id="tabloBas" class="tablo-bas" hidden>
       <span class="s-no">#</span>
@@ -503,6 +509,15 @@ function barAnim(el, hedef, sure){   // bar genişliğini 0'dan hedefe kare kare
   })(bas);
   setTimeout(()=>{ if(!bitti){ el.style.width = hedef.toFixed(2)+'%'; bitti=true; } }, sure+200);
 }
+function animeSatir(el, t){   // bir satırın °C/‰/bar değerlerini 0'dan hedefe doldur
+  const fill = el.querySelector('.ilr-cubuk i'), no = el.querySelector('.ilr-no'), sicNo = el.querySelector('.sic-no');
+  if(sicNo) sayiAnim(sicNo, t.pct, ANIM_SURE, 2);
+  if(fill) barAnim(fill, bulundu(t) ? 100 : t.rut/10, ANIM_SURE);
+  const hedefN = bulundu(t) ? 1000 : t.rut;
+  if(no && hedefN!=null) sayiAnim(no, hedefN, ANIM_SURE, 0);
+  const bingoB = el.querySelector('.s-ilr.bingo b');
+  if(bingoB){ bingoB.style.visibility='hidden'; setTimeout(()=>{ bingoB.style.visibility='visible'; }, ANIM_SURE); }
+}
 function ciz(){
   // durum
   $('dTahmin').textContent = S.tahminler.length;
@@ -515,27 +530,21 @@ function ciz(){
   const sirali = S.tahminler.slice().sort((a,b)=>b.pct-a.pct);
   $('tabloBas').hidden = S.tahminler.length===0;
   $('liste').innerHTML = sirali.map(satirHTML).join('');
-  // yeni tahmini görünür kıl; gerçekten yeniyse parlat + çubuğu/sayıyı yavaşça doldur
-  if(S.sonW){
-    const el = document.querySelector('.satir[data-w="'+CSS.escape(S.sonW)+'"]');
-    if(el){
-      el.scrollIntoView({block:'nearest'});
-      if(S.animYeni){
-        el.classList.add('yeni');
-        const son = S.tahminler.find(x=>x.w===S.sonW);
-        const fill = el.querySelector('.ilr-cubuk i'), no = el.querySelector('.ilr-no'), sicNo = el.querySelector('.sic-no');
-        if(son){
-          if(sicNo) sayiAnim(sicNo, son.pct, ANIM_SURE, 2);           // °C sayacı 0'dan akar
-          if(fill){
-            barAnim(fill, bulundu(son) ? 100 : son.rut/10, ANIM_SURE);  // 0'dan hedefe JS ile doldur
-          }
-          const hedefN = bulundu(son) ? 1000 : son.rut;
-          if(no && hedefN!=null) sayiAnim(no, hedefN, ANIM_SURE, 0);  // ‰ sayacı
-          const bingoB = el.querySelector('.s-ilr.bingo b');          // BINGO! yazısı bar dolmadan GÖRÜNMESİN (spoiler)
-          if(bingoB){ bingoB.style.visibility='hidden'; setTimeout(()=>{ bingoB.style.visibility='visible'; }, ANIM_SURE); }
-        }
-      }
+
+  // son tahmin: en üstte SABİT satır (listeye kaydırmadan gör); aynı kelime listede sırasında da durur
+  const sonT = (S.sonW && !S.bitti) ? S.tahminler.find(x=>x.w===S.sonW) : null;
+  if(sonT){
+    $('sonEtiket').hidden = false;
+    $('sonTahminYer').innerHTML = satirHTML(sonT);
+    const pel = $('sonTahminYer').firstChild;
+    if(S.animYeni){
+      const lel = document.querySelector('#liste .satir[data-w="'+CSS.escape(S.sonW)+'"]');
+      if(lel) lel.classList.add('yeni');           // listedeki satırı parlat (nereye düştü görünsün)
+      animeSatir(pel, sonT);                        // üstteki sabit satır 0'dan dolar (listedeki final değerde)
     }
+  } else {
+    $('sonEtiket').hidden = true;
+    $('sonTahminYer').innerHTML = '';
   }
   S.animYeni = false;
 
