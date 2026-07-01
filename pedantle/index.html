@@ -293,10 +293,6 @@ footer a{color:var(--soluk)}
           <div class="thliste" id="thListe"></div>
           <div class="th-bas th-ac" id="acBas" hidden><span>açtığın kelimeler</span><span id="acSay"></span></div>
           <div class="thliste" id="acListe"></div>
-          <div class="altlik" id="altlik">
-            <button class="ipucu-btn" id="ipucuBtn">💡 ipucu</button>
-            <button class="pes-btn" id="pesBtn">pes et / cevabı gör</button>
-          </div>
         </div>
       </div>
     </div>
@@ -311,7 +307,7 @@ footer a{color:var(--soluk)}
     <h2>parsel<span class="nokta">.</span></h2>
     <p>Karşında günün gizli <b>Vikipedi maddesi</b> var — başlığı ve giriş metni, her kelimesi <b>kutuyla örtülü</b>. Boşluklar, sayılar ve noktalama görünür; bir kutuya tıklarsan kaç harfli olduğunu gösterir.</p>
     <p>Aklına gelen kelimeleri yaz. Tahminin metinde <b>geçiyorsa</b> (çekimli halleriyle birlikte) o kelimenin <b>tüm geçtiği yerler açılır</b> 🟩. Geçmiyor ama metindeki gizli bir kelimeye <b>anlamca yakınsa</b>, o kutu <b>ısınır</b> (<b>🧊 soğuk</b> → <b>🥵 sıcak</b>) ve üstünde <b>o gizli kelimeye en yakın tahminin</b> soluk bir izi belirir — ne kadar yakınsa o kadar büyük yazılır. Böylece hangi tahminin nereye yakın olduğunu görürsün; gizli kelime yine de açılmaz. Bir kutuya <b>tıklarsan</b> kaç harfli olduğunu gösterir.</p>
-    <p>Amaç: <b>başlığı</b> tamamen açmak. Tahmin sınırın yok; ne kadar az tahminde bulursan o kadar iyi. Tıkandıysan <b>💡 ipucu</b> başlıktan bir harf/kelime açar (sıralamada cezalı sayılır).</p>
+    <p>Amaç: <b>başlığı</b> tamamen açmak. Tahmin sınırın yok; ne kadar az tahminde bulursan o kadar iyi.</p>
     <div class="olcek" id="olcekOrnek"></div>
     <p style="font-size:12px;color:var(--soluk)">Yakınlık, Türkçe metinlerden öğrenilmiş anlam vektörlerinden gelir (fastText) — bazen şaşırtıcı ama hep bir mantığı var.</p>
     <button class="kapat" id="yardimKapat">anladım</button>
@@ -482,7 +478,6 @@ function ciz(){
   else { $('dGun').textContent='∞'; $('dGunEt').textContent='arşiv'; }
   thCiz();
   $('tahminGir').disabled=S.bitti; $('giris').querySelector('button').disabled=S.bitti;
-  $('ipucuBtn').style.display=$('pesBtn').style.display=S.bitti?'none':'';
 }
 function thSat(t,ac){
   let sag,cls;
@@ -744,8 +739,6 @@ function olcekCiz(){ const bant=[['buz','soğuk'],['soguk','serin'],['serin','ı
 // ---- olaylar ----
 $('giris').addEventListener('submit',e=>{ e.preventDefault(); const v=$('tahminGir').value; $('tahminGir').value=''; tahminYap(v,false); $('tahminGir').focus(); });
 $('modlar').addEventListener('click',e=>{ const b=e.target.closest('button[data-mod]'); if(b){ b.blur(); modSec(b.dataset.mod); } });
-$('ipucuBtn').addEventListener('click',()=>{ $('ipucuBtn').blur(); ipucuAl(); });
-$('pesBtn').addEventListener('click',()=>{ if(confirm('Cevabı görmek istediğine emin misin? Oyun biter.')) pesEt(); });
 $('yardimBtn').addEventListener('click',()=>{ olcekCiz(); $('yardim').hidden=false; });
 $('temaBtn').addEventListener('click',()=>{ const g=!document.body.classList.contains('gece'); temaUygula(g); localStorage.setItem('pedantle:tema',g?'1':'0'); });
 $('yardimKapat').addEventListener('click',()=>$('yardim').hidden=true);
