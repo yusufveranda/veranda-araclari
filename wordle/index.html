@@ -564,6 +564,7 @@ let revealAnim=false, bekleyenMesaj='', bekleyenSes=null;  // reveal bitene kada
 let revealTimer=null;   // bekleyen revealBitti zamanlayıcısı (yeni oyun/geçişte temizlenir)
 let _ipSig='';          // ipucu imzası — her tuşta yeniden çizip zıplamasın diye
 let bellek={};                 // oyun:mod -> devam eden durum
+let oyunGun=0;                 // günü BAŞTA sabitle: gece yarısını geçince skor/kayıt/altın hep bu güne yazılsın (canlı gunSayisi() sayaçlar için)
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
 
@@ -601,17 +602,18 @@ function sReveal(rk){
 /* ===== gün / cevap ===== */
 function gunSayisi(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
 function rasgele(L){ const a=HARF_CEVAP[L]; return a[Math.floor(Math.random()*a.length)]; }
-function gunlukCevap(L,tuz){ const a=HARF_CEVAP[L]; return a[(gunSayisi()*31+L*7+(tuz||0))%a.length]; }
-function altinUz(){ return (mod==='gun'&&oyun==='iskelime') ? ISK_UZ[((gunSayisi()*2654435761)>>>0)%ISK_UZ.length] : 0; }   // günün altın kelimesi (uzunluk): her gün rastgele-deterministik, 2× puan
+function gunlukCevap(L,tuz){ const a=HARF_CEVAP[L]; return a[(oyunGun*31+L*7+(tuz||0))%a.length]; }
+function altinUz(){ return (mod==='gun'&&oyun==='iskelime') ? ISK_UZ[((oyunGun*2654435761)>>>0)%ISK_UZ.length] : 0; }   // günün altın kelimesi (uzunluk): sabitlenmiş güne göre — gece yarısı kaymasın
 
 function yeniTahta(L,cevap){
   return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:oyun==='iskelime'?7:6};
 }
 function tahtalariKur(){
+  if(mod==='gun') oyunGun=gunSayisi();   // günü BURADA sabitle — oyun bu güne yapışsın (gece yarısını geçse de)
   if(oyun==='iskelime') tahtalar = ISK_UZ.map(L=>yeniTahta(L, mod==='gun'?gunlukCevap(L, L===5?137:0):rasgele(L)));   // 5 harfli: harfiyat'la aynı çıkmasın diye kaydır
   else if(oyun==='anlamca'){
     const ks=Object.keys(ANLAM_CEVAP);
-    const c=mod==='gun'?ks[gunSayisi()%ks.length]:ks[Math.floor(Math.random()*ks.length)];
+    const c=mod==='gun'?ks[oyunGun%ks.length]:ks[Math.floor(Math.random()*ks.length)];
     const t=yeniTahta(5,c); t.maxSatir=3; t.ipucu=ANLAM_CEVAP[c]; tahtalar=[t];
   } else tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false; sonucKapali=false;
@@ -767,7 +769,7 @@ function ozetIzgaraHTML(){   // 6 mini ızgara, tek ekranda — sadece oynanan s
 }
 function payMetni(){   // spoiler vermez: yalnız uzunluk + çözüldü/çözülmedi + deneme
   const s=skorHesapla(), isim=(localStorage.getItem('harfiyat:nick')||'').trim();
-  const bas=(isim?isim+' · ':'')+oyunAdi()+(mod==='gun'?' #'+(gunSayisi()-168):' (sonsuz)');   // milat 2026-06-19 = 1. gün
+  const bas=(isim?isim+' · ':'')+oyunAdi()+(mod==='gun'?' #'+(oyunGun-168):' (sonsuz)');   // milat 2026-06-19 = 1. gün
   if(oyun==='iskelime'){
     const KEY=L=>String.fromCodePoint(48+L,0xFE0F,0x20E3);   // 3️⃣ … 8️⃣
     const huc=s.per.map(p=>KEY(p.uz)+(p.cozuldu?'🟩'+p.deneme:'⬛–'));
@@ -793,7 +795,7 @@ const LB_URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeN
 function lbOyun(){ return oyun==='iskelime'?'taraca':oyun==='anlamca'?'avlu':oyun; }   // tablo oyun anahtarı (harfiyat/taraca/avlu)
 function oyunAdi(){ return oyun==='iskelime'?'taraça':oyun==='anlamca'?'avlu':'harfiyat'; }
 function lbDestekli(){ return oyun==='iskelime'||oyun==='anlamca'||oyun==='harfiyat'; }   // verandle'ın üç oyunu da
-function haftaBas(){ const g=gunSayisi(); return g-(((g-1)%7)+7)%7; }   // haftanın başı = en son Cuma (gün no). hafta: Cuma 00:00 → Cuma 00:00
+function haftaBas(){ const g=oyunGun; return g-(((g-1)%7)+7)%7; }   // haftanın başı = en son Cuma (gün no). hafta: Cuma 00:00 → Cuma 00:00 · sabit güne göre
 function gunTarih(g){ const d=new Date(2026,0,1); d.setDate(d.getDate()+g); return d; }
 function haftaAraligiYazi(){ const b=haftaBas(), f=g=>gunTarih(g).toLocaleDateString('tr-TR',{day:'numeric',month:'long'}); return 'Cuma '+f(b)+' → '+f(b+6); }
 function nickAl(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
@@ -803,10 +805,10 @@ let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlenir)
   if(mod!=='gun' || !lbDestekli() || !oyunBitti) return Promise.resolve(null);
   const nick=nickAl(); if(!nick) return Promise.resolve({yokNick:true});
-  const key=lbOyun()+':'+gunSayisi()+':'+nick.toLowerCase();
+  const key=lbOyun()+':'+oyunGun+':'+nick.toLowerCase();
   if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
   const s=skorHesapla();
-  const q=new URLSearchParams({fn:'add',oyun:lbOyun(),gun:String(gunSayisi()),nick,
+  const q=new URLSearchParams({fn:'add',oyun:lbOyun(),gun:String(oyunGun),nick,
     puan:String(s.puan100),cozulen:String(s.cozulen),deneme:String(s.toplamDeneme)});
   const pr=fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{lbGonderildi[key]=j;return j;}).catch(()=>null);
   lbGonderildi[key]=pr; return pr;
@@ -885,13 +887,13 @@ function lbGoster(kapsam){
   const listeEl=document.getElementById('lbListe'), liderEl=document.getElementById('lbLider');
   liderEl.textContent=''; listeEl.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   const q=new URLSearchParams({fn:'list',oyun:lbOyun(),kapsam});
-  if(kapsam==='gun') q.set('gun',String(gunSayisi()));
+  if(kapsam==='gun') q.set('gun',String(oyunGun));
   if(kapsam==='hafta') q.set('hbas',String(haftaBas()));
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{
     if(kapsam!==lbKapsam) return;   // arada sekme değiştiyse eski cevabı yazma
     const ben=nickAl().toLowerCase(), arr=(j&&j.liste)||[];
     if(kapsam!=='gun'){   // bu hafta: toplam / o ana dek geçen gün (1..7, kaçırılan geçmiş gün=0) · tüm zamanlar: toplam / oynanan gün
-      const gecen=Math.max(1, gunSayisi()-haftaBas()+1);
+      const gecen=Math.max(1, oyunGun-haftaBas()+1);
       arr.forEach(r=>{ r._gun=r.oyunSayisi||0; r._ort = kapsam==='hafta' ? r.puan/gecen : (r._gun?r.puan/r._gun:0); });
       arr.sort((a,b)=> b._ort-a._ort || b._gun-a._gun);
     }
@@ -913,7 +915,7 @@ function lbBeniEkle(){
   if(!lbDestekli() || !oyunBitti){ if(not) not.textContent='önce oyunu bitir'; return; }
   if(!nickAl()){ const n=prompt('Tabloya girmek için bir isim:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else { if(not) not.textContent='isim gerekli'; return; } }
   const nick=nickAl();
-  const key=lbOyun()+':'+gunSayisi()+':'+nick.toLowerCase();
+  const key=lbOyun()+':'+oyunGun+':'+nick.toLowerCase();
   delete lbGonderildi[key];   // temizlik/yeniden ekleme için oturum kilidini aş
   if(not) not.textContent='ekleniyor…';
   lbGonder().then(j=>{ if(not) not.textContent=(j&&j.kilit)?('zaten ekliydin: '+nick):('eklendi: '+nick+' ✓'); lbGoster(lbKapsam); });
@@ -924,10 +926,10 @@ const iA=()=> 'harfiyat:istat:'+oyun, iS=()=> 'harfiyat:istat-son:'+oyun;
 function istatleGuncelle(kazandi){
   if(mod!=='gun') return;
   try{
-    if(localStorage.getItem(iS())===String(gunSayisi())){ istatGoster(); return; }
+    if(localStorage.getItem(iS())===String(oyunGun)){ istatGoster(); return; }
     const s=JSON.parse(localStorage.getItem(iA())||'{"oyun":0,"galibiyet":0}');
     s.oyun++; if(kazandi) s.galibiyet++;
-    localStorage.setItem(iA(),JSON.stringify(s)); localStorage.setItem(iS(),String(gunSayisi()));
+    localStorage.setItem(iA(),JSON.stringify(s)); localStorage.setItem(iS(),String(oyunGun));
   }catch(e){}
   istatGoster();
 }
@@ -943,11 +945,11 @@ function istatGoster(){
 const gA=()=> 'harfiyat:gun:'+oyun;
 function kaydet(){
   if(mod!=='gun') return;
-  try{ localStorage.setItem(gA(),JSON.stringify({gun:gunSayisi(),oyun,t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi}))})); }catch(e){}
+  try{ localStorage.setItem(gA(),JSON.stringify({gun:oyunGun,oyun,t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi}))})); }catch(e){}
 }
 function yukle(){
   if(mod!=='gun') return false;
-  try{ const v=JSON.parse(localStorage.getItem(gA())); if(!v||v.gun!==gunSayisi()||v.oyun!==oyun) return false;
+  try{ const v=JSON.parse(localStorage.getItem(gA())); if(!v||v.gun!==oyunGun||v.oyun!==oyun) return false;
     v.t.forEach((sv,i)=>{ const b=tahtalar[i]; if(!b) return;
       sv.k.forEach(kel=>b.gecmis.push({harfler:kel.split(''),renkler:degerlendir(kel,b.cevap)}));
       b.bitti=sv.b; b.kazandi=sv.w; });
@@ -1219,6 +1221,14 @@ temaUygula(); sesUygula(); hubGoster();
   }
   kontrol();   // açılışta (cache'ten eski geldiyse tazele)
   document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') kontrol(); });
+})();
+
+/* gün nöbetçisi: sekme açıkken gece yarısı geçtiyse, günlük oyun BİTMİŞSE yeni güne tazele.
+   oyun sürerken KESMEZ — başladığın güne yapış, bitir; sonra yeni bulmaca gelsin (skorun eski güne yazılır). */
+(function(){
+  function gunKontrol(){ if(mod==='gun' && oyunGun && gunSayisi()>oyunGun && oyunBitti) location.reload(); }
+  setInterval(gunKontrol, 60000);
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') gunKontrol(); });
 })();
 </script>
 </body>

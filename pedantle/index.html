@@ -643,7 +643,7 @@ function paylas(){
 const LB_URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeNH7-M9udtLovpo7Wh_vdTTz9sc31ccdZ050IJdgqt2/exec';
 function lbNick(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function lbGun(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
-function lbHaftaBas(){ const g=lbGun(); return g-(((g-1)%7)+7)%7; }
+function lbHaftaBas(){ const g=S.gunNo; return g-(((g-1)%7)+7)%7; }   // sabitlenmiş güne göre (madde ile aynı takvim)
 function lbGunTarih(g){ const d=new Date(2026,0,1); d.setDate(d.getDate()+g); return d; }
 function lbHaftaAralik(){ const b=lbHaftaBas(), f=g=>lbGunTarih(g).toLocaleDateString('tr-TR',{day:'numeric',month:'long'}); return 'Cuma '+f(b)+' → '+f(b+6); }
 function lbKacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -651,8 +651,8 @@ function skTahmin(){ return S.tahminler.length + 5*S.tahminler.filter(t=>t.hint)
 let skGonderildi={}, skKapsam='gun', skTimer=null;
 function skGonder(){ if(S.mod!=='gun'||!S.bitti||S.pes) return Promise.resolve(null);
   const nick=lbNick(); if(!nick) return Promise.resolve({yokNick:true});
-  const key=lbGun()+':'+nick.toLowerCase(); if(skGonderildi[key]) return Promise.resolve(skGonderildi[key]);
-  const q=new URLSearchParams({fn:'add',oyun:'pedantle',gun:String(lbGun()),nick,puan:'0',cozulen:'1',deneme:String(skTahmin())});
+  const key=S.gunNo+':'+nick.toLowerCase(); if(skGonderildi[key]) return Promise.resolve(skGonderildi[key]);   // sabit gün — gece yarısını geçen bitirici eski güne yazsın
+  const q=new URLSearchParams({fn:'add',oyun:'pedantle',gun:String(S.gunNo),nick,puan:'0',cozulen:'1',deneme:String(skTahmin())});
   const pr=fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{skGonderildi[key]=j;return j;}).catch(()=>null);
   skGonderildi[key]=pr; return pr; }
 function skAc(){ $('skPerde').hidden=false; skTimerBasla(); skGonder().then(()=>skGoster(skKapsam)); }
@@ -661,7 +661,7 @@ function skGoster(kapsam){ skKapsam=kapsam;
   document.querySelectorAll('#skTablar button').forEach(b=>b.classList.toggle('secili',b.dataset.k===kapsam));
   skGeriCiz(); const L=$('skListe'),Li=$('skLider'); Li.textContent=''; L.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   const q=new URLSearchParams({fn:'list',oyun:'pedantle',kapsam});
-  if(kapsam==='gun') q.set('gun',String(lbGun())); if(kapsam==='hafta') q.set('hbas',String(lbHaftaBas()));
+  if(kapsam==='gun') q.set('gun',String(S.gunNo)); if(kapsam==='hafta') q.set('hbas',String(lbHaftaBas()));
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{ if(kapsam!==skKapsam) return;
     const ben=lbNick().toLowerCase(), arr=(j&&j.liste)||[];
     arr.forEach(r=>{ r._gun=r.oyunSayisi||0; r._deg=kapsam==='gun'?r.deneme:(r._gun?r.deneme/r._gun:Infinity); if(!Number.isFinite(r._deg)) r._deg=Infinity; });
@@ -679,7 +679,7 @@ function skBeniEkle(){ const not=$('skEkleNot');
   if(S.mod!=='gun'){ not.textContent='tablo yalnız günün maddesinde'; return; }
   if(!S.bitti||S.pes){ not.textContent='önce maddeyi bul'; return; }
   if(!lbNick()){ const n=prompt('adın:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else { not.textContent='isim gerekli'; return; } }
-  const key=lbGun()+':'+lbNick().toLowerCase(); delete skGonderildi[key]; not.textContent='ekleniyor…';
+  const key=S.gunNo+':'+lbNick().toLowerCase(); delete skGonderildi[key]; not.textContent='ekleniyor…';
   skGonder().then(j=>{ not.textContent=(j&&j.kilit)?('zaten ekliydin: '+lbNick()):('eklendi: '+lbNick()+' ✓'); skGoster(skKapsam); }); }
 function skGeriCiz(){ const el=$('skGeri'); if(!el) return; if(skKapsam==='tum'){ el.textContent=''; return; }
   const hedef=(skKapsam==='gun'?lbGunTarih(lbGun()+1):lbGunTarih(lbHaftaBas()+7)).getTime();
@@ -768,6 +768,10 @@ manifestYukle().then(()=>{
     if(s&&yukluLM&&s>yukluLM+2000&&sessionStorage.getItem('pd-surum')!==String(s)){ sessionStorage.setItem('pd-surum',String(s)); location.reload(); }
   }).catch(function(){}); }
   kontrol(); document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') kontrol(); }); })();
+
+/* gün nöbetçisi: gece yarısı geçti + günlük madde BİTTİYSE yeni güne tazele. oyun sürerken kesmez. */
+(function(){ function gunKontrol(){ if(S.mod==='gun' && S.gunNo && gunNumarasi()>S.gunNo && S.bitti) location.reload(); }
+  setInterval(gunKontrol,60000); document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') gunKontrol(); }); })();
 
 })();
 </script>
