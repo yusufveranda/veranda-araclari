@@ -279,7 +279,7 @@ footer a{color:var(--soluk)}
     <h2>şömine<span class="nokta">.</span></h2>
     <p>Gizli bir kelime var. Aklına gelen kelimeleri yaz; her tahmin, gizli kelimeye <b>anlamca ne kadar yakın</b> olduğuna göre bir <b>°C sıcaklık</b> alır. Yaklaştıkça ısınırsın: <b>🧊 buz gibi</b> → <b>🥶 soğuk</b> → <b>😅 sıcak</b> → <b>🥵 yanıyor</b>, doğru kelime <b>🔥 100°C</b>. Çok alakasızlar <b>eksiye</b> düşer.</p>
     <p>Tahmin gizli kelimenin <b>en yakın 1000 komşusundan</b> biriyse, sağda bir <b>‰ ilerleme çubuğu</b> dolar: <b>1000</b> doğru kelime (BINGO), <b>999</b> en yakın komşu, <b>1</b> en uzak. Çubuğu gördüysen artık yakınsın; o sütun boşsa henüz ilk 1000'in dışındasın.</p>
-    <p>Liste sıcaktan soğuğa sıralanır; <b>#</b> kaçıncı tahminin olduğunu gösterir. Tıkandıysan <b>💡 ipucu al</b>; seni biraz yaklaştıran bir kelime verir ama cevabı ele vermez — <b>sıralamada +10 tahmin</b> sayılır. Oyun bitince <b>en yakın kelimeler</b> listesinden komşuluğu inceleyebilirsin. Tahmin sınırın yok.</p>
+    <p>Liste sıcaktan soğuğa sıralanır; <b>#</b> kaçıncı tahminin olduğunu gösterir. Tıkandıysan <b>💡 ipucu al</b>; şu ana kadar bulduğun <b>en yakın kelimenin bir sıra üstünü</b> açar — <b>sıralamada +10 tahmin</b> sayılır. Çok yaklaştıysan (<b>son 50 kelime</b>) ipucu vermez, orası sana kalmış. Oyun bitince <b>en yakın kelimeler</b> listesinden komşuluğu inceleyebilirsin. Tahmin sınırın yok.</p>
     <div class="olcek" id="olcekOrnek"></div>
     <p style="font-size:12.5px;color:var(--soluk)">Yakınlık, kelimelerin şiir ve sözlük metinlerindeki kullanımından öğrenilmiştir; bazen şaşırtıcı ama hep bir mantığı var.</p>
     <button class="kapat" id="yardimKapat">anladım</button>
@@ -432,20 +432,17 @@ function tahminYap(ham){
   mesajVer('');
   tahminEkle(w, false);
 }
-// ipucu: oyuncunun en iyi sırasıyla hedef (1000) arasında, ortalardan bir kelime ver
+// ipucu: bulduğun en yakın kelimenin TAM 1 sırası üstünü ver — son 50 kelimede verme
+const IPUCU_SINIR = 950;                                 // rut>=950 = en yakın 50 kelime → ipucu yok
 function ipucuAl(){
   if(S.bitti || !S.enYakinlar.length) return;
   const enIyiRut = S.tahminler.reduce((m,t)=>Math.max(m, t.rut||0), 0);
-  let hedef = Math.round((enIyiRut + 1000)/2);          // yarı yol
-  hedef = Math.min(hedef, 880);                         // çok yaklaştırma — en yakın ~120 komşuyu oyuncuya bırak
-  // hedef rütbeye en yakın, henüz denenmemiş kelimeyi bul
-  const denenen = new Set(S.tahminler.map(t=>t.w));
-  let en=null, fark=1e9;
-  for(const e of S.enYakinlar){
-    if(e.rut>=1000 || denenen.has(e.w)) continue;       // gizliyi ve denenmişi atla
-    const d = Math.abs(e.rut - hedef);
-    if(d<fark){ fark=d; en=e; }
+  if(enIyiRut >= IPUCU_SINIR){                            // çok yakın: son 50 kelime oyuncuya kalsın
+    mesajVer('çok yakınsın 🔥 — buradan sonrası sana kalmış, ipucu yok');
+    return;
   }
+  const hedefRut = enIyiRut + 1;                         // en yakın bulduğunun tam 1 üstü
+  const en = S.enYakinlar.find(e => e.rut === hedefRut);
   if(!en){ mesajVer('verecek yeni ipucu kalmadı'); return; }
   mesajVer('ipucu 💡 — sıralamada +10 tahmin sayılır');
   tahminEkle(en.w, true);
@@ -628,7 +625,7 @@ function paylas(){
 const LB_URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeNH7-M9udtLovpo7Wh_vdTTz9sc31ccdZ050IJdgqt2/exec';
 function lbNick(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function lbGun(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
-function lbHaftaBas(){ const g=lbGun(); return g-(((g-1)%7)+7)%7; }
+function lbHaftaBas(){ const g=S.gunNo; return g-(((g-1)%7)+7)%7; }   // sabitlenmiş güne göre (kelime ile aynı takvim)
 function lbGunTarih(g){ const d=new Date(2026,0,1); d.setDate(d.getDate()+g); return d; }
 function lbHaftaAralik(){ const b=lbHaftaBas(), f=g=>lbGunTarih(g).toLocaleDateString('tr-TR',{day:'numeric',month:'long'}); return 'Cuma '+f(b)+' → '+f(b+6); }
 function lbKacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -637,9 +634,9 @@ let skGonderildi={}, skKapsam='gun', skTimer=null;
 function skGonder(){   // sadece günlük + bulununca (pes değil)
   if(S.mod!=='gun' || !S.bitti || S.pes) return Promise.resolve(null);
   const nick=lbNick(); if(!nick) return Promise.resolve({yokNick:true});
-  const key=lbGun()+':'+nick.toLowerCase();
+  const key=S.gunNo+':'+nick.toLowerCase();   // sabit gün — gece yarısını geçen bitirici eski güne yazsın
   if(skGonderildi[key]) return Promise.resolve(skGonderildi[key]);
-  const q=new URLSearchParams({fn:'add',oyun:'sicak',gun:String(lbGun()),nick,puan:'0',cozulen:'1',deneme:String(skTahminSayisi())});
+  const q=new URLSearchParams({fn:'add',oyun:'sicak',gun:String(S.gunNo),nick,puan:'0',cozulen:'1',deneme:String(skTahminSayisi())});
   const pr=fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{skGonderildi[key]=j;return j;}).catch(()=>null);
   skGonderildi[key]=pr; return pr;
 }
@@ -653,7 +650,7 @@ function skGoster(kapsam){
   skGeriCiz();
   const L=$('skListe'), Li=$('skLider'); Li.textContent=''; L.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   const q=new URLSearchParams({fn:'list',oyun:'sicak',kapsam});
-  if(kapsam==='gun') q.set('gun',String(lbGun()));
+  if(kapsam==='gun') q.set('gun',String(S.gunNo));
   if(kapsam==='hafta') q.set('hbas',String(lbHaftaBas()));
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{
     if(kapsam!==skKapsam) return;
@@ -678,7 +675,7 @@ function skBeniEkle(){
   if(S.mod!=='gun'){ not.textContent='tablo yalnız günün kelimesinde'; return; }
   if(!S.bitti || S.pes){ not.textContent='önce kelimeyi bul'; return; }
   if(!lbNick()){ const n=prompt('adın:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else { not.textContent='isim gerekli'; return; } }
-  const key=lbGun()+':'+lbNick().toLowerCase(); delete skGonderildi[key];
+  const key=S.gunNo+':'+lbNick().toLowerCase(); delete skGonderildi[key];
   not.textContent='ekleniyor…';
   skGonder().then(j=>{ not.textContent=(j&&j.kilit)?('zaten ekliydin: '+lbNick()):('eklendi: '+lbNick()+' ✓'); skGoster(skKapsam); });
 }
@@ -802,6 +799,10 @@ setTimeout(()=>{
   kontrol();
   document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') kontrol(); });
 })();
+
+/* gün nöbetçisi: gece yarısı geçti + günlük kelime BİTTİYSE yeni güne tazele. oyun sürerken kesmez. */
+(function(){ function gunKontrol(){ if(S.mod==='gun' && S.gunNo && gunNumarasi()>S.gunNo && S.bitti) location.reload(); }
+  setInterval(gunKontrol,60000); document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') gunKontrol(); }); })();
 
 })();
 </script>
