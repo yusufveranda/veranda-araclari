@@ -39,6 +39,8 @@
   .controls{display:flex; gap:8px; align-items:center;}
   select,button,input{font:inherit;}
   select{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; font-size:13px;}
+  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; font-size:13px;}
+  .mini-btn:hover{border-color:var(--red); color:var(--red);}
 
   .status{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
   .steps{display:flex; gap:6px; align-items:center;}
@@ -115,6 +117,8 @@
   <header>
     <h1>KARANLIK ODA</h1>
     <div class="controls">
+      <button id="todayBtn" class="mini-btn" style="display:none">bugünün filmi</button>
+      <button id="randomBtn" class="mini-btn">🎲 rastgele film</button>
       <select id="filmSelect" aria-label="Önizleme: gün seç"></select>
     </div>
   </header>
@@ -241,9 +245,9 @@ function renderStep() {
 }
 
 function shareText(won) {
-  const day = G.index + 1;
+  const etiket = G.random ? "🎲" : "#" + (G.index + 1);
   const dots = SCORES.map((_,i) => i < G.step ? "🟥" : (i === G.step && won ? "✅" : (i === G.step ? "🟥" : "⬛"))).join("");
-  return `Karanlık Oda #${day}\n${dots} ${won ? SCORES[G.step] + " puan" : "banyo boşa gitti"}`;
+  return `Karanlık Oda ${etiket}\n${dots} ${won ? SCORES[G.step] + " puan" : "banyo boşa gitti"}`;
 }
 
 function endGame(won) {
@@ -311,10 +315,11 @@ document.addEventListener("click", e => { if (!e.target.closest(".guess")) hideA
 
 // ---- başlatma ---------------------------------------------------------------
 
-function startGame(index) {
+function startGame(index, random = false) {
   const film = window.PUZZLES[index];
-  G = { film, index, step: 0, selected: null, over: false };
-  $("dayNo").textContent = `Gün #${index + 1}`;
+  G = { film, index, step: 0, selected: null, over: false, random };
+  $("dayNo").textContent = random ? "Rastgele film" : `Gün #${index + 1}`;
+  $("todayBtn").style.display = random ? "" : "none";
   $("passBtn").disabled = false; $("guessInput").disabled = false;
   $("loading").style.display = "none";
   $("game").style.display = "block";
@@ -339,6 +344,13 @@ function startGame(index) {
   });
   sel.value = String(today);
   sel.addEventListener("change", () => startGame(+sel.value));
+  $("randomBtn").addEventListener("click", () => {
+    let i;
+    do { i = Math.floor(Math.random() * window.PUZZLES.length); }
+    while (window.PUZZLES.length > 1 && G && i === G.index);
+    startGame(i, true);
+  });
+  $("todayBtn").addEventListener("click", () => startGame(todayIndex()));
   startGame(today);
 })();
 </script>
