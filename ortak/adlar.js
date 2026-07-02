@@ -17,6 +17,7 @@ window.ADLAR = {
   "sicak_rozet": "anlam oyunu · sınırsız tahmin",
   "sicak_aciklama": "Saklı kelimeyi bulmaya çalış.",
   "sicak_slogan": "gizli kelimeyi anlam yakınlığıyla yakala",
+  "karanlikoda": "Karanlık Oda",
   "sozluk": "Dilimin Ucunda",
   "bulmaca": "Bulmaca Yardımcısı",
   "siir": "Bitmeyen Şiir",

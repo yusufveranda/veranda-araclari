@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karanlık Oda — Günün filmini banyodan çıkar</title>
+<meta name="description" content="Her gün bir film banyoya girer. İpuçları adım adım netleşir; ne kadar erken bilirsen o kadar çok puan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0a09; --bg2:#141110; --card:#1a1614; --border:#2e2724;
+    --paper:#efe9dc; --paper-dim:#c9c2b2;
+    --text:#ece7de; --muted:#94897c;
+    --red:#e5382e; --red-glow:rgba(229,56,46,0.35); --red-dim:rgba(229,56,46,0.12);
+    --ok:#7cb46b; --radius:4px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{color-scheme:dark;}
+  body{
+    background:
+      radial-gradient(900px 500px at 50% -150px, rgba(229,56,46,0.09), transparent 70%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Inter", -apple-system, sans-serif;
+    min-height:100dvh; padding:22px clamp(12px, 3vw, 44px) 90px;
+  }
+  .wrap{max-width:1280px; margin:0 auto;}
+
+  header{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:6px;}
+  h1{
+    font-family:"Special Elite", cursive; font-size:30px; font-weight:400;
+    color:var(--red); text-shadow:0 0 18px var(--red-glow), 0 0 40px var(--red-glow);
+    letter-spacing:2px;
+  }
+  .day-no{font-size:12px; color:var(--muted); letter-spacing:1px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:18px; font-style:italic;}
+
+  .controls{display:flex; gap:8px; align-items:center;}
+  select,button,input{font:inherit;}
+  select{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; font-size:13px;}
+
+  .status{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
+  .steps{display:flex; gap:6px; align-items:center;}
+  .step-label{font-size:11px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-right:6px;}
+  .step-dot{width:34px; height:34px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--muted); background:var(--card); font-weight:600;}
+  .step-dot.active{border-color:var(--red); color:var(--red); background:var(--red-dim); box-shadow:0 0 14px var(--red-glow);}
+  .step-dot.past{background:var(--bg2); color:#4a423c; text-decoration:line-through;}
+  .score{font-size:13px; color:var(--muted);}
+  .score b{color:var(--red); font-size:22px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
+
+  /* ---- PANO: fotoğraf kağıdı estetiği ---- */
+  .board{display:grid; grid-template-columns:16fr 6fr 6fr; gap:16px;}
+  .tile{
+    position:relative; border-radius:var(--radius); overflow:hidden;
+    background:#000; border:5px solid var(--paper);
+    box-shadow:0 6px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.8);
+  }
+  .tile-scene{aspect-ratio:16/9;}
+  .side-col{display:grid; grid-template-rows:1fr 1fr; gap:16px; min-height:0;}
+  .tile img, .tile canvas{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .tile canvas{image-rendering:pixelated;}
+  .tag{
+    position:absolute; top:8px; left:8px; z-index:3;
+    font-family:"Special Elite",cursive; font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+    background:rgba(12,10,9,0.82); padding:5px 10px; border-radius:2px; color:var(--paper-dim);
+  }
+  .cap{position:absolute; bottom:0; left:0; right:0; z-index:2; padding:30px 10px 8px; background:linear-gradient(transparent, rgba(5,4,3,0.93)); font-size:13px; line-height:1.35;}
+  .cap b{display:block; font-size:15px; font-weight:600;}
+  .cap .sub{color:var(--muted); font-size:11px;}
+  .no-photo{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:"Special Elite",cursive; font-size:64px; color:var(--border);}
+
+  @media(max-width:860px){
+    .board{grid-template-columns:1fr 1fr;}
+    .tile-scene{grid-column:1 / -1;}
+    .tile-poster{aspect-ratio:2/3;}
+  }
+
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;}
+  .chip{background:var(--card); border:1px solid var(--border); border-radius:2px; padding:8px 14px; font-size:13px; color:var(--text); font-family:"Special Elite",cursive; letter-spacing:0.5px;}
+  .chip b{color:var(--red); font-weight:400;}
+  .chip.locked{color:#4a423c; border-style:dashed; background:transparent;}
+
+  .guess{margin:24px auto 0; max-width:760px; position:relative;}
+  .guess-row{display:flex; gap:8px;}
+  .guess input{flex:1; background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:14px 16px; font-size:16px; outline:none; min-height:52px;}
+  .guess input:focus{border-color:var(--red); box-shadow:0 0 0 3px var(--red-dim);}
+  .btn{background:var(--red); color:#fff; border:none; border-radius:6px; padding:0 24px; font-size:14px; font-weight:600; cursor:pointer; min-height:52px; letter-spacing:0.5px;}
+  .btn:hover{filter:brightness(1.1);}
+  .btn:disabled{opacity:0.35; cursor:default; filter:none;}
+  .btn.ghost{background:transparent; color:var(--muted); border:1px solid var(--border); font-weight:500;}
+  .btn.ghost:hover{color:var(--text); border-color:var(--muted);}
+  .ac-list{position:absolute; bottom:100%; left:0; right:0; margin-bottom:6px; background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; z-index:30; display:none; box-shadow:0 -8px 30px rgba(0,0,0,0.6);}
+  .ac-item{padding:12px 16px; cursor:pointer; font-size:15px; border-bottom:1px solid var(--border);}
+  .ac-item:last-child{border-bottom:none;}
+  .ac-item:hover{background:var(--red-dim);}
+  .ac-item .yr{color:var(--muted); font-size:13px;}
+
+  .feedback{margin:16px auto 0; max-width:760px; padding:16px 18px; border-radius:6px; font-size:15px; display:none; line-height:1.5;}
+  .feedback.bad{display:block; background:var(--red-dim); border:1px solid rgba(229,56,46,0.4);}
+  .feedback.good{display:block; background:rgba(124,180,107,0.1); border:1px solid rgba(124,180,107,0.4);}
+  .reveal{display:flex; gap:16px; align-items:center; margin-top:12px;}
+  .reveal img{width:76px; border-radius:2px; border:3px solid var(--paper);}
+  .reveal .t{font-family:"Special Elite",cursive; font-size:18px;}
+  .share-row{margin-top:12px;}
+
+  .loading{padding:80px 0; text-align:center; color:var(--muted); font-size:15px; font-family:"Special Elite",cursive;}
+  footer{margin-top:52px; text-align:center; font-size:11px; color:#4a423c;}
+  footer a{color:var(--muted);}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>KARANLIK ODA</h1>
+    <div class="controls">
+      <select id="filmSelect" aria-label="Önizleme: gün seç"></select>
+    </div>
+  </header>
+  <p class="tagline">Bir film banyoda. Her pas ve her yanlış tahminde görüntü biraz daha netleşir; erken bilen çok puan alır. <span class="day-no" id="dayNo"></span></p>
+
+  <div id="loading" class="loading">Negatifler banyoda…</div>
+
+  <div id="game" style="display:none">
+    <div class="status">
+      <div class="steps"><span class="step-label">Banyo</span><span id="stepDots" style="display:flex;gap:6px"></span></div>
+      <div class="score">Bu adımda <b id="scoreNow">100</b> puan</div>
+    </div>
+
+    <div class="board">
+      <div class="tile tile-scene">
+        <span class="tag">Sahne</span>
+        <img id="sceneImg" alt="Filmden bir sahne">
+        <div class="cap"><span class="sub" id="sceneSource"></span></div>
+      </div>
+
+      <div class="tile tile-poster">
+        <span class="tag">Poster</span>
+        <canvas id="posterCanvas" width="10" height="15"></canvas>
+      </div>
+
+      <div class="side-col">
+        <div class="tile">
+          <span class="tag">Kadrodan Biri</span>
+          <div class="no-photo" id="actorFallback" style="display:none">?</div>
+          <img id="actorImg" alt="Oyuncu fotoğrafı">
+          <div class="cap"><b id="actorName"></b><span class="sub" id="actorSub"></span></div>
+        </div>
+        <div class="tile">
+          <span class="tag">Benzer Film</span>
+          <img id="similarImg" alt="Benzer film posteri">
+          <div class="cap"><b id="similarName"></b><span class="sub" id="similarSub"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chips" id="infoChips"></div>
+
+    <div class="guess">
+      <div class="ac-list" id="acList"></div>
+      <div class="guess-row">
+        <input type="text" id="guessInput" placeholder="Film adı yaz…" autocomplete="off" aria-label="Film tahmini">
+        <button class="btn" id="guessBtn" disabled>Tahmin Et</button>
+        <button class="btn ghost" id="passBtn">Pas →</button>
+      </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <footer>Veri kaynağı: <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>. Bu ürün TMDB tarafından onaylanmamış veya desteklenmemiştir.</footer>
+</div>
+
+<script src="puzzles.js"></script>
+<script>
+const IMG = "https://image.tmdb.org/t/p/";
+const SCORES = [100, 75, 50, 30, 15];
+const PIXEL_W = [9, 14, 22, 36, 60];
+const EPOCH = new Date("2026-07-02T00:00:00"); // 1. günün tarihi
+
+let G = null;
+const $ = id => document.getElementById(id);
+
+function todayIndex() {
+  const days = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
+  const n = window.PUZZLES.length;
+  return ((days % n) + n) % n;
+}
+
+// ---- render --------------------------------------------------------------
+
+function drawPixelPoster(path, pixelW) {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => {
+    const pixelH = Math.round(pixelW * 1.5);
+    const off = document.createElement("canvas");
+    off.width = pixelW; off.height = pixelH;
+    off.getContext("2d").drawImage(img, 0, 0, pixelW, pixelH);
+    const cv = $("posterCanvas");
+    cv.width = pixelW; cv.height = pixelH;
+    const ctx = cv.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(off, 0, 0);
+  };
+  img.src = IMG + "w342" + path;
+}
+
+function renderStep() {
+  const s = G.step, F = G.film;
+  $("stepDots").innerHTML = SCORES.map((sc,i) =>
+    `<div class="step-dot ${i===s?"active":(i<s?"past":"")}">${i+1}</div>`).join("");
+  $("scoreNow").textContent = SCORES[s];
+
+  drawPixelPoster(F.pp, PIXEL_W[s]);
+
+  if (F.sc[s]) $("sceneImg").src = F.sc[s];
+  $("sceneSource").textContent = (F.sm && F.sm[s]) || "";
+
+  const actor = F.ac[s];
+  $("actorImg").style.display = actor.p ? "block" : "none";
+  $("actorFallback").style.display = actor.p ? "none" : "flex";
+  if (actor.p) $("actorImg").src = IMG + "h632" + actor.p;
+  $("actorName").textContent = actor.n;
+  $("actorSub").textContent = s === 4 ? "başrol" : "kadro sırası: " + ([10,7,5,2,1][s]) + ". civarı";
+
+  const sim = F.si[s];
+  $("similarImg").style.display = sim.p ? "block" : "none";
+  if (sim.p) $("similarImg").src = IMG + "w500" + sim.p;
+  $("similarName").textContent = sim.t;
+  $("similarSub").textContent = sim.note || (s === 4 ? "" : "öneri listesinde " + (["uzak","uzak-orta","orta","en yakın"][s] || "") + " komşu");
+
+  $("infoChips").innerHTML = F.in.map(([k,v],i) =>
+    i <= s ? `<div class="chip">${k}: <b>${v}</b></div>`
+           : `<div class="chip locked">${k}: Banyo ${i+1}</div>`).join("");
+
+  $("feedback").className = "feedback";
+  $("guessInput").value = ""; G.selected = null; $("guessBtn").disabled = true;
+  hideAc();
+}
+
+function shareText(won) {
+  const day = G.index + 1;
+  const dots = SCORES.map((_,i) => i < G.step ? "🟥" : (i === G.step && won ? "✅" : (i === G.step ? "🟥" : "⬛"))).join("");
+  return `Karanlık Oda #${day}\n${dots} ${won ? SCORES[G.step] + " puan" : "banyo boşa gitti"}`;
+}
+
+function endGame(won) {
+  const fb = $("feedback");
+  fb.className = "feedback " + (won ? "good" : "bad");
+  fb.innerHTML = (won
+    ? `<b>Bildin! +${SCORES[G.step]} puan.</b> Fotoğraf banyodan çıktı:`
+    : `<b>Banyo bitti.</b> Filmimiz:`) +
+    `<div class="reveal"><img src="${IMG}w154${G.film.fp}" alt="${G.film.title} posteri"><div class="t">${G.film.title}${G.film.ot && G.film.ot !== G.film.title ? " · " + G.film.ot : ""}</div></div>` +
+    `<div class="share-row"><button class="btn ghost" id="shareBtn">Sonucu Kopyala</button></div>`;
+  $("shareBtn").addEventListener("click", () => {
+    navigator.clipboard.writeText(shareText(won)).then(() => { $("shareBtn").textContent = "Kopyalandı!"; });
+  });
+  $("guessBtn").disabled = true; $("passBtn").disabled = true; $("guessInput").disabled = true;
+  G.over = true;
+}
+
+function advance() {
+  if (G.over) return;
+  if (G.step < 4) { G.step++; renderStep(); }
+  else endGame(false);
+}
+
+// ---- tahmin: yerel otomatik tamamlama (API yok) ----------------------------
+
+function hideAc(){ $("acList").style.display = "none"; }
+
+$("guessInput").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  G.selected = null; $("guessBtn").disabled = true;
+  if (q.length < 2) { hideAc(); return; }
+  const starts = [], contains = [];
+  for (const f of window.AC_INDEX) {
+    const t = f.t.toLowerCase();
+    if (t.startsWith(q)) starts.push(f);
+    else if (t.includes(q)) contains.push(f);
+    if (starts.length >= 6) break;
+  }
+  const results = [...starts, ...contains].slice(0, 6);
+  const list = $("acList");
+  if (!results.length) { hideAc(); return; }
+  list.innerHTML = results.map((r,i) =>
+    `<div class="ac-item" data-i="${i}">${r.t} <span class="yr">(${r.y || "?"})</span></div>`).join("");
+  list.style.display = "block";
+  list.querySelectorAll(".ac-item").forEach(el => el.addEventListener("click", () => {
+    const r = results[+el.dataset.i];
+    G.selected = r;
+    $("guessInput").value = r.t;
+    $("guessBtn").disabled = false;
+    hideAc();
+  }));
+});
+
+$("guessBtn").addEventListener("click", () => {
+  if (!G.selected || G.over) return;
+  if (G.selected.id === G.film.id) { endGame(true); return; }
+  const fb = $("feedback");
+  fb.className = "feedback bad";
+  fb.textContent = `"${G.selected.t}" değil. Görüntü biraz daha netleşiyor…`;
+  setTimeout(advance, 900);
+});
+
+$("passBtn").addEventListener("click", advance);
+document.addEventListener("click", e => { if (!e.target.closest(".guess")) hideAc(); });
+
+// ---- başlatma ---------------------------------------------------------------
+
+function startGame(index) {
+  const film = window.PUZZLES[index];
+  G = { film, index, step: 0, selected: null, over: false };
+  $("dayNo").textContent = `Gün #${index + 1}`;
+  $("passBtn").disabled = false; $("guessInput").disabled = false;
+  $("loading").style.display = "none";
+  $("game").style.display = "block";
+  renderStep();
+}
+
+(function init() {
+  if (!window.PUZZLES || !window.PUZZLES.length) {
+    $("loading").textContent = "puzzles.js bulunamadı. Önce bake.html ile veri dosyasını üret ve bu klasöre koy.";
+    return;
+  }
+  const today = todayIndex();
+  // Önizleme seçici yayında gizli; ?preview=1 ile açılır
+  const sel = $("filmSelect");
+  const show = new URLSearchParams(location.search).get("preview") === "1";
+  if (!show) sel.style.display = "none";
+  window.PUZZLES.forEach((p,i) => {
+    const o = document.createElement("option");
+    o.value = String(i);
+    o.textContent = `Gün #${i+1}${i === today ? " (bugün)" : ""}`;
+    sel.appendChild(o);
+  });
+  sel.value = String(today);
+  sel.addEventListener("change", () => startGame(+sel.value));
+  startGame(today);
+})();
+</script>
+</body>
+</html>
