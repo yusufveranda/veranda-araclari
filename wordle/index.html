@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>verandle — Türkçe Wordle</title>
-<meta name="description" content="Verandle: veranda’nın üç kelime oyunu. harfiyat (klasik), taraça (3–8 harf altı kelime) ve karine (yakın anlam ipuçlu).">
+<meta name="description" content="Verandle: veranda’nın kelime oyunları. Harfiyat, Taraça, Avlu, Çatı, Şömine ve Parsel.">
 <meta name="theme-color" content="#EFE4CB">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23EFE4CB'/%3E%3Crect x='11' y='11' width='18' height='18' rx='3' fill='%235E7F4B'/%3E%3Crect x='35' y='11' width='18' height='18' rx='3' fill='%23CF9A3C'/%3E%3Crect x='11' y='35' width='18' height='18' rx='3' fill='%23C2331F'/%3E%3Crect x='35' y='35' width='18' height='18' rx='3' fill='%23988A79'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
@@ -49,6 +49,7 @@ body{transition:background .4s,color .4s}
 /* ----- üst: ortalı başlık + köşe araç düğmeleri ----- */
 .ust-araclar{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
 .adlik{text-align:center;margin-top:6px}
+.adlik svg.dam{display:block;width:120px;height:auto;margin:0 auto -6px}
 .adlik .ust{font-family:'Libre Baskerville',serif;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--soluk)}
 .adlik h2{font-family:'Playfair Display',serif;font-weight:800;font-size:42px;line-height:.96;color:var(--mur);letter-spacing:-.5px;margin-top:8px}
 .adlik h2 .nokta{color:var(--kirmizi)}
@@ -433,39 +434,39 @@ body{transition:background .4s,color .4s}
         </g>
       </svg>
       <h1 class="vhero-ad"><span data-ad="verandle">verandle</span><span class="nokta">.</span></h1>
-      <p class="vhero-slogan" data-ad="slogan">bir veranda, dört kelime oyunu</p>
+      <p class="vhero-slogan" data-ad="slogan">Kelime Oyunları</p>
     </div>
 
     <div class="kartlar-oyun">
       <button class="okart" data-git="harfiyat">
         <span class="okart-rozet" data-ad="harfiyat_rozet">beş harf · altı deneme</span>
-        <h3 data-ad="harfiyat">harfiyat</h3>
-        <p data-ad="harfiyat_aciklama">klasik olan. beş harfli kelimeyi altı denemede çıkarıyorsun.</p>
+        <h3 data-ad="harfiyat">Harfiyat</h3>
+        <p data-ad="harfiyat_aciklama">Klasik Wordle.</p>
       </button>
       <button class="okart" data-git="iskelime">
         <span class="okart-rozet" data-ad="taraca_rozet">3–8 harf · altı kelime</span>
-        <h3 data-ad="taraca">taraça</h3>
-        <p data-ad="taraca_aciklama">üçten sekize altı kelime, tek tahtada. sekmeler arası gez, hepsini topla.</p>
+        <h3 data-ad="taraca">Taraça</h3>
+        <p data-ad="taraca_aciklama">Farklı sayılı kelimelerle Wordle.</p>
       </button>
       <button class="okart" data-git="anlamca">
         <span class="okart-rozet" data-ad="karine_rozet">beş harf · üç deneme</span>
-        <h3 data-ad="karine">karine</h3>
-        <p data-ad="karine_aciklama">az deneme, çok düşünme. yakın anlam ipucu verir; ikincisi ikinci tahminden sonra düşer.</p>
+        <h3 data-ad="karine">Avlu</h3>
+        <p data-ad="karine_aciklama">İpuculu, kısa.</p>
       </button>
       <a class="okart okart-anlam" href="../cati/">
         <span class="okart-rozet" data-ad="cati_rozet">beş kelime · gizli tema</span>
         <h3 data-ad="cati">Çatı</h3>
-        <p data-ad="cati_aciklama">beş kelimeyi sırayla çöz; hepsini birleştiren gizli temayı ne kadar erken bulursan o kadar çok puan.</p>
+        <p data-ad="cati_aciklama">Beş kelime çöz, ortak temayı bul.</p>
       </a>
       <a class="okart okart-anlam" href="../sicaksoguk/">
         <span class="okart-rozet" data-ad="sicak_rozet">anlam oyunu · sınırsız tahmin</span>
         <h3 data-ad="sicak">Şömine</h3>
-        <p data-ad="sicak_aciklama">harfini değil anlamını bul. her tahmin gizli kelimeye ne kadar yakın? yaklaştıkça ısınırsın.</p>
+        <p data-ad="sicak_aciklama">Saklı kelimeyi bulmaya çalış.</p>
       </a>
       <a class="okart okart-anlam" href="../pedantle/">
-        <span class="okart-rozet">gizli madde · sınırsız tahmin</span>
+        <span class="okart-rozet" data-ad="pedantle_rozet">gizli madde · sınırsız tahmin</span>
         <h3 data-ad="pedantle">Parsel</h3>
-        <p>günün gizli Vikipedi maddesini kelime kelime aç. tahminlerin anlamca yaklaştıkça metin ısınır.</p>
+        <p data-ad="pedantle_aciklama">Günün Vikipedi maddesini tahminlerle aç.</p>
       </a>
     </div>
   </section>
@@ -478,7 +479,11 @@ body{transition:background .4s,color .4s}
       <div class="gh-liste" id="ghListe"></div>
       <button class="gh-tum gizli" id="ghTum" type="button">tümünü gör</button>
     </aside>
-    <div class="oyun-tablar-et"></div>
+    <div class="adlik">
+      <svg class="dam" id="oyunMotif" viewBox="0 0 120 46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+      <h2 id="oyunBaslik">harfiyat<span class="nokta">.</span></h2>
+      <div class="alt" id="altYazi"></div>
+    </div>
     <div class="oyun-tablar" id="oyunSeg">
       <button data-oyun="harfiyat" class="secili" data-ad="harfiyat">harfiyat</button>
       <button data-oyun="iskelime" data-ad="taraca">taraça</button>
@@ -487,7 +492,6 @@ body{transition:background .4s,color .4s}
       <a class="oyun-disi" href="../sicaksoguk/" data-ad="sicak">Şömine</a>
       <a class="oyun-disi" href="../pedantle/" data-ad="pedantle">Parsel</a>
     </div>
-    <div class="altYazi2" id="altYazi"></div>
 
     <div class="modbar">
       <div class="segment mod" id="modSeg">
@@ -1120,7 +1124,20 @@ function klavyeCiz(){
 function tus(h,ek){ const b=document.createElement('button'); b.className='tus'+(ek?' '+ek:''); b.textContent=h; return b; }
 
 /* ===== mod / oyun / tema / ses ===== */
+/* oyun başlığı: çatı sayfasındaki gibi isim üstünde küçük motif */
+const MOTIFLER={
+  harfiyat:'<path d="M18 40 Q44 18 70 40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="84" y1="8" x2="98" y2="8" stroke="var(--mur)" stroke-width="5" stroke-linecap="round"/><line x1="91" y1="8" x2="91" y2="27" stroke="var(--mur)" stroke-width="5" stroke-linecap="round"/><path d="M84 27 h14 v5 q0 8 -7 8 q-7 0 -7 -8 z" fill="var(--mur)"/>',
+  iskelime:'<path d="M10 40 H34 V28 H58 V16 H82 V8 H110" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="22" y1="40" x2="22" y2="31" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="22" cy="26" r="4.5" fill="var(--mur)"/>',
+  anlamca:'<path d="M22 40 V26 Q22 8 60 8 Q98 8 98 26 V40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="9" x2="60" y2="15" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="20" r="4.5" fill="var(--mur)"/>'
+};
+function basligiCiz(){
+  const A=window.ADLAR||{}, ad=A[{harfiyat:'harfiyat',iskelime:'taraca',anlamca:'karine'}[oyun]]||oyun;
+  document.getElementById('oyunMotif').innerHTML=MOTIFLER[oyun]||'';
+  const h=document.getElementById('oyunBaslik'); h.textContent=ad;
+  const n=document.createElement('span'); n.className='nokta'; n.textContent='.'; h.appendChild(n);
+}
 function oyunlaKur(){
+  basligiCiz();
   clearTimeout(revealTimer); revealTimer=null; revealAnim=false;
   if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
@@ -1211,7 +1228,13 @@ let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeou
   if(/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName)) return;   // isim yazarken klavye resize'ı paneli yıkıp odağı atmasın
   ciz();
 },120); });
-temaUygula(); sesUygula(); hubGoster();
+temaUygula(); sesUygula();
+/* ?oyun=harfiyat|taraca|avlu → hub'ı atlayıp doğrudan o oyuna gir (diğer oyun sayfalarındaki sekmeler için) */
+(function(){
+  const istek=(new URLSearchParams(location.search).get('oyun')||'').toLowerCase();
+  const g={harfiyat:'harfiyat',taraca:'iskelime',iskelime:'iskelime',avlu:'anlamca',karine:'anlamca',anlamca:'anlamca'}[istek];
+  if(g) oyunaGir(g); else hubGoster();
+})();
 
 /* yeni sürüm yayınlanınca otomatik tazele — kullanıcı hard-refresh yapmasa da güncel kalır.
    yüklenen sayfanın Last-Modified'ı sunucudakinden eskiyse (yeni deploy olmuş) yenile. */

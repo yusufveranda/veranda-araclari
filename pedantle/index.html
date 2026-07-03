@@ -51,7 +51,16 @@ body{transition:background .4s,color .4s}
 .simge svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
 .adlik{text-align:center;margin-top:12px}
+.adlik svg.dam{display:block;width:120px;height:auto;margin:0 auto -6px}
 .adlik .ust{font-family:'Libre Baskerville',serif;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--soluk)}
+/* oyun sekmeleri: verandle oyunları arası geçiş */
+.oyun-tablar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.oyun-tablar a{flex:1 1 auto;min-width:82px;max-width:130px;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--soluk);
+  text-decoration:none;text-align:center;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;padding:10px 6px;
+  box-shadow:3px 4px 0 var(--mat-golge);transition:transform .12s,color .15s}
+.oyun-tablar a:hover{transform:translateY(-1px);color:var(--kirmizi)}
+.oyun-tablar a:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
+.oyun-tablar a.secili{background:var(--mur);color:var(--mat);border-color:var(--mur);pointer-events:none}
 .adlik h1{font-family:'Playfair Display',serif;font-weight:800;font-size:42px;line-height:.96;color:var(--mur);letter-spacing:-.5px;margin-top:8px}
 .adlik h1 .nokta{color:var(--kirmizi)}
 .adlik .alt{font-family:'Libre Baskerville',serif;font-style:italic;font-size:13.5px;color:var(--soluk);margin-top:9px}
@@ -245,7 +254,7 @@ footer a{color:var(--soluk)}
 <div class="oyun">
 
   <div class="tepe-bar">
-    <button class="vmini" onclick="location.href='../'">‹ <span data-ad="verandle">verandle</span></button>
+    <button class="vmini" onclick="location.href='../wordle/'">‹ <span data-ad="verandle">verandle</span></button>
     <div class="tepe-sag">
       <button class="simge" id="yardimBtn" title="nasıl oynanır"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.7 2-2.7 4"/><circle cx="12" cy="17.4" r=".5" fill="currentColor" stroke="none"/></svg></button>
       <button class="simge" id="temaBtn" title="gece / gündüz"><svg viewBox="0 0 24 24"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.6 6.6 0 0 0 21 12.8z"/></svg></button>
@@ -253,9 +262,22 @@ footer a{color:var(--soluk)}
   </div>
 
   <div class="adlik">
-    <div class="ust"><span data-ad="verandle">verandle</span></div>
+    <svg class="dam" viewBox="0 0 120 46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="26" y="9" width="68" height="31" rx="2" fill="none" stroke="var(--kirmizi)" stroke-width="4" stroke-dasharray="9 7" stroke-linecap="round"/>
+      <line x1="60" y1="17" x2="60" y2="32" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M60 17 L73 21.5 L60 26 Z" fill="var(--mur)"/>
+    </svg>
     <h1>parsel<span class="nokta">.</span></h1>
     <div class="alt">gizli Vikipedi maddesini kelime kelime aç</div>
+  </div>
+
+  <div class="oyun-tablar">
+    <a href="../wordle/?oyun=harfiyat" data-ad="harfiyat">Harfiyat</a>
+    <a href="../wordle/?oyun=taraca" data-ad="taraca">Taraça</a>
+    <a href="../wordle/?oyun=avlu" data-ad="karine">Avlu</a>
+    <a href="../cati/" data-ad="cati">Çatı</a>
+    <a href="../sicaksoguk/" data-ad="sicak">Şömine</a>
+    <a class="secili" href="./" data-ad="pedantle">Parsel</a>
   </div>
 
   <div class="modlar" id="modlar">
