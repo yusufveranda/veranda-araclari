@@ -232,6 +232,12 @@ footer a{color:var(--soluk)}
   .kagit-baslik{font-size:24px}
   .govde{font-size:15.5px;line-height:1.95}
 }
+/* dünkü cevap kartı — modlar altında ortalı hap */
+.dun-kart{max-width:fit-content;margin:16px auto 0;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:20px;
+  padding:8px 18px;box-shadow:2px 3px 0 var(--mat-golge);display:flex;align-items:baseline;gap:10px;justify-content:center}
+.dun-kart.gizli{display:none}
+.dun-kart .dun-et{font-family:'Libre Baskerville',serif;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--soluk)}
+.dun-kart b{font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:var(--kirmizi);letter-spacing:.01em}
 </style>
 </head>
 <body>
@@ -255,6 +261,11 @@ footer a{color:var(--soluk)}
   <div class="modlar" id="modlar">
     <button data-mod="gun" class="secili">günün maddesi</button>
     <button data-mod="arsiv">arşiv</button>
+  </div>
+
+  <div class="dun-kart gizli" id="dunKart">
+    <span class="dun-et">dünkü cevap</span>
+    <b id="dunCevap"></b>
   </div>
 
   <div id="oyunAlan" hidden>
@@ -586,7 +597,19 @@ function pesEt(){ if(S.bitti) return; S.bitti=true; S.pes=true;
   istatYaz(false); kaydet(); ciz();
   sonucPanel('madde', baslikMetin(), 'bu sefer olmadı — '+S.tahminler.length+' tahmin', false);
 }
-function baslikMetin(){ return S.art.b.toks.map(t=>t.s).join(' ').replace(/\s+([,.;:])/g,'$1'); }
+function baslikMetinFrom(art){ return art.b.toks.map(t=>t.s).join(' ').replace(/\s+([,.;:])/g,'$1'); }
+function baslikMetin(){ return baslikMetinFrom(S.art); }
+
+// ---- dünkü cevap: yalnız günlük modda, dünün maddesini şarttan kur ----
+let dunAnswerCache={id:-1, txt:null};
+function dunKartGuncelle(){
+  const kart=$('dunKart'); if(!kart) return;
+  if(S.mod!=='gun' || !MANIFEST || S.gunNo<1){ kart.classList.add('gizli'); return; }
+  const dId=gunId(S.gunNo-1);
+  const goster=txt=>{ if(S.mod==='gun'){ $('dunCevap').textContent=txt; kart.classList.remove('gizli'); } };
+  if(dunAnswerCache.id===dId && dunAnswerCache.txt){ goster(dunAnswerCache.txt); return; }
+  shardYukle(dId).then(art=>{ dunAnswerCache={id:dId, txt:baslikMetinFrom(art)}; goster(dunAnswerCache.txt); }).catch(()=>{});
+}
 
 // ---- oyun bitince: tümünü göster + kelime müfettişi ----
 function hepsiniAc(){ S.bSt.forEach(s=>s.rev=true); S.gSt.forEach(s=>s.rev=true); kaydet(); ciz();
@@ -714,6 +737,7 @@ function oyunKur(id){
     }
     $('oyunAlan').hidden=false; $('yukleniyor').style.display='none';
     ciz();
+    dunKartGuncelle();
     if(S.bitti){ S.pes?sonucPanel('madde',baslikMetin(),'pes edildi',false):kutla(); }
     else setTimeout(()=>$('tahminGir').focus(),60);
   });
