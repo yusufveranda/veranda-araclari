@@ -57,6 +57,14 @@ body{transition:background .4s,color .4s}
 .simge.yardim{font-family:'Playfair Display',serif;font-weight:800;font-size:20px;color:var(--mur)}
 .gizli{display:none!important}
 
+/* ----- oyun sekmeleri: verandle oyunları arası geçiş ----- */
+.oyun-tablar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.oyun-tablar a{flex:1 1 auto;min-width:82px;max-width:130px;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:var(--soluk);
+  text-decoration:none;text-align:center;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:12px;padding:10px 6px;
+  box-shadow:3px 4px 0 var(--mat-golge);transition:transform .12s,color .15s}
+.oyun-tablar a:hover{transform:translateY(-1px);color:var(--kirmizi)}
+.oyun-tablar a:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--mat-golge)}
+.oyun-tablar a.secili{background:var(--mur);color:var(--mat);border-color:var(--mur);pointer-events:none}
 /* ----- başlık: çatı motifi ----- */
 .adlik{text-align:center;margin-top:2px}
 .adlik svg.dam{display:block;width:120px;height:auto;margin:0 auto -6px}
@@ -343,6 +351,15 @@ body{transition:background .4s,color .4s}
     <div class="alt" id="altYazi">beş kelime, hepsini birleştiren <b>tek tema</b></div>
   </div>
 
+  <div class="oyun-tablar">
+    <a href="../wordle/?oyun=harfiyat" data-ad="harfiyat">Harfiyat</a>
+    <a href="../wordle/?oyun=taraca" data-ad="taraca">Taraça</a>
+    <a href="../wordle/?oyun=avlu" data-ad="karine">Avlu</a>
+    <a class="secili" href="./" data-ad="cati">Çatı</a>
+    <a href="../sicaksoguk/" data-ad="sicak">Şömine</a>
+    <a href="../pedantle/" data-ad="pedantle">Parsel</a>
+  </div>
+
   <div class="modbar">
     <div class="segment mod" id="modSeg">
       <button data-mod="gun" class="secili" data-ad="mod_gun">günün kelimesi</button>
@@ -520,16 +537,21 @@ function kokAdaylari(g){   // tahmin + basit ek soyulmuş halleri ("müzeler" �
   for(const s of SUF){ if(g.endsWith(s)&&g.length-s.length>=3) out.push(g.slice(0,-s.length)); }
   return out;
 }
+function temaEsle(g,kabul){   // öbek toleransı: "türkü yakmak" → parçası "yakmak" da kabulle eşleşir
+  const parcalar=[g].concat(g.split(/\s+/).filter(p=>p.length>=3));
+  for(const p of parcalar) for(const a of kokAdaylari(p)) if(kabul.includes(a)) return true;
+  for(const k of kabul) if(k.length>=4 && g.includes(k)) return true;   // "kırmızının tonları" tahmini "kırmızı" kabulünü içerir
+  return false;
+}
 function temaDene(){
   const inp=document.getElementById('tkInput'); if(!inp) return;
   const g=trLower(inp.value.trim()); if(!g) return;
   if(temaHak()<=0) return;
   if(temaTahminler.includes(g)){ tkGeri('bunu zaten denedin','yanlis'); return; }
   const kabul=gunVeri.kabul.map(trLower);
-  // kabul: yalnız kesin liste (ek soymalı) — vektör benzerliği sadece ısı geri bildirimi verir,
-  // yoksa "kütüphane" ≈ "müze" gibi komşu kavramlar da doğru sayılıyor
-  const adaylar=kokAdaylari(g);
-  const dogru=adaylar.some(a=>kabul.includes(a));
+  // kabul: yalnız kesin liste (ek soymalı + öbek parçalı) — vektör benzerliği sadece ısı
+  // geri bildirimi verir, yoksa "kütüphane" ≈ "müze" gibi komşu kavramlar da doğru sayılıyor
+  const dogru=temaEsle(g,kabul);
   const sim=dogru?-1:temaBenzerlik(g);
   if(dogru){
     temaAsama=bitenSayisi();
