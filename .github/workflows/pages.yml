@@ -1,0 +1,41 @@
+name: GitHub Pages'e dağıt
+
+# Statik siteyi (Jekyll YOK — .nojekyll var) doğrudan artifact olarak yükleyip dağıtır.
+# Eski "legacy" Jekyll hattının rastgele "Page build failed" (süre 0) hatalarını ortadan kaldırır.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Aynı anda tek dağıtım; art arda push'lar sıraya girer, sonuncusu kazanır (iptal yok).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pages yapılandır
+        uses: actions/configure-pages@v5
+
+      - name: Artifact yükle (site kökü; .git ve .github hariç tutulur)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Dağıt
+        id: deployment
+        uses: actions/deploy-pages@v4
