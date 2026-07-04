@@ -99,7 +99,7 @@
 
   /* ---------- görsel raporlama (🚩 bayrak) ---------- */
   // İleride Google Apps Script web-app URL'i konursa raporlar oraya da POST edilir.
-  const RAPOR_URL = '';   // ileride Google Apps Script web-app URL'i konulacak; şimdilik yalnız yerel kayıt
+  const RAPOR_URL = 'https://script.google.com/macros/s/AKfycbwuAfnAIHaUS5rH0TNOFN_dSNVT7nmhMfeO_UjOrIqCavANKxtla7DCasOUyKSwtK39/exec';   // bitki ile ORTAK Sheets toplayıcı (tür adıyla ayırt edilir)
   const SEBEPLER = [
     ['yanlis', '🐦 Yanlış kuş'],
     ['baska_hayvan', '🐾 Başka hayvan var'],
