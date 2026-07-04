@@ -52,14 +52,14 @@
   .score b{color:var(--red); font-size:22px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
 
   /* ---- PANO: fotoğraf kağıdı estetiği ---- */
-  .board{display:grid; grid-template-columns:16fr 6fr 6fr; gap:16px;}
+  .board{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,320px); gap:16px; align-items:start;}
   .tile{
     position:relative; border-radius:var(--radius); overflow:hidden;
     background:#000; border:5px solid var(--paper);
     box-shadow:0 6px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.8);
   }
   .tile-scene{aspect-ratio:16/9;}
-  .side-col{display:grid; grid-template-rows:1fr 1fr; gap:16px; min-height:0;}
+  .tile-poster{aspect-ratio:2/3;}
   .tile img, .tile canvas{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
   .tile canvas{image-rendering:pixelated;}
   .tag{
@@ -76,11 +76,18 @@
     background:radial-gradient(circle at 50% 42%, rgba(229,56,46,0.12), transparent 62%), #050403;}
   .scene-wait .big{font-size:40px; color:var(--red); text-shadow:0 0 18px var(--red-glow), 0 0 40px var(--red-glow); letter-spacing:4px;}
   .scene-wait .small{font-size:12px; letter-spacing:1.5px; color:var(--muted);}
+  /* sahne galerisi: açılmış kareler arasında gezinme */
+  .scene-nav{position:absolute; bottom:8px; right:8px; z-index:4; display:flex; align-items:center; gap:6px;
+    background:rgba(12,10,9,0.82); border-radius:20px; padding:3px 6px;}
+  .scene-arrow{width:26px; height:26px; border:none; border-radius:50%; cursor:pointer; font-size:16px; line-height:1;
+    background:transparent; color:var(--paper-dim); font-family:"Special Elite",cursive;}
+  .scene-arrow:hover:not(:disabled){color:var(--red);}
+  .scene-arrow:disabled{opacity:0.3; cursor:default;}
+  .scene-count{font-size:11px; color:var(--paper-dim); letter-spacing:1px; min-width:30px; text-align:center;}
 
   @media(max-width:860px){
-    .board{grid-template-columns:1fr 1fr;}
-    .tile-scene{grid-column:1 / -1;}
-    .tile-poster{aspect-ratio:2/3;}
+    .board{grid-template-columns:1fr;}
+    .tile-poster{max-width:320px; margin:0 auto; width:100%;}
   }
 
   .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;}
@@ -111,6 +118,14 @@
   .reveal .t{font-family:"Special Elite",cursive; font-size:18px;}
   .share-row{margin-top:12px;}
 
+  /* tahmin geçmişi: yanlış tahminler + yıl yönü (kalıcı) */
+  .guess-log{max-width:760px; margin:14px auto 0; display:flex; flex-direction:column; gap:6px;}
+  .guess-log .g{display:flex; justify-content:space-between; align-items:center; gap:12px;
+    font-size:13px; padding:9px 14px; background:var(--card); border:1px solid var(--border); border-radius:4px;}
+  .guess-log .ttl{color:var(--text);}
+  .guess-log .yr{color:var(--muted);}
+  .guess-log .dir{color:var(--red); font-family:"Special Elite",cursive; letter-spacing:0.5px; white-space:nowrap;}
+
   /* ---- Letterboxd şeridi ---- */
   .lb-strip{margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px;
     border:1px solid var(--border); border-radius:var(--radius);
@@ -121,7 +136,10 @@
   .lb-rating .num{font-family:"Special Elite",cursive; font-size:18px; color:var(--paper);}
   .lb-rating .votes{font-size:12px; color:var(--muted);}
   .lb-locked{color:#4a423c; font-style:italic; font-size:13px;}
-  .lb-review{flex-basis:100%; margin:0; font-style:italic; color:var(--paper-dim); font-size:14px; line-height:1.5; border-left:2px solid var(--red); padding-left:12px;}
+  .lb-reviews{flex-basis:100%; display:flex; flex-direction:column; gap:9px;}
+  .lb-review{margin:0; font-style:italic; color:var(--paper-dim); font-size:14px; line-height:1.5; border-left:2px solid var(--red); padding-left:12px;}
+  .lb-review.fresh{animation:lbfade 0.5s ease;}
+  @keyframes lbfade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
   .lb-reveal{margin-top:14px; font-size:14px; color:var(--paper-dim);}
   .lb-reveal b{color:#00c853; font-family:"Special Elite",cursive; font-weight:400;}
 
@@ -160,25 +178,16 @@
           <div class="small">sahne Banyo 3'te gelişecek</div>
         </div>
         <div class="cap"><span class="sub" id="sceneSource"></span></div>
+        <div class="scene-nav" id="sceneNav" style="display:none">
+          <button class="scene-arrow" id="scenePrev" aria-label="önceki kare">‹</button>
+          <span class="scene-count" id="sceneCount"></span>
+          <button class="scene-arrow" id="sceneNext" aria-label="sonraki kare">›</button>
+        </div>
       </div>
 
       <div class="tile tile-poster">
         <span class="tag">Poster</span>
         <canvas id="posterCanvas" width="10" height="15"></canvas>
-      </div>
-
-      <div class="side-col">
-        <div class="tile">
-          <span class="tag">Kadrodan Biri</span>
-          <div class="no-photo" id="actorFallback" style="display:none">?</div>
-          <img id="actorImg" alt="Oyuncu fotoğrafı">
-          <div class="cap"><b id="actorName"></b><span class="sub" id="actorSub"></span></div>
-        </div>
-        <div class="tile">
-          <span class="tag">Benzer Film</span>
-          <img id="similarImg" alt="Benzer film posteri">
-          <div class="cap"><b id="similarName"></b><span class="sub" id="similarSub"></span></div>
-        </div>
       </div>
     </div>
 
@@ -187,7 +196,7 @@
     <div class="lb-strip" id="lbStrip" style="display:none">
       <span class="lb-tag">Letterboxd</span>
       <div class="lb-rating" id="lbRating"></div>
-      <p class="lb-review" id="lbReview"></p>
+      <div class="lb-reviews" id="lbReviews"></div>
     </div>
 
     <div class="guess">
@@ -200,6 +209,7 @@
     </div>
 
     <div class="feedback" id="feedback"></div>
+    <div class="guess-log" id="guessLog"></div>
   </div>
 
   <footer>Veri: <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a> · puan ve yorumlar <a href="https://letterboxd.com" target="_blank" rel="noopener">Letterboxd</a>. Bu ürün TMDB veya Letterboxd tarafından onaylanmamış ya da desteklenmemiştir.</footer>
@@ -225,21 +235,48 @@ function lbStars(r){
   const q = Math.round(r*2)/2, full = Math.floor(q), half = q - full >= 0.5;
   return "★".repeat(full) + (half ? "½" : "") || "☆";
 }
-const _norm = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
-const _tok = s => _norm(s).split(/[^a-z0-9]+/).filter(w => w.length > 3);
-// Film adı / oyuncu / benzer film adı geçmeyen ilk yorumu seç (spoiler filtresi)
-function safeReview(F){
-  const lb = F.lb;
-  if (!lb || !lb.reviews || !lb.reviews.length) return null;
-  const bad = new Set();
-  [F.title, F.ot].forEach(t => _tok(t).forEach(w => bad.add(w)));
-  (F.ac || []).forEach(a => _tok(a.n).forEach(w => bad.add(w)));
-  (F.si || []).forEach(x => _tok(x.t).forEach(w => bad.add(w)));
-  for (const rv of lb.reviews){
-    const ws = _tok(rv);
-    if (ws.length >= 4 && !ws.some(w => bad.has(w))) return rv;
-  }
-  return null;
+// Yorum seçimi (spoiler filtresi) bake tarafında: lb.reviews = güvenli yorumlar
+// (kısa→uzun, Banyo 2-5'te birer birer), lb.review_end = bitiş kartı için ham ilk yorum.
+const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// Sahne Banyo 3'te gelir: B3=en obscure kare, B4=en açık, B5=ikonik (B1-2 gizli).
+const SCENE_MAP = [null, null, 0, 3, 4];
+
+// ---- yıl ipucu (yıl artık künyede açılmaz; tahminde yön verilir) ----
+function answerYear(){ const e = G.film.in.find(x => x[0] === "Yıl"); return e ? parseInt(e[1]) : null; }
+function yearHint(sel){
+  const ay = answerYear(), gy = parseInt(sel && sel.y);
+  if (!ay || !gy) return "";
+  const d = ay - gy;                       // + : cevabın yılı daha yüksek (yukarıda)
+  if (d === 0) return "aynı yıl";
+  if (d > 15)  return "çok yukarıda ↑↑";
+  if (d > 0)   return "yukarıda ↑";
+  if (d < -15) return "çok aşağıda ↓↓";
+  return "aşağıda ↓";
+}
+
+// ---- poster GIF döngüsü (bitişte açıl-kapan-açıl) ----
+let posterTimer = null;
+const POSTER_CYCLE = [6, 9, 14, 22, 34, 342, 342, 34, 22, 14, 9];
+function stopPosterLoop(){ if (posterTimer){ clearInterval(posterTimer); posterTimer = null; } }
+function startPosterLoop(path){
+  stopPosterLoop();
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  const drawAt = pw => {
+    const ph = Math.round(pw * 1.5);
+    const off = document.createElement("canvas");
+    off.width = pw; off.height = ph;
+    off.getContext("2d").drawImage(img, 0, 0, pw, ph);
+    const cv = $("posterCanvas");
+    cv.width = pw; cv.height = ph;
+    const ctx = cv.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(off, 0, 0);
+  };
+  img.onload = () => { let k = 0; drawAt(POSTER_CYCLE[0]);
+    posterTimer = setInterval(() => { drawAt(POSTER_CYCLE[k % POSTER_CYCLE.length]); k++; }, 430); };
+  img.src = IMG + "w342" + path;
 }
 
 function todayIndex() {
@@ -267,6 +304,45 @@ function drawPixelPoster(path, pixelW) {
   img.src = IMG + "w342" + path;
 }
 
+// ---- sahne: açılmış kareler + galeri gezinme ----
+function renderScene() {
+  const frames = [];                       // o ana kadar açılmış kare indeksleri
+  for (let i = 0; i <= G.step; i++) if (SCENE_MAP[i] != null) frames.push(SCENE_MAP[i]);
+  G.sceneFrames = frames;
+  G.sceneView = frames.length - 1;         // yeni banyoda otomatik en yeni kareye geç
+  drawScene();
+}
+function drawScene() {
+  const F = G.film, frames = G.sceneFrames || [];
+  if (!frames.length) {                    // Banyo 1-2: sahne gizli
+    $("sceneImg").style.display = "none";
+    $("scenePlaceholder").style.display = "flex";
+    $("sceneSource").textContent = "";
+    $("sceneNav").style.display = "none";
+    return;
+  }
+  $("scenePlaceholder").style.display = "none";
+  $("sceneImg").style.display = "";
+  const fi = frames[G.sceneView];
+  if (F.sc[fi]) $("sceneImg").src = F.sc[fi];
+  $("sceneSource").textContent = (F.sm && F.sm[fi]) || "";
+  const nav = $("sceneNav");
+  if (frames.length > 1) {                 // birden çok kare açıldıysa gezinme çıkar
+    nav.style.display = "flex";
+    $("sceneCount").textContent = (G.sceneView + 1) + "/" + frames.length;
+    $("scenePrev").disabled = G.sceneView === 0;
+    $("sceneNext").disabled = G.sceneView === frames.length - 1;
+  } else nav.style.display = "none";
+}
+
+// ---- tahmin geçmişi: her yanlış tahmin + yıl yönü kalıcı listede ----
+function renderGuessLog() {
+  const el = $("guessLog");
+  el.innerHTML = G.guesses.slice().reverse().map(g =>
+    `<div class="g"><span class="ttl">${esc(g.t)} <span class="yr">(${esc(g.y || "?")})</span></span>`
+    + `<span class="dir">${esc(g.hint || "—")}</span></div>`).join("");
+}
+
 function renderStep() {
   const s = G.step, F = G.film;
   $("stepDots").innerHTML = SCORES.map((sc,i) =>
@@ -275,58 +351,39 @@ function renderStep() {
 
   drawPixelPoster(F.pp, PIXEL_W[s]);
 
-  // Sahne Banyo 3'te gelir: B3=en obscure kare, B4=en açık, B5=ikonik.
-  // Banyo 1-2'de sahne gizli (yerine "gelişecek" yer tutucusu); Letterboxd öne alındı.
-  const SCENE_MAP = [null, null, 0, 3, 4];
-  const smi = SCENE_MAP[s];
-  if (smi == null) {
-    $("sceneImg").style.display = "none";
-    $("scenePlaceholder").style.display = "flex";
-    $("sceneSource").textContent = "";
-  } else {
-    $("scenePlaceholder").style.display = "none";
-    $("sceneImg").style.display = "";
-    if (F.sc[smi]) $("sceneImg").src = F.sc[smi];
-    $("sceneSource").textContent = (F.sm && F.sm[smi]) || "";
-  }
+  renderScene();   // sahne + galeri (açılmış kareler arası gezinme)
 
-  const actor = F.ac[s];
-  $("actorImg").style.display = actor.p ? "block" : "none";
-  $("actorFallback").style.display = actor.p ? "none" : "flex";
-  if (actor.p) $("actorImg").src = IMG + "h632" + actor.p;
-  $("actorName").textContent = actor.n;
-  $("actorSub").textContent = s === 4 ? "başrol" : "kadro sırası: " + ([10,7,5,2,1][s]) + ". civarı";
+  // Künye: Yıl artık gösterilmez (yıl ipucu yalnız tahminde yön olarak verilir)
+  $("infoChips").innerHTML = F.in
+    .map(([k,v],i) => [k, v, i])
+    .filter(row => row[0] !== "Yıl")
+    .map(([k,v,i]) =>
+      i <= s ? `<div class="chip">${esc(k)}: <b>${esc(v)}</b></div>`
+             : `<div class="chip locked">${esc(k)}: Banyo ${i+1}</div>`).join("");
 
-  const sim = F.si[s];
-  $("similarImg").style.display = sim.p ? "block" : "none";
-  if (sim.p) $("similarImg").src = IMG + "w500" + sim.p;
-  $("similarName").textContent = sim.t;
-  $("similarSub").textContent = sim.note || (s === 4 ? "" : "öneri listesinde " + (["uzak","uzak-orta","orta","en yakın"][s] || "") + " komşu");
-
-  $("infoChips").innerHTML = F.in.map(([k,v],i) =>
-    i <= s ? `<div class="chip">${k}: <b>${v}</b></div>`
-           : `<div class="chip locked">${k}: Banyo ${i+1}</div>`).join("");
-
-  // ---- Letterboxd öne alındı: puan Banyo 1'de (hep açık), yorum Banyo 2'de ----
-  const lb = F.lb, rev = safeReview(F), strip = $("lbStrip");
-  if (!lb || (lb.rating == null && !rev)) {
+  // ---- Letterboxd: puan Banyo 1'de; yorumlar Banyo 2-5'te birer birer (kısa→uzun) ----
+  const lb = F.lb, strip = $("lbStrip");
+  const reviews = (lb && lb.reviews) || [];
+  const shown = s >= 1 ? reviews.slice(0, s) : [];   // adım s'de ilk s yorum birikir
+  if (!lb || (lb.rating == null && !reviews.length)) {
     strip.style.display = "none";
   } else {
     strip.style.display = "flex";
     const rEl = $("lbRating");
     if (lb.rating != null) {
       rEl.style.display = "";
-      rEl.className = "lb-rating";
       rEl.innerHTML = `<span class="stars">${lbStars(lb.rating)}</span>`
         + `<span class="num">${(+lb.rating).toFixed(1)}</span>`
         + (lb.votes ? `<span class="votes">${fmtVotes(lb.votes)} oy</span>` : "");
     } else rEl.style.display = "none";
-    const qEl = $("lbReview");
-    if (rev) {
-      qEl.style.display = "";
-      if (s >= 1) { qEl.className = "lb-review"; qEl.textContent = "“" + rev + "”"; }
-      else { qEl.className = "lb-review lb-locked"; qEl.textContent = "bir Letterboxd yorumu — Banyo 2"; }
-    } else qEl.style.display = "none";
+    const rv = $("lbReviews");
+    if (shown.length) {
+      rv.innerHTML = shown.map((t,i) =>
+        `<blockquote class="lb-review${i === shown.length-1 ? " fresh" : ""}">“${esc(t)}”</blockquote>`).join("");
+    } else {
+      rv.innerHTML = reviews.length
+        ? `<span class="lb-locked">bir Letterboxd yorumu — Banyo 2</span>` : "";
+    }
   }
 
   $("feedback").className = "feedback";
@@ -344,18 +401,19 @@ function endGame(won) {
   const fb = $("feedback");
   fb.className = "feedback " + (won ? "good" : "bad");
   const lb = G.film.lb;
-  const lbRev = safeReview(G.film) || (lb && lb.reviews && lb.reviews[0]) || "";
-  const lbHtml = lb ? `<div class="lb-reveal">Letterboxd <b>${lb.rating != null ? (+lb.rating).toFixed(1) + "★" : "—"}</b>${lb.votes ? " · " + fmtVotes(lb.votes) + " oy" : ""}${lbRev ? `<div class="lb-review" style="margin-top:6px; border-color:#00c853">“${lbRev}”</div>` : ""}</div>` : "";
+  const lbRev = (lb && (lb.review_end || (lb.reviews && lb.reviews[0]))) || "";  // bitişte ham ilk yorum (flourish)
+  const lbHtml = lb ? `<div class="lb-reveal">Letterboxd <b>${lb.rating != null ? (+lb.rating).toFixed(1) + "★" : "—"}</b>${lb.votes ? " · " + fmtVotes(lb.votes) + " oy" : ""}${lbRev ? `<div class="lb-review" style="margin-top:6px; border-color:#00c853">“${esc(lbRev)}”</div>` : ""}</div>` : "";
   fb.innerHTML = (won
     ? `<b>Bildin! +${SCORES[G.step]} puan.</b> Fotoğraf banyodan çıktı:`
     : `<b>Banyo bitti.</b> Filmimiz:`) +
-    `<div class="reveal"><img src="${IMG}w154${G.film.fp}" alt="${G.film.title} posteri"><div class="t">${G.film.title}${G.film.ot && G.film.ot !== G.film.title ? " · " + G.film.ot : ""}</div></div>` +
+    `<div class="reveal"><img src="${IMG}w154${G.film.fp}" alt="${esc(G.film.title)} posteri"><div class="t">${esc(G.film.title)}${G.film.ot && G.film.ot !== G.film.title ? " · " + esc(G.film.ot) : ""}</div></div>` +
     lbHtml +
     `<div class="share-row"><button class="btn ghost" id="shareBtn">Sonucu Kopyala</button></div>`;
   $("shareBtn").addEventListener("click", () => {
     navigator.clipboard.writeText(shareText(won)).then(() => { $("shareBtn").textContent = "Kopyalandı!"; });
   });
   $("guessBtn").disabled = true; $("passBtn").disabled = true; $("guessInput").disabled = true;
+  startPosterLoop(G.film.pp);   // poster pikseli döngüde açıl-kapan (gif gibi)
   G.over = true;
 }
 
@@ -398,25 +456,32 @@ $("guessInput").addEventListener("input", e => {
 $("guessBtn").addEventListener("click", () => {
   if (!G.selected || G.over) return;
   if (G.selected.id === G.film.id) { endGame(true); return; }
+  const hint = yearHint(G.selected);
+  G.guesses.push({ t: G.selected.t, y: G.selected.y, hint });   // yıl yönü kalıcı listede
+  renderGuessLog();
   const fb = $("feedback");
   fb.className = "feedback bad";
-  fb.textContent = `"${G.selected.t}" değil. Görüntü biraz daha netleşiyor…`;
-  setTimeout(advance, 900);
+  fb.innerHTML = `<b>"${esc(G.selected.t)}"</b> değil${hint ? ` — yıl: <b style="color:var(--red)">${esc(hint)}</b>` : ""}. Görüntü biraz daha netleşiyor…`;
+  setTimeout(advance, 1200);
 });
 
 $("passBtn").addEventListener("click", advance);
+$("scenePrev").addEventListener("click", () => { if (G.sceneView > 0) { G.sceneView--; drawScene(); } });
+$("sceneNext").addEventListener("click", () => { if (G.sceneView < G.sceneFrames.length - 1) { G.sceneView++; drawScene(); } });
 document.addEventListener("click", e => { if (!e.target.closest(".guess")) hideAc(); });
 
 // ---- başlatma ---------------------------------------------------------------
 
 function startGame(index, random = false) {
   const film = window.PUZZLES[index];
-  G = { film, index, step: 0, selected: null, over: false, random };
+  G = { film, index, step: 0, selected: null, over: false, random, guesses: [] };
+  stopPosterLoop();
   $("dayNo").textContent = random ? "Rastgele film" : `Gün #${index + 1}`;
   $("todayBtn").style.display = random ? "" : "none";
   $("passBtn").disabled = false; $("guessInput").disabled = false;
   $("loading").style.display = "none";
   $("game").style.display = "block";
+  renderGuessLog();
   renderStep();
 }
 
