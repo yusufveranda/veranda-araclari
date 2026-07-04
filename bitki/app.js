@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '12';
+  const BUILD = '13';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
     igneyapaktili: 'İğne yapraklı', igneyaprakli: 'İğne yapraklı',

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const BUILD = '2';
+  const BUILD = '3';
   const KAT = {
     otucu: 'Ötücü', corvid: 'Karga-benzeri', yirtici: 'Yırtıcı', baykus: 'Baykuş',
     sukusu: 'Su kuşu', kiyi: 'Kıyı / uzun bacaklı', marti: 'Martı',

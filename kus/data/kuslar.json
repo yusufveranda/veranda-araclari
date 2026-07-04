@@ -1490,14 +1490,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AApus_apus_%28Mauersegler%29_2024-07-16_%2801%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Apus_apus_in_Cislago_%28VA%29.jpg/1280px-Apus_apus_in_Cislago_%28VA%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Marrabbio2 — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AApus_apus_in_Cislago_%28VA%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Apus_apus_Pekinensis_%28Beijing_Swifts%29_observed_in_Beihai_Park%2C_Beijing%2C_China.jpg/1280px-Apus_apus_Pekinensis_%28Beijing_Swifts%29_observed_in_Beihai_Park%2C_Beijing%2C_China.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -1528,6 +1520,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Arnoldius — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABeynac_Mauersegler_1_%28Apus_apus%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Beynac_Mauersegler_2_%28Apus_apus%29.jpg/1280px-Beynac_Mauersegler_2_%28Apus_apus%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Arnoldius — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABeynac_Mauersegler_2_%28Apus_apus%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -1977,14 +1977,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/AlaudaArvensisIUCNver2019_1.png/1280px-AlaudaArvensisIUCNver2019_1.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlaudaArvensisIUCNver2019_1.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/2018-05-24_Skylark_%28Alauda_arvensis%29%2C_Beeston_Regis.jpg/1280px-2018-05-24_Skylark_%28Alauda_arvensis%29%2C_Beeston_Regis.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -2023,6 +2015,14 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Peter O'Connor aka anemoneprojectors from Stevenage, United Kingdom — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlauda_arvensis_%289191324357%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Alouette_des_champs_-_Alauda_arvensis_-_juv%C3%A9nile.JPG/1280px-Alouette_des_champs_-_Alauda_arvensis_-_juv%C3%A9nile.JPG",
+    "tip": "genc",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Nouhouhouk — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlouette_des_champs_-_Alauda_arvensis_-_juv%C3%A9nile.JPG"
    }
   ],
   "bolge": "tr"
@@ -2110,22 +2110,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABaya%C4%9F%C4%B1_%C3%A7%C4%B1vg%C4%B1n_-_Phylloscopus_collybita_03.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/%22The_Common_Chiffchaff%22_-_DPLA_-_1b695a61c07becc0ed8e2e5a16cdc4df_%28page_1%29.jpg/1280px-%22The_Common_Chiffchaff%22_-_DPLA_-_1b695a61c07becc0ed8e2e5a16cdc4df_%28page_1%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "Public domain",
-    "atif": "Foto: President (2009-2017 : Obama). Office of the Staff Secretary. Office of Presidential Correspondence. Gift Office. (1/20/2009 - 1/20/2017) — Public domain · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%22The_Common_Chiffchaff%22_-_DPLA_-_1b695a61c07becc0ed8e2e5a16cdc4df_%28page_1%29.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/%22The_Common_Chiffchaff%22_-_DPLA_-_1b695a61c07becc0ed8e2e5a16cdc4df_%28page_2%29.jpg/1280px-%22The_Common_Chiffchaff%22_-_DPLA_-_1b695a61c07becc0ed8e2e5a16cdc4df_%28page_2%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "Public domain",
-    "atif": "Foto: President (2009-2017 : Obama). Office of the Staff Secretary. Office of Presidential Correspondence. Gift Office. (1/20/2009 - 1/20/2017) — Public domain · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A%22The_Common_Chiffchaff%22_-_DPLA_-_1b695a61c07becc0ed8e2e5a16cdc4df_%28page_2%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/20130804_066_Kessel_Weerdbeemden_onbekende_vogel_%289436244215%29.jpg/1280px-20130804_066_Kessel_Weerdbeemden_onbekende_vogel_%289436244215%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -2148,6 +2132,22 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Andreas Eichler — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A2017.05.17.-05-Kirschgartshaeuser_Schlaege-Mannheim--Zilpzalp.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/2017.05.17.-06-Kirschgartshaeuser_Schlaege-Mannheim--Zilpzalp.jpg/1280px-2017.05.17.-06-Kirschgartshaeuser_Schlaege-Mannheim--Zilpzalp.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Andreas Eichler — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2017.05.17.-06-Kirschgartshaeuser_Schlaege-Mannheim--Zilpzalp.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/2017.07.08.-07-Wendisch_Rietz--Zilpzalp.jpg/1280px-2017.07.08.-07-Wendisch_Rietz--Zilpzalp.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Andreas Eichler — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2017.07.08.-07-Wendisch_Rietz--Zilpzalp.jpg"
    }
   ],
   "bolge": "tr"
@@ -2275,12 +2275,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_Magpie_%28Pica_pica%29_-_Oslo%2C_Norway.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Eurasian_magpie_%28Pica_pica%29_bathing.webm/330px--Eurasian_magpie_%28Pica_pica%29_bathing.webm.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Eurasian_Magpie_%28Skj%C3%A6re%29_%28Pica_pica%29_-_Sortland%2C_Norway_2023-07-14.jpg/1280px-Eurasian_Magpie_%28Skj%C3%A6re%29_%28Pica_pica%29_-_Sortland%2C_Norway_2023-07-14.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: NicolasCoeurdelion — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_magpie_%28Pica_pica%29_bathing.webm"
+    "atif": "Foto: Ryan Hodnett — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_Magpie_%28Skj%C3%A6re%29_%28Pica_pica%29_-_Sortland%2C_Norway_2023-07-14.jpg"
    }
   ],
   "bolge": "tr"
@@ -3111,14 +3111,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/StreptopeliaTurturIUCN.png/1280px-StreptopeliaTurturIUCN.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AStreptopeliaTurturIUCN.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/2015-05-21_Streptopelia_turtur%2C_Sutton_Bank%2C_Yorkshire_01.jpg/1280px-2015-05-21_Streptopelia_turtur%2C_Sutton_Bank%2C_Yorkshire_01.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -3157,6 +3149,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: MPF — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A2015-05-21_Streptopelia_turtur%2C_Sutton_Bank%2C_Yorkshire_03.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/2015-05-21_Streptopelia_turtur%2C_Sutton_Bank%2C_Yorkshire_04.jpg/1280px-2015-05-21_Streptopelia_turtur%2C_Sutton_Bank%2C_Yorkshire_04.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: MPF — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2015-05-21_Streptopelia_turtur%2C_Sutton_Bank%2C_Yorkshire_04.jpg"
    }
   ],
   "bolge": "tr"
@@ -3368,30 +3368,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_%282nd_winter%29.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_-_Common_Buzzard_XC538277.mp3"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "genc",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: T.Voekler — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_warning_the_fledglings_7643.ogg"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_-_Common_Buzzard_XC538678.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/6/67/Buteo_buteo_1_%28Lukasz_Lukasik%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -3406,6 +3382,30 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: Marek Szczepanek — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_1_%28Marek_Szczepanek%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Buteo_buteo_2_%28Lukasz_Lukasik%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Lukasz Lukasik — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_2_%28Lukasz_Lukasik%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Buteo_buteo_2_%28Marek_Szczepanek%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Marek Szczepanek — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_2_%28Marek_Szczepanek%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Buteo_buteo_3_%28Marek_Szczepanek%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Marek Szczepanek — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AButeo_buteo_3_%28Marek_Szczepanek%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -4113,22 +4113,6 @@
   },
   "gorsel": [
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Mirko Tomasi — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABubo_bubo_-_Eurasian_Eagle-Owl_XC461330.mp3"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Robert Petersen — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABubo_bubo_-_Eurasian_Eagle-Owl_XC604112.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Bubo_bubo_juveniles.jpg/1280px-Bubo_bubo_juveniles.jpg",
     "tip": "genc",
     "kaynak": "Wikimedia Commons",
@@ -4159,6 +4143,22 @@
     "lisans": "CC BY 4.0",
     "atif": "Foto: saranavarro — CC BY 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABubo_bubo_hispanus%2C_Rosas%2C_Madrid%2C_Spain_1.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Bubo_bubo_hispanus%2C_Rosas%2C_Madrid%2C_Spain_2.jpg/1280px-Bubo_bubo_hispanus%2C_Rosas%2C_Madrid%2C_Spain_2.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: saranavarro — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABubo_bubo_hispanus%2C_Rosas%2C_Madrid%2C_Spain_2.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Bubo_bubo_hispanus%2C_Rosas%2C_Madrid%2C_Spain_3.jpg/1280px-Bubo_bubo_hispanus%2C_Rosas%2C_Madrid%2C_Spain_3.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: saranavarro — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABubo_bubo_hispanus%2C_Rosas%2C_Madrid%2C_Spain_3.jpg"
    }
   ],
   "bolge": "tr"
@@ -4261,14 +4261,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ATyto_alba_tylluan_wen_detail.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Barn_Owl_%28Tyto_alba%29_%2830769094630%29.jpg/1280px-Barn_Owl_%28Tyto_alba%29_%2830769094630%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 2.0",
-    "atif": "Foto: Bernard DUPONT from FRANCE — CC BY-SA 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABarn_Owl_%28Tyto_alba%29_%2830769094630%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Barn_Owl_%28Tyto_alba%29_%286564259641%29.jpg/1280px-Barn_Owl_%28Tyto_alba%29_%286564259641%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -4283,6 +4275,14 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: caroline legg — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABarn_Owl_-_Tyto_alba_%2850306204682%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Barn_Owl_-_Tyto_alba_%2850316138118%29.jpg/1280px-Barn_Owl_-_Tyto_alba_%2850316138118%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: caroline legg — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABarn_Owl_-_Tyto_alba_%2850316138118%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -4370,28 +4370,44 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A%28Explored_2021-12-26%29_Tawny_owl%2C_brown_owl%2C_Strix_aluco%2C_Kattuggla_-_Flickr_-_blondinrikard.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Eurasian_tawny_owl_%28Strix_aluco%29.webm/1280px--Eurasian_tawny_owl_%28Strix_aluco%29.webm.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "Public domain",
-    "atif": "Foto: Erik Junberger — Public domain · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_tawny_owl_%28Strix_aluco%29.webm"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Hooting_song_of_tawny_owl_%28Strix_aluco%29.webm/1280px--Hooting_song_of_tawny_owl_%28Strix_aluco%29.webm.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: The Nature Box — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AHooting_song_of_tawny_owl_%28Strix_aluco%29.webm"
-   },
-   {
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/451350360/large.jpg",
     "tip": "butun",
     "kaynak": "iNaturalist",
     "lisans": "CC-BY",
     "atif": "(c) caroline legg, some rights reserved (CC BY)",
     "sayfa": "https://www.inaturalist.org/photos/451350360"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/6/63/01_Waldkauz.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Diginatur — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A01_Waldkauz.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Owl_portrait.jpg",
+    "tip": "portre",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Maija Mättik — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AOwl_portrait.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Rosenthal_protestant_church_cemetery_berlin%2C_closeup_of_tawny_owl.png/1280px-Rosenthal_protestant_church_cemetery_berlin%2C_closeup_of_tawny_owl.png",
+    "tip": "portre",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Robbie Morrison (RobbieIanMorrison) — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARosenthal_protestant_church_cemetery_berlin%2C_closeup_of_tawny_owl.png"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Alaca_baykus.jpg/1280px-Alaca_baykus.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Soner Bekir — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlaca_baykus.jpg"
    }
   ],
   "bolge": "tr"
@@ -4853,28 +4869,12 @@
   },
   "gorsel": [
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC0",
-    "atif": "Foto: Sonothèque ADVL — CC0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACormor%C3%A1n_grande_%28Phalacrocorax_carbo%29.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/20250829_xl_0709-Kormoran_%28Phalacrocorax_carbo%29_bei_der_Pflege_des_Gefieders.jpg/1280px-20250829_xl_0709-Kormoran_%28Phalacrocorax_carbo%29_bei_der_Pflege_des_Gefieders.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Molgreen — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A20250829_xl_0709-Kormoran_%28Phalacrocorax_carbo%29_bei_der_Pflege_des_Gefieders.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/20250829_xl_0709-Kormoran_%28Phalacrocorax_carbo%29_bei_der_Pflege_des_Gefieders.webm/960px--20250829_xl_0709-Kormoran_%28Phalacrocorax_carbo%29_bei_der_Pflege_des_Gefieders.webm.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Molgreen — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A20250829_xl_0709-Kormoran_%28Phalacrocorax_carbo%29_bei_der_Pflege_des_Gefieders.webm"
    },
    {
     "url": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Anguilla_anguilla_preyed_by_Phalacrocorax_carbo.jpg",
@@ -4899,6 +4899,22 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: gailhampshire from Cradley, Malvern, U.K — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACormorant._Phalacrocorax_carbo_-_Flickr_-_gailhampshire.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/DSC_8722_Grand_Cormoran_Phalacrocorax_carbo_%2850181630197%29.jpg/1280px-DSC_8722_Grand_Cormoran_Phalacrocorax_carbo_%2850181630197%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Pierre-Marie Epiney — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADSC_8722_Grand_Cormoran_Phalacrocorax_carbo_%2850181630197%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/DSC_8723_Grand_Cormoran_Phalacrocorax_carbo_%2850181372441%29.jpg/1280px-DSC_8723_Grand_Cormoran_Phalacrocorax_carbo_%2850181372441%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Pierre-Marie Epiney — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADSC_8723_Grand_Cormoran_Phalacrocorax_carbo_%2850181372441%29.jpg"
    }
   ],
   "bolge": "tr"
@@ -5142,12 +5158,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AGreat_Crested_Grebe_%28Podiceps_cristatus%29_%2854875490191%29.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Great_Crested_Grebe_%28Podiceps_cristatus%29_-_54459950798.jpg/1280px-Great_Crested_Grebe_%28Podiceps_cristatus%29_-_54459950798.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Bilinmiyor — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGreat_Crested_Grebe_%28Podiceps_cristatus%29_%28W1CDR0001488_BD4%29.ogg"
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: patrickkavanagh — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGreat_Crested_Grebe_%28Podiceps_cristatus%29_-_54459950798.jpg"
    }
   ],
   "bolge": "tr"
@@ -5363,14 +5379,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/ArdeaCinereaIUCN2019_2.png/1280px-ArdeaCinereaIUCN2019_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdeaCinereaIUCN2019_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Ardea_cinerea_%28165455223%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -5409,6 +5417,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Agnieszka Kwiecień, Nova — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdea_cinerea_Czapla_siwa_O%C5%82awa_2023-08-11_01.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Ardea_cinerea_Czapla_siwa_O%C5%82awa_2023-08-11_02.jpg/1280px-Ardea_cinerea_Czapla_siwa_O%C5%82awa_2023-08-11_02.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Agnieszka Kwiecień, Nova — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdea_cinerea_Czapla_siwa_O%C5%82awa_2023-08-11_02.jpg"
    }
   ],
   "bolge": "tr"
@@ -6143,14 +6159,6 @@
    "inat": 20969
   },
   "gorsel": [
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/7._Common_Hoopoe_%28Upupa_epops%29_photograph_by_Shantanu_Kuveskar.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Shantanu Kuveskar — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3A7._Common_Hoopoe_%28Upupa_epops%29_photograph_by_Shantanu_Kuveskar.jpg"
-   },
    {
     "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/B%C3%BAbos_banka_-_Wiedehopf_%28Upupa_epops%29_-_panoramio.jpg",
     "tip": "butun",
@@ -6912,14 +6920,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Alectoris_chukar_%E2%80%93_Palestine.jpg/1280px-Alectoris_chukar_%E2%80%93_Palestine.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Mohammad Daraghmeh 19 — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlectoris_chukar_%E2%80%93_Palestine.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Aziatische_steenpatrijs_-_Chukar_-_Alectoris_chukar_02.jpg/1280px-Aziatische_steenpatrijs_-_Chukar_-_Alectoris_chukar_02.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -6958,6 +6958,14 @@
     "lisans": "CC BY 4.0",
     "atif": "Foto: Bouke ten Cate — CC BY 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAziatische_steenpatrijs_-_Chukar_-_Alectoris_chukar_06.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Aziatische_steenpatrijs_-_Chukar_-_Alectoris_chukar_07.jpg/1280px-Aziatische_steenpatrijs_-_Chukar_-_Alectoris_chukar_07.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Bouke ten Cate — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAziatische_steenpatrijs_-_Chukar_-_Alectoris_chukar_07.jpg"
    }
   ],
   "bolge": "tr"
@@ -7034,22 +7042,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/CoturnixCoturnixIUCNver2019-2.png/1280px-CoturnixCoturnixIUCNver2019-2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACoturnixCoturnixIUCNver2019-2.png"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Bilinmiyor — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACommon_Quail_%28Coturnix_coturnix%29_%28W1CDR0001390_BD1%29.ogg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Common_quail_%28Coturnix_coturnix%29_2019_2.jpg/1280px-Common_quail_%28Coturnix_coturnix%29_2019_2.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -7080,6 +7072,22 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: Bilinmiyor — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACoturnix_coturnix_%28cropped%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Coturnix_coturnix_in_Assam.jpg/1280px-Coturnix_coturnix_in_Assam.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: দিব্য দত্ত — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACoturnix_coturnix_in_Assam.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Coturnix_coturnix%2C_Beloyarskiy%2C_Sverdlovsk_Oblast%2C_Russia_1%2C_crop.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: at0m — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACoturnix_coturnix%2C_Beloyarskiy%2C_Sverdlovsk_Oblast%2C_Russia_1%2C_crop.jpg"
    }
   ],
   "bolge": "tr"
@@ -7444,14 +7452,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACommon_firecrest_%28Regulus_ignicapilla%29_2022.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: عثمان. — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACommon_firecrest_%28Regulus_ignicapilla%29_Singing_in_tetouan_northern_Morocco.wav"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Common_firecrest%2C_Regulus_ignicapilla%2C_Brandkronad_kungsf%C3%A5gel_-_52496355262.jpg/1280px-Common_firecrest%2C_Regulus_ignicapilla%2C_Brandkronad_kungsf%C3%A5gel_-_52496355262.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -7476,12 +7476,20 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEstrelinha_de_Cabe%C3%A7a_Listada_%28Regulus_Ignicapilla%29.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Regulus_ignicapilla_-Galicia%2C_Spain_-singing_in_a_conifer_tree-8_%281%29.jpg/1280px-Regulus_ignicapilla_-Galicia%2C_Spain_-singing_in_a_conifer_tree-8_%281%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Joost van Bruggen — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARegulus_ignicapilla_-_Common_Firecrest_XC432208.mp3"
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: Noel Feans — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARegulus_ignicapilla_-Galicia%2C_Spain_-singing_in_a_conifer_tree-8_%281%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Regulus_ignicapilla%2C_Parque_Biol%C3%B3gico_de_Gaia%2C_Porto.jpg/1280px-Regulus_ignicapilla%2C_Parque_Biol%C3%B3gico_de_Gaia%2C_Porto.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Gonçalo Vila Ferraz — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARegulus_ignicapilla%2C_Parque_Biol%C3%B3gico_de_Gaia%2C_Porto.jpg"
    }
   ]
  },
@@ -7847,14 +7855,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3APrunella_collaris_dist.png"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/PrunellaCollariusIUCN.png/1280px-PrunellaCollariusIUCN.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3APrunellaCollariusIUCN.png"
-   },
-   {
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/1806727/large.jpg",
     "tip": "butun",
     "kaynak": "iNaturalist",
@@ -7877,6 +7877,22 @@
     "lisans": "CC-BY",
     "atif": "(c) Kim, Hyun-tae, some rights reserved (CC BY), uploaded by Kim, Hyun-tae",
     "sayfa": "https://www.inaturalist.org/photos/2744492"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Alpine_Accentor_a_quiet_survivor_where_mountains_touch_the_clouds_and_only_the_fearless_endure_01.jpg/1280px-Alpine_Accentor_a_quiet_survivor_where_mountains_touch_the_clouds_and_only_the_fearless_endure_01.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Shiv's fotografia — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlpine_Accentor_a_quiet_survivor_where_mountains_touch_the_clouds_and_only_the_fearless_endure_01.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Alpine_Accentor_a_quiet_survivor_where_mountains_touch_the_clouds_and_only_the_fearless_endure_02.jpg/1280px-Alpine_Accentor_a_quiet_survivor_where_mountains_touch_the_clouds_and_only_the_fearless_endure_02.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Shiv's fotografia — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlpine_Accentor_a_quiet_survivor_where_mountains_touch_the_clouds_and_only_the_fearless_endure_02.jpg"
    }
   ]
  },
@@ -8240,14 +8256,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AA_M%C3%A9sange_noire_Periparus_ater_DSC_1292_%2851408181824%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Baby_Coal_Tit_%28Periparus_ater%29_being_fed_video.webm/1280px--Baby_Coal_Tit_%28Periparus_ater%29_being_fed_video.webm.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: https://www.flickr.com/photos/gails_pictures/ — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABaby_Coal_Tit_%28Periparus_ater%29_being_fed_video.webm"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Baby_Coal_Tit_begging_for_food._Periparus_ater_-_Flickr_-_gailhampshire.jpg/1280px-Baby_Coal_Tit_begging_for_food._Periparus_ater_-_Flickr_-_gailhampshire.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -8278,6 +8286,14 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: blondinrikard — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACoal_tit%2C_Periparus_ater%2C_Svartmes.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Coal_tit_-_Parus_ater_01.jpg/1280px-Coal_tit_-_Parus_ater_01.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACoal_tit_-_Parus_ater_01.jpg"
    }
   ]
  },
@@ -8383,14 +8399,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABartmeise_%28Panurus_biarmicus%29%2C_frisst_Schilfsamen.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Bearded_Reedling_%28F%29_-_Panurus_biarmicus_%2854187063661%29.jpg/1280px-Bearded_Reedling_%28F%29_-_Panurus_biarmicus_%2854187063661%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: caroline legg — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABearded_Reedling_%28F%29_-_Panurus_biarmicus_%2854187063661%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Bearded_Reedling_%28M%29_-_Panurus_biarmicus_%2854183576311%29.jpg/1280px-Bearded_Reedling_%28M%29_-_Panurus_biarmicus_%2854183576311%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -8413,6 +8421,14 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: caroline legg — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABearded_Reedling_%28M%29_-_Panurus_biarmicus_%2854186428682%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Bearded_Reedling_%28M%29_-_Panurus_biarmicus_%2854196702810%29.jpg/1280px-Bearded_Reedling_%28M%29_-_Panurus_biarmicus_%2854196702810%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: caroline legg — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABearded_Reedling_%28M%29_-_Panurus_biarmicus_%2854196702810%29.jpg"
    }
   ]
  },
@@ -9175,14 +9191,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/OriolusOriolusIUCNver2019-3.png/1280px-OriolusOriolusIUCNver2019-3.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AOriolusOriolusIUCNver2019-3.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Eurasian_Golden_Oriole_%28Oriolus_oriolus%29_%288079432364%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -9221,6 +9229,14 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: gailhampshire from Cradley, Malvern, U.K — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AGolden_Oriole._Oriolus_oriolus_%2824726394795%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Oriolus_oriolus_%28juvenil%29_en_el_parque_del_Xur%C3%A9s.jpg/1280px-Oriolus_oriolus_%28juvenil%29_en_el_parque_del_Xur%C3%A9s.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Mr rookes — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AOriolus_oriolus_%28juvenil%29_en_el_parque_del_Xur%C3%A9s.jpg"
    }
   ]
  },
@@ -9350,12 +9366,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AGrauwe_klauwier_-_red-backed_shrike_-_Lanius_collurio_3.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Lanius_collurio_-_Andrea_Poggi_-_309943419.jpeg/1280px-Lanius_collurio_-_Andrea_Poggi_-_309943419.jpeg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Feirefis — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ALanius_collurio_%28Rotr%C3%BCckenw%C3%BCrger_-_Neunt%C3%B6ter_-_Red-backed_Shrike%29.ogg"
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Andrea Poggi — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ALanius_collurio_-_Andrea_Poggi_-_309943419.jpeg"
    }
   ]
  },
@@ -10328,14 +10344,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAcrocephalus_scirpaceus_%28Bertinetto%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Acrocephalus_scirpaceus_%28cropped%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: Bilinmiyor — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAcrocephalus_scirpaceus_%28cropped%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Acrocephalus_scirpaceus_-_geograph.org.uk_-_464317.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -10358,6 +10366,14 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: Andy Vernon — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAcrocephalus_scirpaceus_-Rutland_Water%2C_Rutland%2C_England-8.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Acrocephalus_scirpaceus_1.JPG/1280px-Acrocephalus_scirpaceus_1.JPG",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 3.0",
+    "atif": "Foto: Matthias Barby — CC BY 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAcrocephalus_scirpaceus_1.JPG"
    }
   ]
  },
@@ -10445,14 +10461,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/AcrocephalusArundinaceusIUCN2019_1.png/1280px-AcrocephalusArundinaceusIUCN2019_1.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAcrocephalusArundinaceusIUCN2019_1.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Acrocephalus_arundinaceus_%2851167415142%29.jpg/1280px-Acrocephalus_arundinaceus_%2851167415142%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -10491,6 +10499,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAcrocephalus_arundinaceus_-_Great_Reed_Warbler_02.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Acrocephalus_arundinaceus_-_Great_Reed_Warbler_03.jpg/1280px-Acrocephalus_arundinaceus_-_Great_Reed_Warbler_03.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAcrocephalus_arundinaceus_-_Great_Reed_Warbler_03.jpg"
    }
   ]
  },
@@ -11916,14 +11932,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/FicedulaHypoleucaIUCN2019-3.png/1280px-FicedulaHypoleucaIUCN2019-3.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedulaHypoleucaIUCN2019-3.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/%28Ficedula_hypoleuca%29_Trauerschn%C3%A4pper.jpg/1280px-%28Ficedula_hypoleuca%29_Trauerschn%C3%A4pper.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -11962,6 +11970,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Chindea Ciprian Emil — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABalia_nera_%28Ficedula_hypoleuca%29_-_European_pied_flycatcher%2C_Milano%2C_Italia%2C_09.2018_%282%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Balia_nera_%28Ficedula_hypoleuca%29_-_European_pied_flycatcher%2C_Milano%2C_Italia%2C_09.2018.jpg/1280px-Balia_nera_%28Ficedula_hypoleuca%29_-_European_pied_flycatcher%2C_Milano%2C_Italia%2C_09.2018.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Chindea Ciprian Emil — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABalia_nera_%28Ficedula_hypoleuca%29_-_European_pied_flycatcher%2C_Milano%2C_Italia%2C_09.2018.jpg"
    }
   ]
  },
@@ -12181,22 +12197,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/FicedulaParvaIUCN2019-3.png/1280px-FicedulaParvaIUCN2019-3.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedulaParvaIUCN2019-3.png"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADM550183_Ficedula_parva_call_2_types_Slovakia.ogg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Ficedula_parva%2C_Beachy_Head%2C_East_Sussex%2C_UK_1.jpg",
     "tip": "portre",
     "kaynak": "Wikimedia Commons",
@@ -12213,20 +12213,36 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedula_parva_%28Muscicapidae%29_%28Red-breasted_Flycatcher%29_-_%28first_calendar_year%29%2C_Chorokhi_Delta%2C_Georgia.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Ficedula_parva_-_Zwergschn%C3%A4pper_128458411.jpg/1280px-Ficedula_parva_-_Zwergschn%C3%A4pper_128458411.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Zdeněk Vermouzek — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedula_parva_-_Red-breasted_Flycatcher_XC249309.mp3"
+    "lisans": "CC0",
+    "atif": "Foto: Александр Чегодаев — CC0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedula_parva_-_Zwergschn%C3%A4pper_128458411.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Ficedula_parva_231915444.jpg/1280px-Ficedula_parva_231915444.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Zdeněk Vermouzek — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedula_parva_-_Red-breasted_Flycatcher_XC249313.mp3"
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Parth Kansara — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedula_parva_231915444.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Ficedula_parva_233716274.jpg/1280px-Ficedula_parva_233716274.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Parth Kansara — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedula_parva_233716274.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Ficedula_parva_237857642.jpg/1280px-Ficedula_parva_237857642.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Parth Kansara — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFicedula_parva_237857642.jpg"
    }
   ],
   "form": ""
@@ -12314,14 +12330,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/MotacillaFlavaIUCNver2019_1.png/1280px-MotacillaFlavaIUCNver2019_1.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AMotacillaFlavaIUCNver2019_1.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Gele_kwikstaart_-_Western_yellow_wagtail_-_Motacilla_flava.jpg/1280px-Gele_kwikstaart_-_Western_yellow_wagtail_-_Motacilla_flava.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -12360,6 +12368,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AMotacilla_flava_-_Western_Yellow_Wagtail_-_Sar%C4%B1_kuyruksallayan_03.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Motacilla_flava_-_Western_Yellow_Wagtail_-_Sar%C4%B1_kuyruksallayan_04.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AMotacilla_flava_-_Western_Yellow_Wagtail_-_Sar%C4%B1_kuyruksallayan_04.jpg"
    }
   ],
   "form": ""
@@ -13516,22 +13532,6 @@
   },
   "gorsel": [
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Qin Huang — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACecropis_daurica_-_Red-rumped_Swallow_XC307163.mp3"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/CecropisDauricaIUCNver2018_2.png/1280px-CecropisDauricaIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACecropisDauricaIUCNver2018_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Cecropis_daurica_237607388.jpg/1280px-Cecropis_daurica_237607388.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -13562,6 +13562,22 @@
     "lisans": "CC BY 4.0",
     "atif": "Foto: yvesbas — CC BY 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACecropis_daurica%2C_Fufeng_County%2C_Baoji%2C_Shaanxi%2C_China_3.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Cecropis_daurica%2C_Fufeng_County%2C_Baoji%2C_Shaanxi%2C_China_4.jpg/1280px-Cecropis_daurica%2C_Fufeng_County%2C_Baoji%2C_Shaanxi%2C_China_4.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: yvesbas — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACecropis_daurica%2C_Fufeng_County%2C_Baoji%2C_Shaanxi%2C_China_4.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Cecropis_daurica%2C_Huixian%2C_Xinxiang%2C_Henan%2C_China_1.jpg/1280px-Cecropis_daurica%2C_Huixian%2C_Xinxiang%2C_Henan%2C_China_1.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: belvedere04 — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACecropis_daurica%2C_Huixian%2C_Xinxiang%2C_Henan%2C_China_1.jpg"
    }
   ]
  },
@@ -14827,14 +14843,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A2017-05-02_Petronia_petronia%2C_Monestir_d%27Avellanes%2C_Catalunya_02.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Petronia_petronia_-Ariege%2C_Midi-Pyrenee%2C_France_-juvenile-8.jpg/1280px-Petronia_petronia_-Ariege%2C_Midi-Pyrenee%2C_France_-juvenile-8.jpg",
-    "tip": "genc",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: Sandra from France — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3APetronia_petronia_-Ariege%2C_Midi-Pyrenee%2C_France_-juvenile-8.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/2017-05-02_Petronia_petronia%2C_Monestir_d%27Avellanes%2C_Catalunya_03.jpg/1280px-2017-05-02_Petronia_petronia%2C_Monestir_d%27Avellanes%2C_Catalunya_03.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -14857,6 +14865,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: MPF — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A2017-05-02_Petronia_petronia%2C_Monestir_d%27Avellanes%2C_Catalunya_05.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/2017-05-02_Petronia_petronia%2C_Monestir_d%27Avellanes%2C_Catalunya_06.jpg/1280px-2017-05-02_Petronia_petronia%2C_Monestir_d%27Avellanes%2C_Catalunya_06.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: MPF — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3A2017-05-02_Petronia_petronia%2C_Monestir_d%27Avellanes%2C_Catalunya_06.jpg"
    }
   ],
   "form": ""
@@ -15612,14 +15628,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/EmberizaSchoeniclusIUCN2019-3.png/1280px-EmberizaSchoeniclusIUCN2019-3.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEmberizaSchoeniclusIUCN2019-3.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Common_reed_bunting_%28Emberiza_schoeniclus%29_2021.jpg/1280px-Common_reed_bunting_%28Emberiza_schoeniclus%29_2021.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -15658,6 +15666,14 @@
     "lisans": "CC0",
     "atif": "Foto: MilanIlic553 — CC0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEmberiza_schoeniclus00273.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Emberiza_schoeniclus00382.jpg/1280px-Emberiza_schoeniclus00382.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC0",
+    "atif": "Foto: MilanIlic553 — CC0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEmberiza_schoeniclus00382.jpg"
    }
   ]
  },
@@ -16039,14 +16055,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACaprimulgus_europaeus_young.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Caprimulgus_europaeus_-France_-night-6_%282%29.jpg/1280px-Caprimulgus_europaeus_-France_-night-6_%282%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 2.0",
-    "atif": "Foto: sébastien bertru — CC BY-SA 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACaprimulgus_europaeus_-France_-night-6_%282%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Caprimulgus_europaeus_-France_-night-6.jpg/1280px-Caprimulgus_europaeus_-France_-night-6.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -16061,6 +16069,14 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: Jenny Th — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACaprimulgus_europaeus_1200x855.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Caprimulgus_europaeus_161683178_%28cropped%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Andrew Bazdyrev — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACaprimulgus_europaeus_161683178_%28cropped%29.jpg"
    }
   ]
  },
@@ -16817,14 +16833,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/AlbertBob%C3%A9_%E2%80%93_Picot_Negre_Mascle_Dryocopus_martius_Hortons_Catalunya.WebM/960px--AlbertBob%C3%A9_%E2%80%93_Picot_Negre_Mascle_Dryocopus_martius_Hortons_Catalunya.WebM.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Albert Bobé — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlbertBob%C3%A9_%E2%80%93_Picot_Negre_Mascle_Dryocopus_martius_Hortons_Catalunya.WebM"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Black_Woodpecker_%28Dryocopus_martius%29_%2814363774111%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -16863,6 +16871,14 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: Frank Vassen from Brussels, Belgium — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABlack_woodpecker_%28Dryocopus_martius%29%2C_Parc_de_Woluw%C3%A9%2C_Brussels_%2823664278783%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Black_woodpecker_%28Dryocopus_martius%29%2C_Parc_de_Woluw%C3%A9%2C_Brussels_%2824007348440%29.jpg/1280px-Black_woodpecker_%28Dryocopus_martius%29%2C_Parc_de_Woluw%C3%A9%2C_Brussels_%2824007348440%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: Frank Vassen from Brussels, Belgium — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABlack_woodpecker_%28Dryocopus_martius%29%2C_Parc_de_Woluw%C3%A9%2C_Brussels_%2824007348440%29.jpg"
    }
   ]
  },
@@ -17218,22 +17234,6 @@
   },
   "gorsel": [
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Alexander Kürthy — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AOtus_scops_-_Eurasian_Scops_Owl_XC481631.mp3"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: GESHORS Yann — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AOtus_scops_-_Eurasian_Scops_Owl_XC554663.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Juvenile_Eurasian_Scops_Owl_%28Otus_scops%29.jpg/1280px-Juvenile_Eurasian_Scops_Owl_%28Otus_scops%29.jpg",
     "tip": "genc",
     "kaynak": "Wikimedia Commons",
@@ -17264,6 +17264,22 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Imran Shah from Islamabad, Pakistan — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_Scops-owl_%28Otus_scops%29_%2834779223590%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Eurasian_Scops-owl_%28Otus_scops%29_%2835459255700%29.jpg/1280px-Eurasian_Scops-owl_%28Otus_scops%29_%2835459255700%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Imran Shah from Islamabad, Pakistan — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_Scops-owl_%28Otus_scops%29_%2835459255700%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Eurasian_Scops-owl_%28Otus_scops%29_%2835577184233%29.jpg/1280px-Eurasian_Scops-owl_%28Otus_scops%29_%2835577184233%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Imran Shah from Islamabad, Pakistan — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_Scops-owl_%28Otus_scops%29_%2835577184233%29.jpg"
    }
   ]
  },
@@ -18508,36 +18524,44 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEgyptian_Vulture_%28Neophron_percnopterus%29_%2814167869048%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Egyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_1.jpg/1280px-Egyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_1.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: martin_ingemansson — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEgyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_1.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Egyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_2.jpg/1280px-Egyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_2.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: martin_ingemansson — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEgyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_2.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Egyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_3.jpg/1280px-Egyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_3.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: martin_ingemansson — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEgyptian_Vulture_%28Neophron_percnopterus%29%2C_Kuk%C3%ABs_District%2C_Albania_3.jpg"
-   },
-   {
     "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/208432759/large.jpg",
     "tip": "butun",
     "kaynak": "iNaturalist",
     "lisans": "CC-BY-SA",
     "atif": "(c) Kudaibergen Amirekul, some rights reserved (CC BY-SA), uploaded by Kudaibergen Amirekul",
     "sayfa": "https://www.inaturalist.org/photos/208432759"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Aasgier-2_%2828613611562%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: yves hoebeke — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAasgier-2_%2828613611562%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Above_David_Gareja_cathedral.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Kjell_F — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAbove_David_Gareja_cathedral.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ansichten_von_Dawit_Garedscha_120.jpg/1280px-Ansichten_von_Dawit_Garedscha_120.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Giftzwerg 88 — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAnsichten_von_Dawit_Garedscha_120.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Bird-oman-1.jpg/1280px-Bird-oman-1.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC0",
+    "atif": "Foto: A1000 (talk) 16:47, 3 January 2019 (UTC) — CC0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABird-oman-1.jpg"
    }
   ]
  },
@@ -18627,28 +18651,12 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/GypaetusBarbatusIUCNver2018_2.png/1280px-GypaetusBarbatusIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SSanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGypaetusBarbatusIUCNver2018_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/b/ba/126899_gypaetus_barbatus_PikiWiki_Israel.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY 2.5",
     "atif": "Foto: עוזי פז — CC BY 2.5 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A126899_gypaetus_barbatus_PikiWiki_Israel.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Gypaetus_barbatus_distr.png/1280px-Gypaetus_barbatus_distr.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: No machine-readable author provided. Scops~commonswiki assumed (based on copyright claims). — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGypaetus_barbatus_distr.png"
    },
    {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Gypa%C3%A8te_barbu_Gypaetus_barbatus_aaDSC_5577_%2851732100864%29.jpg/1280px-Gypa%C3%A8te_barbu_Gypaetus_barbatus_aaDSC_5577_%2851732100864%29.jpg",
@@ -18673,6 +18681,22 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Pierre-Marie Epiney — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AGypa%C3%A8te_barbu_Gypaetus_barbatus_aaDSC_5726_%2851734921152%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Gypa%C3%A8te_barbu_Gypaetus_barbatus_aaDSC_5790_%2851736391844%29.jpg/1280px-Gypa%C3%A8te_barbu_Gypaetus_barbatus_aaDSC_5790_%2851736391844%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Pierre-Marie Epiney — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGypa%C3%A8te_barbu_Gypaetus_barbatus_aaDSC_5790_%2851736391844%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Gypa%C3%A8te_barbu_Gypaetus_barbatus_aDSC_5409_%2851728293162%29.jpg/1280px-Gypa%C3%A8te_barbu_Gypaetus_barbatus_aDSC_5409_%2851728293162%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Pierre-Marie Epiney — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGypa%C3%A8te_barbu_Gypaetus_barbatus_aDSC_5409_%2851728293162%29.jpg"
    }
   ]
  },
@@ -18777,36 +18801,36 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAguila_culebrera_II%28Circaetus_gallicus%29.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Circaetus_gallicus_-_Short-toed_snake-eagle_02-2.jpg/1280px-Circaetus_gallicus_-_Short-toed_snake-eagle_02-2.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Short-toed_Snake_Eagle_XC539306.mp3"
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Short-toed_snake-eagle_02-2.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Circaetus_gallicus_-_Short-toed_snake-eagle%C4%B1_02-1.jpg/1280px-Circaetus_gallicus_-_Short-toed_snake-eagle%C4%B1_02-1.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Short-toed_Snake_Eagle_XC545829.mp3"
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Short-toed_snake-eagle%C4%B1_02-1.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Circaetus_gallicus_-_Y%C4%B1lan_kartal%C4%B1_01-1.jpg/1280px-Circaetus_gallicus_-_Y%C4%B1lan_kartal%C4%B1_01-1.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Short-toed_Snake_Eagle_XC545832.mp3"
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Y%C4%B1lan_kartal%C4%B1_01-1.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Circaetus_gallicus_-_Y%C4%B1lan_kartal%C4%B1_01-2.jpg/1280px-Circaetus_gallicus_-_Y%C4%B1lan_kartal%C4%B1_01-2.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
     "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Short-toed_Snake_Eagle_XC545848.mp3"
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircaetus_gallicus_-_Y%C4%B1lan_kartal%C4%B1_01-2.jpg"
    }
   ]
  },
@@ -19186,14 +19210,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABalbuzard_p%C3%AAcheur_Pandion_haliaetus_aDSC_3792_%2851529043969%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Chirping_ospreys_%28Pandion_haliaetus%29.webm/1280px--Chirping_ospreys_%28Pandion_haliaetus%29.webm.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: Paul VanDerWerf — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AChirping_ospreys_%28Pandion_haliaetus%29.webm"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Everglades_Osprey_Pandion_haliaetus_2011_03_7086.jpg/1280px-Everglades_Osprey_Pandion_haliaetus_2011_03_7086.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -19428,22 +19444,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Circus_cyaneus_breeding_area.png/1280px-Circus_cyaneus_breeding_area.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: Accipiter (R. Altenkamp, Berlin) — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircus_cyaneus_breeding_area.png"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "disi",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACircus_cyaneus_-_Hen_Harrier_XC558933.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Hen_Harrier_%28Circus_cyaneus%29_%2824609688838%29.jpg/1280px-Hen_Harrier_%28Circus_cyaneus%29_%2824609688838%29.jpg",
     "tip": "disi",
     "kaynak": "Wikimedia Commons",
@@ -19474,6 +19474,22 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Imran Shah from Islamabad, Pakistan — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AHen_Harrier_%28Circus_cyaneus%29_%2832928638168%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Hen_Harrier_%28Circus_cyaneus%29_%2843999208970%29.jpg/1280px-Hen_Harrier_%28Circus_cyaneus%29_%2843999208970%29.jpg",
+    "tip": "disi",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Imran Shah from Islamabad, Pakistan — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AHen_Harrier_%28Circus_cyaneus%29_%2843999208970%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Hen_Harrier_%28Circus_cyaneus%29_%2845300150475%29.jpg/1280px-Hen_Harrier_%28Circus_cyaneus%29_%2845300150475%29.jpg",
+    "tip": "disi",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Imran Shah from Islamabad, Pakistan — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AHen_Harrier_%28Circus_cyaneus%29_%2845300150475%29.jpg"
    }
   ]
  },
@@ -20000,12 +20016,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEuropean_honey_buzzard%2C_Pernis_apivorus%2C_Bivr%C3%A5k.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Pernis_apivorus_migration_South_Africa_to_Finland.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Benoît Van Hecke — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3APernis_apivorus_-_European_Honey_Buzzard_XC580934.mp3"
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Scops Europe: Th. Mebs D. Schmidt: Die Greifvögel Europas, Nordafrikas und Vorderasiens. Franckh-Kosmos Stuttgart 2006 ISBN 3-440-09585-1 Asia and Migration: J. Ferguson-Lees D.Christie: Raptors of the World. Houghton-Mifflin Company Bosten 2001; ISBN 0-618-12762-3 — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3APernis_apivorus_migration_South_Africa_to_Finland.jpg"
    }
   ]
  },
@@ -20497,14 +20513,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/AnasAcutaIUCN2019_2.png/1280px-AnasAcutaIUCN2019_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAnasAcutaIUCN2019_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/20260117_151444_Anas_acuta.jpg/1280px-20260117_151444_Anas_acuta.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -20543,6 +20551,14 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: Aomorikuma — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AA_acuta_Anas_acuta_Northern_Pintail_rest.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/4/44/Male_Northern_pintail_%28Anas_acuta%29_in_Algeria.jpg",
+    "tip": "erkek",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: mourad-harzallah — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AMale_Northern_pintail_%28Anas_acuta%29_in_Algeria.jpg"
    }
   ]
  },
@@ -21007,14 +21023,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/AythyaFuligulaIUCNver2018_2.png/1280px-AythyaFuligulaIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAythyaFuligulaIUCNver2018_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Aves_Anseriformes_Anatidae_Aythya_Aythya_fuligula01.JPG/1280px-Aves_Anseriformes_Anatidae_Aythya_Aythya_fuligula01.JPG",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -21053,6 +21061,14 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: あおもりくま（aomorikuma） — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAves_Anseriformes_Anatidae_Aythya_Aythya_fuligula05.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Aythya_fuligula_%2826746157238%29.jpg/1280px-Aythya_fuligula_%2826746157238%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: Donald Hobern from Copenhagen, Denmark — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAythya_fuligula_%2826746157238%29.jpg"
    }
   ]
  },
@@ -21269,14 +21285,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AOxyura_leucocephala_377555708.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/0/04/Female_white-headed_duck_%28Oxyura_leucocephala%29_in_Algeria.jpg",
-    "tip": "erkek",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: mourad-harzallah — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AFemale_white-headed_duck_%28Oxyura_leucocephala%29_in_Algeria.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Male_white-headed_duck_%28Oxyura_leucocephala%29_in_Algeria.jpg/1280px-Male_white-headed_duck_%28Oxyura_leucocephala%29_in_Algeria.jpg",
     "tip": "erkek",
     "kaynak": "Wikimedia Commons",
@@ -21299,6 +21307,14 @@
     "lisans": "CC BY 4.0",
     "atif": "Foto: Bouke ten Cate — CC BY 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AWitkopeend_-_white-headed_duck_-_Oxyura_leucocephala.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Oxyura_leucocephala%2C_Carabasi%2C_Alicante_1.jpg/1280px-Oxyura_leucocephala%2C_Carabasi%2C_Alicante_1.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Ferran Pestaña from Barcelona, España — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AOxyura_leucocephala%2C_Carabasi%2C_Alicante_1.jpg"
    }
   ]
  },
@@ -22176,14 +22192,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/GallinulaChloropusIUCNver2019-2.png/1280px-GallinulaChloropusIUCNver2019-2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGallinulaChloropusIUCNver2019-2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Gallinula_chloropus_%2831255660737%29.jpg/1280px-Gallinula_chloropus_%2831255660737%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -22222,6 +22230,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AGallinula_chloropus_-_Common_moorhen%2C_Adana_2016-10-30_02-1.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Common_Moorhen_%28Gallinula_chloropus%29_-_London%2C_England_2023-10-26_%2801%29.jpg/1280px-Common_Moorhen_%28Gallinula_chloropus%29_-_London%2C_England_2023-10-26_%2801%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Ryan Hodnett — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACommon_Moorhen_%28Gallinula_chloropus%29_-_London%2C_England_2023-10-26_%2801%29.jpg"
    }
   ]
  },
@@ -22350,12 +22366,12 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ARallus_aquaticus_%2C_Water_Rail._%2833414374732%29.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Rallus_aquaticus_%2C_Water_Rail._video.webm/1280px--Rallus_aquaticus_%2C_Water_Rail._video.webm.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Rallus_aquaticus_-_Ralaqu.jpg/1280px-Rallus_aquaticus_-_Ralaqu.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: https://www.flickr.com/photos/gails_pictures/ — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARallus_aquaticus_%2C_Water_Rail._video.webm"
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Pierre Dalous — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ARallus_aquaticus_-_Ralaqu.jpg"
    }
   ]
  },
@@ -22459,22 +22475,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3APorphyrio_porphyrio_-Europe-8.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "disi",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Joost van Bruggen — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3APorphyrio_porphyrio_-_Western_Swamphen_XC431992.mp3"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "disi",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Joost van Bruggen — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3APorphyrio_porphyrio_-_Western_Swamphen_XC432226.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Porphyrio_porphyrio%2C_P%C3%AAra%2C_Algarve%2C_Portugal_1.jpg/1280px-Porphyrio_porphyrio%2C_P%C3%AAra%2C_Algarve%2C_Portugal_1.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -22489,6 +22489,22 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: sighmanb — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3APorphyrio_porphyrio%2C_P%C3%AAra%2C_Algarve%2C_Portugal_2.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Purperkoet_-_western_swamphen_-_Porphyrio_porphyrio_2.jpg/1280px-Purperkoet_-_western_swamphen_-_Porphyrio_porphyrio_2.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Bouke ten Cate — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3APurperkoet_-_western_swamphen_-_Porphyrio_porphyrio_2.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Purperkoet_-_western_swamphen_-_Porphyrio_porphyrio.jpg/1280px-Purperkoet_-_western_swamphen_-_Porphyrio_porphyrio.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Bouke ten Cate — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3APurperkoet_-_western_swamphen_-_Porphyrio_porphyrio.jpg"
    }
   ]
  },
@@ -22566,14 +22582,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/PelecanusOnocrotalusIUCNver2018_2.png/1280px-PelecanusOnocrotalusIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3APelecanusOnocrotalusIUCNver2018_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Great_White_Pelican_%28Pelecanus_onocrotalus%29_%288079442905%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -22612,6 +22620,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3APelecanus_onocrotalus_-_Great_White_Pelican%2C_Adana_2016-12-18_01-1.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Pelecanus_onocrotalus_-_Great_White_Pelican%2C_Adana_2016-12-18_01-2.jpg/1280px-Pelecanus_onocrotalus_-_Great_White_Pelican%2C_Adana_2016-12-18_01-2.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Zeynel Cebeci — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3APelecanus_onocrotalus_-_Great_White_Pelican%2C_Adana_2016-12-18_01-2.jpg"
    }
   ]
  },
@@ -22819,14 +22835,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/MicrocarboPygmaeusIUCNver2018_2.png/1280px-MicrocarboPygmaeusIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AMicrocarboPygmaeusIUCNver2018_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Cormoran_pygm%C3%A9e_Microcarbo_pygmaeus_-_Pygmy_Cormorant_DSC_4084_%2853222079885%29.jpg/1280px-Cormoran_pygm%C3%A9e_Microcarbo_pygmaeus_-_Pygmy_Cormorant_DSC_4084_%2853222079885%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -22865,6 +22873,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Warrieboy — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AMicrocarbo_pygmaeus_-_Pygmy_cormorant.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Pygmy_Cormorant_%28Marangone_Minore%29_%28Microcarbo_pygmaeus%29_-_Rome%2C_Italy_2024-03-02.jpg/1280px-Pygmy_Cormorant_%28Marangone_Minore%29_%28Microcarbo_pygmaeus%29_-_Rome%2C_Italy_2024-03-02.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Ryan Hodnett — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3APygmy_Cormorant_%28Marangone_Minore%29_%28Microcarbo_pygmaeus%29_-_Rome%2C_Italy_2024-03-02.jpg"
    }
   ]
  },
@@ -23351,22 +23367,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/ArdeaPurpureaIUCNver2019_1.png/1280px-ArdeaPurpureaIUCNver2019_1.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdeaPurpureaIUCNver2019_1.png"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/A_purple_heron_%28Ardea_purpurea%29_sitting_om_a_tree_branch.jpg/1280px-A_purple_heron_%28Ardea_purpurea%29_sitting_om_a_tree_branch.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Subhrajyoti07 — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AA_purple_heron_%28Ardea_purpurea%29_sitting_om_a_tree_branch.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Ardea_purpurea_00600.jpg/1280px-Ardea_purpurea_00600.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -23397,6 +23397,22 @@
     "lisans": "CC0",
     "atif": "Foto: MilanIlic553 — CC0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdea_purpurea221.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Gar%C3%A7a-vermelha_%28Ardea_purpurea%29_%2853082136816%29.jpg/1280px-Gar%C3%A7a-vermelha_%28Ardea_purpurea%29_%2853082136816%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: José Prego from Moura, Portugal — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGar%C3%A7a-vermelha_%28Ardea_purpurea%29_%2853082136816%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Gar%C3%A7a-vermelha_%28Ardea_purpurea%29_%2853082143146%29.jpg/1280px-Gar%C3%A7a-vermelha_%28Ardea_purpurea%29_%2853082143146%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: José Prego from Moura, Portugal — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGar%C3%A7a-vermelha_%28Ardea_purpurea%29_%2853082143146%29.jpg"
    }
   ]
  },
@@ -23484,22 +23500,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/ArdeaAlbaIUCNver2019_1.png/1280px-ArdeaAlbaIUCNver2019_1.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdeaAlbaIUCNver2019_1.png"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Ardea_alba_-_Garceta_grance.jpg/1280px-Ardea_alba_-_Garceta_grance.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 4.0",
-    "atif": "Foto: Nathaly 1106 — CC BY 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdea_alba_-_Garceta_grance.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Ardea_alba_-_Nelson_Wisnik_-_487806489.jpeg/1280px-Ardea_alba_-_Nelson_Wisnik_-_487806489.jpeg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -23530,6 +23530,22 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: Gastcrf at Greek Wikipedia — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdea_alba_chaliki.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ardea_alba_IMG_1802.png/1280px-Ardea_alba_IMG_1802.png",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: lwolfartist — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdea_alba_IMG_1802.png"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Ardea_alba_in_Barceloneta%2C_PR.jpg/1280px-Ardea_alba_in_Barceloneta%2C_PR.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Ligocsicnarf89 — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AArdea_alba_in_Barceloneta%2C_PR.jpg"
    }
   ]
  },
@@ -24419,22 +24435,6 @@
   },
   "gorsel": [
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Ashahar alias Krishna Khan — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABlack-winged_stilt_%28Himantopus_himantopus_himantopus%29.ogg"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: عثمان — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABlack-winged_stilt_calls_at_Oued_Martil_of_Tetouan%2C_Morocco.wav"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/2017-07_R%C3%A9serve_naturelle_nationale_de_la_baie_de_Somme_-_Black-winged_Stilt_05.jpg/1280px-2017-07_R%C3%A9serve_naturelle_nationale_de_la_baie_de_Somme_-_Black-winged_Stilt_05.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -24465,6 +24465,22 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: Esin Üstün from Istanbul, Turkey — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ABallet_for_food_Serengeti_Tanzania_%28Black-winged_Stilt%29_%2820118339386%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Beautiful_Black-winged_stilt.jpg/1280px-Beautiful_Black-winged_stilt.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Rahul Sankar — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABeautiful_Black-winged_stilt.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Beautiful_Wetlands_%281%29.jpg/1280px-Beautiful_Wetlands_%281%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: Renz0903 — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ABeautiful_Wetlands_%281%29.jpg"
    }
   ]
  },
@@ -25087,14 +25103,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/ActitisHypoleucosIUCNver2018_2.png/1280px-ActitisHypoleucosIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AActitisHypoleucosIUCNver2018_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Actitis_hypoleucos_-_Common_Sandpiper_02.jpg/1280px-Actitis_hypoleucos_-_Common_Sandpiper_02.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -25133,6 +25141,14 @@
     "lisans": "CC BY-SA 3.0",
     "atif": "Foto: Marek Szczepanek — CC BY-SA 3.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AActitis_hypoleucos_2_%28Marek_Szczepanek%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Actitis_hypoleucos_2_%28Martin_Mecnarowski%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 3.0",
+    "atif": "Foto: Martin Mecnarowski (http://www.photomecan.eu/) — CC BY-SA 3.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AActitis_hypoleucos_2_%28Martin_Mecnarowski%29.jpg"
    }
   ]
  },
@@ -25357,22 +25373,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/ScolopaxRusticolaIUCNver2019-2.png/1280px-ScolopaxRusticolaIUCNver2019-2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AScolopaxRusticolaIUCNver2019-2.png"
-   },
-   {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC0",
-    "atif": "Foto: ChristianSW — CC0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AChocha_perdiz_%28Scolopax_rusticola%29_y_Mosquitero_com%C3%BAn_%28Phylloscopus_collybita%29.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Eurasian_Woodcock_%28Scolopax_rusticola%29_%2826338656739%29.jpg/1280px-Eurasian_Woodcock_%28Scolopax_rusticola%29_%2826338656739%29.jpg",
     "tip": "erkek",
     "kaynak": "Wikimedia Commons",
@@ -25403,6 +25403,22 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: Blondinrikard Fröberg — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_woodcock%2C_Scolopax_rusticola%2C_Morkulla_%2850938576363%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Eurasian_Woodcock_%28Scolopax_rusticola%29_%2846579155361%29.jpg/1280px-Eurasian_Woodcock_%28Scolopax_rusticola%29_%2846579155361%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: Imran Shah from Islamabad, Pakistan — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_Woodcock_%28Scolopax_rusticola%29_%2846579155361%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Eurasian_Woodcock_Scolopax_rusticola%2C_Helgoland%2C_Germany_288009674.jpg/1280px-Eurasian_Woodcock_Scolopax_rusticola%2C_Helgoland%2C_Germany_288009674.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: claudekolwelter — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AEurasian_Woodcock_Scolopax_rusticola%2C_Helgoland%2C_Germany_288009674.jpg"
    }
   ]
  },
@@ -25490,14 +25506,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/CharadriusDubiusIUCN2019-3.png/1280px-CharadriusDubiusIUCN2019-3.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACharadriusDubiusIUCN2019-3.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Borrelho-pequeno-de-coleira_%28Charadrius_dubius%29_%2851904602437%29.jpg/1280px-Borrelho-pequeno-de-coleira_%28Charadrius_dubius%29_%2851904602437%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -25536,6 +25544,14 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: xulescu_g — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACharadrius_dubius_%2849818262692%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Charadrius_dubius_%2849820761043%29.jpg/1280px-Charadrius_dubius_%2849820761043%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 2.0",
+    "atif": "Foto: xulescu_g — CC BY-SA 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACharadrius_dubius_%2849820761043%29.jpg"
    }
   ]
  },
@@ -25756,14 +25772,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/GlareolaPratincolaIUCNver2018_2.png/1280px-GlareolaPratincolaIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AGlareolaPratincolaIUCNver2018_2.png"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Canastera_com%C3%BAn_%28Glareola_pratincola%29%2C_parque_nacional_de_Amboseli%2C_Kenia%2C_2024-05-22%2C_DD_48.jpg/1280px-Canastera_com%C3%BAn_%28Glareola_pratincola%29%2C_parque_nacional_de_Amboseli%2C_Kenia%2C_2024-05-22%2C_DD_48.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -25802,6 +25810,14 @@
     "lisans": "CC BY-SA 2.0",
     "atif": "Foto: Dominic Sherony — CC BY-SA 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ACollared_Pratincole_%28Glareola_pratincola%29_1_%2831608084467%29.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Collared_pratincole_%28Glareola_pratincola%29.jpg/1280px-Collared_pratincole_%28Glareola_pratincola%29.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 2.0",
+    "atif": "Foto: Steve Garvie (rainbirder) — CC BY 2.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ACollared_pratincole_%28Glareola_pratincola%29.jpg"
    }
   ]
  },
@@ -26294,22 +26310,6 @@
     "lisans": "CC BY 2.0",
     "atif": "Foto: Ekaterina Chernetsova (Papchinskaya) from Saint-Petersburg, Russia — CC BY 2.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AHydrocoloeus_minutus_Russia_04.jpg"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/HydrocoloeusMinutusIUCNver2018_2.png/1280px-HydrocoloeusMinutusIUCNver2018_2.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: SanoAK: Alexander Kürthy — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AHydrocoloeusMinutusIUCNver2018_2.png"
-   },
-   {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Little_Gull_%28first_winter_plumage%29._Hydrocoloeus_minutus.webm/1280px--Little_Gull_%28first_winter_plumage%29._Hydrocoloeus_minutus.webm.jpg",
-    "tip": "genc",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: https://www.flickr.com/photos/gails_pictures/ — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ALittle_Gull_%28first_winter_plumage%29._Hydrocoloeus_minutus.webm"
    },
    {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Little_gull_%28Hydrocoloeus_minutus%29_2019.jpg/1280px-Little_gull_%28Hydrocoloeus_minutus%29_2019.jpg",
@@ -27662,14 +27662,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Alimentaci%C3%B3n_Struthio_camelus.webm/960px--Alimentaci%C3%B3n_Struthio_camelus.webm.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC0",
-    "atif": "Foto: Letstown — CC0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlimentaci%C3%B3n_Struthio_camelus.webm"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Avestruces_%28Struthio_camelus%29%2C_salar_del_parque_nacional_Makgadikgadi_Pans%2C_Botsuana%2C_2018-07-30%2C_DD_51.jpg/1280px-Avestruces_%28Struthio_camelus%29%2C_salar_del_parque_nacional_Makgadikgadi_Pans%2C_Botsuana%2C_2018-07-30%2C_DD_51.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -28478,14 +28470,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AMelopsittacus_undulatus_-Australia-8.jpg"
    },
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Melopsittacus_undulatus_Alice_Springs_Desert_Park_%28crop_1%29.jpg/1280px-Melopsittacus_undulatus_Alice_Springs_Desert_Park_%28crop_1%29.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: Melopsittacus undulatus Alice Springs Desert Park.jpg: Richard.Fisher derivative work: MPF (talk) — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AMelopsittacus_undulatus_Alice_Springs_Desert_Park_%28crop_1%29.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Melopsittacus_undulatus_Alice_Springs_Desert_Park_%28crop_2%29.jpg/1280px-Melopsittacus_undulatus_Alice_Springs_Desert_Park_%28crop_2%29.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -29006,14 +28990,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AAlcidae_Fratercula_arctica_4.jpg"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 4.0",
-    "atif": "Foto: Bilinmiyor — CC BY-SA 4.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AAtlantic_Puffin_%28Fratercula_arctica%29_%28W1CDR0001416_BD3%29.ogg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Atlantic_Puffin_%28Lunde%29_%28Fratercula_arctica%29_-_%C3%98ksnes%2C_Norway_2023-07-14.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -29115,14 +29091,6 @@
     "sayfa": "https://commons.wikimedia.org/wiki/File%3A240px-418px-NZ-kiwimapApteryx_australis.png"
    },
    {
-    "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY-SA 3.0",
-    "atif": "Foto: ZHANG Shen — CC BY-SA 3.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3AApteryx_australis_-_Southern_Brown_Kiwi_XC389022.mp3"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Apteryx_australis_1zz.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -29153,6 +29121,14 @@
     "lisans": "CC BY 4.0",
     "atif": "Foto: William Stephens — CC BY 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3AApteryx_australis_lawryi_60398913.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Apteryx_australis_lawryi_60398921.jpg/1280px-Apteryx_australis_lawryi_60398921.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY 4.0",
+    "atif": "Foto: William Stephens — CC BY 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3AApteryx_australis_lawryi_60398921.jpg"
    }
   ]
  },
@@ -29488,14 +29464,6 @@
   },
   "gorsel": [
    {
-    "url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Dacelo_novaeguineae_-in_tree-8.jpg",
-    "tip": "butun",
-    "kaynak": "Wikimedia Commons",
-    "lisans": "CC BY 2.0",
-    "atif": "Foto: Louise Docker — CC BY 2.0 · Wikimedia Commons",
-    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADacelo_novaeguineae_-in_tree-8.jpg"
-   },
-   {
     "url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Dacelo_novaeguineae_10.jpg",
     "tip": "butun",
     "kaynak": "Wikimedia Commons",
@@ -29534,6 +29502,14 @@
     "lisans": "CC BY-SA 4.0",
     "atif": "Foto: Steve Fitzgerald — CC BY-SA 4.0 · Wikimedia Commons",
     "sayfa": "https://commons.wikimedia.org/wiki/File%3ADacelo_novaeguineae_SF26032-01.jpg"
+   },
+   {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Dacelo_novaeguineae_SF26032-02.jpg/1280px-Dacelo_novaeguineae_SF26032-02.jpg",
+    "tip": "butun",
+    "kaynak": "Wikimedia Commons",
+    "lisans": "CC BY-SA 4.0",
+    "atif": "Foto: Steve Fitzgerald — CC BY-SA 4.0 · Wikimedia Commons",
+    "sayfa": "https://commons.wikimedia.org/wiki/File%3ADacelo_novaeguineae_SF26032-02.jpg"
    }
   ]
  },
