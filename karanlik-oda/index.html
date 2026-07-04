@@ -52,7 +52,7 @@
   .score b{color:var(--red); font-size:22px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
 
   /* ---- PANO: fotoğraf kağıdı estetiği ---- */
-  .board{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,320px); gap:16px; align-items:start;}
+  .board{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,230px) minmax(0,230px); gap:16px; align-items:start;}
   .tile{
     position:relative; border-radius:var(--radius); overflow:hidden;
     background:#000; border:5px solid var(--paper);
@@ -85,9 +85,20 @@
   .scene-arrow:disabled{opacity:0.3; cursor:default;}
   .scene-count{font-size:11px; color:var(--paper-dim); letter-spacing:1px; min-width:30px; text-align:center;}
 
+  /* ortak kadro karosu: tahminde çıkan ortak oyuncu/yönetmen birikir */
+  .tile-cast{aspect-ratio:2/3; background:var(--bg2);}
+  .cast-list{position:absolute; inset:0; padding:34px 10px 10px; overflow-y:auto; display:flex; flex-direction:column; gap:9px;}
+  .cast-empty{margin:auto; text-align:center; color:var(--muted); font-size:12px; line-height:1.5; font-style:italic;}
+  .cast-person{display:flex; align-items:center; gap:9px;}
+  .cast-person img{position:static; width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--paper); flex:none;}
+  .cast-person .no{width:40px; height:40px; border-radius:50%; background:var(--card); display:flex; align-items:center; justify-content:center; color:var(--border); flex:none; font-size:18px;}
+  .cast-person .info{min-width:0;}
+  .cast-person .nm{font-size:13px; color:var(--text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .cast-person .role{font-size:10px; color:var(--ok); font-family:"Special Elite",cursive; letter-spacing:0.5px;}
+
   @media(max-width:860px){
     .board{grid-template-columns:1fr;}
-    .tile-poster{max-width:320px; margin:0 auto; width:100%;}
+    .tile-poster, .tile-cast{max-width:320px; margin:0 auto; width:100%;}
   }
 
   .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;}
@@ -188,6 +199,11 @@
       <div class="tile tile-poster">
         <span class="tag">Poster</span>
         <canvas id="posterCanvas" width="10" height="15"></canvas>
+      </div>
+
+      <div class="tile tile-cast">
+        <span class="tag">Ortak Kadro</span>
+        <div class="cast-list" id="castList"></div>
       </div>
     </div>
 
@@ -343,6 +359,25 @@ function renderGuessLog() {
     + `<span class="dir">${esc(g.hint || "—")}</span></div>`).join("");
 }
 
+// ---- ortak kadro: tahminin ilk-5'i ∩ cevabın ilk-5'i + yönetmen ----
+function sharedPeople(sel) {
+  const F = G.film, out = [], gc = (sel && sel.c) || [];
+  (F.t5 || []).forEach(a => { if (gc.includes(a.id)) out.push({ id:a.id, p:a.p, n:a.n, role:"aynı oyuncu" }); });
+  if (F.dir && sel && sel.d && sel.d === F.dir.id)
+    out.push({ id:F.dir.id, p:F.dir.p, n:F.dir.n, role:"aynı yönetmen" });
+  return out;
+}
+function renderCast() {
+  const el = $("castList");
+  if (!G.shared.length) {
+    el.innerHTML = `<div class="cast-empty">Tahmininde gizli filmle ortak oyuncu ya da yönetmen çıkarsa fotoğrafıyla burada belirir.</div>`;
+    return;
+  }
+  el.innerHTML = G.shared.map(p =>
+    `<div class="cast-person">${p.p ? `<img src="${IMG}w185${p.p}" alt="">` : `<div class="no">?</div>`}`
+    + `<div class="info"><div class="nm">${esc(p.n)}</div><div class="role">✓ ${esc(p.role)}</div></div></div>`).join("");
+}
+
 function renderStep() {
   const s = G.step, F = G.film;
   $("stepDots").innerHTML = SCORES.map((sc,i) =>
@@ -459,6 +494,11 @@ $("guessBtn").addEventListener("click", () => {
   const hint = yearHint(G.selected);
   G.guesses.push({ t: G.selected.t, y: G.selected.y, hint });   // yıl yönü kalıcı listede
   renderGuessLog();
+  let yeniOrtak = 0;                                             // ortak oyuncu/yönetmen
+  sharedPeople(G.selected).forEach(p => {
+    if (!G.shared.some(x => x.id === p.id)) { G.shared.push(p); yeniOrtak++; }
+  });
+  if (yeniOrtak) renderCast();
   const fb = $("feedback");
   fb.className = "feedback bad";
   fb.innerHTML = `<b>"${esc(G.selected.t)}"</b> değil${hint ? ` — yıl: <b style="color:var(--red)">${esc(hint)}</b>` : ""}. Görüntü biraz daha netleşiyor…`;
@@ -474,7 +514,7 @@ document.addEventListener("click", e => { if (!e.target.closest(".guess")) hideA
 
 function startGame(index, random = false) {
   const film = window.PUZZLES[index];
-  G = { film, index, step: 0, selected: null, over: false, random, guesses: [] };
+  G = { film, index, step: 0, selected: null, over: false, random, guesses: [], shared: [] };
   stopPosterLoop();
   $("dayNo").textContent = random ? "Rastgele film" : `Gün #${index + 1}`;
   $("todayBtn").style.display = random ? "" : "none";
@@ -482,6 +522,7 @@ function startGame(index, random = false) {
   $("loading").style.display = "none";
   $("game").style.display = "block";
   renderGuessLog();
+  renderCast();
   renderStep();
 }
 
