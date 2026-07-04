@@ -71,6 +71,11 @@
   .cap b{display:block; font-size:15px; font-weight:600;}
   .cap .sub{color:var(--muted); font-size:11px;}
   .no-photo{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:"Special Elite",cursive; font-size:64px; color:var(--border);}
+  .scene-wait{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center;
+    font-family:"Special Elite",cursive;
+    background:radial-gradient(circle at 50% 42%, rgba(229,56,46,0.12), transparent 62%), #050403;}
+  .scene-wait .big{font-size:40px; color:var(--red); text-shadow:0 0 18px var(--red-glow), 0 0 40px var(--red-glow); letter-spacing:4px;}
+  .scene-wait .small{font-size:12px; letter-spacing:1.5px; color:var(--muted);}
 
   @media(max-width:860px){
     .board{grid-template-columns:1fr 1fr;}
@@ -150,6 +155,10 @@
       <div class="tile tile-scene">
         <span class="tag">Sahne</span>
         <img id="sceneImg" alt="Filmden bir sahne">
+        <div class="scene-wait" id="scenePlaceholder" style="display:none">
+          <div class="big">···</div>
+          <div class="small">sahne Banyo 3'te gelişecek</div>
+        </div>
         <div class="cap"><span class="sub" id="sceneSource"></span></div>
       </div>
 
@@ -266,8 +275,20 @@ function renderStep() {
 
   drawPixelPoster(F.pp, PIXEL_W[s]);
 
-  if (F.sc[s]) $("sceneImg").src = F.sc[s];
-  $("sceneSource").textContent = (F.sm && F.sm[s]) || "";
+  // Sahne Banyo 3'te gelir: B3=en obscure kare, B4=en açık, B5=ikonik.
+  // Banyo 1-2'de sahne gizli (yerine "gelişecek" yer tutucusu); Letterboxd öne alındı.
+  const SCENE_MAP = [null, null, 0, 3, 4];
+  const smi = SCENE_MAP[s];
+  if (smi == null) {
+    $("sceneImg").style.display = "none";
+    $("scenePlaceholder").style.display = "flex";
+    $("sceneSource").textContent = "";
+  } else {
+    $("scenePlaceholder").style.display = "none";
+    $("sceneImg").style.display = "";
+    if (F.sc[smi]) $("sceneImg").src = F.sc[smi];
+    $("sceneSource").textContent = (F.sm && F.sm[smi]) || "";
+  }
 
   const actor = F.ac[s];
   $("actorImg").style.display = actor.p ? "block" : "none";
@@ -286,7 +307,7 @@ function renderStep() {
     i <= s ? `<div class="chip">${k}: <b>${v}</b></div>`
            : `<div class="chip locked">${k}: Banyo ${i+1}</div>`).join("");
 
-  // ---- Letterboxd: puan Banyo 3'te (adım 2), yorum Banyo 4'te (adım 3) açılır ----
+  // ---- Letterboxd öne alındı: puan Banyo 1'de (hep açık), yorum Banyo 2'de ----
   const lb = F.lb, rev = safeReview(F), strip = $("lbStrip");
   if (!lb || (lb.rating == null && !rev)) {
     strip.style.display = "none";
@@ -295,21 +316,16 @@ function renderStep() {
     const rEl = $("lbRating");
     if (lb.rating != null) {
       rEl.style.display = "";
-      if (s >= 2) {
-        rEl.className = "lb-rating";
-        rEl.innerHTML = `<span class="stars">${lbStars(lb.rating)}</span>`
-          + `<span class="num">${(+lb.rating).toFixed(1)}</span>`
-          + (lb.votes ? `<span class="votes">${fmtVotes(lb.votes)} oy</span>` : "");
-      } else {
-        rEl.className = "lb-locked";
-        rEl.textContent = "★ puan — Banyo 3";
-      }
+      rEl.className = "lb-rating";
+      rEl.innerHTML = `<span class="stars">${lbStars(lb.rating)}</span>`
+        + `<span class="num">${(+lb.rating).toFixed(1)}</span>`
+        + (lb.votes ? `<span class="votes">${fmtVotes(lb.votes)} oy</span>` : "");
     } else rEl.style.display = "none";
     const qEl = $("lbReview");
     if (rev) {
       qEl.style.display = "";
-      if (s >= 3) { qEl.className = "lb-review"; qEl.textContent = "“" + rev + "”"; }
-      else { qEl.className = "lb-review lb-locked"; qEl.textContent = "bir Letterboxd yorumu — Banyo 4"; }
+      if (s >= 1) { qEl.className = "lb-review"; qEl.textContent = "“" + rev + "”"; }
+      else { qEl.className = "lb-review lb-locked"; qEl.textContent = "bir Letterboxd yorumu — Banyo 2"; }
     } else qEl.style.display = "none";
   }
 
