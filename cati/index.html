@@ -851,13 +851,15 @@ function istatGoster(){
 /* ===== günlük ilerleme + bellek ===== */
 function kaydet(){
   if(mod!=='gun') return;
-  try{ localStorage.setItem('cati:gun',JSON.stringify({gun:oyunGun,
+  try{ localStorage.setItem('cati:gun',JSON.stringify({gun:oyunGun, tema:gunVeri.t,
     t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi})),
     tt:temaTahminler, ta:temaAsama, tv:temaVazgec})); }catch(e){}
 }
 function yukle(){
   if(mod!=='gun') return false;
-  try{ const v=JSON.parse(localStorage.getItem('cati:gun')); if(!v||v.gun!==oyunGun) return false;
+  // gün numarası YETMEZ: veri güncellenip günün bulmacası değişirse eski kayıt
+  // yeni cevapların üstüne giydirilmesin (hayalet "çözülmüş" oyun bug'ı)
+  try{ const v=JSON.parse(localStorage.getItem('cati:gun')); if(!v||v.gun!==oyunGun||v.tema!==gunVeri.t) return false;
     v.t.forEach((sv,i)=>{ const b=tahtalar[i]; if(!b) return;
       sv.k.forEach(kel=>b.gecmis.push({harfler:kel.split(''),renkler:degerlendir(kel,b.cevap)}));
       b.bitti=sv.b; b.kazandi=sv.w; });
