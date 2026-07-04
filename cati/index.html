@@ -103,6 +103,7 @@ body{transition:background .4s,color .4s}
 .tk-geri.yanlis{color:var(--kirmizi)}
 .tk-geri.yakin{color:var(--varr)}
 .tk-geri.dogru{color:var(--dogru)}
+.tk-baglanti{font-size:12.5px;font-style:italic;color:var(--mur);margin-top:9px;padding-top:8px;border-top:1px dashed var(--kutu-cizgi);line-height:1.5}
 .tk-atla{display:inline-block;margin-top:8px;font-family:'Libre Baskerville',serif;font-size:12px;color:var(--soluk);
   background:none;border:1px solid var(--kutu-cizgi);border-radius:8px;padding:6px 12px;cursor:pointer}
 .tk-atla:hover{border-color:var(--kirmizi);color:var(--kirmizi)}
@@ -875,17 +876,19 @@ function temaKartCiz(){
   el.className='tema-kart'+(temaBulundu()?' bulundu':(sonSans?' son-sans':''));
   const odak = document.activeElement && document.activeElement.id==='tkInput';
   const eskiDeger = odak ? document.getElementById('tkInput').value : '';
+  const acikNot = gunVeri.a ? '<div class="tk-baglanti">'+kacis(gunVeri.a)+'</div>' : '';
   if(temaBulundu()){
     el.innerHTML='<span class="tk-et">ortak tema</span>'+
       '<div class="tk-soru acik'+(sonucYeni||_temaYeni?' yeni':'')+'">'+kacis(gunVeri.t)+' ✓</div>'+
-      '<div class="tk-alt">'+temaAsama+'. kelimeden sonra buldun · <b>+'+TEMA_PUAN[Math.min(temaAsama,5)-1]+' puan</b></div>';
+      '<div class="tk-alt">'+temaAsama+'. kelimeden sonra buldun · <b>+'+TEMA_PUAN[Math.min(temaAsama,5)-1]+' puan</b></div>'+
+      (oyunBitti?acikNot:'');   // bağlantı cümlesi kelimeleri ele vermesin — oyun bitince göster
     _temaYeni=false;
     return;
   }
   if(oyunBitti && (hak<=0 || temaVazgec)){
     el.innerHTML='<span class="tk-et">ortak tema</span>'+
       '<div class="tk-soru kacti">'+kacis(gunVeri.t)+'</div>'+
-      '<div class="tk-alt">temayı bulamadın — yarın yeni çatı</div>';
+      '<div class="tk-alt">temayı bulamadın — yarın yeni çatı</div>'+acikNot;
     return;
   }
   let ic='<span class="tk-et">ortak tema</span><div class="tk-soru">? ? ?</div>';
@@ -989,8 +992,8 @@ function sonucCiz(){
   const s=skorHesapla();
   const kapatBtn=`<button class="sonuc-kapat" id="sonucKapatBtn" aria-label="kapat">×</button>`;
   const temaSatir = temaBulundu()
-    ? `<div class="tema-satir ok">🏠 <b>${kacis(gunVeri.t)}</b><small>${temaAsama}. kelimeden sonra · +${s.temaPuan} puan</small></div>`
-    : `<div class="tema-satir yo">🏠 tema <b>${kacis(gunVeri.t)}</b> idi<small>bu sefer çatıyı kuramadın</small></div>`;
+    ? `<div class="tema-satir ok">🏠 <b>${kacis(gunVeri.t)}</b><small>${temaAsama}. kelimeden sonra · +${s.temaPuan} puan</small>${gunVeri.a?`<small>${kacis(gunVeri.a)}</small>`:''}</div>`
+    : `<div class="tema-satir yo">🏠 tema <b>${kacis(gunVeri.t)}</b> idi<small>${kacis(gunVeri.a||'bu sefer çatıyı kuramadın')}</small></div>`;
   const haplar=s.per.map(p=>`<span class="hap ${p.cozuldu?'ok':'yo'}">${p.uz}<b>${p.cozuldu?p.deneme:'—'}</b></span>`).join('');
   const payHTML=`<div class="pay"><input id="nickGir" class="nick-gir" maxlength="16" placeholder="ismin"><button class="pay-btn" id="kopyaBtn">📋 kopyala</button></div>
       <div class="pay-not" id="payNot"></div>
