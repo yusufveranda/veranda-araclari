@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gunduz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kuş bilimi — gördüğün kuşu tanı</title>
+<meta name="description" content="Türkiye'nin kuşlarını fotoğraftan tanı; Türkçe–İngilizce–Latince. Tüy, gaga, uçuş, statü; soyağacı, habitat, davranış ve kültürüyle öğretici kuş kartları. Açık veriyle, ücretsiz.">
+<meta name="theme-color" content="#33606b">
+<meta property="og:title" content="kuş bilimi">
+<meta property="og:description" content="Gökyüzünde, dalda, kıyıda gördüğün kuşu tanı — Türkçe, İngilizce, Latince. Öğretici ornitoloji aracı.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1ebdd'/%3E%3Cg fill='%2333606b'%3E%3Cellipse cx='29' cy='35' rx='15' ry='11'/%3E%3Ccircle cx='44' cy='25' r='8'/%3E%3Cpath d='M51 23 l11 3 l-11 4 z'/%3E%3Cpath d='M15 33 L3 45 L18 41 Z'/%3E%3C/g%3E%3Cpath d='M27 45 V54 M34 45 V54' stroke='%23a4673a' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='46' cy='24' r='1.5' fill='%23f1ebdd'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div class="sarmal">
+
+  <div class="ust">
+    <a class="eve-don" href="../">veranda</a>
+    <div class="ust-sag">
+      <button class="ikonbtn" id="rastBtn" type="button" title="rastgele bir kuş">rastgele kuş</button>
+      <button class="ikonbtn" id="temaBtn" type="button" aria-label="gündüz / gece">gece</button>
+    </div>
+  </div>
+
+  <header class="marka">
+    <svg class="amblem" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M6 54 H50" stroke="var(--toprak)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <g fill="var(--yesil)">
+        <ellipse cx="29" cy="35" rx="15" ry="11"/>
+        <circle cx="44" cy="25" r="8"/>
+        <path d="M51 23 l11 3 l-11 4 z"/>
+        <path d="M15 33 L3 45 L18 41 Z"/>
+      </g>
+      <path d="M27 31 q9 6 15 3 q-6 9 -17 6 z" fill="var(--yesil-koyu)" opacity=".5"/>
+      <path d="M27 45 V53 M34 45 V53" stroke="var(--yesil-koyu)" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="46" cy="24" r="1.6" fill="var(--kagit)"/>
+    </svg>
+    <h1>kuş bilimi</h1>
+    <div class="tag">gördüğün kuşu tanı</div>
+  </header>
+
+  <div class="bolge-bar">
+    <span class="bolge-et">kapsam</span>
+    <div class="bolge-secim" id="bolgeSecim" role="tablist" aria-label="bölge">
+      <button class="bsec" data-bolge="tr" type="button">🇹🇷 Türkiye</button>
+      <button class="bsec" data-bolge="dunya" type="button">🌍 Dünya geneli</button>
+    </div>
+    <span class="bolge-sayi" id="bolgeSayi"></span>
+  </div>
+
+  <nav class="sekmeler" id="sekmeler" role="tablist">
+    <button class="sekme aktif" data-mod="tani"       role="tab">Tanı</button>
+    <button class="sekme"       data-mod="ansiklopedi" role="tab">Ansiklopedi <span class="sayi" id="sayiTur"></span></button>
+    <button class="sekme"       data-mod="mitoloji"    role="tab">Mitoloji &amp; Kültür</button>
+  </nav>
+
+  <main id="ekran" aria-live="polite">
+    <p class="bos-uyari">yükleniyor…</p>
+  </main>
+
+  <footer>
+    <svg class="kilim" viewBox="0 0 220 14" aria-hidden="true">
+      <g fill="currentColor">
+        <path d="M10,0 L17,7 L10,14 L3,7 Z"/><path d="M40,0 L47,7 L40,14 L33,7 Z" opacity=".55"/>
+        <path d="M70,0 L77,7 L70,14 L63,7 Z"/><path d="M100,0 L107,7 L100,14 L93,7 Z" opacity=".55"/>
+        <path d="M130,0 L137,7 L130,14 L123,7 Z"/><path d="M160,0 L167,7 L160,14 L153,7 Z" opacity=".55"/>
+        <path d="M190,0 L197,7 L190,14 L183,7 Z"/><path d="M212,0 L219,7 L212,14 L205,7 Z" opacity=".55"/>
+      </g>
+    </svg>
+    <div>kuş bilimi · veranda — <span id="stat">…</span></div>
+    <div style="margin-top:6px">görseller <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> (CC),
+      adlar ve taksonomi <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a> ·
+      kültür notları <a href="https://tr.wikipedia.org/" target="_blank" rel="noopener">Vikipedi</a>'den</div>
+    <div style="margin-top:6px"><a href="#raporlar">⚐ bildirdiğin fotoğraflar</a></div>
+  </footer>
+
+</div>
+<script src="app.js?v=1"></script>
+</body>
+</html>

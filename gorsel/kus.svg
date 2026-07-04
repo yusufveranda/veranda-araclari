@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="alacakaranlıkta dalda bir kuş">
+  <defs>
+    <linearGradient id="gok" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a626b"/>
+      <stop offset="0.55" stop-color="#6d7f78"/>
+      <stop offset="1" stop-color="#c9a878"/>
+    </linearGradient>
+    <linearGradient id="tepe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c4a51"/>
+      <stop offset="1" stop-color="#233c42"/>
+    </linearGradient>
+    <radialGradient id="ay" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#efe6d2"/>
+      <stop offset="1" stop-color="#efe6d2" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.06"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#gok)"/>
+  <circle cx="600" cy="150" r="120" fill="url(#ay)" opacity="0.7"/>
+  <circle cx="600" cy="150" r="46" fill="#f2ead7" opacity="0.85"/>
+
+  <!-- uzak tepeler -->
+  <path d="M0 430 Q150 380 320 415 T640 400 T800 430 V600 H0 Z" fill="url(#tepe)" opacity="0.85"/>
+  <path d="M0 480 Q220 440 430 470 T800 475 V600 H0 Z" fill="#1d3237"/>
+
+  <!-- dal -->
+  <path d="M60 300 Q300 340 560 300 Q660 288 780 268" fill="none" stroke="#5a4633" stroke-width="10" stroke-linecap="round"/>
+  <path d="M330 322 Q360 300 400 250" fill="none" stroke="#5a4633" stroke-width="5" stroke-linecap="round"/>
+  <path d="M470 314 Q500 296 548 260" fill="none" stroke="#5a4633" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- kuş: gövde, kanat, baş, gaga, kuyruk, bacak -->
+  <g>
+    <path d="M300 300 V318 M318 300 V320" stroke="#2a211a" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="312" cy="278" rx="42" ry="30" fill="#33484c"/>
+    <path d="M300 268 q34 20 62 6 q-18 30 -60 22 z" fill="#243639"/>
+    <circle cx="352" cy="252" r="19" fill="#3a5054"/>
+    <path d="M368 249 l26 6 l-26 8 z" fill="#c98a3e"/>
+    <path d="M272 282 L214 300 L276 300 Z" fill="#2c4145"/>
+    <ellipse cx="330" cy="286" rx="26" ry="18" fill="#b5533a"/>
+    <circle cx="355" cy="248" r="2.6" fill="#efe6d2"/>
+  </g>
+
+  <rect width="800" height="600" filter="url(#grain)" opacity="0.5"/>
+</svg>
