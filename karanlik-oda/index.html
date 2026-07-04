@@ -52,7 +52,10 @@
   .score b{color:var(--red); font-size:22px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
 
   /* ---- PANO: fotoğraf kağıdı estetiği ---- */
-  .board{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,230px) minmax(0,230px); gap:16px; align-items:start;}
+  .board{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,480px); gap:16px; align-items:start;}
+  .board-side{display:flex; flex-direction:column; gap:16px; min-width:0;}
+  .side-tiles{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .board-side .chips{margin-top:0;}
   .tile{
     position:relative; border-radius:var(--radius); overflow:hidden;
     background:#000; border:5px solid var(--paper);
@@ -98,7 +101,6 @@
 
   @media(max-width:860px){
     .board{grid-template-columns:1fr;}
-    .tile-poster, .tile-cast{max-width:320px; margin:0 auto; width:100%;}
   }
 
   .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;}
@@ -196,18 +198,22 @@
         </div>
       </div>
 
-      <div class="tile tile-poster">
-        <span class="tag">Poster</span>
-        <canvas id="posterCanvas" width="10" height="15"></canvas>
-      </div>
+      <div class="board-side">
+        <div class="side-tiles">
+          <div class="tile tile-poster">
+            <span class="tag">Poster</span>
+            <canvas id="posterCanvas" width="10" height="15"></canvas>
+          </div>
 
-      <div class="tile tile-cast">
-        <span class="tag">Ortak Kadro</span>
-        <div class="cast-list" id="castList"></div>
+          <div class="tile tile-cast">
+            <span class="tag">Ortak Kadro</span>
+            <div class="cast-list" id="castList"></div>
+          </div>
+        </div>
+
+        <div class="chips" id="infoChips"></div>
       </div>
     </div>
-
-    <div class="chips" id="infoChips"></div>
 
     <div class="lb-strip" id="lbStrip" style="display:none">
       <span class="lb-tag">Letterboxd</span>
