@@ -106,6 +106,20 @@
   .reveal .t{font-family:"Special Elite",cursive; font-size:18px;}
   .share-row{margin-top:12px;}
 
+  /* ---- Letterboxd şeridi ---- */
+  .lb-strip{margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px;
+    border:1px solid var(--border); border-radius:var(--radius);
+    background:linear-gradient(var(--card), var(--bg2)); padding:12px 16px;}
+  .lb-strip .lb-tag{font-family:"Special Elite",cursive; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);}
+  .lb-rating{display:flex; align-items:baseline; gap:8px;}
+  .lb-rating .stars{color:#00c853; font-size:16px; letter-spacing:1px;}
+  .lb-rating .num{font-family:"Special Elite",cursive; font-size:18px; color:var(--paper);}
+  .lb-rating .votes{font-size:12px; color:var(--muted);}
+  .lb-locked{color:#4a423c; font-style:italic; font-size:13px;}
+  .lb-review{flex-basis:100%; margin:0; font-style:italic; color:var(--paper-dim); font-size:14px; line-height:1.5; border-left:2px solid var(--red); padding-left:12px;}
+  .lb-reveal{margin-top:14px; font-size:14px; color:var(--paper-dim);}
+  .lb-reveal b{color:#00c853; font-family:"Special Elite",cursive; font-weight:400;}
+
   .loading{padding:80px 0; text-align:center; color:var(--muted); font-size:15px; font-family:"Special Elite",cursive;}
   footer{margin-top:52px; text-align:center; font-size:11px; color:#4a423c;}
   footer a{color:var(--muted);}
@@ -161,6 +175,12 @@
 
     <div class="chips" id="infoChips"></div>
 
+    <div class="lb-strip" id="lbStrip" style="display:none">
+      <span class="lb-tag">Letterboxd</span>
+      <div class="lb-rating" id="lbRating"></div>
+      <p class="lb-review" id="lbReview"></p>
+    </div>
+
     <div class="guess">
       <div class="ac-list" id="acList"></div>
       <div class="guess-row">
@@ -173,7 +193,7 @@
     <div class="feedback" id="feedback"></div>
   </div>
 
-  <footer>Veri kaynağı: <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>. Bu ürün TMDB tarafından onaylanmamış veya desteklenmemiştir.</footer>
+  <footer>Veri: <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a> · puan ve yorumlar <a href="https://letterboxd.com" target="_blank" rel="noopener">Letterboxd</a>. Bu ürün TMDB veya Letterboxd tarafından onaylanmamış ya da desteklenmemiştir.</footer>
 </div>
 
 <script src="puzzles.js"></script>
@@ -185,6 +205,33 @@ const EPOCH = new Date("2026-07-02T00:00:00"); // 1. günün tarihi
 
 let G = null;
 const $ = id => document.getElementById(id);
+
+// ---- Letterboxd yardımcıları ------------------------------------------------
+function fmtVotes(n){
+  if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,"") + "M";
+  if (n >= 1e3) return Math.round(n/1e3) + "K";
+  return "" + n;
+}
+function lbStars(r){
+  const q = Math.round(r*2)/2, full = Math.floor(q), half = q - full >= 0.5;
+  return "★".repeat(full) + (half ? "½" : "") || "☆";
+}
+const _norm = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const _tok = s => _norm(s).split(/[^a-z0-9]+/).filter(w => w.length > 3);
+// Film adı / oyuncu / benzer film adı geçmeyen ilk yorumu seç (spoiler filtresi)
+function safeReview(F){
+  const lb = F.lb;
+  if (!lb || !lb.reviews || !lb.reviews.length) return null;
+  const bad = new Set();
+  [F.title, F.ot].forEach(t => _tok(t).forEach(w => bad.add(w)));
+  (F.ac || []).forEach(a => _tok(a.n).forEach(w => bad.add(w)));
+  (F.si || []).forEach(x => _tok(x.t).forEach(w => bad.add(w)));
+  for (const rv of lb.reviews){
+    const ws = _tok(rv);
+    if (ws.length >= 4 && !ws.some(w => bad.has(w))) return rv;
+  }
+  return null;
+}
 
 function todayIndex() {
   const days = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
@@ -239,6 +286,33 @@ function renderStep() {
     i <= s ? `<div class="chip">${k}: <b>${v}</b></div>`
            : `<div class="chip locked">${k}: Banyo ${i+1}</div>`).join("");
 
+  // ---- Letterboxd: puan Banyo 3'te (adım 2), yorum Banyo 4'te (adım 3) açılır ----
+  const lb = F.lb, rev = safeReview(F), strip = $("lbStrip");
+  if (!lb || (lb.rating == null && !rev)) {
+    strip.style.display = "none";
+  } else {
+    strip.style.display = "flex";
+    const rEl = $("lbRating");
+    if (lb.rating != null) {
+      rEl.style.display = "";
+      if (s >= 2) {
+        rEl.className = "lb-rating";
+        rEl.innerHTML = `<span class="stars">${lbStars(lb.rating)}</span>`
+          + `<span class="num">${(+lb.rating).toFixed(1)}</span>`
+          + (lb.votes ? `<span class="votes">${fmtVotes(lb.votes)} oy</span>` : "");
+      } else {
+        rEl.className = "lb-locked";
+        rEl.textContent = "★ puan — Banyo 3";
+      }
+    } else rEl.style.display = "none";
+    const qEl = $("lbReview");
+    if (rev) {
+      qEl.style.display = "";
+      if (s >= 3) { qEl.className = "lb-review"; qEl.textContent = "“" + rev + "”"; }
+      else { qEl.className = "lb-review lb-locked"; qEl.textContent = "bir Letterboxd yorumu — Banyo 4"; }
+    } else qEl.style.display = "none";
+  }
+
   $("feedback").className = "feedback";
   $("guessInput").value = ""; G.selected = null; $("guessBtn").disabled = true;
   hideAc();
@@ -253,10 +327,14 @@ function shareText(won) {
 function endGame(won) {
   const fb = $("feedback");
   fb.className = "feedback " + (won ? "good" : "bad");
+  const lb = G.film.lb;
+  const lbRev = safeReview(G.film) || (lb && lb.reviews && lb.reviews[0]) || "";
+  const lbHtml = lb ? `<div class="lb-reveal">Letterboxd <b>${lb.rating != null ? (+lb.rating).toFixed(1) + "★" : "—"}</b>${lb.votes ? " · " + fmtVotes(lb.votes) + " oy" : ""}${lbRev ? `<div class="lb-review" style="margin-top:6px; border-color:#00c853">“${lbRev}”</div>` : ""}</div>` : "";
   fb.innerHTML = (won
     ? `<b>Bildin! +${SCORES[G.step]} puan.</b> Fotoğraf banyodan çıktı:`
     : `<b>Banyo bitti.</b> Filmimiz:`) +
     `<div class="reveal"><img src="${IMG}w154${G.film.fp}" alt="${G.film.title} posteri"><div class="t">${G.film.title}${G.film.ot && G.film.ot !== G.film.title ? " · " + G.film.ot : ""}</div></div>` +
+    lbHtml +
     `<div class="share-row"><button class="btn ghost" id="shareBtn">Sonucu Kopyala</button></div>`;
   $("shareBtn").addEventListener("click", () => {
     navigator.clipboard.writeText(shareText(won)).then(() => { $("shareBtn").textContent = "Kopyalandı!"; });
