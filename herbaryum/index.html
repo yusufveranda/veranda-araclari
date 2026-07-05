@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gunduz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Herbaryum — günün bitki bulmacası</title>
+<meta name="description" content="Günün botanik bulmacası: 16 bitkiyi 4 gizli öbeğe ayır. Akıl yürüt, ele, hepsini doğru öbeğe yerleştir.">
+<meta name="theme-color" content="#33614a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f3eee0'/%3E%3Cg%3E%3Crect x='12' y='12' width='17' height='17' rx='3' fill='%23c19a3e'/%3E%3Crect x='35' y='12' width='17' height='17' rx='3' fill='%235a8f5a'/%3E%3Crect x='12' y='35' width='17' height='17' rx='3' fill='%233a7f8c'/%3E%3Crect x='35' y='35' width='17' height='17' rx='3' fill='%238f6699'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{
+  --kagit:#f3eee0; --kagit-2:#ece4d2; --kart:#fbf8ef;
+  --murekkep:#283027; --soluk:#6f7365; --cizgi:#d8cfba;
+  --yesil:#33614a; --yesil-koyu:#244635; --yesil-soft:rgba(51,97,74,.10);
+  --toprak:#a4673a; --vurgu:#b5462b;
+  --golge:rgba(40,33,22,.16); --golge-sert:rgba(28,21,12,.22);
+  --etiket:#fffdf6;
+  /* öbek renkleri (mat) */
+  --g-sari:#c19a3e; --g-yesil:#5a8f5a; --g-mavi:#3a7f8c; --g-mor:#8f6699;
+}
+[data-tema="gece"]{
+  --kagit:#161b16; --kagit-2:#1d231d; --kart:#222a22; --murekkep:#e9e3d2; --soluk:#9aa28e;
+  --cizgi:#33402d; --yesil:#83bd94; --yesil-koyu:#a9dbb6; --yesil-soft:rgba(131,189,148,.13);
+  --toprak:#d09c6d; --vurgu:#e0714e;
+  --golge:rgba(0,0,0,.5); --golge-sert:rgba(0,0,0,.6);
+  --etiket:#222a22;
+  --g-sari:#c9a94e; --g-yesil:#6fa96f; --g-mavi:#4f97a4; --g-mor:#a37bb0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--kagit);color:var(--murekkep);
+  font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55;
+  min-height:100vh;-webkit-tap-highlight-color:transparent;transition:background .4s,color .4s}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:url(../gorsel/doku.jpg) center/cover;opacity:.10;mix-blend-mode:soft-light}
+[data-tema="gece"] body::before{opacity:.16}
+a{color:var(--yesil-koyu)}
+i,em,.la{font-style:italic}
+button{font:inherit;cursor:pointer;color:inherit}
+img{display:block}
+
+.sarmal{width:min(920px,94vw);margin:0 auto;padding:18px 0 90px}
+.ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:6px}
+.eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;
+  text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;
+  box-shadow:2px 3px 0 var(--golge);font-family:Georgia,serif}
+.eve-don:hover{transform:translateY(-1px)}
+.eve-don::before{content:"";width:11px;height:11px;border-radius:50%;background:#f6efe0;flex:none}
+.ust-sag{margin-left:auto;display:flex;gap:8px}
+.ikonbtn{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:6px 14px;font-size:13.5px;color:var(--soluk);text-decoration:none}
+.ikonbtn:hover{border-color:var(--yesil);color:var(--yesil)}
+
+.marka{margin:22px 0 6px;display:flex;align-items:flex-end;gap:15px;flex-wrap:wrap}
+.marka .amblem{width:50px;height:50px;flex:none;border-radius:10px}
+.marka h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(30px,4.4vw,44px);
+  line-height:1;letter-spacing:-.5px;color:var(--yesil-koyu)}
+.marka .tag{color:var(--soluk);font-style:italic;font-family:'Libre Baskerville',Georgia,serif;font-size:15px;padding-bottom:5px}
+.gun-no{margin-left:auto;text-align:right;font-family:'Libre Baskerville',serif;color:var(--soluk);font-size:13px;padding-bottom:4px}
+.gun-no b{display:block;font-family:'Playfair Display',serif;font-size:22px;color:var(--yesil-koyu)}
+
+.oyun-bas{margin:18px 0 20px;font-family:'Libre Baskerville',serif;font-style:italic;color:var(--soluk);font-size:15.5px;max-width:64ch}
+
+/* çözülen bantlar */
+.bantlar{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.bant{border-radius:12px;padding:11px 15px;color:#fff9ec;box-shadow:3px 4px 0 var(--golge);animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.bant .bant-bas{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;letter-spacing:.02em}
+.bant .bant-uye{font-size:13.5px;opacity:.95;margin-top:2px;font-family:'Libre Baskerville',serif}
+.bant .bant-not{font-size:12.5px;opacity:.9;margin-top:5px;font-style:italic;border-top:1px solid rgba(255,255,255,.25);padding-top:5px}
+
+/* ızgara */
+.izgara{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:8px}
+.hucre{position:relative;aspect-ratio:1/1;border-radius:11px;overflow:hidden;border:2px solid var(--cizgi);
+  background:var(--kagit-2);cursor:pointer;box-shadow:2px 3px 0 var(--golge);transition:transform .1s,border-color .12s,box-shadow .12s}
+.hucre img{width:100%;height:100%;object-fit:cover;transition:filter .15s}
+.hucre .ad{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(18,24,20,.86) 55%);
+  color:#f6efe0;font-family:'Libre Baskerville',serif;font-size:12px;line-height:1.2;padding:16px 6px 6px;text-align:center}
+.hucre:hover{border-color:var(--yesil)}
+.hucre.secili{border-color:var(--vurgu);transform:translateY(-3px);box-shadow:3px 6px 0 var(--golge-sert)}
+.hucre.secili img{filter:brightness(.82) saturate(1.05)}
+.hucre.secili::after{content:"✓";position:absolute;top:6px;right:7px;width:22px;height:22px;border-radius:50%;
+  background:var(--vurgu);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:1px 1px 0 var(--golge)}
+.hucre.sars{animation:sars .4s}
+@keyframes sars{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+@media(max-width:560px){.hucre .ad{font-size:10.5px;padding:14px 3px 5px}}
+
+/* kontrol */
+.alt{display:flex;align-items:center;gap:14px;margin-top:20px;flex-wrap:wrap}
+.canlar{display:flex;align-items:center;gap:9px;font-family:'Libre Baskerville',serif;color:var(--soluk);font-size:14px}
+.canlar .noktalar{display:flex;gap:5px}
+.canlar .nk{width:13px;height:13px;border-radius:50%;background:var(--toprak);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.canlar .nk.bos{background:none;border:1.5px solid var(--cizgi)}
+.alt-btnlar{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
+.mini{background:var(--kart);border:1.5px solid var(--cizgi);border-radius:22px;padding:9px 18px;font-size:14px;color:var(--soluk)}
+.mini:hover:not(:disabled){border-color:var(--yesil);color:var(--yesil)}
+.mini:disabled{opacity:.4;cursor:default}
+.btn-ana{background:var(--yesil);color:#f6efe0;border:none;border-radius:22px;padding:10px 26px;font-size:15.5px;
+  box-shadow:2px 3px 0 var(--golge);font-family:'Playfair Display',serif}
+.btn-ana:hover:not(:disabled){transform:translateY(-1px)}
+.btn-ana:disabled{opacity:.4;cursor:default}
+
+/* sonuç */
+.sonuc{margin-top:26px;background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:20px 22px;
+  box-shadow:4px 6px 0 var(--golge);display:none;animation:pop .35s ease}
+.sonuc.ac{display:block}
+.sonuc h2{font-family:'Playfair Display',serif;font-size:23px;color:var(--yesil-koyu);margin-bottom:4px}
+.sonuc .ozet{color:var(--soluk);font-style:italic;margin-bottom:14px}
+.sonuc-alt{display:flex;gap:14px;margin-top:6px;align-items:center;flex-wrap:wrap}
+.paylas{background:var(--vurgu);color:#f6efe0;border:none;border-radius:22px;padding:10px 24px;font-size:15px;box-shadow:2px 3px 0 var(--golge)}
+.paylas:hover{transform:translateY(-1px)}
+.link-btn{color:var(--yesil-koyu);text-decoration:none;font-size:14.5px;border-bottom:1px solid currentColor;padding-bottom:1px}
+
+footer{margin-top:56px;border-top:1px solid var(--cizgi);padding-top:16px;color:var(--soluk);font-size:12.5px;text-align:center;line-height:1.7}
+footer a{color:var(--soluk)}
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);z-index:100;
+  background:#244635;color:#f6efe0;padding:12px 24px;border-radius:24px;font-size:15.5px;font-family:'Playfair Display',serif;
+  box-shadow:3px 5px 0 var(--golge-sert);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+#toast.goster{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="sarmal">
+
+  <div class="ust">
+    <a class="eve-don" href="../">veranda</a>
+    <div class="ust-sag">
+      <a class="ikonbtn" href="../bitki/#oyunlar">← oyunlar</a>
+      <a class="ikonbtn" href="../bitki/">bitki bilimi</a>
+      <button class="ikonbtn" id="temaBtn" type="button">gece</button>
+    </div>
+  </div>
+
+  <header class="marka">
+    <svg class="amblem" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="10" y="10" width="18" height="18" rx="3" fill="var(--g-sari)"/>
+      <rect x="36" y="10" width="18" height="18" rx="3" fill="var(--g-yesil)"/>
+      <rect x="10" y="36" width="18" height="18" rx="3" fill="var(--g-mavi)"/>
+      <rect x="36" y="36" width="18" height="18" rx="3" fill="var(--g-mor)"/>
+    </svg>
+    <div>
+      <h1>Herbaryum</h1>
+      <div class="tag">günün botanik bulmacası — bitkiler</div>
+    </div>
+    <div class="gun-no">bugün<b id="gunNo">#1</b></div>
+  </header>
+
+  <p class="oyun-bas">16 bitki, 4 gizli öbek. En çok <b>4 bitki</b> seç, aynı öbekten olduğunu düşündüklerini <b>gönder</b>. Akıl yürüt, ele — hepsini doğru öbeğe yerleştir. <b>4 hata</b> hakkın var.</p>
+
+  <div class="bantlar" id="bantlar"></div>
+  <div class="izgara" id="izgara"></div>
+
+  <div class="alt">
+    <div class="canlar">kalan hak: <span class="noktalar" id="noktalar"></span></div>
+    <div class="alt-btnlar">
+      <button class="mini" id="karistirBtn">karıştır</button>
+      <button class="mini" id="temizleBtn">seçimi temizle</button>
+      <button class="btn-ana" id="gonderBtn" disabled>Gönder</button>
+    </div>
+  </div>
+
+  <div class="sonuc" id="sonuc">
+    <h2 id="sonucBas"></h2>
+    <div class="ozet" id="sonucOzet"></div>
+    <div class="sonuc-alt">
+      <button class="paylas" id="paylasBtn">sonucu kopyala</button>
+      <a class="link-btn" href="../bitki/">bitkileri ansiklopedide incele →</a>
+    </div>
+  </div>
+
+  <footer>
+    <div>Herbaryum · veranda — günün bitki bulmacası (prototip)</div>
+    <div style="margin-top:6px">görseller <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> (CC) · adlar ve taksonomi <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a></div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ---------- günün bulmacası (elle) ---------- */
+const BITKILER = {
+  elma:{tr:"Elma",la:"Malus domestica",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Malus_domestica_%28Api_%C3%89toil%C3%A9%29.jpg/1280px-Malus_domestica_%28Api_%C3%89toil%C3%A9%29.jpg"},
+  kiraz:{tr:"Kiraz",la:"Prunus avium",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/20160922Prunus_avium1.jpg/1280px-20160922Prunus_avium1.jpg"},
+  incir:{tr:"İncir",la:"Ficus carica",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/11-Figuier-Ficus_carica.jpg/1280px-11-Figuier-Ficus_carica.jpg"},
+  nar:{tr:"Nar",la:"Punica granatum",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Grenade%2C_fruit_et_fleur.jpg/1280px-Grenade%2C_fruit_et_fleur.jpg"},
+  lale:{tr:"Lale",la:"Tulipa gesneriana",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Liliales_-_Tulipa_gesneriana_-_1.jpg/1280px-Liliales_-_Tulipa_gesneriana_-_1.jpg"},
+  gul:{tr:"Gül",la:"Rosa × hybrida",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Rosa_Hybrida.JPG/1280px-Rosa_Hybrida.JPG"},
+  papatya:{tr:"Papatya",la:"Bellis perennis",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Bellis_perennis_-_flowers_%2818121840284%29.jpg/1280px-Bellis_perennis_-_flowers_%2818121840284%29.jpg"},
+  nergis:{tr:"Nergis",la:"Narcissus tazetta",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Flower_of_Narcissus_tazetta_at_Nagai_Park%2C_January_2024_-_1356_-_Crop.jpg/1280px-Flower_of_Narcissus_tazetta_at_Nagai_Park%2C_January_2024_-_1356_-_Crop.jpg"},
+  sedir:{tr:"Sedir",la:"Cedrus libani",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Cedrus_libani_20150905a.jpg/1280px-Cedrus_libani_20150905a.jpg"},
+  servi:{tr:"Servi",la:"Cupressus sempervirens",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Cupressus_sempervirens_in_Lefka_Ori.JPG/1280px-Cupressus_sempervirens_in_Lefka_Ori.JPG"},
+  "fistik-cami":{tr:"Fıstık çamı",la:"Pinus pinea",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Pinus_pinea_Costa_Sancti_Petri.jpg/1280px-Pinus_pinea_Costa_Sancti_Petri.jpg"},
+  ginkgo:{tr:"Ginkgo",la:"Ginkgo biloba",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/20240602_Ginkgo_biloba_Mi%C5%82orz%C4%85b_dwuklapowy_Katowice_Panewniki.jpg/1280px-20240602_Ginkgo_biloba_Mi%C5%82orz%C4%85b_dwuklapowy_Katowice_Panewniki.jpg"},
+  asma:{tr:"Asma",la:"Vitis vinifera",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/2011.09.16.121353_Vitis_vinifera_restaurant_Rhodt.jpg/1280px-2011.09.16.121353_Vitis_vinifera_restaurant_Rhodt.jpg"},
+  "mor-salkim":{tr:"Mor salkım",la:"Wisteria sinensis",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Bl%C3%A5regn_-_Chinese_wisteria_-_%28Wisteria_sinensis%29_-_Ystad_-_2025.jpg/1280px-Bl%C3%A5regn_-_Chinese_wisteria_-_%28Wisteria_sinensis%29_-_Ystad_-_2025.jpg"},
+  hanimeli:{tr:"Hanımeli",la:"Lonicera japonica",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Lonicera_japonica_-_flowers%2C_leaves_%2818435965664%29.jpg/1280px-Lonicera_japonica_-_flowers%2C_leaves_%2818435965664%29.jpg"},
+  begonvil:{tr:"Begonvil",la:"Bougainvillea glabra",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/%28Bougainvillea_glabra%29_at_Bakkannapalem.JPG/1280px-%28Bougainvillea_glabra%29_at_Bakkannapalem.JPG"},
+};
+const GRUPLAR = [
+  {key:"meyve",     ad:"Meyve ağaçları",              renk:"var(--g-sari)", emoji:"🟨", not:"Yenen meyvesi için yetiştirilen ağaçlar; bahçenin ve bostanın tanıdıkları.", uyeler:["elma","kiraz","incir","nar"]},
+  {key:"cicek",     ad:"Bahçe çiçekleri",             renk:"var(--g-yesil)",emoji:"🟩", not:"Gösterişli çiçeği için yetiştirilen otsu/soğanlı süs bitkileri; tarhın ve buketin klasikleri.", uyeler:["lale","gul","papatya","nergis"]},
+  {key:"kozalakli", ad:"Kozalaklılar & açık tohumlular", renk:"var(--g-mavi)", emoji:"🟦", not:"Çiçek açmaz; tohumları kozalak ya da etli örtüde açıkta durur. Ginkgo yelpaze yapraklıdır ama çiçekli değildir — kozalaklılarla aynı 'açık tohumlu' gruptandır. Asıl tuzak buydu.", uyeler:["sedir","servi","fistik-cami","ginkgo"]},
+  {key:"tirmanici", ad:"Tırmanıcılar",                renk:"var(--g-mor)",  emoji:"🟪", not:"Kendi başına dik duramaz; sülük, sarılma ya da hava köküyle desteğe tutunup yükselir. Begonvilin renkli 'çiçeği' aslında yaprakçıktır (brakte) — o da bir tırmanıcıdır, çiçek değil.", uyeler:["asma","mor-salkim","hanimeli","begonvil"]},
+];
+const GUN_NO = 1;
+const grubu = id => GRUPLAR.find(g=>g.uyeler.includes(id));
+
+/* durum */
+let sira=[], secili=[], cozulen=[], hatalar=0, gecmis=[], bitti=false;
+const MAX_HATA=4;
+const $=s=>document.querySelector(s);
+
+function seedliSira(){
+  const ids=Object.keys(BITKILER), ord=[], pool=ids.slice(); let s=GUN_NO*131+7;
+  while(pool.length){ s=(s*1103515245+12345)&0x7fffffff; ord.push(pool.splice(s%pool.length,1)[0]); }
+  return ord;
+}
+sira=seedliSira();
+
+function ciz(){
+  $("#gunNo").textContent="#"+GUN_NO;
+  // çözülen bantlar
+  $("#bantlar").innerHTML = cozulen.map(k=>{
+    const g=GRUPLAR.find(x=>x.key===k);
+    const uyeAd=g.uyeler.map(id=>BITKILER[id].tr).join(" · ");
+    return `<div class="bant" style="background:${g.renk}">
+      <div class="bant-bas">${g.ad}</div>
+      <div class="bant-uye">${uyeAd}</div>
+      <div class="bant-not">${g.not}</div></div>`;
+  }).join("");
+  // ızgara (çözülmemişler)
+  const kalan = sira.filter(id=>!cozulen.includes(grubu(id).key));
+  $("#izgara").innerHTML = kalan.map(id=>{
+    const k=BITKILER[id];
+    return `<div class="hucre${secili.includes(id)?' secili':''}" data-id="${id}">
+      <img src="${k.foto}" alt=""><div class="ad">${k.tr}</div></div>`;
+  }).join("");
+  $("#izgara").querySelectorAll(".hucre").forEach(h=>h.onclick=()=>tik(h.dataset.id));
+  // canlar
+  $("#noktalar").innerHTML = Array.from({length:MAX_HATA},(_,i)=>`<span class="nk${i<hatalar?' bos':''}"></span>`).join("");
+  // gönder
+  $("#gonderBtn").disabled = (secili.length!==4 || bitti);
+  $("#karistirBtn").disabled = bitti;
+  $("#temizleBtn").disabled = (secili.length===0 || bitti);
+}
+
+function tik(id){
+  if(bitti) return;
+  const i=secili.indexOf(id);
+  if(i>=0) secili.splice(i,1);
+  else{ if(secili.length>=4){ toast("en fazla 4 bitki seçebilirsin"); return; } secili.push(id); }
+  ciz();
+}
+
+function karistir(){ if(bitti)return; const kalan=sira.filter(id=>!cozulen.includes(grubu(id).key)); for(let i=kalan.length-1;i>0;i--){const j=(i*7+3)%(i+1);[kalan[i],kalan[j]]=[kalan[j],kalan[i]];} const coz=sira.filter(id=>cozulen.includes(grubu(id).key)); sira=coz.concat(kalan); ciz(); }
+
+function gonder(){
+  if(secili.length!==4||bitti) return;
+  gecmis.push(secili.map(id=>grubu(id).key));
+  // sayım
+  const say={}; secili.forEach(id=>{const k=grubu(id).key; say[k]=(say[k]||0)+1;});
+  const enCok=Math.max(...Object.values(say));
+  const dogruGrup=Object.keys(say).find(k=>say[k]===4);
+  if(dogruGrup){
+    cozulen.push(dogruGrup); secili=[];
+    if(cozulen.length===4){ bitti=true; ciz(); bitir(true); return; }
+    toast("öbek doğru! 🌿"); ciz();
+  }else{
+    hatalar++;
+    // sarsıntı
+    const idler=secili.slice();
+    ciz();
+    idler.forEach(id=>{const h=$(`.hucre[data-id="${id}"]`); if(h){h.classList.add("sars"); setTimeout(()=>h.classList.remove("sars"),400);}});
+    if(enCok===3) toast("bir kaldı! üçü aynı öbekten.");
+    else toast("olmadı, tekrar bak.");
+    if(hatalar>=MAX_HATA){ bitti=true; setTimeout(()=>{ // kalan öbekleri aç
+        GRUPLAR.forEach(g=>{ if(!cozulen.includes(g.key)) cozulen.push(g.key); });
+        secili=[]; ciz(); bitir(false);
+      },500);
+    }
+  }
+}
+
+function bitir(kazandi){
+  $("#sonucBas").textContent = kazandi ? "Hepsini yerleştirdin! 🌿" : "Haklar bitti";
+  $("#sonucOzet").textContent = kazandi
+    ? (hatalar===0 ? "Kusursuz — tek hata yok. Off, eledin biçtin, hepsini doğru öbeğe koydun." : `${hatalar} hatayla çözdün. Ginkgo ve begonvil tuzağını gördün mü?`)
+    : "Bu sefer olmadı ama öbekler açıldı — ginkgonun çiçekli değil, begonvilin çiçek değil bir tırmanıcı olduğunu unutma.";
+  $("#sonuc").classList.add("ac");
+  $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+function paylas(){
+  const renkEmoji={meyve:"🟨",cicek:"🟩",kozalakli:"🟦",tirmanici:"🟪"};
+  const kare = gecmis.map(row=>row.map(k=>renkEmoji[k]).join("")).join("\n");
+  const bas = bitti && cozulen.length===4 && hatalar<MAX_HATA ? `${hatalar} hata` : "";
+  const metin = `Herbaryum 🌿 #${GUN_NO}  ${bas}\n${kare}\nverandatools.com/herbaryum`;
+  navigator.clipboard?.writeText(metin).then(()=>toast("sonuç kopyalandı 📋"),()=>toast("kopyalanamadı"));
+}
+
+let toastT;
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("goster");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("goster"),2400);}
+
+const temaBtn=$("#temaBtn");
+function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("herbaryum-tema",t);}
+temaUygula(localStorage.getItem("herbaryum-tema")||"gunduz");
+temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
+
+$("#gonderBtn").onclick=gonder;
+$("#karistirBtn").onclick=karistir;
+$("#temizleBtn").onclick=()=>{secili=[];ciz();};
+$("#paylasBtn").onclick=paylas;
+ciz();
+</script>
+</body>
+</html>
