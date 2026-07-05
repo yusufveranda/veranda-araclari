@@ -164,6 +164,7 @@ footer a{color:var(--soluk)}
     <h2 id="sonucBas"></h2>
     <div class="ozet" id="sonucOzet"></div>
     <div class="sonuc-alt">
+      <button class="paylas" id="baskaBtn" style="background:var(--yesil)">başka bulmaca ↻</button>
       <button class="paylas" id="paylasBtn">sonucu kopyala</button>
       <a class="link-btn" href="../kus/">kuşları ansiklopedide incele →</a>
     </div>
@@ -178,7 +179,7 @@ footer a{color:var(--soluk)}
 
 <script>
 /* ---------- günün bulmacası (elle) ---------- */
-const KUSLAR = {
+let KUSLAR = {
   flamingo:{tr:"Flamingo",la:"Phoenicopterus roseus",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Flamenco_com%C3%BAn_%28Phoenicopterus_roseus%29%2C_parque_nacional_de_Amboseli%2C_Kenia%2C_2024-05-22%2C_DD_20.jpg/1280px-Flamenco_com%C3%BAn_%28Phoenicopterus_roseus%29%2C_parque_nacional_de_Amboseli%2C_Kenia%2C_2024-05-22%2C_DD_20.jpg"},
   leylek:{tr:"Leylek",la:"Ciconia ciconia",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/20150720Ciconia_ciconia.jpg/1280px-20150720Ciconia_ciconia.jpg"},
   "gri-balikcil":{tr:"Gri balıkçıl",la:"Ardea cinerea",foto:"https://upload.wikimedia.org/wikipedia/commons/4/4d/Ardea_cinerea_%28165455223%29.jpg"},
@@ -196,14 +197,25 @@ const KUSLAR = {
   bastankara:{tr:"Büyük baştankara",la:"Parus major",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/A_great_tit_koolmees_parus_major.jpg/1280px-A_great_tit_koolmees_parus_major.jpg"},
   ispinoz:{tr:"İspinoz",la:"Fringilla coelebs",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/20150419_063_Kessel_Weerdbeemden_Vink%2C_Common_Chaffinch%2C_Buchfink%2C_Fringilla_coelebs_%2817014089738%29.jpg/1280px-20150419_063_Kessel_Weerdbeemden_Vink%2C_Common_Chaffinch%2C_Buchfink%2C_Fringilla_coelebs_%2817014089738%29.jpg"},
 };
-const GRUPLAR = [
+let GRUPLAR = [
   {key:"yirtici",  ad:"Yırtıcılar",         renk:"var(--g-sari)", emoji:"🟨", not:"Kancalı gaga, keskin pençe — avını yakalayan avcı kuşlar.", uyeler:["kerkenez","sahin","atmaca","kartal"]},
   {key:"su",       ad:"Su & kıyı kuşları",  renk:"var(--g-yesil)",emoji:"🟩", not:"Sulak alanın kuşları; uzun bacak ya da suya bağlı yaşam.", uyeler:["flamingo","leylek","gri-balikcil","marti"]},
   {key:"otucu",    ad:"Bahçe ötücüleri",    renk:"var(--g-mavi)", emoji:"🟦", not:"Küçük, şehir ve bahçenin tanıdık öten kuşları.", uyeler:["serce","kizilgerdan","bastankara","ispinoz"]},
   {key:"agackakan",ad:"Ağaçkakanlar",       renk:"var(--g-mor)",  emoji:"🟪", not:"Boyunçeviren de bir ağaçkakandır! Kabuk kamuflajı onu ötücü sandırır — asıl tuzak buydu.", uyeler:["agackakan","yesil-agackakan","kucuk-agackakan","boyuncevirin"]},
 ];
-const GUN_NO = 1;
+let GUN_NO = 1;
 const grubu = id => GRUPLAR.find(g=>g.uyeler.includes(id));
+const RENKLER=[{renk:"var(--g-sari)",emoji:"🟨"},{renk:"var(--g-yesil)",emoji:"🟩"},{renk:"var(--g-mavi)",emoji:"🟦"},{renk:"var(--g-mor)",emoji:"🟪"}];
+let BULMACALAR=null, bulmacaNo=0;
+function yukle(){
+  const b=BULMACALAR[bulmacaNo];
+  GRUPLAR=b.gruplar.map((g,i)=>({key:"g"+i,ad:g.ad,not:g.not,renk:RENKLER[i].renk,emoji:RENKLER[i].emoji,uyeler:g.uyeler}));
+  GUN_NO=bulmacaNo+1; secili=[];cozulen=[];hatalar=0;gecmis=[];bitti=false;
+  sira=seedliSira(); $("#sonuc").classList.remove("ac"); ciz();
+}
+function sonrakiBulmaca(){ if(!BULMACALAR)return; bulmacaNo=(bulmacaNo+1)%BULMACALAR.length; yukle(); window.scrollTo({top:0,behavior:"smooth"}); }
+Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulmacalar.json").then(r=>r.json())])
+  .then(([b,p])=>{ KUSLAR=b; BULMACALAR=p; bulmacaNo=Math.floor(Date.now()/864e5)%p.length; yukle(); }).catch(()=>{});
 
 /* durum */
 let sira=[], secili=[], cozulen=[], hatalar=0, gecmis=[], bitti=false;
@@ -211,7 +223,7 @@ const MAX_HATA=4;
 const $=s=>document.querySelector(s);
 
 function seedliSira(){
-  const ids=Object.keys(KUSLAR), ord=[], pool=ids.slice(); let s=GUN_NO*131+7;
+  const ids=GRUPLAR.flatMap(g=>g.uyeler), ord=[], pool=ids.slice(); let s=GUN_NO*131+7;
   while(pool.length){ s=(s*1103515245+12345)&0x7fffffff; ord.push(pool.splice(s%pool.length,1)[0]); }
   return ord;
 }
@@ -256,7 +268,10 @@ function karistir(){ if(bitti)return; const kalan=sira.filter(id=>!cozulen.inclu
 
 function gonder(){
   if(secili.length!==4||bitti) return;
-  gecmis.push(secili.map(id=>grubu(id).key));
+  // aynı dörtlüyü tekrar gönderme → boşa hak yakma
+  const imza=secili.slice().sort().join('|');
+  if(gecmis.some(g=>g._imza===imza)){ toast("bu dörtlüyü zaten denedin"); return; }
+  const kayit=secili.map(id=>grubu(id).key); kayit._imza=imza; gecmis.push(kayit);
   // sayım
   const say={}; secili.forEach(id=>{const k=grubu(id).key; say[k]=(say[k]||0)+1;});
   const enCok=Math.max(...Object.values(say));
@@ -284,14 +299,14 @@ function gonder(){
 function bitir(kazandi){
   $("#sonucBas").textContent = kazandi ? "Hepsini yerleştirdin! 🪶" : "Haklar bitti";
   $("#sonucOzet").textContent = kazandi
-    ? (hatalar===0 ? "Kusursuz — tek hata yok. Off, eledin biçtin, hepsini doğru öbeğe koydun." : `${hatalar} hatayla çözdün. Ağaçkakan tuzağını gördün mü?`)
-    : "Bu sefer olmadı ama öbekler açıldı — Boyunçeviren'in aslında ağaçkakan olduğunu unutma.";
+    ? (hatalar===0 ? "Kusursuz — tek hata yok. Off, eledin biçtin, hepsini doğru öbeğe koydun." : `${hatalar} hatayla çözdün.`)
+    : "Bu sefer olmadı — öbekler açıldı. Aşağıdan başka bulmacaya geç.";
   $("#sonuc").classList.add("ac");
   $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
 function paylas(){
-  const renkEmoji={yirtici:"🟨",su:"🟩",otucu:"🟦",agackakan:"🟪"};
+  const renkEmoji={}; GRUPLAR.forEach(g=>renkEmoji[g.key]=g.emoji);
   const kare = gecmis.map(row=>row.map(k=>renkEmoji[k]).join("")).join("\n");
   const bas = bitti && cozulen.length===4 && hatalar<MAX_HATA ? `${hatalar} hata` : "";
   const metin = `Kuş Yuvası 🪶 #${GUN_NO}  ${bas}\n${kare}\nverandatools.com/kus-yuvasi`;
@@ -310,6 +325,7 @@ $("#gonderBtn").onclick=gonder;
 $("#karistirBtn").onclick=karistir;
 $("#temizleBtn").onclick=()=>{secili=[];ciz();};
 $("#paylasBtn").onclick=paylas;
+$("#baskaBtn").onclick=sonrakiBulmaca;
 ciz();
 </script>
 </body>

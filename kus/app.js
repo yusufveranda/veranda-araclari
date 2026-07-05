@@ -200,9 +200,6 @@
       { ad: 'Eş', url: '../es/',
         ozet: '8 kuşu adıyla eşle. Bazıları birbirine çok benzer — iyi bak, kandırır. 3 hakkın var.',
         amblem: '<svg viewBox="0 0 64 64"><circle cx="26" cy="32" r="15" fill="none" stroke="var(--yesil)" stroke-width="5"/><circle cx="40" cy="32" r="15" fill="none" stroke="var(--vurgu)" stroke-width="5"/></svg>' },
-      { ad: 'Kuş Evi', url: '../kus-evi/',
-        ozet: 'Bugün kuş evine kim taşındı? İpuçlarını eleyerek tek kuşu bul — dedektiflik.',
-        amblem: '<svg viewBox="0 0 64 64"><path d="M32 7 L55 27 H9 Z" fill="var(--toprak)"/><rect x="15" y="27" width="34" height="30" rx="2" fill="#cbb488"/><circle cx="32" cy="39" r="7.5" fill="#2c2016"/><rect x="29.5" y="46" width="5" height="11" rx="2.5" fill="#2c2016"/></svg>' },
     ];
     ekran.innerHTML =
       '<div class="oyun-ust"><p>Günlük kuş oyunları — her gün yenilenir, tür bilmeni gerektirmez. Oyna, tanı.</p></div>' +
@@ -258,6 +255,7 @@
   }
 
   function quizGoster() {
+    ekran.dataset.cevaplandi = '0';                   // her yeni soruda kilidi aç (sekme dönüşü dahil)
     const havuz = veri().filter(t => quizFotolari(t).length);
     if (!havuz.length) { ekran.innerHTML = `<p class="bos-uyari">Henüz görselli tür yok.</p>`; return; }
     quizHedef = quizSec();
@@ -286,7 +284,7 @@
       </div>
       <div class="quiz-ayar">
         <button class="zor-btn${zorMod ? ' acik' : ''}" id="zorBtn" type="button">🔥 Zor mod${zorMod ? ' · açık' : ''}</button>
-        <span class="zor-ipucu">${zorMod ? 'yaprak · kabuk · meyve gibi zor açılardan da sorar' : 'en tanınır fotoğraflar — zor modda tüm açılar gelir'}</span>
+        <span class="zor-ipucu">${zorMod ? 'uçuş · portre · dişi · genç gibi zor açılardan da sorar' : 'en tanınır fotoğraflar — zor modda tüm açılar gelir'}</span>
       </div>
       <div class="cipler" id="quizKat"></div>
       <div class="quiz-duzen">
@@ -433,12 +431,12 @@
     ansiklopediListe();
   }
   function ansiklopediListe() {
-    const q = ansAra.toLowerCase().trim();
+    const q = ansAra.toLocaleLowerCase('tr').trim();
     const list = veri().filter(t => {
       if (ansKat === '__yildiz__') { if (!YILDIZ.has(t.id)) return false; }
       else if (ansKat && t.kategori !== ansKat) return false;
       if (!q) return true;
-      const hay = [t.ad.tr, t.ad.en, t.ad.la, t.taksonomi && t.taksonomi.familya, ...(t.tr_alt || [])].join(' ').toLowerCase();
+      const hay = [t.ad.tr, t.ad.en, t.ad.la, t.taksonomi && t.taksonomi.familya, ...(t.tr_alt || [])].join(' ').toLocaleLowerCase('tr');
       return hay.includes(q);
     }).sort((a, b) => a.ad.tr.localeCompare(b.ad.tr, 'tr'));
     const kutu = document.getElementById('ansListe');
@@ -542,8 +540,8 @@
             <div id="detaySoru"></div></div>` : ''}
 
           <div class="kaynak-satir">
-            ${(t.kaynaklar && t.kaynaklar.wikipedia_tr) ? `<a href="${wikiUrl('tr', t.kaynaklar.wikipedia_tr)}" target="_blank" rel="noopener">Vikipedi ↗</a>` : ''}
-            ${(t.kaynaklar && t.kaynaklar.wikipedia_en) ? `<a href="${wikiUrl('en', t.kaynaklar.wikipedia_en)}" target="_blank" rel="noopener">Wikipedia (EN) ↗</a>` : ''}
+            ${(t.kaynaklar && t.kaynaklar.wikipedia_tr) ? `<a href="${esc(wikiUrl('tr', t.kaynaklar.wikipedia_tr))}" target="_blank" rel="noopener">Vikipedi ↗</a>` : ''}
+            ${(t.kaynaklar && t.kaynaklar.wikipedia_en) ? `<a href="${esc(wikiUrl('en', t.kaynaklar.wikipedia_en))}" target="_blank" rel="noopener">Wikipedia (EN) ↗</a>` : ''}
             ${t.kaynaklar && t.kaynaklar.inat ? `<a href="https://www.inaturalist.org/taxa/${esc(t.kaynaklar.inat)}" target="_blank" rel="noopener">iNaturalist ↗</a>` : ''}
             <a href="#tani">bu kuşu quizde gör →</a>
           </div>
@@ -702,7 +700,7 @@
 
   /* ===================== BAŞLAT ===================== */
   fetch('data/kuslar.json?v=' + BUILD)
-    .then(r => r.json())
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(j => {
       DATA = (Array.isArray(j) ? j : (j.turler || [])).filter(t => t && t.ad && t.ad.la && t.ad.tr);
       DATA.forEach(t => byId[t.id] = t);

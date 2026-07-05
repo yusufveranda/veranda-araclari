@@ -170,7 +170,7 @@ footer a{color:var(--soluk)}
     </div>
 
     <aside class="yan">
-      <div class="havuz-bas">◈ eşlenenler <span class="sc" id="sayac">0/7</span></div>
+      <div class="havuz-bas">◈ eşlenenler <span class="sc" id="sayac">0/8</span></div>
       <div class="eslenen-liste" id="eslenenListe"></div>
       <div class="hata-not" id="hataNot">hata: <b>0</b></div>
     </aside>
@@ -181,6 +181,7 @@ footer a{color:var(--soluk)}
     <div class="ozet" id="sonucOzet"></div>
     <div class="reveal" id="reveal"></div>
     <div class="sonuc-alt">
+      <button class="paylas" id="baskaBtn" style="background:var(--yesil)">başka bulmaca ↻</button>
       <button class="paylas" id="paylasBtn">sonucu kopyala</button>
       <a class="link-btn" href="../kus/">kuşları ansiklopedide incele →</a>
     </div>
@@ -194,7 +195,7 @@ footer a{color:var(--soluk)}
 <div id="toast"></div>
 
 <script>
-const KUSLAR={
+let KUSLAR={
   serce:{tr:"Serçe",la:"Passer domesticus",foto:"https://upload.wikimedia.org/wikipedia/commons/b/bd/Gr%C3%A5sparv_-_%28Passer_domesticus%29_-_Ystad-2025.jpg",tuzak:true,ayirt:"Yanağı SADE, leke yok. Erkekte siyah göğüs önlüğü, kastanyel ense."},
   "agac-sercesi":{tr:"Ağaç serçesi",la:"Passer montanus",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/%28The_underrated_beauty_of%29_Eurasian_tree_sparrow%2C_Passer_montanus%2C_Pilfink.jpg/1280px-%28The_underrated_beauty_of%29_Eurasian_tree_sparrow%2C_Passer_montanus%2C_Pilfink.jpg",tuzak:true,ayirt:"Yanağın ortasında belirgin SİYAH leke + tamamen kahve tepe — serçeden en kesin farkı."},
   "ak-balikcil":{tr:"Küçük ak balıkçıl",la:"Egretta garzetta",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Aigrette_garzette_Egretta_garzetta_%2850075623392%29.jpg/1280px-Aigrette_garzette_Egretta_garzetta_%2850075623392%29.jpg",tuzak:true,ayirt:"SİYAH gaga + parlak sarı ayak parmakları; büyük ak balıkçıldan daha küçük ve zarif."},
@@ -204,15 +205,27 @@ const KUSLAR={
   kizilgerdan:{tr:"Kızılgerdan",la:"Erithacus rubecula",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Crvenda%C4%87%2C_mu%C5%BEjak_%28Erithacus_rubecula%29%3B_European_Robin_male.jpg/1280px-Crvenda%C4%87%2C_mu%C5%BEjak_%28Erithacus_rubecula%29%3B_European_Robin_male.jpg",tuzak:false,ayirt:"Turuncu-kızıl yüz ve göğüs; tombul silüet, dik duruş."},
   saka:{tr:"Saka",la:"Carduelis carduelis",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Carduelis_carduelis_%2813976243888%29.jpg/1280px-Carduelis_carduelis_%2813976243888%29.jpg",tuzak:false,ayirt:"Kırmızı yüz maskesi, beyaz yanak, siyah-sarı çizgili kanat — karışması imkânsız."},
 };
-const GUN_NO=1;
-const IDS=Object.keys(KUSLAR);
+let GUN_NO=1;
+let IDS=Object.keys(KUSLAR);
 const MAX_HAK=3;
+let TUZAK=new Set(["serce","agac-sercesi","ak-balikcil","buyuk-ak-balikcil"]);
+let BULMACALAR=null, bulmacaNo=0;
 
 let secKus=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false;
 const $=s=>document.querySelector(s);
 function seedli(arr,tohum){const a=arr.slice(),o=[];let s=tohum;while(a.length){s=(s*1103515245+12345)&0x7fffffff;o.push(a.splice(s%a.length,1)[0]);}return o;}
-const kusSira=seedli(IDS,GUN_NO*53+11);
-const adSira=seedli(IDS,GUN_NO*29+5);
+let kusSira=seedli(IDS,GUN_NO*53+11);
+let adSira=seedli(IDS,GUN_NO*29+5);
+function yukle(){
+  const b=BULMACALAR[bulmacaNo];
+  IDS=b.kuslar.slice(); TUZAK=new Set(b.tuzaklar); GUN_NO=bulmacaNo+1;
+  kusSira=seedli(IDS,GUN_NO*53+11); adSira=seedli(IDS,GUN_NO*29+5);
+  secKus=null;secAd=null;eslenen=[];hata=0;hataKayit=[];bitti=false;
+  $("#sonuc").classList.remove("ac"); ciz();
+}
+function baskaBulmaca(){ if(!BULMACALAR)return; bulmacaNo=(bulmacaNo+1)%BULMACALAR.length; yukle(); window.scrollTo({top:0,behavior:"smooth"}); }
+Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulmacalar.json").then(r=>r.json())])
+  .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); }).catch(()=>{});
 
 function ciz(){
   $("#gunNo").textContent="#"+GUN_NO;
@@ -268,8 +281,8 @@ function tamam(){
 function revealDoldur(){
   $("#reveal").innerHTML=kusSira.map(id=>{
     const k=KUSLAR[id];
-    return `<div class="rv${k.tuzak?' tuzak':''}"><img src="${k.foto}" alt=""><div class="yz">
-      ${k.tuzak?'<span class="rozet">tuzak</span>':''}<b>${k.tr}</b><span class="la">${k.la}</span><p>${k.ayirt}</p></div></div>`;
+    return `<div class="rv${TUZAK.has(id)?' tuzak':''}"><img src="${k.foto}" alt=""><div class="yz">
+      ${TUZAK.has(id)?'<span class="rozet">tuzak</span>':''}<b>${k.tr}</b><span class="la">${k.la}</span><p>${k.ayirt||''}</p></div></div>`;
   }).join("");
   $("#sonuc").classList.add("ac");
   $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
@@ -297,7 +310,7 @@ const temaBtn=$("#temaBtn");
 function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("es-tema",t);}
 temaUygula(localStorage.getItem("es-tema")||"gunduz");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
-$("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas;
+$("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas; $("#baskaBtn").onclick=baskaBulmaca;
 ciz();
 </script>
 </body>
