@@ -177,10 +177,11 @@
     menuKapat();
     if (h === 'raporlar') { aktifSekme(''); return raporlarGoster(); }
     if (h.startsWith('tur=')) { aktifSekme('ansiklopedi'); return turDetay(decodeURIComponent(h.slice(4))); }
-    const mod = ['tani', 'ansiklopedi', 'mitoloji'].includes(h) ? h : 'tani';
+    const mod = ['tani', 'ansiklopedi', 'mitoloji', 'oyunlar'].includes(h) ? h : 'tani';
     aktifSekme(mod);
     if (mod === 'tani') quizGoster();
     else if (mod === 'ansiklopedi') ansiklopediGoster();
+    else if (mod === 'oyunlar') oyunlarGoster();
     else mitolojiGoster();
   }
   function aktifSekme(mod) {
@@ -189,6 +190,29 @@
   document.querySelectorAll('.sekme').forEach(b =>
     b.addEventListener('click', () => { location.hash = b.dataset.mod; }));
   window.addEventListener('hashchange', router);
+
+  /* ===================== OYUNLAR ===================== */
+  function oyunlarGoster() {
+    const oyunlar = [
+      { ad: 'Kuş Yuvası', url: '../kus-yuvasi/',
+        ozet: '16 kuşu 4 gizli öbeğe böl. Connections tarzı günlük çıkarım bulmacası.',
+        amblem: '<svg viewBox="0 0 64 64"><rect x="8" y="8" width="20" height="20" rx="4" fill="#c19a3e"/><rect x="36" y="8" width="20" height="20" rx="4" fill="#5a8f5a"/><rect x="8" y="36" width="20" height="20" rx="4" fill="#3a7f8c"/><rect x="36" y="36" width="20" height="20" rx="4" fill="#8f6699"/></svg>' },
+      { ad: 'Eş', url: '../es/',
+        ozet: '8 kuşu adıyla eşle. Bazıları birbirine çok benzer — iyi bak, kandırır. 3 hakkın var.',
+        amblem: '<svg viewBox="0 0 64 64"><circle cx="26" cy="32" r="15" fill="none" stroke="var(--yesil)" stroke-width="5"/><circle cx="40" cy="32" r="15" fill="none" stroke="var(--vurgu)" stroke-width="5"/></svg>' },
+      { ad: 'Kuş Evi', url: '../kus-evi/',
+        ozet: 'Bugün kuş evine kim taşındı? İpuçlarını eleyerek tek kuşu bul — dedektiflik.',
+        amblem: '<svg viewBox="0 0 64 64"><path d="M32 7 L55 27 H9 Z" fill="var(--toprak)"/><rect x="15" y="27" width="34" height="30" rx="2" fill="#cbb488"/><circle cx="32" cy="39" r="7.5" fill="#2c2016"/><rect x="29.5" y="46" width="5" height="11" rx="2.5" fill="#2c2016"/></svg>' },
+    ];
+    ekran.innerHTML =
+      '<div class="oyun-ust"><p>Günlük kuş oyunları — her gün yenilenir, tür bilmeni gerektirmez. Oyna, tanı.</p></div>' +
+      '<div class="oyun-izgara">' +
+      oyunlar.map(o => o.yakinda
+        ? `<div class="oyun-kart yakinda"><div class="ok-amblem">${o.amblem}</div><div class="ok-yz"><b>${esc(o.ad)} <span class="ok-rozet">yakında</span></b><p>${esc(o.ozet)}</p></div></div>`
+        : `<a class="oyun-kart" href="${o.url}"><div class="ok-amblem">${o.amblem}</div><div class="ok-yz"><b>${esc(o.ad)}</b><p>${esc(o.ozet)}</p><span class="ok-oyna">oyna →</span></div></a>`
+      ).join('') +
+      '</div>';
+  }
 
   /* ===================== TANI (QUIZ) ===================== */
   let quizHedef = null, sonId = null, gecmis = [];   // gecmis = son gösterilen id'ler (en yeni başta)

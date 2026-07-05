@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gunduz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eş — günün kuş eşleştirmesi</title>
+<meta name="description" content="Günün eşleştirme bulmacası: bir kuş, bir ad seç; Tamam de. Doğruysa eşlenir, yanlışsa geri döner. Bazıları benzer — kandırır.">
+<meta name="theme-color" content="#33606b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1ebdd'/%3E%3Ccircle cx='26' cy='32' r='13' fill='none' stroke='%2333606b' stroke-width='4'/%3E%3Ccircle cx='40' cy='32' r='13' fill='none' stroke='%23b5533a' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{
+  --kagit:#f1ebdd; --kagit-2:#e7dfcc; --kart:#faf5ea;
+  --murekkep:#23292a; --soluk:#6c716b; --cizgi:#d5ccb7;
+  --yesil:#33606b; --yesil-koyu:#1f434b; --yesil-soft:rgba(51,96,107,.10);
+  --toprak:#a4673a; --vurgu:#b5533a; --etiket:#fffdf6;
+  --golge:rgba(38,32,22,.16); --golge-sert:rgba(26,20,12,.22);
+  --dogru:#3c7a4c; --dogru-bg:rgba(60,122,76,.16);
+  --yanlis:#b5462b; --yanlis-bg:rgba(181,70,43,.14);
+}
+[data-tema="gece"]{
+  --kagit:#141819; --kagit-2:#1b2122; --kart:#212829; --murekkep:#e8e2d3; --soluk:#98a09b;
+  --cizgi:#303f3f; --yesil:#7fb8c2; --yesil-koyu:#a6d6df; --yesil-soft:rgba(127,184,194,.13);
+  --toprak:#d09c6d; --vurgu:#e07c58; --etiket:#212829;
+  --golge:rgba(0,0,0,.5); --golge-sert:rgba(0,0,0,.6);
+  --dogru:#6fc283; --dogru-bg:rgba(111,194,131,.18); --yanlis:#e0714e; --yanlis-bg:rgba(224,113,78,.17);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--kagit);color:var(--murekkep);font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55;min-height:100vh;-webkit-tap-highlight-color:transparent;transition:background .4s,color .4s}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url(../gorsel/doku.jpg) center/cover;opacity:.10;mix-blend-mode:soft-light}
+[data-tema="gece"] body::before{opacity:.16}
+a{color:var(--yesil-koyu)}
+i,em,.la{font-style:italic}
+button{font:inherit;cursor:pointer;color:inherit}
+img{display:block}
+
+.sarmal{width:min(1120px,94vw);margin:0 auto;padding:18px 0 90px}
+.ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:6px}
+.eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;box-shadow:2px 3px 0 var(--golge)}
+.eve-don:hover{transform:translateY(-1px)}
+.eve-don::before{content:"";width:11px;height:11px;border-radius:50%;background:#f6efe0;flex:none}
+.ust-sag{margin-left:auto;display:flex;gap:8px}
+.ikonbtn{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:6px 14px;font-size:13.5px;color:var(--soluk);text-decoration:none}
+.ikonbtn:hover{border-color:var(--yesil);color:var(--yesil)}
+
+.marka{margin:22px 0 6px;display:flex;align-items:flex-end;gap:15px;flex-wrap:wrap}
+.marka .amblem{width:50px;height:50px;flex:none}
+.marka h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(30px,4.4vw,44px);line-height:1;letter-spacing:-.5px;color:var(--yesil-koyu)}
+.marka .tag{color:var(--soluk);font-style:italic;font-family:'Libre Baskerville',Georgia,serif;font-size:15px;padding-bottom:5px}
+.gun-no{margin-left:auto;text-align:right;font-family:'Libre Baskerville',serif;color:var(--soluk);font-size:13px;padding-bottom:4px}
+.gun-no b{display:block;font-family:'Playfair Display',serif;font-size:22px;color:var(--yesil-koyu)}
+
+.oyun-bas{margin:18px 0 8px;font-family:'Libre Baskerville',serif;font-style:italic;color:var(--soluk);font-size:15.5px;max-width:70ch}
+.oyun-bas b{color:var(--murekkep)}
+
+.duzen{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start;margin-top:18px}
+@media(max-width:860px){.duzen{grid-template-columns:1fr}}
+
+.havuz-bas{font-family:'Libre Baskerville',serif;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--soluk);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.havuz-bas .sc{margin-left:auto;font-style:italic;text-transform:none;letter-spacing:0;font-size:13px}
+
+.kus-havuz{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:13px}
+.kthumb{aspect-ratio:1;border-radius:10px;overflow:hidden;border:2px solid var(--cizgi);cursor:pointer;box-shadow:2px 3px 0 var(--golge);background:var(--kagit-2);transition:transform .1s,border-color .12s}
+.kthumb img{width:100%;height:100%;object-fit:cover}
+.kthumb:hover{border-color:var(--yesil);transform:translateY(-2px)}
+
+/* orta nokta — eşleştirme masası */
+.masa{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;background:var(--kart);
+  border:2px solid var(--cizgi);border-radius:18px;padding:20px;margin:20px 0;box-shadow:3px 5px 0 var(--golge);transition:border-color .2s}
+.masa.iyi{border-color:var(--dogru)} .masa.iyi{animation:parla .5s}
+.masa.kotu{border-color:var(--yanlis);animation:sars .4s}
+@keyframes parla{0%{box-shadow:0 0 0 0 var(--dogru-bg)}50%{box-shadow:0 0 0 10px var(--dogru-bg)}100%{box-shadow:3px 5px 0 var(--golge)}}
+@keyframes sars{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.myuva{width:190px;height:190px;border:2px dashed var(--cizgi);border-radius:13px;display:flex;align-items:center;justify-content:center;
+  text-align:center;color:var(--soluk);font-style:italic;overflow:hidden;position:relative;cursor:pointer;background:var(--kagit-2);flex:none}
+.myuva.dolu{border-style:solid;border-color:var(--yesil)}
+.myuva img{width:100%;height:100%;object-fit:cover}
+.myuva.ad{font-family:'Playfair Display',serif;font-size:19px;color:var(--soluk)}
+.myuva.ad.dolu{font-style:normal;color:var(--yesil-koyu);padding:10px}
+.esit{font-size:30px;color:var(--soluk);font-family:'Playfair Display',serif}
+.tamam{background:var(--yesil);color:#f6efe0;border:none;border-radius:24px;padding:14px 30px;font-size:16.5px;box-shadow:2px 3px 0 var(--golge);font-family:'Playfair Display',serif;align-self:center}
+.tamam:hover:not(:disabled){transform:translateY(-1px)}
+.tamam:disabled{opacity:.4;cursor:default}
+
+.ad-havuz{display:flex;gap:10px;flex-wrap:wrap;min-height:44px}
+.ad-cip{background:var(--kart);border:1.5px solid var(--cizgi);border-radius:22px;padding:10px 20px;font-size:15.5px;color:var(--murekkep);font-family:'Playfair Display',serif;transition:transform .1s,border-color .12s,background .12s}
+.ad-cip:hover{border-color:var(--yesil);color:var(--yesil);transform:translateY(-1px)}
+
+/* kenar — eşlenenler */
+.yan{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:16px 17px;box-shadow:3px 4px 0 var(--golge);position:sticky;top:16px}
+.eslenen-liste{display:flex;flex-direction:column;gap:8px;min-height:40px}
+.esl{display:flex;align-items:center;gap:10px;background:var(--dogru-bg);border-radius:9px;padding:6px 9px;animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+.esl img{width:40px;height:40px;border-radius:7px;object-fit:cover;flex:none}
+.esl b{font-family:'Libre Baskerville',serif;font-size:14px;color:var(--dogru);line-height:1.15}
+.esl .ok{margin-left:auto;color:var(--dogru);font-size:16px}
+.bos-yan{color:var(--soluk);font-style:italic;font-size:13.5px;padding:6px 0}
+.hata-not{margin-top:14px;border-top:1px dashed var(--cizgi);padding-top:11px;font-size:14px;color:var(--soluk)}
+.hata-not b{color:var(--yanlis);font-family:'Playfair Display',serif}
+.hata-not .hnk{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--vurgu);margin:0 4px 0 2px;vertical-align:middle;box-shadow:1px 1px 0 var(--golge)}
+.hata-not .hnk.bos{background:none;border:1.5px solid var(--cizgi);box-shadow:none}
+
+.sonuc{margin-top:28px;background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:20px 22px;box-shadow:4px 6px 0 var(--golge);display:none;animation:belir .35s ease}
+.sonuc.ac{display:block}
+@keyframes belir{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sonuc h2{font-family:'Playfair Display',serif;font-size:23px;color:var(--yesil-koyu);margin-bottom:4px}
+.sonuc .ozet{color:var(--soluk);font-style:italic;margin-bottom:16px}
+.reveal{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
+.rv{display:flex;gap:11px;background:var(--kagit-2);border-radius:10px;padding:10px;border:1px solid var(--cizgi)}
+.rv img{width:64px;height:64px;border-radius:8px;object-fit:cover;flex:none}
+.rv .yz b{font-family:'Playfair Display',serif;font-size:15.5px;color:var(--yesil-koyu);display:block;line-height:1.1}
+.rv .yz .la{color:var(--toprak);font-size:12px}
+.rv .yz p{font-size:12.5px;margin-top:4px;line-height:1.4}
+.rv.tuzak{border-color:var(--vurgu)}
+.rv.tuzak .rozet{display:inline-block;font-size:10.5px;background:var(--vurgu);color:#f6efe0;border-radius:9px;padding:1px 7px;margin-bottom:3px}
+.sonuc-alt{display:flex;gap:14px;margin-top:18px;align-items:center;flex-wrap:wrap}
+.paylas{background:var(--vurgu);color:#f6efe0;border:none;border-radius:22px;padding:10px 24px;font-size:15px;box-shadow:2px 3px 0 var(--golge)}
+.paylas:hover{transform:translateY(-1px)}
+.link-btn{color:var(--yesil-koyu);text-decoration:none;font-size:14.5px;border-bottom:1px solid currentColor;padding-bottom:1px}
+
+footer{margin-top:56px;border-top:1px solid var(--cizgi);padding-top:16px;color:var(--soluk);font-size:12.5px;text-align:center;line-height:1.7}
+footer a{color:var(--soluk)}
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);z-index:100;background:#244635;color:#f6efe0;padding:12px 24px;border-radius:24px;font-size:15.5px;font-family:'Playfair Display',serif;box-shadow:3px 5px 0 var(--golge-sert);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+#toast.goster{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.kotu{background:#6d2a1c}
+</style>
+</head>
+<body>
+<div class="sarmal">
+
+  <div class="ust">
+    <a class="eve-don" href="../">veranda</a>
+    <div class="ust-sag">
+      <a class="ikonbtn" href="../kus/">kuş ansiklopedisi</a>
+      <button class="ikonbtn" id="temaBtn" type="button">gece</button>
+    </div>
+  </div>
+
+  <header class="marka">
+    <svg class="amblem" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="26" cy="32" r="14" fill="none" stroke="var(--yesil)" stroke-width="4"/>
+      <circle cx="40" cy="32" r="14" fill="none" stroke="var(--vurgu)" stroke-width="4"/>
+    </svg>
+    <div>
+      <h1>Eş</h1>
+      <div class="tag">günün kuş eşleştirmesi</div>
+    </div>
+    <div class="gun-no">bugün<b id="gunNo">#1</b></div>
+  </header>
+
+  <p class="oyun-bas"><b>8 kuş, 8 ad.</b> Bir kuş, bir ad seç; ortada buluştur, <b>Tamam</b> de. Doğruysa eşlenir ve kenara yazılır; yanlışsa geri döner. Bazıları birbirine çok benzer — <b>iyi bak, kandırır.</b> Yalnızca <b>3 yanlış hakkın</b> var.</p>
+
+  <div class="duzen">
+    <div class="oyun">
+      <div class="havuz-bas">◈ kuşlar</div>
+      <div class="kus-havuz" id="kusHavuz"></div>
+
+      <div class="masa" id="masa">
+        <div class="myuva" id="kusYuva">kuş seç</div>
+        <div class="esit">≟</div>
+        <div class="myuva ad" id="adYuva">ad seç</div>
+        <button class="tamam" id="tamamBtn" disabled>Tamam</button>
+      </div>
+
+      <div class="havuz-bas">◈ adlar</div>
+      <div class="ad-havuz" id="adHavuz"></div>
+    </div>
+
+    <aside class="yan">
+      <div class="havuz-bas">◈ eşlenenler <span class="sc" id="sayac">0/7</span></div>
+      <div class="eslenen-liste" id="eslenenListe"></div>
+      <div class="hata-not" id="hataNot">hata: <b>0</b></div>
+    </aside>
+  </div>
+
+  <div class="sonuc" id="sonuc">
+    <h2 id="sonucBas"></h2>
+    <div class="ozet" id="sonucOzet"></div>
+    <div class="reveal" id="reveal"></div>
+    <div class="sonuc-alt">
+      <button class="paylas" id="paylasBtn">sonucu kopyala</button>
+      <a class="link-btn" href="../kus/">kuşları ansiklopedide incele →</a>
+    </div>
+  </div>
+
+  <footer>
+    <div>Eş · veranda — günün kuş eşleştirmesi (prototip)</div>
+    <div style="margin-top:6px">görseller <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> (CC) · adlar ve taksonomi <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a></div>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const KUSLAR={
+  serce:{tr:"Serçe",la:"Passer domesticus",foto:"https://upload.wikimedia.org/wikipedia/commons/b/bd/Gr%C3%A5sparv_-_%28Passer_domesticus%29_-_Ystad-2025.jpg",tuzak:true,ayirt:"Yanağı SADE, leke yok. Erkekte siyah göğüs önlüğü, kastanyel ense."},
+  "agac-sercesi":{tr:"Ağaç serçesi",la:"Passer montanus",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/%28The_underrated_beauty_of%29_Eurasian_tree_sparrow%2C_Passer_montanus%2C_Pilfink.jpg/1280px-%28The_underrated_beauty_of%29_Eurasian_tree_sparrow%2C_Passer_montanus%2C_Pilfink.jpg",tuzak:true,ayirt:"Yanağın ortasında belirgin SİYAH leke + tamamen kahve tepe — serçeden en kesin farkı."},
+  "ak-balikcil":{tr:"Küçük ak balıkçıl",la:"Egretta garzetta",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Aigrette_garzette_Egretta_garzetta_%2850075623392%29.jpg/1280px-Aigrette_garzette_Egretta_garzetta_%2850075623392%29.jpg",tuzak:true,ayirt:"SİYAH gaga + parlak sarı ayak parmakları; büyük ak balıkçıldan daha küçük ve zarif."},
+  "buyuk-ak-balikcil":{tr:"Büyük ak balıkçıl",la:"Ardea alba",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Ardea_alba_-_Nelson_Wisnik_-_487806489.jpeg/1280px-Ardea_alba_-_Nelson_Wisnik_-_487806489.jpeg",tuzak:true,ayirt:"SARI gaga, uzun siyah bacak; küçük ak balıkçıldan çok daha iri. Gaga siyah DEĞİL."},
+  sahin:{tr:"Şahin",la:"Buteo buteo",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Buteo_buteo_%282nd_winter%29.jpg/1280px-Buteo_buteo_%282nd_winter%29.jpg",tuzak:false,ayirt:"Geniş yuvarlak kanat, kısa yuvarlak kuyruk, tıknaz gövde — yırtıcı silueti."},
+  bastankara:{tr:"Büyük baştankara",la:"Parus major",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/A_great_tit_koolmees_parus_major.jpg/1280px-A_great_tit_koolmees_parus_major.jpg",tuzak:false,ayirt:"Parlak sarı göğüste boydan boya siyah 'kravat'; siyah kep, bembeyaz yanak."},
+  kizilgerdan:{tr:"Kızılgerdan",la:"Erithacus rubecula",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Crvenda%C4%87%2C_mu%C5%BEjak_%28Erithacus_rubecula%29%3B_European_Robin_male.jpg/1280px-Crvenda%C4%87%2C_mu%C5%BEjak_%28Erithacus_rubecula%29%3B_European_Robin_male.jpg",tuzak:false,ayirt:"Turuncu-kızıl yüz ve göğüs; tombul silüet, dik duruş."},
+  saka:{tr:"Saka",la:"Carduelis carduelis",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Carduelis_carduelis_%2813976243888%29.jpg/1280px-Carduelis_carduelis_%2813976243888%29.jpg",tuzak:false,ayirt:"Kırmızı yüz maskesi, beyaz yanak, siyah-sarı çizgili kanat — karışması imkânsız."},
+};
+const GUN_NO=1;
+const IDS=Object.keys(KUSLAR);
+const MAX_HAK=3;
+
+let secKus=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false;
+const $=s=>document.querySelector(s);
+function seedli(arr,tohum){const a=arr.slice(),o=[];let s=tohum;while(a.length){s=(s*1103515245+12345)&0x7fffffff;o.push(a.splice(s%a.length,1)[0]);}return o;}
+const kusSira=seedli(IDS,GUN_NO*53+11);
+const adSira=seedli(IDS,GUN_NO*29+5);
+
+function ciz(){
+  $("#gunNo").textContent="#"+GUN_NO;
+  // kuş havuzu (eşlenmemiş + ortada olmayan)
+  $("#kusHavuz").innerHTML=kusSira.filter(id=>!eslenen.includes(id)&&id!==secKus).map(id=>
+    `<div class="kthumb" data-id="${id}"><img src="${KUSLAR[id].foto}" alt=""></div>`).join("") || '<span class="bos-yan">— kuş kalmadı —</span>';
+  $("#kusHavuz").querySelectorAll(".kthumb").forEach(el=>el.onclick=()=>kusTik(el.dataset.id));
+  // ad havuzu
+  $("#adHavuz").innerHTML=adSira.filter(id=>!eslenen.includes(id)&&id!==secAd).map(id=>
+    `<button class="ad-cip" data-id="${id}">${KUSLAR[id].tr}</button>`).join("") || '<span class="bos-yan">— ad kalmadı —</span>';
+  $("#adHavuz").querySelectorAll(".ad-cip").forEach(el=>el.onclick=()=>adTik(el.dataset.id));
+  // orta yuvalar
+  const ky=$("#kusYuva");
+  if(secKus){ ky.className="myuva dolu"; ky.innerHTML=`<img src="${KUSLAR[secKus].foto}" alt="">`; }
+  else{ ky.className="myuva"; ky.textContent="kuş seç"; }
+  const ay=$("#adYuva");
+  if(secAd){ ay.className="myuva ad dolu"; ay.textContent=KUSLAR[secAd].tr; }
+  else{ ay.className="myuva ad"; ay.textContent="ad seç"; }
+  $("#tamamBtn").disabled=!(secKus&&secAd)||bitti;
+  // eşlenenler
+  $("#sayac").textContent=`${eslenen.length}/8`;
+  $("#eslenenListe").innerHTML = eslenen.length? eslenen.map(id=>
+    `<div class="esl"><img src="${KUSLAR[id].foto}" alt=""><b>${KUSLAR[id].tr}</b><span class="ok">✓</span></div>`).join("")
+    : '<span class="bos-yan">henüz eşleşme yok</span>';
+  const kalan=Math.max(0,MAX_HAK-hata);
+  $("#hataNot").innerHTML='kalan hak: '+Array.from({length:MAX_HAK},(_,i)=>`<span class="hnk${i<kalan?'':' bos'}"></span>`).join('');
+}
+
+function kusTik(id){ if(bitti)return; secKus=(secKus===id)?null:id; ciz(); }
+function adTik(id){ if(bitti)return; secAd=(secAd===id)?null:id; ciz(); }
+$("#kusYuva")&&($("#kusYuva").onclick=()=>{ if(!bitti&&secKus){secKus=null;ciz();} });
+$("#adYuva")&&($("#adYuva").onclick=()=>{ if(!bitti&&secAd){secAd=null;ciz();} });
+
+function tamam(){
+  if(!secKus||!secAd||bitti) return;
+  const masa=$("#masa");
+  if(secKus===secAd){
+    eslenen.push(secKus); secKus=null; secAd=null;
+    masa.classList.remove("kotu"); masa.classList.add("iyi"); setTimeout(()=>masa.classList.remove("iyi"),550);
+    toast("eşleşti ✓");
+    ciz();
+    if(eslenen.length===8){ bitti=true; setTimeout(kazandin,400); }
+  }else{
+    hata++; hataKayit.push([secKus,secAd]);
+    const yk=secKus, ya=secAd; secKus=null; secAd=null;
+    masa.classList.remove("iyi"); masa.classList.add("kotu"); setTimeout(()=>masa.classList.remove("kotu"),450);
+    toast(hata>=MAX_HAK?"yanlış ✕ — hakların bitti":"yanlış ✕ — yerlerine döndü","kotu");
+    ciz();
+    if(hata>=MAX_HAK){ bitti=true; setTimeout(kaybettin,500); }
+  }
+}
+
+function revealDoldur(){
+  $("#reveal").innerHTML=kusSira.map(id=>{
+    const k=KUSLAR[id];
+    return `<div class="rv${k.tuzak?' tuzak':''}"><img src="${k.foto}" alt=""><div class="yz">
+      ${k.tuzak?'<span class="rozet">tuzak</span>':''}<b>${k.tr}</b><span class="la">${k.la}</span><p>${k.ayirt}</p></div></div>`;
+  }).join("");
+  $("#sonuc").classList.add("ac");
+  $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function kazandin(){
+  $("#sonucBas").textContent="Hepsini eşledin! 🪶";
+  $("#sonucOzet").textContent = hata===0
+    ? "Tek hata yok — tuzaklara düşmedin, keskin göz."
+    : `${hata} yanlışla tamamladın. Benzerleri ayırt etmeyi öğrendin.`;
+  revealDoldur();
+}
+function kaybettin(){
+  $("#sonucBas").textContent="Hakların bitti";
+  $("#sonucOzet").textContent=`${eslenen.length}/8 eşleştin. Doğru adlar ve ayırt edici işaretler aşağıda — yarın tekrar.`;
+  revealDoldur();
+}
+
+function paylas(){
+  const metin=`Eş 🪶 #${GUN_NO}\n${eslenen.length===8?'✓':'✕'} ${eslenen.length}/8 · ${hata}/${MAX_HAK} yanlış\nverandatools.com/es`;
+  navigator.clipboard?.writeText(metin).then(()=>toast("sonuç kopyalandı 📋"),()=>toast("kopyalanamadı"));
+}
+let toastT;
+function toast(m,snf){const t=$("#toast");t.textContent=m;t.className="goster"+(snf?" "+snf:"");clearTimeout(toastT);toastT=setTimeout(()=>t.className="",2200);}
+const temaBtn=$("#temaBtn");
+function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("es-tema",t);}
+temaUygula(localStorage.getItem("es-tema")||"gunduz");
+temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
+$("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas;
+ciz();
+</script>
+</body>
+</html>
