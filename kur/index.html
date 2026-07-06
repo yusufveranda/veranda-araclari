@@ -3,27 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eş — günün bitki eşleştirmesi</title>
-<meta name="description" content="Günün eşleştirme bulmacası: bir bitki, bir ad seç; Tamam de. Doğruysa eşlenir, yanlışsa geri döner. Bazıları birbirine benzer — kandırır.">
-<meta name="theme-color" content="#33614a">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f3eee0'/%3E%3Ccircle cx='26' cy='32' r='13' fill='none' stroke='%2333614a' stroke-width='4'/%3E%3Ccircle cx='40' cy='32' r='13' fill='none' stroke='%23b5462b' stroke-width='4'/%3E%3C/svg%3E">
+<title>Kur — günün kuş eşleştirmesi</title>
+<meta name="description" content="Günün eşleştirme bulmacası: bir kuş, bir ad seç; Tamam de. Doğruysa eşlenir, yanlışsa geri döner. Bazıları benzer — kandırır.">
+<meta name="theme-color" content="#33606b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1ebdd'/%3E%3Ccircle cx='26' cy='32' r='13' fill='none' stroke='%2333606b' stroke-width='4'/%3E%3Ccircle cx='40' cy='32' r='13' fill='none' stroke='%23b5533a' stroke-width='4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
 :root{
-  --kagit:#f3eee0; --kagit-2:#ece4d2; --kart:#fbf8ef;
-  --murekkep:#283027; --soluk:#6f7365; --cizgi:#d8cfba;
-  --yesil:#33614a; --yesil-koyu:#244635; --yesil-soft:rgba(51,97,74,.10);
-  --toprak:#a4673a; --vurgu:#b5462b; --etiket:#fffdf6;
-  --golge:rgba(40,33,22,.16); --golge-sert:rgba(28,21,12,.22);
+  --kagit:#f1ebdd; --kagit-2:#e7dfcc; --kart:#faf5ea;
+  --murekkep:#23292a; --soluk:#6c716b; --cizgi:#d5ccb7;
+  --yesil:#33606b; --yesil-koyu:#1f434b; --yesil-soft:rgba(51,96,107,.10);
+  --toprak:#a4673a; --vurgu:#b5533a; --etiket:#fffdf6;
+  --golge:rgba(38,32,22,.16); --golge-sert:rgba(26,20,12,.22);
   --dogru:#3c7a4c; --dogru-bg:rgba(60,122,76,.16);
   --yanlis:#b5462b; --yanlis-bg:rgba(181,70,43,.14);
 }
 [data-tema="gece"]{
-  --kagit:#161b16; --kagit-2:#1d231d; --kart:#222a22; --murekkep:#e9e3d2; --soluk:#9aa28e;
-  --cizgi:#33402d; --yesil:#83bd94; --yesil-koyu:#a9dbb6; --yesil-soft:rgba(131,189,148,.13);
-  --toprak:#d09c6d; --vurgu:#e0714e; --etiket:#222a22;
+  --kagit:#141819; --kagit-2:#1b2122; --kart:#212829; --murekkep:#e8e2d3; --soluk:#98a09b;
+  --cizgi:#303f3f; --yesil:#7fb8c2; --yesil-koyu:#a6d6df; --yesil-soft:rgba(127,184,194,.13);
+  --toprak:#d09c6d; --vurgu:#e07c58; --etiket:#212829;
   --golge:rgba(0,0,0,.5); --golge-sert:rgba(0,0,0,.6);
   --dogru:#6fc283; --dogru-bg:rgba(111,194,131,.18); --yanlis:#e0714e; --yanlis-bg:rgba(224,113,78,.17);
 }
@@ -64,11 +64,11 @@ img{display:block}
 .havuz-bas{font-family:'Libre Baskerville',serif;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--soluk);margin:0 0 14px;display:flex;align-items:center;gap:8px}
 .havuz-bas .sc{margin-left:auto;font-style:italic;text-transform:none;letter-spacing:0;font-size:13px}
 
-.bitki-havuz{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-.bthumb{aspect-ratio:1;border-radius:13px;overflow:hidden;border:2px solid var(--cizgi);cursor:pointer;box-shadow:2px 4px 0 var(--golge);background:var(--kagit-2);transition:transform .12s,border-color .12s,box-shadow .12s}
-.bthumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
-.bthumb:hover{border-color:var(--yesil);transform:translateY(-3px);box-shadow:3px 7px 0 var(--golge-sert)}
-.bthumb:hover img{transform:scale(1.06)}
+.kus-havuz{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.kthumb{aspect-ratio:1;border-radius:13px;overflow:hidden;border:2px solid var(--cizgi);cursor:pointer;box-shadow:2px 4px 0 var(--golge);background:var(--kagit-2);transition:transform .12s,border-color .12s,box-shadow .12s}
+.kthumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.kthumb:hover{border-color:var(--yesil);transform:translateY(-3px);box-shadow:3px 7px 0 var(--golge-sert)}
+.kthumb:hover img{transform:scale(1.06)}
 
 /* orta nokta — eşleştirme masası */
 .masa{display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap;background:var(--kart);
@@ -80,6 +80,7 @@ img{display:block}
 @keyframes sars-masa{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 @keyframes telegraf{0%,100%{box-shadow:3px 5px 0 var(--golge)}30%,70%{box-shadow:0 0 0 12px var(--dogru-bg)}}
 .masa.telegraf .myuva{border-style:solid;border-color:var(--dogru)}
+@keyframes titre-kirmizi{0%,100%{transform:translateX(0)}12%{transform:translateX(-9px)}26%{transform:translateX(9px)}40%{transform:translateX(-7px)}54%{transform:translateX(7px)}68%{transform:translateX(-4px)}82%{transform:translateX(4px)}}
 .myuva{width:252px;height:252px;border:2px dashed var(--cizgi);border-radius:17px;display:flex;align-items:center;justify-content:center;
   text-align:center;color:var(--soluk);font-style:italic;overflow:hidden;position:relative;cursor:pointer;background:var(--kagit-2);flex:none;
   transition:transform .55s cubic-bezier(.4,.75,.3,1),opacity .55s,border-color .2s,box-shadow .2s}
@@ -88,11 +89,6 @@ img{display:block}
 .myuva.ad{font-family:'Playfair Display',serif;font-size:24px;color:var(--soluk)}
 .myuva.ad.dolu{font-style:normal;color:var(--yesil-koyu);padding:14px}
 .esit{font-size:38px;color:var(--soluk);font-family:'Playfair Display',serif;transition:transform .4s,color .4s}
-
-/* birleşme (sağa uçma) ve yanlış (kırmızı titreme) JS'te inline stille sürülür —
-   .masa #id torun-seçicisi bazı tarayıcılarda güvenilmez uygulandığı için. */
-@keyframes titre-kirmizi{0%,100%{transform:translateX(0)}12%{transform:translateX(-9px)}26%{transform:translateX(9px)}40%{transform:translateX(-7px)}54%{transform:translateX(7px)}68%{transform:translateX(-4px)}82%{transform:translateX(4px)}}
-
 .tamam{background:var(--yesil);color:#f6efe0;border:none;border-radius:28px;padding:17px 40px;font-size:18px;box-shadow:2px 3px 0 var(--golge);font-family:'Playfair Display',serif;align-self:center}
 .tamam:hover:not(:disabled){transform:translateY(-1px)}
 .tamam:disabled{opacity:.4;cursor:default}
@@ -101,7 +97,7 @@ img{display:block}
 .ad-cip{background:var(--kart);border:1.5px solid var(--cizgi);border-radius:26px;padding:13px 26px;font-size:17px;color:var(--murekkep);font-family:'Playfair Display',serif;transition:transform .1s,border-color .12s,background .12s}
 .ad-cip:hover{border-color:var(--yesil);color:var(--yesil);transform:translateY(-1px)}
 
-/* uçan foto (birleşme → kenar) — belirgin */
+/* uçan foto (birleşme → kenar) */
 .ucus{position:fixed;width:96px;height:96px;border-radius:16px;object-fit:cover;z-index:200;
   box-shadow:0 8px 26px rgba(0,0,0,.4);border:3px solid var(--dogru);
   transition:transform .72s cubic-bezier(.3,.85,.35,1),opacity .72s;pointer-events:none}
@@ -153,8 +149,8 @@ footer a{color:var(--soluk)}
   <div class="ust">
     <a class="eve-don" href="../">veranda</a>
     <div class="ust-sag">
-      <a class="ikonbtn" href="../bitki/#oyunlar">← oyunlar</a>
-      <a class="ikonbtn" href="../bitki/">bitki bilimi</a>
+      <a class="ikonbtn" href="../kus/#oyunlar">← oyunlar</a>
+      <a class="ikonbtn" href="../kus/">kuş ansiklopedisi</a>
       <button class="ikonbtn" id="temaBtn" type="button">gece</button>
       <button class="ikonbtn gizli-rast" id="rastBtn" type="button" title="rastgele bulmaca" aria-label="rastgele bulmaca">🎲</button>
     </div>
@@ -166,21 +162,21 @@ footer a{color:var(--soluk)}
       <circle cx="40" cy="32" r="14" fill="none" stroke="var(--vurgu)" stroke-width="4"/>
     </svg>
     <div>
-      <h1>Eş</h1>
-      <div class="tag">günün bitki eşleştirmesi</div>
+      <h1>Kur</h1>
+      <div class="tag">günün kuş eşleştirmesi</div>
     </div>
     <div class="gun-no">bulmaca<b id="gunNo">#1</b></div>
   </header>
 
-  <p class="oyun-bas"><b>8 bitki, 8 ad.</b> Bir bitki, bir ad seç; ortada buluştur, <b>Tamam</b> de. Doğruysa birleşip kenara uçar; yanlışsa kırmızı titrer, geri döner. Bazıları birbirine çok benzer — <b>iyi bak, kandırır.</b> <b>3 yanlış hakkın</b> var; bitse de puansız oynamaya devam edebilirsin.</p>
+  <p class="oyun-bas"><b>8 kuş, 8 ad.</b> Bir kuş, bir ad seç; ortada buluştur, <b>Tamam</b> de. Doğruysa birleşip kenara uçar; yanlışsa kırmızı titrer, geri döner. Bazıları birbirine çok benzer — <b>iyi bak, kandırır.</b> <b>3 yanlış hakkın</b> var; bitse de puansız oynamaya devam edebilirsin.</p>
 
   <div class="duzen">
     <div class="oyun">
-      <div class="havuz-bas">◈ bitkiler</div>
-      <div class="bitki-havuz" id="bitkiHavuz"></div>
+      <div class="havuz-bas">◈ kuşlar</div>
+      <div class="kus-havuz" id="kusHavuz"></div>
 
       <div class="masa" id="masa">
-        <div class="myuva" id="bitkiYuva">bitki seç</div>
+        <div class="myuva" id="kusYuva">kuş seç</div>
         <div class="esit">≟</div>
         <div class="myuva ad" id="adYuva">ad seç</div>
         <button class="tamam" id="tamamBtn" disabled>Tamam</button>
@@ -204,64 +200,73 @@ footer a{color:var(--soluk)}
     <div class="sonuc-alt">
       <button class="paylas yesil" id="baskaBtn">başka bulmaca ↻</button>
       <button class="paylas" id="paylasBtn">sonucu kopyala</button>
-      <a class="link-btn" href="../bitki/">bitkileri ansiklopedide incele →</a>
+      <a class="link-btn" href="../kus/">kuşları ansiklopedide incele →</a>
     </div>
   </div>
 
   <footer>
-    <div>Eş · veranda — günün bitki eşleştirmesi</div>
+    <div>Kur · veranda — günün kuş eşleştirmesi</div>
     <div style="margin-top:6px">görseller <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> (CC) · adlar ve taksonomi <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a></div>
   </footer>
 </div>
 <div id="toast"></div>
 
 <script>
-const $=s=>document.querySelector(s);
+let KUSLAR={
+  serce:{tr:"Serçe",la:"Passer domesticus",foto:"https://upload.wikimedia.org/wikipedia/commons/b/bd/Gr%C3%A5sparv_-_%28Passer_domesticus%29_-_Ystad-2025.jpg",tuzak:true,ayirt:"Yanağı SADE, leke yok. Erkekte siyah göğüs önlüğü, kastanyel ense."},
+  "agac-sercesi":{tr:"Ağaç serçesi",la:"Passer montanus",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/%28The_underrated_beauty_of%29_Eurasian_tree_sparrow%2C_Passer_montanus%2C_Pilfink.jpg/1280px-%28The_underrated_beauty_of%29_Eurasian_tree_sparrow%2C_Passer_montanus%2C_Pilfink.jpg",tuzak:true,ayirt:"Yanağın ortasında belirgin SİYAH leke + tamamen kahve tepe — serçeden en kesin farkı."},
+  "ak-balikcil":{tr:"Küçük ak balıkçıl",la:"Egretta garzetta",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Aigrette_garzette_Egretta_garzetta_%2850075623392%29.jpg/1280px-Aigrette_garzette_Egretta_garzetta_%2850075623392%29.jpg",tuzak:true,ayirt:"SİYAH gaga + parlak sarı ayak parmakları; büyük ak balıkçıldan daha küçük ve zarif."},
+  "buyuk-ak-balikcil":{tr:"Büyük ak balıkçıl",la:"Ardea alba",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Ardea_alba_-_Nelson_Wisnik_-_487806489.jpeg/1280px-Ardea_alba_-_Nelson_Wisnik_-_487806489.jpeg",tuzak:true,ayirt:"SARI gaga, uzun siyah bacak; küçük ak balıkçıldan çok daha iri. Gaga siyah DEĞİL."},
+  sahin:{tr:"Şahin",la:"Buteo buteo",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Buteo_buteo_%282nd_winter%29.jpg/1280px-Buteo_buteo_%282nd_winter%29.jpg",tuzak:false,ayirt:"Geniş yuvarlak kanat, kısa yuvarlak kuyruk, tıknaz gövde — yırtıcı silueti."},
+  bastankara:{tr:"Büyük baştankara",la:"Parus major",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/A_great_tit_koolmees_parus_major.jpg/1280px-A_great_tit_koolmees_parus_major.jpg",tuzak:false,ayirt:"Parlak sarı göğüste boydan boya siyah 'kravat'; siyah kep, bembeyaz yanak."},
+  kizilgerdan:{tr:"Kızılgerdan",la:"Erithacus rubecula",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Crvenda%C4%87%2C_mu%C5%BEjak_%28Erithacus_rubecula%29%3B_European_Robin_male.jpg/1280px-Crvenda%C4%87%2C_mu%C5%BEjak_%28Erithacus_rubecula%29%3B_European_Robin_male.jpg",tuzak:false,ayirt:"Turuncu-kızıl yüz ve göğüs; tombul silüet, dik duruş."},
+  saka:{tr:"Saka",la:"Carduelis carduelis",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Carduelis_carduelis_%2813976243888%29.jpg/1280px-Carduelis_carduelis_%2813976243888%29.jpg",tuzak:false,ayirt:"Kırmızı yüz maskesi, beyaz yanak, siyah-sarı çizgili kanat — karışması imkânsız."},
+};
+let IDS=Object.keys(KUSLAR);
 const MAX_HAK=3;
-let BITKILER={}, BULMACALAR=[], bulmacaNo=0;
-let IDS=[], TUZAK=new Set(), bitkiSira=[], adSira=[], fotoSec={};
-let secBitki=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false, puansiz=false;
+let TUZAK=new Set(["serce","agac-sercesi","ak-balikcil","buyuk-ak-balikcil"]);
+let BULMACALAR=null, bulmacaNo=0;
 
+let secKus=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false, puansiz=false;
+const $=s=>document.querySelector(s);
+const F=id=>(KUSLAR[id]?KUSLAR[id].foto:"");
 function seedli(arr,tohum){const a=arr.slice(),o=[];let s=tohum;while(a.length){s=(s*1103515245+12345)&0x7fffffff;o.push(a.splice(s%a.length,1)[0]);}return o;}
-function rastFoto(id){const f=(BITKILER[id]&&BITKILER[id].fotolar)||[];return f.length?f[Math.floor(Math.random()*f.length)]:"";}
+let kusSira=seedli(IDS,53+11);
+let adSira=seedli(IDS,29+5);
 
 function yukle(){
   const b=BULMACALAR[bulmacaNo];
-  IDS=b.bitkiler.slice(); TUZAK=new Set(b.tuzaklar);
-  bitkiSira=seedli(IDS,(bulmacaNo+1)*53+11); adSira=seedli(IDS,(bulmacaNo+1)*29+5);
-  fotoSec={}; IDS.forEach(id=>fotoSec[id]=rastFoto(id));
-  secBitki=null; secAd=null; eslenen=[]; hata=0; hataKayit=[]; bitti=false; mesgul=false; puansiz=false;
+  IDS=b.kuslar.slice(); TUZAK=new Set(b.tuzaklar);
+  kusSira=seedli(IDS,(bulmacaNo+1)*53+11); adSira=seedli(IDS,(bulmacaNo+1)*29+5);
+  secKus=null; secAd=null; eslenen=[]; hata=0; hataKayit=[]; bitti=false; mesgul=false; puansiz=false;
   $("#sonuc").classList.remove("ac"); ciz();
 }
 function baskaBulmaca(rastgele){
-  if(!BULMACALAR.length) return;
+  if(!BULMACALAR) return;
   bulmacaNo = rastgele ? Math.floor(Math.random()*BULMACALAR.length) : (bulmacaNo+1)%BULMACALAR.length;
   yukle(); window.scrollTo({top:0,behavior:"smooth"});
 }
-
-fetch("../bitki/data/oyun-bitkiler.json").then(r=>r.json())
-  .then(bb=>{ BITKILER=bb; return fetch("bulmacalar.json").then(r=>r.json()); })
-  .then(pp=>{ BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); })
-  .catch(()=>{ $("#bitkiHavuz").innerHTML='<span class="bos-yan">Bulmaca yüklenemedi.</span>'; });
+Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulmacalar.json").then(r=>r.json())])
+  .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); }).catch(()=>{});
 
 function ciz(){
   $("#gunNo").textContent="#"+(bulmacaNo+1);
-  $("#bitkiHavuz").innerHTML=bitkiSira.filter(id=>!eslenen.includes(id)&&id!==secBitki).map(id=>
-    `<div class="bthumb" data-id="${id}"><img src="${fotoSec[id]}" alt="" loading="lazy"></div>`).join("") || '<span class="bos-yan">— bitki kalmadı —</span>';
-  $("#bitkiHavuz").querySelectorAll(".bthumb").forEach(el=>el.onclick=()=>bitkiTik(el.dataset.id));
+  $("#kusHavuz").innerHTML=kusSira.filter(id=>!eslenen.includes(id)&&id!==secKus).map(id=>
+    `<div class="kthumb" data-id="${id}"><img src="${F(id)}" alt="" loading="lazy"></div>`).join("") || '<span class="bos-yan">— kuş kalmadı —</span>';
+  $("#kusHavuz").querySelectorAll(".kthumb").forEach(el=>el.onclick=()=>kusTik(el.dataset.id));
   $("#adHavuz").innerHTML=adSira.filter(id=>!eslenen.includes(id)&&id!==secAd).map(id=>
-    `<button class="ad-cip" data-id="${id}">${BITKILER[id].tr}</button>`).join("") || '<span class="bos-yan">— ad kalmadı —</span>';
+    `<button class="ad-cip" data-id="${id}">${KUSLAR[id].tr}</button>`).join("") || '<span class="bos-yan">— ad kalmadı —</span>';
   $("#adHavuz").querySelectorAll(".ad-cip").forEach(el=>el.onclick=()=>adTik(el.dataset.id));
-  const by=$("#bitkiYuva");
-  if(secBitki){ by.className="myuva dolu"; by.innerHTML=`<img src="${fotoSec[secBitki]}" alt="">`; }
-  else{ by.className="myuva"; by.textContent="bitki seç"; }
+  const ky=$("#kusYuva");
+  if(secKus){ ky.className="myuva dolu"; ky.innerHTML=`<img src="${F(secKus)}" alt="">`; }
+  else{ ky.className="myuva"; ky.textContent="kuş seç"; }
   const ay=$("#adYuva");
-  if(secAd){ ay.className="myuva ad dolu"; ay.textContent=BITKILER[secAd].tr; }
+  if(secAd){ ay.className="myuva ad dolu"; ay.textContent=KUSLAR[secAd].tr; }
   else{ ay.className="myuva ad"; ay.textContent="ad seç"; }
-  $("#tamamBtn").disabled=!(secBitki&&secAd)||bitti||mesgul;
+  $("#tamamBtn").disabled=!(secKus&&secAd)||bitti||mesgul;
   $("#sayac").textContent=`${eslenen.length}/8`;
   $("#eslenenListe").innerHTML = eslenen.length? eslenen.map(id=>
-    `<div class="esl"><img src="${fotoSec[id]}" alt=""><b>${BITKILER[id].tr}</b><span class="ok">✓</span></div>`).join("")
+    `<div class="esl"><img src="${F(id)}" alt=""><b>${KUSLAR[id].tr}</b><span class="ok">✓</span></div>`).join("")
     : '<span class="bos-yan">henüz eşleşme yok</span>';
   const hn=$("#hataNot");
   if(puansiz){
@@ -273,9 +278,9 @@ function ciz(){
   }
 }
 
-function bitkiTik(id){ if(bitti||mesgul)return; secBitki=(secBitki===id)?null:id; ciz(); }
+function kusTik(id){ if(bitti||mesgul)return; secKus=(secKus===id)?null:id; ciz(); }
 function adTik(id){ if(bitti||mesgul)return; secAd=(secAd===id)?null:id; ciz(); }
-$("#bitkiYuva").onclick=()=>{ if(!bitti&&!mesgul&&secBitki){secBitki=null;ciz();} };
+$("#kusYuva").onclick=()=>{ if(!bitti&&!mesgul&&secKus){secKus=null;ciz();} };
 $("#adYuva").onclick=()=>{ if(!bitti&&!mesgul&&secAd){secAd=null;ciz();} };
 
 /* uçan foto: masadan sağdaki eşlenenler listesine */
@@ -293,18 +298,17 @@ function ucur(url){
 function eslesmeYap(id,otomatik){
   mesgul=true;
   const masa=$("#masa"), esit=masa.querySelector(".esit");
-  const by=$("#bitkiYuva"), ay=$("#adYuva");
+  const ky=$("#kusYuva"), ay=$("#adYuva");
   masa.classList.remove("kotu"); masa.classList.add("iyi");
   if(esit){ esit.textContent="✓"; esit.style.transform="scale(1.9)"; esit.style.color="var(--dogru)"; esit.style.opacity="0"; }
-  // birleş → sağa kay + soluklaş (inline stil, güvenilir)
-  by.style.transform="translateX(112px) scale(.8)"; by.style.opacity="0";
+  ky.style.transform="translateX(112px) scale(.8)"; ky.style.opacity="0";
   ay.style.transform="translateX(48px) scale(.8)"; ay.style.opacity="0";
-  ucur(fotoSec[id]);
+  ucur(F(id));
   toast(otomatik?"son çift eşleşti ✓":"eşleşti — birleşip kenara uçtu ✓");
   setTimeout(()=>{
-    eslenen.push(id); secBitki=null; secAd=null;
+    eslenen.push(id); secKus=null; secAd=null;
     masa.classList.remove("iyi");
-    [by,ay].forEach(el=>{el.style.transform="";el.style.opacity="";el.style.borderColor="";});
+    [ky,ay].forEach(el=>{el.style.transform="";el.style.opacity="";el.style.borderColor="";});
     if(esit){ esit.textContent="≟"; esit.style.transform=""; esit.style.color=""; esit.style.opacity=""; }
     mesgul=false; ciz();
     if(eslenen.length===8){ setTimeout(tamamlandi,400); }
@@ -315,51 +319,51 @@ function eslesmeYap(id,otomatik){
 /* son çift: kendiliğinden ama belli ederek */
 function sonEslesmeTelegraf(){
   if(bitti) return;
-  const kalan=bitkiSira.filter(id=>!eslenen.includes(id));
+  const kalan=kusSira.filter(id=>!eslenen.includes(id));
   if(kalan.length!==1) return;
   const id=kalan[0];
-  mesgul=true; secBitki=id; secAd=id; ciz();
+  mesgul=true; secKus=id; secAd=id; ciz();
   $("#masa").classList.add("telegraf");
   toast("son çift kaldı — kendiliğinden eşleşiyor…");
   setTimeout(()=>{ $("#masa").classList.remove("telegraf"); eslesmeYap(id,true); },1500);
 }
 
 function tamam(){
-  if(!secBitki||!secAd||bitti||mesgul) return;
-  if(secBitki===secAd){ eslesmeYap(secBitki,false); return; }
+  if(!secKus||!secAd||bitti||mesgul) return;
+  if(secKus===secAd){ eslesmeYap(secKus,false); return; }
   // YANLIŞ — kırmızı titreme, sonra geri döner
   if(!puansiz) hata++;
-  hataKayit.push([secBitki,secAd]);
+  hataKayit.push([secKus,secAd]);
   mesgul=true;
   const masa=$("#masa"), esit=masa.querySelector(".esit");
-  const by=$("#bitkiYuva"), ay=$("#adYuva");
+  const ky=$("#kusYuva"), ay=$("#adYuva");
   masa.classList.remove("iyi"); masa.classList.add("kotu"); if(esit){ esit.textContent="✕"; esit.style.color="var(--yanlis)"; esit.style.transform="scale(1.3)"; }
-  [by,ay].forEach(el=>{ el.style.borderColor="#c0392b"; el.style.boxShadow="0 0 0 4px rgba(181,70,43,.34)"; el.style.animation="titre-kirmizi .55s"; });
+  [ky,ay].forEach(el=>{ el.style.borderColor="#c0392b"; el.style.boxShadow="0 0 0 4px rgba(181,70,43,.34)"; el.style.animation="titre-kirmizi .55s"; });
   const puansizOldu = (!puansiz && hata>=MAX_HAK);
   toast(puansizOldu?"hakların bitti ✕ — puansız devam":"yanlış ✕ — kırmızı titredi, geri döndü","kotu");
   setTimeout(()=>{
     masa.classList.remove("kotu"); if(esit){ esit.textContent="≟"; esit.style.color=""; esit.style.transform=""; }
-    [by,ay].forEach(el=>{ el.style.borderColor=""; el.style.boxShadow=""; el.style.animation=""; });
-    secBitki=null; secAd=null; if(puansizOldu) puansiz=true; mesgul=false; ciz();
+    [ky,ay].forEach(el=>{ el.style.borderColor=""; el.style.boxShadow=""; el.style.animation=""; });
+    secKus=null; secAd=null; if(puansizOldu) puansiz=true; mesgul=false; ciz();
   },600);
 }
 
 function revealDoldur(){
-  $("#reveal").innerHTML=bitkiSira.map(id=>{
-    const k=BITKILER[id];
-    return `<div class="rv${TUZAK.has(id)?' tuzak':''}"><img src="${fotoSec[id]}" alt=""><div class="yz">
-      ${TUZAK.has(id)?'<span class="rozet">benzeşen</span>':''}<b>${k.tr}</b><span class="la">${k.la}</span><p>${k.ayirt||''}</p></div></div>`;
+  $("#reveal").innerHTML=kusSira.map(id=>{
+    const k=KUSLAR[id];
+    return `<div class="rv${TUZAK.has(id)?' tuzak':''}"><img src="${F(id)}" alt=""><div class="yz">
+      ${TUZAK.has(id)?'<span class="rozet">tuzak</span>':''}<b>${k.tr}</b><span class="la">${k.la}</span><p>${k.ayirt||''}</p></div></div>`;
   }).join("");
   $("#sonuc").classList.add("ac");
   $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function tamamlandi(){
   bitti=true;
-  $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🌿" : "Hepsini eşledin! 🌿";
+  $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🪶" : "Hepsini eşledin! 🪶";
   $("#sonucOzet").textContent = puansiz
     ? "Hakların bitmişti ama pes etmedin, hepsini eşledin. Puan yok ama öğrenme tam."
-    : (hata===0 ? "Tek hata yok — benzeşen çiftlere düşmedin, keskin göz."
-                : `${hata} yanlışla tamamladın. Birbirine benzeyen türleri ayırt etmeyi öğrendin.`);
+    : (hata===0 ? "Tek hata yok — tuzaklara düşmedin, keskin göz."
+                : `${hata} yanlışla tamamladın. Benzerleri ayırt etmeyi öğrendin.`);
   revealDoldur();
 }
 function pesEt(){
@@ -371,19 +375,18 @@ function pesEt(){
 
 function paylas(){
   const isaret = eslenen.length===8 ? (puansiz?'puansız':(hata+'/'+MAX_HAK+' yanlış')) : (eslenen.length+'/8');
-  const metin=`Eş 🌿 #${bulmacaNo+1}\n${eslenen.length===8?'✓':'✕'} ${isaret}\nverandatools.com/es-bitki`;
+  const metin=`Kur 🪶 #${bulmacaNo+1}\n${eslenen.length===8?'✓':'✕'} ${isaret}\nverandatools.com/kur`;
   navigator.clipboard?.writeText(metin).then(()=>toast("sonuç kopyalandı 📋"),()=>toast("kopyalanamadı"));
 }
 let toastT;
 function toast(m,snf){const t=$("#toast");t.textContent=m;t.className="goster"+(snf?" "+snf:"");clearTimeout(toastT);toastT=setTimeout(()=>t.className="",2200);}
 const temaBtn=$("#temaBtn");
-function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("esbitki-tema",t);}
-temaUygula(localStorage.getItem("esbitki-tema")||"gunduz");
+function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("es-tema",t);}
+temaUygula(localStorage.getItem("es-tema")||"gunduz");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
-$("#tamamBtn").onclick=tamam;
-$("#paylasBtn").onclick=paylas;
-$("#baskaBtn").onclick=()=>baskaBulmaca(false);
+$("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas; $("#baskaBtn").onclick=()=>baskaBulmaca(false);
 $("#rastBtn").onclick=()=>baskaBulmaca(true);
+ciz();
 </script>
 </body>
 </html>

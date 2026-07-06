@@ -194,10 +194,10 @@
   /* ===================== OYUNLAR ===================== */
   function oyunlarGoster() {
     const oyunlar = [
-      { ad: 'Kuş Yuvası', url: '../kus-yuvasi/',
+      { ad: 'Dört Sürü', url: '../dort-suru/',
         ozet: '16 kuşu 4 gizli öbeğe böl. Connections tarzı günlük çıkarım bulmacası.',
         amblem: '<svg viewBox="0 0 64 64"><rect x="8" y="8" width="20" height="20" rx="4" fill="#c19a3e"/><rect x="36" y="8" width="20" height="20" rx="4" fill="#5a8f5a"/><rect x="8" y="36" width="20" height="20" rx="4" fill="#3a7f8c"/><rect x="36" y="36" width="20" height="20" rx="4" fill="#8f6699"/></svg>' },
-      { ad: 'Eş', url: '../es/',
+      { ad: 'Kur', url: '../kur/',
         ozet: '8 kuşu adıyla eşle. Bazıları birbirine çok benzer — iyi bak, kandırır. 3 hakkın var.',
         amblem: '<svg viewBox="0 0 64 64"><circle cx="26" cy="32" r="15" fill="none" stroke="var(--yesil)" stroke-width="5"/><circle cx="40" cy="32" r="15" fill="none" stroke="var(--vurgu)" stroke-width="5"/></svg>' },
     ];

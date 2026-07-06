@@ -3,30 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kuş Yuvası — günün kuş bulmacası</title>
-<meta name="description" content="Günün doğa bulmacası: 16 kuşu 4 gizli öbeğe böl. Akıl yürüt, ele, hepsini doğru yere yerleştir.">
-<meta name="theme-color" content="#33606b">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f1ebdd'/%3E%3Cg%3E%3Crect x='12' y='12' width='17' height='17' rx='3' fill='%23c19a3e'/%3E%3Crect x='35' y='12' width='17' height='17' rx='3' fill='%235a8f5a'/%3E%3Crect x='12' y='35' width='17' height='17' rx='3' fill='%2333606b'/%3E%3Crect x='35' y='35' width='17' height='17' rx='3' fill='%238f6699'/%3E%3C/g%3E%3C/svg%3E">
+<title>Dört Demet — günün bitki bulmacası</title>
+<meta name="description" content="Günün botanik bulmacası: 16 bitkiyi 4 gizli öbeğe ayır. Akıl yürüt, ele, hepsini doğru öbeğe yerleştir.">
+<meta name="theme-color" content="#33614a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f3eee0'/%3E%3Cg%3E%3Crect x='12' y='12' width='17' height='17' rx='3' fill='%23c19a3e'/%3E%3Crect x='35' y='12' width='17' height='17' rx='3' fill='%235a8f5a'/%3E%3Crect x='12' y='35' width='17' height='17' rx='3' fill='%233a7f8c'/%3E%3Crect x='35' y='35' width='17' height='17' rx='3' fill='%238f6699'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
 :root{
-  --kagit:#f1ebdd; --kagit-2:#e7dfcc; --kart:#faf5ea;
-  --murekkep:#23292a; --soluk:#6c716b; --cizgi:#d5ccb7;
-  --yesil:#33606b; --yesil-koyu:#1f434b; --yesil-soft:rgba(51,96,107,.10);
-  --toprak:#a4673a; --vurgu:#b5533a; --yanlis-bg:rgba(181,70,43,.28);
-  --golge:rgba(38,32,22,.16); --golge-sert:rgba(26,20,12,.22);
+  --kagit:#f3eee0; --kagit-2:#ece4d2; --kart:#fbf8ef;
+  --murekkep:#283027; --soluk:#6f7365; --cizgi:#d8cfba;
+  --yesil:#33614a; --yesil-koyu:#244635; --yesil-soft:rgba(51,97,74,.10);
+  --toprak:#a4673a; --vurgu:#b5462b; --yanlis-bg:rgba(181,70,43,.28);
+  --golge:rgba(40,33,22,.16); --golge-sert:rgba(28,21,12,.22);
   --etiket:#fffdf6;
-  /* öbek renkleri (mat) */
   --g-sari:#c19a3e; --g-yesil:#5a8f5a; --g-mavi:#3a7f8c; --g-mor:#8f6699;
 }
 [data-tema="gece"]{
-  --kagit:#141819; --kagit-2:#1b2122; --kart:#212829; --murekkep:#e8e2d3; --soluk:#98a09b;
-  --cizgi:#303f3f; --yesil:#7fb8c2; --yesil-koyu:#a6d6df; --yesil-soft:rgba(127,184,194,.13);
-  --toprak:#d09c6d; --vurgu:#e07c58; --yanlis-bg:rgba(224,113,78,.3);
+  --kagit:#161b16; --kagit-2:#1d231d; --kart:#222a22; --murekkep:#e9e3d2; --soluk:#9aa28e;
+  --cizgi:#33402d; --yesil:#83bd94; --yesil-koyu:#a9dbb6; --yesil-soft:rgba(131,189,148,.13);
+  --toprak:#d09c6d; --vurgu:#e0714e; --yanlis-bg:rgba(224,113,78,.28);
   --golge:rgba(0,0,0,.5); --golge-sert:rgba(0,0,0,.6);
-  --etiket:#212829;
+  --etiket:#222a22;
   --g-sari:#c9a94e; --g-yesil:#6fa96f; --g-mavi:#4f97a4; --g-mor:#a37bb0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -78,7 +77,7 @@ img{display:block}
 .hucre{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;border:2px solid var(--cizgi);
   background:var(--kagit-2);cursor:pointer;box-shadow:2px 4px 0 var(--golge);transition:transform .1s,border-color .12s,box-shadow .12s}
 .hucre img{width:100%;height:100%;object-fit:cover;transition:filter .15s,transform .5s}
-.hucre .ad{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(18,24,20,.9) 60%);
+.hucre .ad{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(14,20,16,.9) 60%);
   color:#f6efe0;font-family:'Libre Baskerville',serif;font-size:16.5px;line-height:1.2;padding:30px 12px 12px;text-align:center}
 .hucre:hover{border-color:var(--yesil)}
 .hucre:hover img{transform:scale(1.05)}
@@ -127,6 +126,7 @@ footer a{color:var(--soluk)}
   background:#244635;color:#f6efe0;padding:12px 24px;border-radius:24px;font-size:15.5px;font-family:'Playfair Display',serif;
   box-shadow:3px 5px 0 var(--golge-sert);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
 #toast.goster{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.kotu{background:#6d2a1c}
 </style>
 </head>
 <body>
@@ -135,8 +135,8 @@ footer a{color:var(--soluk)}
   <div class="ust">
     <a class="eve-don" href="../">veranda</a>
     <div class="ust-sag">
-      <a class="ikonbtn" href="../kus/#oyunlar">← oyunlar</a>
-      <a class="ikonbtn" href="../kus/">kuş ansiklopedisi</a>
+      <a class="ikonbtn" href="../bitki/#oyunlar">← oyunlar</a>
+      <a class="ikonbtn" href="../bitki/">bitki bilimi</a>
       <button class="ikonbtn" id="temaBtn" type="button">gece</button>
       <button class="ikonbtn gizli-rast" id="rastBtn" type="button" title="rastgele bulmaca" aria-label="rastgele bulmaca">🎲</button>
     </div>
@@ -150,13 +150,13 @@ footer a{color:var(--soluk)}
       <rect x="36" y="36" width="18" height="18" rx="3" fill="var(--g-mor)"/>
     </svg>
     <div>
-      <h1>Kuş Yuvası</h1>
-      <div class="tag">günün doğa bulmacası — kuşlar</div>
+      <h1>Dört Demet</h1>
+      <div class="tag">günün botanik bulmacası — bitkiler</div>
     </div>
     <div class="gun-no">bulmaca<b id="gunNo">#1</b></div>
   </header>
 
-  <p class="oyun-bas">16 kuş, 4 gizli öbek. En çok <b>4 kuş</b> seç, birbirine ait olduğunu düşündüklerini <b>gönder</b>. Akıl yürüt, ele — hepsini doğru öbeğe yerleştir. <b>4 hata</b> hakkın var; bitse de puansız çözmeye devam edebilirsin.</p>
+  <p class="oyun-bas">16 bitki, 4 gizli öbek. En çok <b>4 bitki</b> seç, aynı öbekten olduğunu düşündüklerini <b>gönder</b>. Kimi öbek familya bağıyla saklı — görünüşe aldanma, ele. <b>4 hata</b> hakkın var; bitse de puansız çözmeye devam edebilirsin.</p>
 
   <div class="bantlar" id="bantlar"></div>
   <div class="izgara" id="izgara"></div>
@@ -176,12 +176,12 @@ footer a{color:var(--soluk)}
     <div class="sonuc-alt">
       <button class="paylas yesil" id="baskaBtn">başka bulmaca ↻</button>
       <button class="paylas" id="paylasBtn">sonucu kopyala</button>
-      <a class="link-btn" href="../kus/">kuşları ansiklopedide incele →</a>
+      <a class="link-btn" href="../bitki/">bitkileri ansiklopedide incele →</a>
     </div>
   </div>
 
   <footer>
-    <div>Kuş Yuvası · veranda — günün kuş bulmacası</div>
+    <div>Dört Demet · veranda — günün bitki bulmacası</div>
     <div style="margin-top:6px">görseller <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> (CC) · adlar ve taksonomi <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a></div>
   </footer>
 </div>
@@ -193,63 +193,39 @@ const MAX_HATA=4;
 const RENKLER=["var(--g-sari)","var(--g-yesil)","var(--g-mavi)","var(--g-mor)"];
 const EMOJI=["🟨","🟩","🟦","🟪"];
 
-/* gömülü yedek (fetch başarısızsa oynanır) */
-let KUSLAR={
-  flamingo:{tr:"Flamingo",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Flamenco_com%C3%BAn_%28Phoenicopterus_roseus%29%2C_parque_nacional_de_Amboseli%2C_Kenia%2C_2024-05-22%2C_DD_20.jpg/1280px-Flamenco_com%C3%BAn_%28Phoenicopterus_roseus%29%2C_parque_nacional_de_Amboseli%2C_Kenia%2C_2024-05-22%2C_DD_20.jpg"},
-  leylek:{tr:"Leylek",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/20150720Ciconia_ciconia.jpg/1280px-20150720Ciconia_ciconia.jpg"},
-  "gri-balikcil":{tr:"Gri balıkçıl",foto:"https://upload.wikimedia.org/wikipedia/commons/4/4d/Ardea_cinerea_%28165455223%29.jpg"},
-  marti:{tr:"Gümüş martı",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/2018-02-11_Yellow-legged_Gull_%28Larus_michahellis%29%2C_Albufeira.jpg/1280px-2018-02-11_Yellow-legged_Gull_%28Larus_michahellis%29%2C_Albufeira.jpg"},
-  kerkenez:{tr:"Kerkenez",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/2020-06-14_-_Falco_tinnunculus_FMT_Kiel_%281%29.jpg/1280px-2020-06-14_-_Falco_tinnunculus_FMT_Kiel_%281%29.jpg"},
-  sahin:{tr:"Şahin",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Buteo_buteo_%282nd_winter%29.jpg/1280px-Buteo_buteo_%282nd_winter%29.jpg"},
-  atmaca:{tr:"Atmaca",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Accipiter_nisus_%2873256341%29.jpg/1280px-Accipiter_nisus_%2873256341%29.jpg"},
-  kartal:{tr:"Kaya kartalı",foto:"https://upload.wikimedia.org/wikipedia/commons/8/89/Aquila_chrysaetos_1_%28Bohu%C5%A1_%C4%8C%C3%AD%C4%8Del%29.jpg"},
-  agackakan:{tr:"Orman alaca ağaçkakanı",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/02026_0022_Dendrocopos_major.jpg/1280px-02026_0022_Dendrocopos_major.jpg"},
-  "yesil-agackakan":{tr:"Yeşil ağaçkakan",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/20150419_007_Kessel_Weerdbeemden_Groenespecht%2C_European_Green_Woodpecker%2C_Gr%C3%BCnspecht%2C_Picus_viridis_%2817201110081%29.jpg/1280px-20150419_007_Kessel_Weerdbeemden_Groenespecht%2C_European_Green_Woodpecker%2C_Gr%C3%BCnspecht%2C_Picus_viridis_%2817201110081%29.jpg"},
-  "kucuk-agackakan":{tr:"Küçük ağaçkakan",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Dryobates_minor_%28Kleinspecht%29_2023-04-07_%2801%29.jpg/1280px-Dryobates_minor_%28Kleinspecht%29_2023-04-07_%2801%29.jpg"},
-  boyuncevirin:{tr:"Boyunçeviren",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Draaihals_%28Jynx_torquilla%29_%2814233936659%29.jpg/1280px-Draaihals_%28Jynx_torquilla%29_%2814233936659%29.jpg"},
-  serce:{tr:"Serçe",foto:"https://upload.wikimedia.org/wikipedia/commons/b/bd/Gr%C3%A5sparv_-_%28Passer_domesticus%29_-_Ystad-2025.jpg"},
-  kizilgerdan:{tr:"Kızılgerdan",foto:"https://upload.wikimedia.org/wikipedia/commons/2/2d/20180627Erithacus_rubecula.jpg"},
-  bastankara:{tr:"Büyük baştankara",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/A_great_tit_koolmees_parus_major.jpg/1280px-A_great_tit_koolmees_parus_major.jpg"},
-  ispinoz:{tr:"İspinoz",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/20150419_063_Kessel_Weerdbeemden_Vink%2C_Common_Chaffinch%2C_Buchfink%2C_Fringilla_coelebs_%2817014089738%29.jpg/1280px-20150419_063_Kessel_Weerdbeemden_Vink%2C_Common_Chaffinch%2C_Buchfink%2C_Fringilla_coelebs_%2817014089738%29.jpg"},
-};
-let GRUPLAR = [
-  {key:0,ad:"Yırtıcılar",         renk:RENKLER[0],emoji:EMOJI[0], not:"Kancalı gaga, keskin pençe — avını yakalayan avcı kuşlar.", uyeler:["kerkenez","sahin","atmaca","kartal"]},
-  {key:1,ad:"Su & kıyı kuşları",  renk:RENKLER[1],emoji:EMOJI[1], not:"Sulak alanın kuşları; uzun bacak ya da suya bağlı yaşam.", uyeler:["flamingo","leylek","gri-balikcil","marti"]},
-  {key:2,ad:"Bahçe ötücüleri",    renk:RENKLER[2],emoji:EMOJI[2], not:"Küçük, şehir ve bahçenin tanıdık öten kuşları.", uyeler:["serce","kizilgerdan","bastankara","ispinoz"]},
-  {key:3,ad:"Ağaçkakanlar",       renk:RENKLER[3],emoji:EMOJI[3], not:"Boyunçeviren de bir ağaçkakandır! Kabuk kamuflajı onu ötücü sandırır — asıl tuzak buydu.", uyeler:["agackakan","yesil-agackakan","kucuk-agackakan","boyuncevirin"]},
-];
-let BULMACALAR=null, bulmacaNo=0;
-const F=id=>(KUSLAR[id]?KUSLAR[id].foto:"");
+let BITKILER={}, BULMACALAR=[], bulmacaNo=0;
+let GRUPLAR=[], sira=[], secili=[], cozulen=[], hatalar=0, gecmis=[], bitti=false, puansiz=false, fotoSec={};
+
+function seedli(arr,tohum){const a=arr.slice(),o=[];let s=tohum;while(a.length){s=(s*1103515245+12345)&0x7fffffff;o.push(a.splice(s%a.length,1)[0]);}return o;}
+function rastFoto(id){const f=(BITKILER[id]&&BITKILER[id].fotolar)||[];return f.length?f[Math.floor(Math.random()*f.length)]:"";}
 const grubu = id => GRUPLAR.find(g=>g.uyeler.includes(id));
-
-let sira=[], secili=[], cozulen=[], hatalar=0, gecmis=[], bitti=false, puansiz=false;
-
-function seedliSira(){
-  const ids=GRUPLAR.flatMap(g=>g.uyeler), ord=[], pool=ids.slice(); let s=(bulmacaNo+1)*131+7;
-  while(pool.length){ s=(s*1103515245+12345)&0x7fffffff; ord.push(pool.splice(s%pool.length,1)[0]); }
-  return ord;
-}
-sira=seedliSira();
 
 function yukle(){
   const b=BULMACALAR[bulmacaNo];
   GRUPLAR=b.gruplar.map((g,i)=>({...g,key:i,renk:RENKLER[i],emoji:EMOJI[i]}));
+  const ids=GRUPLAR.flatMap(g=>g.uyeler);
+  sira=seedli(ids,(bulmacaNo+1)*131+7);
+  fotoSec={}; ids.forEach(id=>fotoSec[id]=rastFoto(id));
   secili=[]; cozulen=[]; hatalar=0; gecmis=[]; bitti=false; puansiz=false;
-  sira=seedliSira(); $("#sonuc").classList.remove("ac"); ciz();
+  $("#sonuc").classList.remove("ac");
+  ciz();
 }
 function baskaBulmaca(rastgele){
-  if(!BULMACALAR) return;
+  if(!BULMACALAR.length) return;
   bulmacaNo = rastgele ? Math.floor(Math.random()*BULMACALAR.length) : (bulmacaNo+1)%BULMACALAR.length;
   yukle(); window.scrollTo({top:0,behavior:"smooth"});
 }
-Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulmacalar.json").then(r=>r.json())])
-  .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); }).catch(()=>{});
+
+fetch("../bitki/data/oyun-bitkiler.json").then(r=>r.json())
+  .then(bb=>{ BITKILER=bb; return fetch("bulmacalar.json").then(r=>r.json()); })
+  .then(pp=>{ BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); })
+  .catch(()=>{ $("#izgara").innerHTML='<p style="color:var(--soluk)">Bulmaca yüklenemedi.</p>'; });
 
 function ciz(){
   $("#gunNo").textContent="#"+(bulmacaNo+1);
   $("#bantlar").innerHTML = cozulen.map(k=>{
-    const g=GRUPLAR.find(x=>x.key===k);
-    const uyeAd=g.uyeler.map(id=>KUSLAR[id].tr).join(" · ");
+    const g=GRUPLAR[k];
+    const uyeAd=g.uyeler.map(id=>BITKILER[id].tr).join(" · ");
     return `<div class="bant" style="background:${g.renk}">
       <div class="bant-bas">${g.ad}</div>
       <div class="bant-uye">${uyeAd}</div>
@@ -257,8 +233,9 @@ function ciz(){
   }).join("");
   const kalan = sira.filter(id=>!cozulen.includes(grubu(id).key));
   $("#izgara").innerHTML = kalan.map(id=>{
+    const k=BITKILER[id];
     return `<div class="hucre${secili.includes(id)?' secili':''}" data-id="${id}">
-      <img src="${F(id)}" alt="" loading="lazy"><div class="ad">${KUSLAR[id].tr}</div></div>`;
+      <img src="${fotoSec[id]}" alt="" loading="lazy"><div class="ad">${k.tr}</div></div>`;
   }).join("");
   $("#izgara").querySelectorAll(".hucre").forEach(h=>h.onclick=()=>tik(h.dataset.id));
   const canlar=$("#canlar");
@@ -277,7 +254,7 @@ function tik(id){
   if(bitti) return;
   const i=secili.indexOf(id);
   if(i>=0) secili.splice(i,1);
-  else{ if(secili.length>=4){ toast("en fazla 4 kuş seçebilirsin"); return; } secili.push(id); }
+  else{ if(secili.length>=4){ toast("en fazla 4 bitki seçebilirsin"); return; } secili.push(id); }
   ciz();
 }
 
@@ -285,17 +262,14 @@ function karistir(){ if(bitti)return; const kalan=sira.filter(id=>!cozulen.inclu
 
 function gonder(){
   if(secili.length!==4||bitti) return;
-  // aynı dörtlüyü tekrar gönderme → boşa hak yakma
-  const imza=secili.slice().sort().join('|');
-  if(gecmis.some(g=>g._imza===imza)){ toast("bu dörtlüyü zaten denedin"); return; }
-  const kayit=secili.map(id=>grubu(id).key); kayit._imza=imza; gecmis.push(kayit);
+  gecmis.push(secili.map(id=>grubu(id).key));
   const say={}; secili.forEach(id=>{const k=grubu(id).key; say[k]=(say[k]||0)+1;});
   const enCok=Math.max(...Object.values(say));
   const dogruGrup=Object.keys(say).find(k=>say[k]===4);
   if(dogruGrup!==undefined){
     cozulen.push(+dogruGrup); secili=[];
     if(cozulen.length===4){ bitti=true; ciz(); bitir(true); return; }
-    toast("öbek doğru! 🎯"); ciz();
+    toast("öbek doğru! 🌿"); ciz();
   }else{
     if(!puansiz) hatalar++;
     const idler=secili.slice();
@@ -304,6 +278,7 @@ function gonder(){
     const puansizOldu=(!puansiz && hatalar>=MAX_HATA);
     if(puansizOldu){
       puansiz=true;
+      // titreme grid'i ezmesin: sadece canlar'ı hemen güncelle
       $("#canlar").innerHTML='<span class="puan-yok">puan yok</span> — istersen sonuna kadar çöz · <a href="#" id="pesBtn">cevapları gör</a>';
       $("#pesBtn").onclick=e=>{e.preventDefault(); pesEt();};
       setTimeout(()=>toast("hakların bitti ✕ — puansız çözmeye devam"),520);
@@ -316,13 +291,13 @@ function gonder(){
 function bitir(kazandi){
   bitti=true;
   if(kazandi){
-    $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🪶" : "Hepsini yerleştirdin! 🪶";
+    $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🌿" : "Hepsini yerleştirdin! 🌿";
     $("#sonucOzet").textContent = puansiz
       ? "Hakların bitmişti ama pes etmedin, hepsini doğru öbeğe koydun. Puan yok ama öğrenme tam."
-      : (hatalar===0 ? "Kusursuz — tek hata yok. Off, eledin biçtin, hepsini doğru öbeğe koydun." : `${hatalar} hatayla çözdün.`);
+      : (hatalar===0 ? "Kusursuz — tek hata yok. Eledin biçtin, hepsini doğru öbeğe koydun." : `${hatalar} hatayla çözdün. Familya tuzaklarını gördün mü?`);
   }else{
     $("#sonucBas").textContent = "Cevaplar açıldı";
-    $("#sonucOzet").textContent = "Öbekler açıldı — Boyunçeviren'in aslında ağaçkakan olduğunu unutma.";
+    $("#sonucOzet").textContent = "Öbekler açıldı — familya bağını unutma, görünüş yanıltır.";
   }
   ciz();
   $("#sonuc").classList.add("ac");
@@ -336,7 +311,7 @@ function pesEt(){
 function paylas(){
   const kare = gecmis.map(row=>row.map(k=>EMOJI[k]).join("")).join("\n");
   const bas = bitti && cozulen.length===4 && !puansiz && hatalar<MAX_HATA ? `${hatalar} hata` : (puansiz?"puansız":"");
-  const metin = `Kuş Yuvası 🪶 #${bulmacaNo+1}  ${bas}\n${kare}\nverandatools.com/kus-yuvasi`;
+  const metin = `Dört Demet 🌿 #${bulmacaNo+1}  ${bas}\n${kare}\nverandatools.com/dort-demet`;
   navigator.clipboard?.writeText(metin).then(()=>toast("sonuç kopyalandı 📋"),()=>toast("kopyalanamadı"));
 }
 
@@ -344,8 +319,8 @@ let toastT;
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("goster");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("goster"),2400);}
 
 const temaBtn=$("#temaBtn");
-function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("obek-tema",t);}
-temaUygula(localStorage.getItem("obek-tema")||"gunduz");
+function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("herbaryum-tema",t);}
+temaUygula(localStorage.getItem("herbaryum-tema")||"gunduz");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
 
 $("#gonderBtn").onclick=gonder;
@@ -354,7 +329,6 @@ $("#temizleBtn").onclick=()=>{if(!bitti){secili=[];ciz();}};
 $("#paylasBtn").onclick=paylas;
 $("#baskaBtn").onclick=()=>baskaBulmaca(false);
 $("#rastBtn").onclick=()=>baskaBulmaca(true);
-ciz();
 </script>
 </body>
 </html>
