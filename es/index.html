@@ -42,9 +42,11 @@ img{display:block}
 .eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;box-shadow:2px 3px 0 var(--golge)}
 .eve-don:hover{transform:translateY(-1px)}
 .eve-don::before{content:"";width:11px;height:11px;border-radius:50%;background:#f6efe0;flex:none}
-.ust-sag{margin-left:auto;display:flex;gap:8px}
+.ust-sag{margin-left:auto;display:flex;gap:8px;align-items:center}
 .ikonbtn{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:6px 14px;font-size:13.5px;color:var(--soluk);text-decoration:none}
 .ikonbtn:hover{border-color:var(--yesil);color:var(--yesil)}
+.gizli-rast{opacity:0;transition:opacity .2s;padding:6px 10px;border-color:transparent;background:none}
+.gizli-rast:hover,.gizli-rast:focus{opacity:.85;border-color:var(--cizgi)}
 
 .marka{margin:22px 0 6px;display:flex;align-items:flex-end;gap:15px;flex-wrap:wrap}
 .marka .amblem{width:50px;height:50px;flex:none}
@@ -136,6 +138,7 @@ footer a{color:var(--soluk)}
     <div class="ust-sag">
       <a class="ikonbtn" href="../kus/">kuş ansiklopedisi</a>
       <button class="ikonbtn" id="temaBtn" type="button">gece</button>
+      <button class="ikonbtn gizli-rast" id="rastBtn" type="button" title="rastgele bulmaca" aria-label="rastgele bulmaca">🎲</button>
     </div>
   </div>
 
@@ -311,6 +314,7 @@ function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textConte
 temaUygula(localStorage.getItem("es-tema")||"gunduz");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
 $("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas; $("#baskaBtn").onclick=baskaBulmaca;
+$("#rastBtn").onclick=()=>{ if(!BULMACALAR)return; bulmacaNo=Math.floor(Math.random()*BULMACALAR.length); yukle(); window.scrollTo({top:0,behavior:"smooth"}); };
 ciz();
 </script>
 </body>
