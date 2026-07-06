@@ -53,6 +53,9 @@ button{font:inherit;cursor:pointer;color:inherit;border:none;background:none}
   padding:3px;box-shadow:2px 3px 0 var(--golge)}
 .mod-sec button{padding:6px 15px;border-radius:19px;font-size:14px;color:var(--soluk);font-weight:700}
 .mod-sec button.acik{background:var(--kiremit);color:#F4EBD6;box-shadow:1px 2px 0 var(--golge)}
+.ust-dug{background:var(--pano);border:1px solid var(--cizgi);border-radius:20px;padding:7px 14px;
+  font-size:13.5px;font-weight:700;color:var(--baslik);box-shadow:2px 3px 0 var(--golge)}
+.ust-dug:hover{transform:translateY(-1px);border-color:var(--kiremit)}
 .gece-dug{width:38px;height:38px;border-radius:50%;background:var(--pano);border:1px solid var(--cizgi);
   box-shadow:2px 3px 0 var(--golge);font-size:17px;line-height:1}
 .gece-dug:hover{transform:translateY(-1px)}
@@ -166,6 +169,8 @@ footer a{color:var(--kiremit)}
       <button id="mod-dunya" class="acik" data-mod="dunya">🌍 Dünya</button>
       <button id="mod-turkiye" data-mod="turkiye">🇹🇷 Türkiye</button>
     </div>
+    <button class="ust-dug" id="rastgele" title="rastgele bir bulmaca dene">🎲 Rastgele</button>
+    <button class="ust-dug" id="bugun" hidden>Bugüne dön</button>
     <button class="gece-dug" id="gece" title="gece / gündüz">🌙</button>
   </div>
 
@@ -178,7 +183,7 @@ footer a{color:var(--kiremit)}
       <div class="kart">
         <h3>Durum</h3>
         <div class="pano-sayi">
-          <div class="metrik"><div class="rakam" id="m-skor">0</div><div class="etk">skor (az iyi)</div></div>
+          <div class="metrik"><div class="rakam" id="m-skor">0</div><div class="etk">puan · çok iyi</div></div>
           <div class="metrik"><div class="rakam" id="m-hak">9</div><div class="etk">kalan hak</div></div>
           <div class="metrik"><div class="rakam" id="m-dogru">0</div><div class="etk">/9 doğru</div></div>
         </div>
@@ -222,9 +227,10 @@ footer a{color:var(--kiremit)}
           o karenin <b>satır</b> ve <b>sütun</b> ölçütüne <b>birden</b> uyan bir yer yaz.</p>
           <ul>
             <li>Toplam <b>9 hakkın</b> var; her tahmin (doğru ya da yanlış) bir hak götürür.</li>
-            <li>Bir yeri yalnızca <b>bir kez</b> kullanabilirsin.</li>
-            <li>Puan, cevabın <b>ne kadar sık akla geldiğiyle</b> ölçülür: az bilinen doğru cevap
-            düşük puan getirir. <b>Az puan iyidir.</b> Boş kalan her kare 100 puan.</li>
+            <li>Aynı yeri ızgarada <b>bir kez</b> kullanabilirsin — bir kareye yazdığın cevabı başka kareye yazamazsın.</li>
+            <li>Bir karenin çok sayıda doğru cevabı olabilir. Cevabın <b>ne kadar az akla geliyorsa o kadar çok puan</b>
+            getirir: “Asya'da &amp; nüfusu 1M+” için <b>Çin</b> az puan, <b>Tacikistan</b> çok puan. <b>Çok puan iyidir.</b>
+            Boş kare 0 puan.</li>
           </ul>
         </details>
       </div>
@@ -275,23 +281,25 @@ function hazirla(m){
 }
 hazirla('dunya'); hazirla('turkiye');
 
-const OYUN={};   // mod -> oyun durumu
+const OYUN={};   // mod -> günlük oyun durumu
+let AKTIF=null;  // rastgele (deneme) oyunu; null ise günlük oynanıyor
+function g(){ return AKTIF||OYUN[mod]; }   // o an oynanan oyun
 function bulmacaSec(m){
   const dizi=ATLAS_BULMACA[m];
   const p=dizi[((GUN%dizi.length)+dizi.length)%dizi.length];
   return p;
 }
-function kurOyun(m){
-  const p=bulmacaSec(m), kat=ATLAS_KAT[m], ks=KATSET[m];
-  const denom=[], cells=[];
-  for(let r=0;r<3;r++){ denom.push([]); cells.push([]);
+function kurOyun(m,puz){
+  const p=puz||bulmacaSec(m), kat=ATLAS_KAT[m], ks=KATSET[m];
+  const enb=[], cells=[];   // enb = hücredeki en tanınır (en yüksek fame) cevap
+  for(let r=0;r<3;r++){ enb.push([]); cells.push([]);
     for(let c=0;c<3;c++){
       const inter=[...ks[p.s[r]]].filter(x=>ks[p.u[c]].has(x));
-      let d=0; inter.forEach(id=>d+=IDX[m].byId[id].fame);
-      denom[r].push(d); cells[r].push({ans:null,oran:null,inter});
+      let mx=1; inter.forEach(id=>{const f=IDX[m].byId[id].fame; if(f>mx)mx=f;});
+      enb[r].push(mx); cells[r].push({ans:null,puan:null,inter});
     }
   }
-  return {p,denom,cells,hak:9,kullanildi:new Set(),bitti:false,secili:null};
+  return {p,enb,cells,hak:9,kullanildi:new Set(),bitti:false,secili:null};
 }
 function yukleKayit(m){
   try{
@@ -301,9 +309,9 @@ function yukleKayit(m){
   return null;
 }
 function kaydet(){
-  const o=OYUN[mod];
+  const o=g(); if(o.pratik) return;   // deneme oyunları kaydedilmez
   const kayit={g:GUN,hak:o.hak,bitti:o.bitti,
-    cells:o.cells.map(row=>row.map(x=>x.ans?{ans:x.ans,oran:x.oran}:null)),
+    cells:o.cells.map(row=>row.map(x=>x.ans?{ans:x.ans,puan:x.puan}:null)),
     kullanildi:[...o.kullanildi]};
   try{localStorage.setItem('atlas_'+mod+'_'+GUN,JSON.stringify(kayit));}catch(e){}
 }
@@ -311,7 +319,7 @@ function kaydet(){
 /* ---------- çizim ---------- */
 function etiket(m,catid){return ATLAS_KAT[m][catid].etiket;}
 function ciz(){
-  const o=OYUN[mod], p=o.p, t=$('#tahta');
+  const o=g(), p=o.p, t=$('#tahta');
   t.innerHTML='';
   const kose=document.createElement('div'); kose.className='kose';
   kose.textContent=mod==='dunya'?'🌍':'🇹🇷'; t.appendChild(kose);
@@ -329,10 +337,10 @@ function ciz(){
       if(cell.ans){
         k.classList.add('dolu');
         const e=IDX[mod].byId[cell.ans];
-        const tier=cell.oran<=10?.30:cell.oran<=25?.20:.12;
+        const tier=cell.puan>=75?.34:cell.puan>=40?.22:.11;
         k.style.setProperty('--dolgu','rgba(94,127,75,'+tier+')');
         k.innerHTML=(e.bayrak?'<div class="bayrakem">'+e.bayrak+'</div>':'')+
-          '<div class="ad">'+e.ad+'</div><div class="oran">%'+cell.oran+' · sık</div>';
+          '<div class="ad">'+e.ad+'</div><div class="oran">+'+cell.puan+' puan</div>';
       }else{
         k.innerHTML='<div class="arti">＋</div>';
         if(o.secili&&o.secili[0]==r&&o.secili[1]==c) k.classList.add('secili');
@@ -345,16 +353,16 @@ function ciz(){
   cizOlcut();
 }
 function cizOlcut(){
-  const o=OYUN[mod],p=o.p,ul=$('#olcut');ul.innerHTML='';
+  const o=g(),p=o.p,ul=$('#olcut');ul.innerHTML='';
   const ekle=(pre,cid)=>{const li=document.createElement('li');
     li.innerHTML='<b>'+pre+'</b><span>'+etiket(mod,cid)+'</span>';ul.appendChild(li);};
   p.s.forEach((c,i)=>ekle((i+1)+'.',c));
   p.u.forEach((c,i)=>ekle(['A','B','C'][i],c));
 }
 function guncelleDurum(){
-  const o=OYUN[mod];let skor=0,dogru=0;
+  const o=g();let skor=0,dogru=0;
   for(let r=0;r<3;r++)for(let c=0;c<3;c++){
-    const x=o.cells[r][c]; if(x.ans){skor+=x.oran;dogru++;}else skor+=100;
+    const x=o.cells[r][c]; if(x.ans){skor+=x.puan;dogru++;}   // boş kare 0 puan
   }
   $('#m-skor').textContent=skor; $('#m-hak').textContent=o.hak; $('#m-dogru').textContent=dogru;
   return {skor,dogru};
@@ -362,7 +370,7 @@ function guncelleDurum(){
 
 /* ---------- kare seçimi + arama ---------- */
 function secKare(r,c){
-  const o=OYUN[mod]; if(o.bitti) return;
+  const o=g(); if(o.bitti) return;
   o.secili=[r,c]; ciz();
   const p=o.p;
   $('#arama-bilgi').innerHTML='<b>'+etiket(mod,p.s[r])+'</b> &nbsp;×&nbsp; <b>'+etiket(mod,p.u[c])+'</b>';
@@ -373,7 +381,7 @@ let onerLst=[],onerVur=-1;
 function arama(q){
   const box=$('#oner'); box.innerHTML=''; onerLst=[]; onerVur=-1;
   const f=fold(q); if(f.length<1) return;
-  const o=OYUN[mod], gor=new Set(), bas=[],ic=[];
+  const o=g(), gor=new Set(), bas=[],ic=[];
   for(const {f:ef,id} of IDX[mod].foldMap){
     if(gor.has(id)) continue;
     if(ef.startsWith(f)){gor.add(id);bas.push(id);}
@@ -401,16 +409,16 @@ function vurgula(d){
 
 /* ---------- tahmin ---------- */
 function gonder(id){
-  const o=OYUN[mod]; if(o.bitti||!o.secili) return;
+  const o=g(); if(o.bitti||!o.secili) return;
   const [r,c]=o.secili, e=IDX[mod].byId[id], m=$('#mesaj');
   if(o.kullanildi.has(id)){ m.innerHTML='<span class="no">'+e.ad+'</span> zaten kullanıldı.'; return; }
   const ks=KATSET[mod], p=o.p;
   const rOK=ks[p.s[r]].has(id), cOK=ks[p.u[c]].has(id);
   o.hak--; o.kullanildi.add(id);
   if(rOK&&cOK){
-    const oran=Math.max(1,Math.round(100*e.fame/o.denom[r][c]));
-    o.cells[r][c]={ans:id,oran};
-    m.innerHTML='<span class="ok">✓ '+e.ad+'</span> — %'+oran+' sıklık.';
+    const puan=Math.max(1,Math.round(100*(1-e.fame/o.enb[r][c])));
+    o.cells[r][c]={ans:id,puan};
+    m.innerHTML='<span class="ok">✓ '+e.ad+'</span> — +'+puan+' puan'+(puan>=80?' 🔥':puan>=55?' 👏':'')+'.';
     o.secili=null; $('#arama').value=''; $('#oner').innerHTML='';
     $('#arama').disabled=true; $('#arama-bilgi').textContent='Sıradaki kareyi seç.';
   }else{
@@ -429,11 +437,11 @@ function gonder(id){
 
 /* ---------- bitiş ---------- */
 function unvanBul(skor){
-  if(skor<=70)return'Kartograf';if(skor<=140)return'Kâşif';
-  if(skor<=250)return'Gezgin';if(skor<=430)return'Turist';return'Kayıp Ruh';
+  if(skor>=700)return'Kartograf';if(skor>=520)return'Kâşif';
+  if(skor>=340)return'Gezgin';if(skor>=160)return'Turist';return'Acemi';
 }
 function bitir(){
-  const o=OYUN[mod]; o.bitti=true; o.secili=null;
+  const o=g(); o.bitti=true; o.secili=null;
   $('#arama').disabled=true; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
   $('#arama-bilgi').textContent='Oyun bitti.';
   const {skor,dogru}=guncelleDurum();
@@ -441,11 +449,11 @@ function bitir(){
   let em='';
   for(let r=0;r<3;r++){for(let c=0;c<3;c++){
     const x=o.cells[r][c];
-    em+= x.ans? (x.oran<=12?'🟩':x.oran<=30?'🟨':'🟧') : '⬜';
+    em+= x.ans? (x.puan>=70?'🟩':x.puan>=40?'🟨':'🟧') : '⬜';
   }em+='\n';}
   $('#unvan').textContent=unvanBul(skor);
   $('#emoji').textContent=em;
-  $('#sonuc-ozet').innerHTML='Skor <b>'+skor+'</b> · '+dogru+'/9 doğru · '+(9-o.hak)+' tahmin. <i>(az iyi)</i>';
+  $('#sonuc-ozet').innerHTML='Puan <b>'+skor+'</b> · '+dogru+'/9 doğru · '+(9-o.hak)+' tahmin. <i>(çok puan iyi)</i>';
   // kaçan kareler için örnek cevaplar
   let kh='<div style="font-weight:700;color:var(--baslik);font-family:\'Playfair Display\',serif">Kaçan kareler</div>';
   let bosVar=false;
@@ -457,6 +465,7 @@ function bitir(){
     kh+='<div class="satir"><b>'+etiket(mod,o.p.s[r])+' × '+etiket(mod,o.p.u[c])+':</b> '+(ornek||'—')+'</div>';
   }
   $('#kacan').innerHTML=bosVar?kh:'<div style="color:var(--yesil);font-weight:700">Dolu ızgara! 🎉</div>';
+  $('#skor-gonder').style.display=o.pratik?'none':'';
   $('#sonuc').classList.add('acik');
   $('#lider').innerHTML='';
   kaydet();
@@ -464,10 +473,11 @@ function bitir(){
 
 /* ---------- paylaş / skor ---------- */
 function paylasMetin(){
-  const o=OYUN[mod]; const {skor,dogru}=guncelleDurum();
+  const o=g(); const {skor,dogru}=guncelleDurum();
   let em=$('#emoji').textContent.trim();
   const bayrak=mod==='dunya'?'🌍':'🇹🇷';
-  return 'Atlas '+bayrak+' Gün '+GUN+'\nSkor '+skor+' · '+dogru+'/9 (az iyi)\n'+em+'\nverandatools.com/atlas';
+  const baslik=o.pratik?('Rastgele #'+o.no):('Gün '+GUN);
+  return 'Atlas '+bayrak+' '+baslik+'\nPuan '+skor+' · '+dogru+'/9\n'+em+'\nverandatools.com/atlas';
 }
 $('#paylas').onclick=()=>{
   const t=paylasMetin();
@@ -476,12 +486,12 @@ $('#paylas').onclick=()=>{
   }).catch(()=>{prompt('Kopyala:',t);});
 };
 $('#skor-gonder').onclick=()=>{
-  const o=OYUN[mod]; const {skor,dogru}=guncelleDurum();
+  const o=g(); const {skor,dogru}=guncelleDurum();
   let nick=localStorage.getItem('vt_nick')||'';
   nick=(prompt('Takma adın (liderlik için):',nick)||'').trim().slice(0,18);
   if(!nick) return;
   localStorage.setItem('vt_nick',nick);
-  const puan=Math.max(0,Math.min(100,Math.round(100-skor/9)));   // yüksek iyi (backend uyumu)
+  const puan=Math.max(0,Math.min(100,Math.round(skor/9)));   // yüksek iyi (backend uyumu)
   const gun=GUN*2+(mod==='turkiye'?1:0);
   $('#skor-gonder').textContent='Gönderiliyor…';
   fetch(LB_URL+'?fn=add&oyun=atlas&gun='+gun+'&nick='+encodeURIComponent(nick)+
@@ -506,23 +516,40 @@ function girisOyun(m){
     const k=yukleKayit(m);
     if(k){
       OYUN[m].hak=k.hak; OYUN[m].kullanildi=new Set(k.kullanildi);
-      k.cells.forEach((row,r)=>row.forEach((x,c)=>{ if(x) OYUN[m].cells[r][c]={...OYUN[m].cells[r][c],ans:x.ans,oran:x.oran}; }));
+      k.cells.forEach((row,r)=>row.forEach((x,c)=>{ if(x) OYUN[m].cells[r][c]={...OYUN[m].cells[r][c],ans:x.ans,puan:x.puan}; }));
       OYUN[m].bitti=k.bitti;
     }
   }
 }
+const VARSAYILAN_NOT='Bir kareye dokun, satır ve sütun ölçütüne birden uyan bir yer yaz.';
 function moda(m){
-  mod=m; girisOyun(m);
+  mod=m; AKTIF=null; $('#bugun').hidden=true; girisOyun(m);
   $('#mod-dunya').classList.toggle('acik',m==='dunya');
   $('#mod-turkiye').classList.toggle('acik',m==='turkiye');
   $('#slogan').textContent=(m==='dunya'?'ülkeler':'iller')+' · günün ızgarası';
   $('#sonuc').classList.remove('acik');
   $('#arama').disabled=true; $('#arama').value=''; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
   $('#arama-bilgi').textContent='Yukarıdan bir kare seç.';
+  $('#durum-not').textContent=VARSAYILAN_NOT;
   ciz();
   if(OYUN[m].bitti) bitir();
 }
+function rastgele(){
+  const dizi=ATLAS_BULMACA[mod];
+  const i=Math.floor(Math.random()*dizi.length);
+  AKTIF=kurOyun(mod,dizi[i]); AKTIF.pratik=true; AKTIF.no=i;
+  $('#bugun').hidden=false;
+  $('#sonuc').classList.remove('acik');
+  $('#arama').disabled=true; $('#arama').value=''; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
+  $('#arama-bilgi').textContent='Yukarıdan bir kare seç.';
+  $('#durum-not').innerHTML='🎲 <b>Rastgele bulmaca #'+i+'</b> — deneme modu, puan kaydedilmez. '+
+    '<span style="opacity:.8">Beğenmezsen tekrar bas.</span>';
+  ciz();
+}
+function bugune(){ AKTIF=null; moda(mod); }
 document.querySelectorAll('.mod-sec button').forEach(b=>b.onclick=()=>moda(b.dataset.mod));
+$('#rastgele').onclick=rastgele;
+$('#bugun').onclick=bugune;
 $('#gece').onclick=()=>{
   document.body.classList.toggle('gece');
   const g=document.body.classList.contains('gece');
