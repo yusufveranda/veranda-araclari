@@ -81,10 +81,16 @@ button{font:inherit;cursor:pointer;color:inherit;border:none;background:none}
   padding:6px;cursor:pointer;transition:transform .12s,box-shadow .12s,background .25s;overflow:hidden}
 .kutu:hover:not(.dolu):not([data-bitti]){transform:translateY(-2px);border-color:var(--kiremit)}
 .kutu.secili{outline:3px solid var(--kiremit);outline-offset:-1px;transform:translateY(-2px)}
-.kutu .bayrakem{font-size:clamp(24px,3.6vw,40px);line-height:1;filter:drop-shadow(1px 1px 0 var(--golge))}
+.kutu .bayrak-arka{position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:.34;filter:saturate(.82) contrast(.96);border-radius:inherit;pointer-events:none;z-index:0}
+body.gece .kutu .bayrak-arka{opacity:.26;filter:saturate(.72) contrast(.9)}
 .kutu .ad{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(13px,1.5vw,20px);
-  color:var(--baslik);margin-top:3px;line-height:1.08}
-.kutu .oran{font-size:11px;color:var(--soluk);margin-top:2px;font-family:'Libre Baskerville',serif}
+  color:var(--baslik);margin-top:3px;line-height:1.08;position:relative;z-index:1}
+.kutu.dolu .ad{text-shadow:0 1px 0 rgba(251,244,227,.85),0 -1px 0 rgba(251,244,227,.6)}
+body.gece .kutu.dolu .ad{text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.kutu .oran{font-size:11px;color:var(--soluk);margin-top:2px;font-family:'Libre Baskerville',serif;
+  position:relative;z-index:1;font-weight:700}
+.kutu.dolu .oran{color:var(--murekkep)}
 .kutu.dolu{cursor:default;background:
   linear-gradient(0deg,var(--dolgu,rgba(94,127,75,.14)),var(--dolgu,rgba(94,127,75,.14))),var(--kutu)}
 .kutu .arti{font-size:26px;color:var(--cok-soluk);font-weight:400}
@@ -256,6 +262,13 @@ function fold(s){                        // Türkçe + aksan katlama (aramada e�
     .replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c').replace(/â/g,'a').replace(/î/g,'i').replace(/û/g,'u')
     .replace(/[^a-z0-9]/g,'').trim();
 }
+function bayrakKodu(em){                  // 🇹🇷 → "tr" (bayrak dosyası adı)
+  const cps=[...(em||'')].map(c=>c.codePointAt(0));
+  if(cps.length<2) return null;
+  const a=cps[0]-0x1F1E6, b=cps[1]-0x1F1E6;
+  if(a<0||a>25||b<0||b>25) return null;
+  return String.fromCharCode(97+a)+String.fromCharCode(97+b);
+}
 function gunNo(){
   const ep=Date.parse(ATLAS_BULMACA.epoch+'T00:00:00');
   const now=new Date(); const bugun=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
@@ -339,8 +352,9 @@ function ciz(){
         const e=IDX[mod].byId[cell.ans];
         const tier=cell.puan>=75?.34:cell.puan>=40?.22:.11;
         k.style.setProperty('--dolgu','rgba(94,127,75,'+tier+')');
-        k.innerHTML=(e.bayrak?'<div class="bayrakem">'+e.bayrak+'</div>':'')+
-          '<div class="ad">'+e.ad+'</div><div class="oran">+'+cell.puan+' puan</div>';
+        const cc=e.bayrak?bayrakKodu(e.bayrak):null;
+        const arka=cc?'<div class="bayrak-arka" style="background-image:url(bayraklar/'+cc+'.svg)"></div>':'';
+        k.innerHTML=arka+'<div class="ad">'+e.ad+'</div><div class="oran">+'+cell.puan+' puan</div>';
       }else{
         k.innerHTML='<div class="arti">＋</div>';
         if(o.secili&&o.secili[0]==r&&o.secili[1]==c) k.classList.add('secili');
