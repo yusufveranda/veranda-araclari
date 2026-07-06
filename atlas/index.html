@@ -62,18 +62,18 @@ button{font:inherit;cursor:pointer;color:inherit;border:none;background:none}
 
 /* ---- sahne ---- */
 .sahne{display:flex;gap:clamp(16px,2.4vw,40px);align-items:flex-start;flex-wrap:wrap}
-.tahta-sar{flex:0 1 640px;min-width:min(100%,340px)}
+.tahta-sar{flex:1 1 780px;min-width:min(100%,340px);max-width:1040px}
 .yan{flex:1 1 340px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:clamp(12px,1.4vw,20px);align-content:start}
 
 /* ---- tahta (4x4) ---- */
-.tahta{display:grid;grid-template-columns:var(--kose,86px) repeat(3,1fr);gap:clamp(6px,.8vw,11px)}
+.tahta{display:grid;grid-template-columns:var(--kose,104px) repeat(3,1fr);gap:clamp(6px,.8vw,12px)}
 .kose{display:flex;align-items:center;justify-content:center;font-size:26px;opacity:.5;
   aspect-ratio:1}
 .bas{background:var(--pano);border:1px solid var(--cizgi);border-radius:9px;
   box-shadow:2px 3px 0 var(--golge);display:flex;align-items:center;justify-content:center;
   text-align:center;padding:7px 6px;font-family:'Playfair Display',Georgia,serif;font-weight:700;
-  font-size:clamp(11px,1.25vw,15px);line-height:1.14;color:var(--baslik);min-height:52px}
+  font-size:clamp(12px,1.15vw,17px);line-height:1.16;color:var(--baslik);min-height:56px}
 .bas.satirbas{aspect-ratio:auto}
 .kutu{position:relative;aspect-ratio:1;background:var(--kutu);border:1px solid var(--kutu-cizgi);
   border-radius:11px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25),2px 3px 0 var(--golge);
@@ -82,7 +82,7 @@ button{font:inherit;cursor:pointer;color:inherit;border:none;background:none}
 .kutu:hover:not(.dolu):not([data-bitti]){transform:translateY(-2px);border-color:var(--kiremit)}
 .kutu.secili{outline:3px solid var(--kiremit);outline-offset:-1px;transform:translateY(-2px)}
 .kutu .bayrakem{font-size:clamp(24px,3.6vw,40px);line-height:1;filter:drop-shadow(1px 1px 0 var(--golge))}
-.kutu .ad{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(12px,1.5vw,17px);
+.kutu .ad{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(13px,1.5vw,20px);
   color:var(--baslik);margin-top:3px;line-height:1.08}
 .kutu .oran{font-size:11px;color:var(--soluk);margin-top:2px;font-family:'Libre Baskerville',serif}
 .kutu.dolu{cursor:default;background:
@@ -145,7 +145,9 @@ details.nasil ul{margin:6px 0 0 18px}
 .dug{background:var(--kiremit);color:#F4EBD6;padding:9px 16px;border-radius:9px;font-weight:700;
   font-size:14px;box-shadow:2px 3px 0 var(--golge)}
 .dug.ikincil{background:var(--pano);color:var(--baslik);border:1px solid var(--cizgi)}
-.dug:hover{transform:translateY(-1px)}
+.dug:hover:not(:disabled){transform:translateY(-1px)}
+.dug:disabled{opacity:.45;cursor:default}
+#tahmin-btn{flex:none;white-space:nowrap}
 .kacan{margin-top:12px;font-size:13px}
 .kacan .satir{margin-top:6px;color:var(--soluk)}
 .kacan .satir b{color:var(--baslik);font-style:normal;font-weight:700}
@@ -184,7 +186,7 @@ footer a{color:var(--kiremit)}
         <h3>Durum</h3>
         <div class="pano-sayi">
           <div class="metrik"><div class="rakam" id="m-skor">0</div><div class="etk">puan · çok iyi</div></div>
-          <div class="metrik"><div class="rakam" id="m-hak">9</div><div class="etk">kalan hak</div></div>
+          <div class="metrik"><div class="rakam" id="m-hak">15</div><div class="etk">kalan hak</div></div>
           <div class="metrik"><div class="rakam" id="m-dogru">0</div><div class="etk">/9 doğru</div></div>
         </div>
         <p class="mini-not" id="durum-not">Bir kareye dokun, satır ve sütun ölçütüne birden uyan bir yer yaz.</p>
@@ -196,6 +198,7 @@ footer a{color:var(--kiremit)}
           <div class="arama-bilgi" id="arama-bilgi">Yukarıdan bir kare seç.</div>
           <div class="arama-kutu">
             <input id="arama" type="text" autocomplete="off" spellcheck="false" placeholder="bir yer yaz…" disabled>
+            <button class="dug" id="tahmin-btn" disabled>Tahmin et</button>
           </div>
           <ul class="oner" id="oner"></ul>
           <div id="mesaj"></div>
@@ -216,17 +219,12 @@ footer a{color:var(--kiremit)}
       </div>
 
       <div class="kart">
-        <h3>Bugünün ölçütleri</h3>
-        <ul class="olcut" id="olcut"></ul>
-      </div>
-
-      <div class="kart">
         <details class="nasil">
           <summary>Nasıl oynanır?</summary>
           <p>3×3 ızgaranın her satırı ve her sütunu bir coğrafya ölçütüdür. Her kareye,
           o karenin <b>satır</b> ve <b>sütun</b> ölçütüne <b>birden</b> uyan bir yer yaz.</p>
           <ul>
-            <li>Toplam <b>9 hakkın</b> var; her tahmin (doğru ya da yanlış) bir hak götürür.</li>
+            <li>Toplam <b>15 hakkın</b> var (9 kare için); her tahmin (doğru ya da yanlış) bir hak götürür.</li>
             <li>Aynı yeri ızgarada <b>bir kez</b> kullanabilirsin — bir kareye yazdığın cevabı başka kareye yazamazsın.</li>
             <li>Bir karenin çok sayıda doğru cevabı olabilir. Cevabın <b>ne kadar az akla geliyorsa o kadar çok puan</b>
             getirir: “Asya'da &amp; nüfusu 1M+” için <b>Çin</b> az puan, <b>Tacikistan</b> çok puan. <b>Çok puan iyidir.</b>
@@ -283,6 +281,8 @@ hazirla('dunya'); hazirla('turkiye');
 
 const OYUN={};   // mod -> günlük oyun durumu
 let AKTIF=null;  // rastgele (deneme) oyunu; null ise günlük oynanıyor
+const HAK=15;    // toplam tahmin hakkı
+let secilenAday=null;  // aramada seçilen ama henüz "Tahmin et" ile gönderilmemiş cevap
 function g(){ return AKTIF||OYUN[mod]; }   // o an oynanan oyun
 function bulmacaSec(m){
   const dizi=ATLAS_BULMACA[m];
@@ -299,7 +299,7 @@ function kurOyun(m,puz){
       enb[r].push(mx); cells[r].push({ans:null,puan:null,inter});
     }
   }
-  return {p,enb,cells,hak:9,kullanildi:new Set(),bitti:false,secili:null};
+  return {p,enb,cells,hak:HAK,kullanildi:new Set(),bitti:false,secili:null};
 }
 function yukleKayit(m){
   try{
@@ -350,14 +350,6 @@ function ciz(){
     }
   }
   guncelleDurum();
-  cizOlcut();
-}
-function cizOlcut(){
-  const o=g(),p=o.p,ul=$('#olcut');ul.innerHTML='';
-  const ekle=(pre,cid)=>{const li=document.createElement('li');
-    li.innerHTML='<b>'+pre+'</b><span>'+etiket(mod,cid)+'</span>';ul.appendChild(li);};
-  p.s.forEach((c,i)=>ekle((i+1)+'.',c));
-  p.u.forEach((c,i)=>ekle(['A','B','C'][i],c));
 }
 function guncelleDurum(){
   const o=g();let skor=0,dogru=0;
@@ -375,6 +367,7 @@ function secKare(r,c){
   const p=o.p;
   $('#arama-bilgi').innerHTML='<b>'+etiket(mod,p.s[r])+'</b> &nbsp;×&nbsp; <b>'+etiket(mod,p.u[c])+'</b>';
   const inp=$('#arama'); inp.disabled=false; inp.value=''; inp.focus();
+  secilenAday=null; $('#tahmin-btn').disabled=true;
   $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
 }
 let onerLst=[],onerVur=-1;
@@ -394,11 +387,30 @@ function arama(q){
   onerLst.forEach((id,i)=>{
     const e=IDX[mod].byId[id], li=document.createElement('li');
     const kull=o.kullanildi.has(id);
-    li.innerHTML=(e.bayrak?'<span class="em">'+e.bayrak+'</span>':'')+
-      '<span>'+e.ad+'</span>'+(kull?'<span class="np">kullanıldı</span>':'');
-    li.onclick=()=>gonder(id);
+    li.innerHTML='<span>'+e.ad+'</span>'+(kull?'<span class="np">kullanıldı</span>':'');
+    li.onclick=()=>secAday(id);
     box.appendChild(li);
   });
+}
+function secAday(id){                    // öneriyi seç (göndermeden)
+  secilenAday=id;
+  $('#arama').value=IDX[mod].byId[id].ad;
+  $('#oner').innerHTML=''; onerLst=[]; onerVur=-1;
+  $('#tahmin-btn').disabled=false;
+  $('#arama').focus();
+}
+function tahminEt(){                      // "Tahmin et" — asıl gönderim burada
+  const o=g(); if(o.bitti||!o.secili) return;
+  let id=secilenAday;
+  if(id==null){
+    const f=fold($('#arama').value);
+    if(f){
+      for(const x of IDX[mod].foldMap){ if(x.f===f){ id=x.id; break; } }
+      if(id==null && onerLst.length) id=onerLst[0];
+    }
+  }
+  if(id==null){ $('#mesaj').textContent='Bir yer yaz ya da listeden seç.'; return; }
+  gonder(id);
 }
 function vurgula(d){
   const lis=$('#oner').children; if(!lis.length) return;
@@ -421,6 +433,7 @@ function gonder(id){
     m.innerHTML='<span class="ok">✓ '+e.ad+'</span> — +'+puan+' puan'+(puan>=80?' 🔥':puan>=55?' 👏':'')+'.';
     o.secili=null; $('#arama').value=''; $('#oner').innerHTML='';
     $('#arama').disabled=true; $('#arama-bilgi').textContent='Sıradaki kareyi seç.';
+    secilenAday=null; $('#tahmin-btn').disabled=true;
   }else{
     const rl=etiket(mod,p.s[r]), cl=etiket(mod,p.u[c]);
     m.innerHTML='<span class="no">✗ '+e.ad+'</span> — <span class="kismi">'+
@@ -428,6 +441,7 @@ function gonder(id){
     const kk=$('#tahta').querySelector('.kutu[data-r="'+r+'"][data-c="'+c+'"]');
     if(kk){kk.classList.add('yanlis');setTimeout(()=>kk.classList.remove('yanlis'),400);}
     $('#arama').value=''; $('#oner').innerHTML='';
+    secilenAday=null; $('#tahmin-btn').disabled=true;
   }
   const dolu=o.cells.flat().filter(x=>x.ans).length;
   if(o.hak<=0||dolu===9) bitir();
@@ -442,7 +456,7 @@ function unvanBul(skor){
 }
 function bitir(){
   const o=g(); o.bitti=true; o.secili=null;
-  $('#arama').disabled=true; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
+  $('#arama').disabled=true; $('#tahmin-btn').disabled=true; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
   $('#arama-bilgi').textContent='Oyun bitti.';
   const {skor,dogru}=guncelleDurum();
   // emoji ızgara
@@ -453,7 +467,7 @@ function bitir(){
   }em+='\n';}
   $('#unvan').textContent=unvanBul(skor);
   $('#emoji').textContent=em;
-  $('#sonuc-ozet').innerHTML='Puan <b>'+skor+'</b> · '+dogru+'/9 doğru · '+(9-o.hak)+' tahmin. <i>(çok puan iyi)</i>';
+  $('#sonuc-ozet').innerHTML='Puan <b>'+skor+'</b> · '+dogru+'/9 doğru · '+(HAK-o.hak)+' tahmin. <i>(çok puan iyi)</i>';
   // kaçan kareler için örnek cevaplar
   let kh='<div style="font-weight:700;color:var(--baslik);font-family:\'Playfair Display\',serif">Kaçan kareler</div>';
   let bosVar=false;
@@ -495,7 +509,7 @@ $('#skor-gonder').onclick=()=>{
   const gun=GUN*2+(mod==='turkiye'?1:0);
   $('#skor-gonder').textContent='Gönderiliyor…';
   fetch(LB_URL+'?fn=add&oyun=atlas&gun='+gun+'&nick='+encodeURIComponent(nick)+
-        '&puan='+puan+'&cozulen='+dogru+'&deneme='+(9-o.hak))
+        '&puan='+puan+'&cozulen='+dogru+'&deneme='+(HAK-o.hak))
     .then(r=>r.json()).then(()=>{ $('#skor-gonder').textContent='Gönderildi ✓'; liderGetir(); })
     .catch(()=>{ $('#skor-gonder').textContent='Olmadı — tekrar dene'; });
 };
@@ -529,6 +543,7 @@ function moda(m){
   $('#slogan').textContent=(m==='dunya'?'ülkeler':'iller')+' · günün ızgarası';
   $('#sonuc').classList.remove('acik');
   $('#arama').disabled=true; $('#arama').value=''; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
+  secilenAday=null; $('#tahmin-btn').disabled=true;
   $('#arama-bilgi').textContent='Yukarıdan bir kare seç.';
   $('#durum-not').textContent=VARSAYILAN_NOT;
   ciz();
@@ -541,6 +556,7 @@ function rastgele(){
   $('#bugun').hidden=false;
   $('#sonuc').classList.remove('acik');
   $('#arama').disabled=true; $('#arama').value=''; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
+  secilenAday=null; $('#tahmin-btn').disabled=true;
   $('#arama-bilgi').textContent='Yukarıdan bir kare seç.';
   $('#durum-not').innerHTML='🎲 <b>Rastgele bulmaca #'+i+'</b> — deneme modu, puan kaydedilmez. '+
     '<span style="opacity:.8">Beğenmezsen tekrar bas.</span>';
@@ -550,6 +566,7 @@ function bugune(){ AKTIF=null; moda(mod); }
 document.querySelectorAll('.mod-sec button').forEach(b=>b.onclick=()=>moda(b.dataset.mod));
 $('#rastgele').onclick=rastgele;
 $('#bugun').onclick=bugune;
+$('#tahmin-btn').onclick=tahminEt;
 $('#gece').onclick=()=>{
   document.body.classList.toggle('gece');
   const g=document.body.classList.contains('gece');
@@ -559,13 +576,18 @@ $('#gece').onclick=()=>{
 if(localStorage.getItem('vt_gece')==='1'){document.body.classList.add('gece');$('#gece').textContent='☀️';}
 
 /* arama olayları */
-$('#arama').addEventListener('input',e=>arama(e.target.value));
+$('#arama').addEventListener('input',e=>{
+  secilenAday=null; arama(e.target.value);
+  $('#tahmin-btn').disabled=!e.target.value.trim();
+});
 $('#arama').addEventListener('keydown',e=>{
   if(e.key==='ArrowDown'){e.preventDefault();vurgula(1);}
   else if(e.key==='ArrowUp'){e.preventDefault();vurgula(-1);}
   else if(e.key==='Enter'){e.preventDefault();
-    if(onerVur>=0&&onerLst[onerVur])gonder(onerLst[onerVur]);
-    else if(onerLst.length)gonder(onerLst[0]);
+    if($('#oner').children.length){                 // liste açık → seç (göndermez)
+      const pick=onerVur>=0?onerLst[onerVur]:onerLst[0];
+      if(pick!=null) secAday(pick);
+    } else { tahminEt(); }                           // liste kapalı → gönder
   }
 });
 
