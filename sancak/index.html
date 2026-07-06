@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sancak — her gün bir bayrak açılır</title>
+<meta name="description" content="Günde bir bayrak. Bulanık başlar, her tahminde biraz açılır. Ne kadar erken bilirsen o kadar iyi.">
+<meta name="theme-color" content="#B84B2A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23B84B2A'/%3E%3Crect x='16' y='14' width='4' height='40' rx='2' fill='%23F2E6CE'/%3E%3Cpath d='M20 16 h26 l-6 8 l6 8 h-26 z' fill='%23D7261D'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../ortak/stil.css?v=9">
+<style>
+  body{font-family:'Libre Baskerville',Georgia,serif}
+  a.eve-don{margin-left:0}
+  .wrap{max-width:min(96vw,1240px)}
+  header.site .alt{max-width:56ch}
+
+  /* ---- tahta: geniş ekranda iki kolon ---- */
+  .tahta{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:34px;align-items:start;margin-top:22px}
+  @media(max-width:820px){.tahta{grid-template-columns:1fr;gap:24px}}
+
+  /* ---- bayrak çerçevesi ---- */
+  .cerceve{position:relative;background:
+      linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.06)),
+      repeating-linear-gradient(90deg,#efe9dd 0 2px,#e8e1d3 2px 4px);
+    border-radius:8px;box-shadow:0 10px 30px rgba(35,25,15,.18), inset 0 0 0 1px rgba(0,0,0,.05);
+    aspect-ratio:3/2;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .cerceve img{width:100%;height:100%;object-fit:contain;padding:5%;
+    transition:filter .9s cubic-bezier(.4,0,.2,1), transform .9s cubic-bezier(.4,0,.2,1);
+    transform:scale(1.06)}
+  /* açıldıkça çerçeveye ince ışık/vinyet */
+  .cerceve::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:8px;
+    box-shadow:inset 0 0 90px rgba(30,20,10,.28)}
+  .rozet-adim{position:absolute;left:14px;bottom:12px;background:rgba(28,21,16,.72);color:#F2E6CE;
+    font-size:12.5px;letter-spacing:.03em;padding:4px 11px;border-radius:20px;backdrop-filter:blur(3px)}
+
+  .direk{display:flex;align-items:center;gap:9px;margin:14px 2px 0;color:var(--muted);font-size:14px;font-style:italic}
+  .direk .kita{color:var(--acc);font-style:normal;border:1px solid var(--acc-soft);background:var(--acc-soft);
+    border-radius:20px;padding:2px 12px;font-size:13px;opacity:0;transition:opacity .5s}
+  .direk .kita.acik{opacity:1}
+
+  /* ---- oyun yanı ---- */
+  .durum{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .durum .say{font-family:'Playfair Display',Georgia,serif;font-size:19px;color:var(--ink)}
+  .durum .nokta{display:flex;gap:6px}
+  .durum .nokta i{width:10px;height:10px;border-radius:50%;background:var(--line);transition:background .3s}
+  .durum .nokta i.dolu{background:var(--vurgu)}
+  .durum .nokta i.dogru{background:var(--acc)}
+
+  #satirlar{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;min-height:4px}
+  .satir{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:9px 14px;animation:bel .3s ease}
+  @keyframes bel{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .satir .im{flex:none;width:22px;text-align:center;font-size:15px}
+  .satir .ad{flex:1;font-size:15.5px}
+  .satir .yon{font-size:12.5px;color:var(--muted);font-style:italic}
+  .satir.yanlis{border-color:#e4c3ad}
+  .satir.dogru{border-color:var(--acc);background:var(--acc-soft)}
+
+  /* ---- tahmin kutusu + öneri ---- */
+  .kutu{position:relative}
+  form.tahmin{display:flex;gap:10px}
+  form.tahmin input{flex:1;padding:13px 16px;border:1.5px solid var(--line);border-radius:11px;background:var(--card);
+    color:var(--ink);font-size:16px}
+  form.tahmin input:focus{outline:none;border-color:var(--acc)}
+  form.tahmin button{padding:0 20px;border:none;border-radius:11px;background:var(--acc);color:#F2E6CE;font-size:15px;
+    box-shadow:2px 3px 0 rgba(15,8,4,.22)}
+  form.tahmin button:hover{transform:translateY(-1px)}
+  form.tahmin button:disabled{opacity:.5;box-shadow:none;transform:none}
+  .oneriler{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 34px rgba(35,25,15,.18);overflow:hidden;display:none}
+  .oneriler.acik{display:block}
+  .oneriler button{display:flex;width:100%;justify-content:space-between;gap:12px;align-items:baseline;
+    background:none;border:none;text-align:left;padding:11px 16px;color:var(--ink);font-size:15.5px}
+  .oneriler button small{color:var(--muted);font-size:12.5px;font-style:italic}
+  .oneriler button.vurgu,.oneriler button:hover{background:var(--acc-soft)}
+  .uyari{color:#b1502f;font-size:14px;margin-top:9px;min-height:2px}
+
+  /* ---- sonuç ---- */
+  .sonuc{margin-top:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px;box-shadow:0 6px 20px var(--shadow);animation:bel .4s ease}
+  .sonuc h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:27px;color:var(--ink);
+    display:flex;align-items:center;gap:12px}
+  .sonuc h2 .bar{font-size:15px;color:#fff;border-radius:20px;padding:3px 12px}
+  .sonuc h2 .bar.ok{background:var(--acc)} .sonuc h2 .bar.no{background:#b1502f}
+  .sonuc .kunye{margin-top:8px;color:var(--muted);font-size:15px}
+  .sonuc .kunye b{color:var(--ink);font-weight:400;font-style:italic}
+  .sonuc .kareler{font-size:22px;letter-spacing:2px;margin:15px 0}
+  .sonuc .dugmeler{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .sonuc .dugmeler button{padding:11px 18px;border-radius:11px;border:none;font-size:15px}
+  .sonuc .pay{background:var(--vurgu);color:#F2E6CE;box-shadow:2px 3px 0 rgba(15,8,4,.22)}
+  .sonuc .ist{background:none;border:1.5px solid var(--line);color:var(--ink)}
+  .sonuc .geridon{background:none;border:1.5px solid var(--line);color:var(--ink);text-decoration:none;display:inline-flex;align-items:center}
+
+  .istat{display:flex;gap:22px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+  .istat div{text-align:center}
+  .istat b{display:block;font-family:'Playfair Display',Georgia,serif;font-size:24px;color:var(--ink)}
+  .istat span{font-size:12px;color:var(--muted)}
+
+  .not{margin-top:26px;color:var(--muted);font-size:13.5px;line-height:1.6;max-width:60ch}
+  .kupa{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="eve-don" href="../">verandaya dön</a>
+
+  <header class="site" style="margin-top:16px">
+    <a href="./"><h1>Sancak</h1></a>
+    <div class="alt">Her gün bir bayrak. Bulanık başlar; her tahminde biraz daha açılır. Bir şeritten, bir köşeden, ne kadar erken tanırsan o kadar iyi.</div>
+  </header>
+
+  <main>
+    <div class="tahta">
+      <div class="bayrak-yan">
+        <div class="cerceve">
+          <img id="bayrak" alt="bugünün gizli bayrağı" draggable="false">
+          <div class="rozet-adim" id="rozet">1 / 6</div>
+        </div>
+        <div class="direk">
+          <span>bugünün bayrağı</span>
+          <span class="kita" id="kitaIp"></span>
+        </div>
+      </div>
+
+      <div class="oyun-yan">
+        <div class="durum">
+          <span class="say" id="say">tahmin et</span>
+          <span class="nokta" id="noktalar"></span>
+        </div>
+        <div id="satirlar"></div>
+        <div class="kutu">
+          <form class="tahmin" id="form" autocomplete="off">
+            <input id="giris" type="text" placeholder="ülke adı yaz…" aria-label="ülke tahmini" autocomplete="off" spellcheck="false">
+            <button type="submit" id="tahminBtn">tahmin</button>
+          </form>
+          <div class="oneriler" id="oneriler"></div>
+        </div>
+        <div class="uyari" id="uyari"></div>
+        <div id="sonucYuva"></div>
+      </div>
+    </div>
+
+    <p class="not">Otomatik tamamlamadan seçebilir ya da adını yazıp <b>tahmin</b>e basabilirsin. Türkçe ad esas; “İngiltere”, “ABD”, “BAE” gibi yaygın adlar da kabul. Yeni bir bayrak her gün gece yarısı.</p>
+  </main>
+</div>
+
+<textarea class="kupa" id="kupa" aria-hidden="true"></textarea>
+
+<script>
+/* ===================== veri ===================== */
+/* c: flagcdn kodu · ad: Türkçe · bk: başkent · k: kıta · alt: kabul edilen diğer adlar */
+const U = [
+  ["tr","Türkiye","Ankara","Asya"],
+  ["de","Almanya","Berlin","Avrupa"],
+  ["fr","Fransa","Paris","Avrupa"],
+  ["it","İtalya","Roma","Avrupa"],
+  ["gb","Birleşik Krallık","Londra","Avrupa",["ingiltere","britanya","uk","birlesik kralllik"]],
+  ["us","ABD","Washington","Kuzey Amerika",["amerika","abd","amerika birlesik devletleri","birlesik devletler"]],
+  ["jp","Japonya","Tokyo","Asya"],
+  ["es","İspanya","Madrid","Avrupa"],
+  ["br","Brezilya","Brasília","Güney Amerika"],
+  ["cn","Çin","Pekin","Asya",["cin halk cumhuriyeti"]],
+  ["ru","Rusya","Moskova","Avrupa",["rusya federasyonu"]],
+  ["ca","Kanada","Ottawa","Kuzey Amerika"],
+  ["gr","Yunanistan","Atina","Avrupa"],
+  ["nl","Hollanda","Amsterdam","Avrupa"],
+  ["se","İsveç","Stockholm","Avrupa"],
+  ["no","Norveç","Oslo","Avrupa"],
+  ["ch","İsviçre","Bern","Avrupa"],
+  ["pt","Portekiz","Lizbon","Avrupa"],
+  ["ie","İrlanda","Dublin","Avrupa"],
+  ["in","Hindistan","Yeni Delhi","Asya"],
+  ["kr","Güney Kore","Seul","Asya",["kore","guney kore"]],
+  ["mx","Meksika","Meksiko","Kuzey Amerika"],
+  ["ar","Arjantin","Buenos Aires","Güney Amerika"],
+  ["au","Avustralya","Kanberra","Okyanusya"],
+  ["eg","Mısır","Kahire","Afrika"],
+  ["za","Güney Afrika","Pretoria","Afrika"],
+  ["sa","Suudi Arabistan","Riyad","Asya",["suudi arabistan"]],
+  ["pl","Polonya","Varşova","Avrupa"],
+  ["ua","Ukrayna","Kiev","Avrupa"],
+  ["be","Belçika","Brüksel","Avrupa"],
+  ["at","Avusturya","Viyana","Avrupa"],
+  ["fi","Finlandiya","Helsinki","Avrupa"],
+  ["dk","Danimarka","Kopenhag","Avrupa"],
+  ["ma","Fas","Rabat","Afrika"],
+  ["dz","Cezayir","Cezayir","Afrika"],
+  ["ng","Nijerya","Abuja","Afrika"],
+  ["ke","Kenya","Nairobi","Afrika"],
+  ["ir","İran","Tahran","Asya"],
+  ["iq","Irak","Bağdat","Asya"],
+  ["il","İsrail","Kudüs","Asya"],
+  ["th","Tayland","Bangkok","Asya"],
+  ["vn","Vietnam","Hanoi","Asya"],
+  ["id","Endonezya","Cakarta","Asya"],
+  ["my","Malezya","Kuala Lumpur","Asya"],
+  ["ph","Filipinler","Manila","Asya"],
+  ["pk","Pakistan","İslamabad","Asya"],
+  ["bd","Bangladeş","Dakka","Asya"],
+  ["sg","Singapur","Singapur","Asya"],
+  ["ae","Birleşik Arap Emirlikleri","Abu Dabi","Asya",["bae","emirlikler","birlesik arap emirlikleri"]],
+  ["qa","Katar","Doha","Asya"],
+  ["cz","Çekya","Prag","Avrupa",["cekya","cek cumhuriyeti","cekoslovakya"]],
+  ["hu","Macaristan","Budapeşte","Avrupa"],
+  ["ro","Romanya","Bükreş","Avrupa"],
+  ["rs","Sırbistan","Belgrad","Avrupa"],
+  ["hr","Hırvatistan","Zagreb","Avrupa"],
+  ["bg","Bulgaristan","Sofya","Avrupa"],
+  ["sk","Slovakya","Bratislava","Avrupa"],
+  ["si","Slovenya","Ljubljana","Avrupa"],
+  ["ba","Bosna-Hersek","Saraybosna","Avrupa",["bosna","bosna hersek"]],
+  ["al","Arnavutluk","Tiran","Avrupa"],
+  ["mk","Kuzey Makedonya","Üsküp","Avrupa",["makedonya","kuzey makedonya"]],
+  ["me","Karadağ","Podgorica","Avrupa"],
+  ["xk","Kosova","Priştine","Avrupa"],
+  ["az","Azerbaycan","Bakü","Asya"],
+  ["ge","Gürcistan","Tiflis","Asya"],
+  ["am","Ermenistan","Erivan","Asya"],
+  ["kz","Kazakistan","Astana","Asya"],
+  ["uz","Özbekistan","Taşkent","Asya"],
+  ["tm","Türkmenistan","Aşkabat","Asya"],
+  ["kg","Kırgızistan","Bişkek","Asya"],
+  ["af","Afganistan","Kabil","Asya"],
+  ["sy","Suriye","Şam","Asya"],
+  ["jo","Ürdün","Amman","Asya"],
+  ["lb","Lübnan","Beyrut","Asya"],
+  ["kw","Kuveyt","Kuveyt","Asya"],
+  ["om","Umman","Maskat","Asya"],
+  ["ye","Yemen","Sana","Asya"],
+  ["cl","Şili","Santiago","Güney Amerika"],
+  ["co","Kolombiya","Bogota","Güney Amerika"],
+  ["pe","Peru","Lima","Güney Amerika"],
+  ["ve","Venezuela","Karakas","Güney Amerika"],
+  ["ec","Ekvador","Quito","Güney Amerika"],
+  ["bo","Bolivya","La Paz","Güney Amerika"],
+  ["uy","Uruguay","Montevideo","Güney Amerika"],
+  ["py","Paraguay","Asunción","Güney Amerika"],
+  ["cu","Küba","Havana","Kuzey Amerika"],
+  ["do","Dominik Cumhuriyeti","Santo Domingo","Kuzey Amerika",["dominik","dominik cumhuriyeti"]],
+  ["jm","Jamaika","Kingston","Kuzey Amerika"],
+  ["cr","Kosta Rika","San José","Kuzey Amerika",["kosta rika"]],
+  ["pa","Panama","Panama","Kuzey Amerika"],
+  ["gt","Guatemala","Guatemala","Kuzey Amerika"],
+  ["et","Etiyopya","Addis Ababa","Afrika"],
+  ["gh","Gana","Akra","Afrika"],
+  ["sn","Senegal","Dakar","Afrika"],
+  ["ci","Fildişi Sahili","Yamoussoukro","Afrika",["fildisi sahili","fildisi"]],
+  ["cm","Kamerun","Yaoundé","Afrika"],
+  ["tz","Tanzanya","Dodoma","Afrika"],
+  ["ug","Uganda","Kampala","Afrika"],
+  ["zw","Zimbabve","Harare","Afrika"],
+  ["ao","Angola","Luanda","Afrika"],
+  ["mz","Mozambik","Maputo","Afrika"],
+  ["tn","Tunus","Tunus","Afrika"],
+  ["ly","Libya","Trablus","Afrika"],
+  ["sd","Sudan","Hartum","Afrika"],
+  ["ml","Mali","Bamako","Afrika"],
+  ["is","İzlanda","Reykjavik","Avrupa"],
+  ["ee","Estonya","Tallinn","Avrupa"],
+  ["lv","Letonya","Riga","Avrupa"],
+  ["lt","Litvanya","Vilnius","Avrupa"],
+  ["by","Belarus","Minsk","Avrupa",["beyaz rusya","belarus"]],
+  ["md","Moldova","Kişinev","Avrupa"],
+  ["lu","Lüksemburg","Lüksemburg","Avrupa"],
+  ["cy","Kıbrıs","Lefkoşa","Avrupa",["kibris","guney kibris"]],
+  ["mt","Malta","Valletta","Avrupa"],
+  ["lk","Sri Lanka","Kolombo","Asya",["sri lanka"]],
+  ["mm","Myanmar","Naypyidaw","Asya",["burma"]],
+  ["kh","Kamboçya","Phnom Penh","Asya"],
+  ["mn","Moğolistan","Ulanbatur","Asya"],
+  ["nz","Yeni Zelanda","Wellington","Okyanusya",["yeni zelanda"]]
+];
+
+/* günlük sıra = dizinin kendisi (baştan kolaya doğru). Kod→veri haritası. */
+const HARITA = {}; U.forEach(u=>HARITA[u[0]]=u);
+const SIRA = U.map(u=>u[0]);
+
+/* ===================== yardımcı ===================== */
+function norm(s){
+  return (s||"").replace(/İ/g,"i").replace(/I/g,"ı").toLowerCase()
+    .replace(/ç/g,"c").replace(/ş/g,"s").replace(/ı/g,"i").replace(/ğ/g,"g")
+    .replace(/ü/g,"u").replace(/ö/g,"o").replace(/â/g,"a")
+    .replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim();
+}
+function adlar(u){ const a=[u[1]]; if(u[4]) a.push(...u[4]); return a.map(norm); }
+const FLAG_BASE = "bayraklar/";   /* repoya gömülü SVG'ler — dış bağımlılık yok */
+
+/* ===================== gün ===================== */
+const BASLANGIC = new Date(2026,6,6);       /* 6 Temmuz 2026 = 0. gün */
+const bugun = new Date();
+const oyunGun = Math.floor((bugun - BASLANGIC)/86400000);
+const gunNo = ((oyunGun % SIRA.length)+SIRA.length)%SIRA.length;
+const hedefKod = SIRA[gunNo];
+const hedef = HARITA[hedefKod];
+
+/* ===================== durum ===================== */
+const MAKS = 6;
+const BULANIK = [24,15,9,5,2.4,1];          /* her adımda görünen bulanıklık (px) */
+let deneme = 0, bitti = false, kazandi = false;
+let tahminler = [];                          /* {kod, ad, dogru} */
+
+const $ = s=>document.querySelector(s);
+const imgEl=$("#bayrak"), rozet=$("#rozet"), sayEl=$("#say"), noktaEl=$("#noktalar"),
+      satirEl=$("#satirlar"), giris=$("#giris"), form=$("#form"), oneriEl=$("#oneriler"),
+      uyariEl=$("#uyari"), sonucYuva=$("#sonucYuva"), kitaIp=$("#kitaIp"), tahminBtn=$("#tahminBtn");
+
+imgEl.src = FLAG_BASE + hedefKod + ".svg";
+
+function bulaniklikGoster(){
+  const seviye = bitti ? 0 : BULANIK[Math.min(deneme,MAKS-1)];
+  imgEl.style.filter = "blur("+seviye+"px)" + (bitti?"":" saturate(1.02)");
+  if(bitti) imgEl.style.transform="scale(1)";
+  else imgEl.style.transform = "scale("+(1.06 - deneme*0.01)+")";
+  rozet.textContent = bitti ? (kazandi? "açıldı" : "kapandı") : ((deneme+1)+" / "+MAKS);
+}
+function noktaGuncelle(){
+  let h="";
+  for(let i=0;i<MAKS;i++){
+    let sinif="";
+    if(i<tahminler.length) sinif = tahminler[i].dogru ? "dogru" : "dolu";
+    h+='<i class="'+sinif+'"></i>';
+  }
+  noktaEl.innerHTML=h;
+}
+function sayGuncelle(){
+  if(bitti) return;
+  sayEl.textContent = deneme===0 ? "tahmin et" : (MAKS-deneme)+" hakkın kaldı";
+  if(deneme>=3){ kitaIp.textContent=hedef[3]; kitaIp.classList.add("acik"); }  /* 4. adımda kıta ipucu */
+}
+function satirCiz(){
+  satirEl.innerHTML = tahminler.map(t=>
+    '<div class="satir '+(t.dogru?"dogru":"yanlis")+'">'+
+      '<span class="im">'+(t.dogru?"✓":"✕")+'</span>'+
+      '<span class="ad">'+t.ad+'</span>'+
+      (t.dogru?'':'<span class="yon">değil</span>')+
+    '</div>').join("");
+}
+
+/* ===================== öneriler ===================== */
+let secili = -1, oneriListe = [];
+function oneriGuncelle(){
+  const q = norm(giris.value);
+  if(!q){ oneriKapat(); return; }
+  const bulunan = U.filter(u=>adlar(u).some(a=>a.includes(q)))
+                   .sort((a,b)=>{
+                     const ai=adlar(a).some(x=>x.startsWith(q))?0:1;
+                     const bi=adlar(b).some(x=>x.startsWith(q))?0:1;
+                     return ai-bi || a[1].localeCompare(b[1],"tr");
+                   }).slice(0,7);
+  oneriListe = bulunan; secili = bulunan.length?0:-1;
+  if(!bulunan.length){ oneriKapat(); return; }
+  oneriEl.innerHTML = bulunan.map((u,i)=>
+    '<button type="button" data-i="'+i+'" class="'+(i===0?"vurgu":"")+'">'+
+      '<span>'+u[1]+'</span><small>'+u[3]+'</small></button>').join("");
+  oneriEl.classList.add("acik");
+}
+function oneriKapat(){ oneriEl.classList.remove("acik"); oneriEl.innerHTML=""; oneriListe=[]; secili=-1; }
+oneriEl.addEventListener("mousedown", e=>{        /* mousedown: blur'dan önce yakala */
+  const b=e.target.closest("button"); if(!b) return;
+  e.preventDefault(); tahminYap(oneriListe[+b.dataset.i]);
+});
+
+/* ===================== tahmin ===================== */
+function cozUlke(){
+  if(secili>=0 && oneriListe[secili]) return oneriListe[secili];
+  const q = norm(giris.value);
+  let tam = U.find(u=>adlar(u).some(a=>a===q));
+  if(tam) return tam;
+  if(oneriListe.length===1) return oneriListe[0];
+  return null;
+}
+function tahminYap(u){
+  if(bitti) return;
+  if(!u){ uyariEl.textContent="öyle bir ülke bulamadım — listeden seç."; return; }
+  uyariEl.textContent="";
+  if(tahminler.some(t=>t.kod===u[0])){ uyariEl.textContent="onu zaten denedin."; return; }
+  const dogru = u[0]===hedefKod;
+  tahminler.push({kod:u[0], ad:u[1], dogru});
+  deneme++;
+  giris.value=""; oneriKapat();
+  satirCiz(); noktaGuncelle();
+  if(dogru){ bitir(true); }
+  else if(deneme>=MAKS){ bitir(false); }
+  else { bulaniklikGoster(); sayGuncelle(); }
+  kaydet();
+}
+form.addEventListener("submit", e=>{ e.preventDefault(); tahminYap(cozUlke()); });
+giris.addEventListener("input", oneriGuncelle);
+giris.addEventListener("keydown", e=>{
+  if(!oneriEl.classList.contains("acik")) return;
+  if(e.key==="ArrowDown"){ e.preventDefault(); secili=Math.min(secili+1,oneriListe.length-1); vurgula(); }
+  else if(e.key==="ArrowUp"){ e.preventDefault(); secili=Math.max(secili-1,0); vurgula(); }
+});
+function vurgula(){ [...oneriEl.children].forEach((b,i)=>b.classList.toggle("vurgu",i===secili)); }
+document.addEventListener("click", e=>{ if(!e.target.closest(".kutu")) oneriKapat(); });
+
+/* ===================== bitir + sonuç ===================== */
+function bitir(kzn){
+  bitti=true; kazandi=kzn;
+  bulaniklikGoster(); noktaGuncelle();
+  kitaIp.textContent=hedef[3]; kitaIp.classList.add("acik");
+  form.style.display="none"; oneriKapat();
+  sayEl.textContent = kzn ? "buldun!" : "bugünlük bu kadar";
+  istatIsle(kzn);
+  sonucCiz();
+  kaydet();
+}
+function kareDizi(){
+  return tahminler.map(t=>t.dogru?"🟩":"🟥").join("") + (kazandi?"":"⬛".repeat(MAKS-tahminler.length));
+}
+function sonucCiz(){
+  const s = istatOku();
+  const bar = kazandi ? '<span class="bar ok">'+deneme+'/'+MAKS+'</span>'
+                      : '<span class="bar no">—</span>';
+  sonucYuva.innerHTML =
+    '<div class="sonuc">'+
+      '<h2>'+hedef[1]+' '+bar+'</h2>'+
+      '<div class="kunye">'+hedef[3]+' · başkenti <b>'+hedef[2]+'</b></div>'+
+      '<div class="kareler">'+kareDizi()+'</div>'+
+      '<div class="dugmeler">'+
+        '<button class="pay" id="payBtn">sonucu paylaş</button>'+
+        '<a class="geridon" href="../">başka oyun →</a>'+
+      '</div>'+
+      '<div class="istat">'+
+        '<div><b>'+s.oyun+'</b><span>oynanan</span></div>'+
+        '<div><b>'+(s.oyun?Math.round(100*s.galip/s.oyun):0)+'%</b><span>başarı</span></div>'+
+        '<div><b>'+s.seri+'</b><span>güncel seri</span></div>'+
+        '<div><b>'+s.enSeri+'</b><span>en uzun seri</span></div>'+
+      '</div>'+
+    '</div>';
+  $("#payBtn").onclick=paylas;
+}
+function paylas(){
+  const metin = "Sancak #"+(oyunGun+1)+"  "+(kazandi?deneme+"/"+MAKS:"X/"+MAKS)+"\n"+
+                kareDizi()+"\nverandatools.com/sancak";
+  const btn=$("#payBtn");
+  const ok=()=>{ btn.textContent="kopyalandı ✓"; setTimeout(()=>btn.textContent="sonucu paylaş",1600); };
+  if(navigator.share && /Mobi|Android/i.test(navigator.userAgent)){
+    navigator.share({text:metin}).catch(()=>elle(metin,ok)); return;
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(metin).then(ok).catch(()=>elle(metin,ok));
+  else elle(metin,ok);
+}
+function elle(t,ok){ const k=$("#kupa"); k.value=t; k.select(); try{document.execCommand("copy");ok();}catch(e){} }
+
+/* ===================== istatistik (localStorage) ===================== */
+const IST="sancak:istat", GUN="sancak:gun";
+function istatOku(){ try{return JSON.parse(localStorage.getItem(IST))||{}}catch(e){return {}} }
+function istatVars(){ const s=istatOku(); s.oyun=s.oyun||0; s.galip=s.galip||0; s.seri=s.seri||0; s.enSeri=s.enSeri||0; s.sonGun=(s.sonGun??null); return s; }
+function istatIsle(kzn){
+  const s=istatVars();
+  if(s.sonGun===oyunGun) return;      /* bugünü ikinci kez sayma */
+  s.oyun++; if(kzn){ s.galip++; s.seri=(s.sonGun===oyunGun-1?s.seri:0)+1; s.enSeri=Math.max(s.enSeri,s.seri); }
+  else s.seri=0;
+  s.sonGun=oyunGun;
+  try{localStorage.setItem(IST,JSON.stringify(s));}catch(e){}
+}
+
+/* ===================== kaydet / geri yükle ===================== */
+function kaydet(){
+  try{ localStorage.setItem(GUN, JSON.stringify({gun:oyunGun, kod:hedefKod, t:tahminler, bitti, kazandi})); }catch(e){}
+}
+function geriYukle(){
+  let v; try{ v=JSON.parse(localStorage.getItem(GUN)); }catch(e){}
+  if(!v || v.gun!==oyunGun || v.kod!==hedefKod) return false;
+  tahminler=v.t||[]; deneme=tahminler.length; bitti=!!v.bitti; kazandi=!!v.kazandi;
+  return true;
+}
+
+/* ===================== başlat ===================== */
+(function(){
+  const vardi = geriYukle();
+  satirCiz(); noktaGuncelle();
+  if(vardi && bitti){ bulaniklikGoster(); kitaIp.textContent=hedef[3]; kitaIp.classList.add("acik"); form.style.display="none"; sayEl.textContent=kazandi?"buldun!":"bugünlük bu kadar"; sonucCiz(); }
+  else { bulaniklikGoster(); sayGuncelle(); setTimeout(()=>giris.focus(),200); }
+})();
+</script>
+</body>
+</html>
