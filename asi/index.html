@@ -220,7 +220,7 @@ const $=s=>document.querySelector(s);
 const MAX_HAK=3;
 let BITKILER={}, BULMACALAR=[], bulmacaNo=0;
 let IDS=[], TUZAK=new Set(), bitkiSira=[], adSira=[], fotoSec={};
-let secBitki=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false, puansiz=false;
+let secBitki=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false, puansiz=false, puanKilit=null;
 
 function seedli(arr,tohum){const a=arr.slice(),o=[];let s=tohum;while(a.length){s=(s*1103515245+12345)&0x7fffffff;o.push(a.splice(s%a.length,1)[0]);}return o;}
 function rastFoto(id){const f=(BITKILER[id]&&BITKILER[id].fotolar)||[];return f.length?f[Math.floor(Math.random()*f.length)]:"";}
@@ -230,7 +230,7 @@ function yukle(){
   IDS=b.bitkiler.slice(); TUZAK=new Set(b.tuzaklar);
   bitkiSira=seedli(IDS,(bulmacaNo+1)*53+11); adSira=seedli(IDS,(bulmacaNo+1)*29+5);
   fotoSec={}; IDS.forEach(id=>fotoSec[id]=rastFoto(id));
-  secBitki=null; secAd=null; eslenen=[]; hata=0; hataKayit=[]; bitti=false; mesgul=false; puansiz=false;
+  secBitki=null; secAd=null; eslenen=[]; hata=0; hataKayit=[]; bitti=false; mesgul=false; puansiz=false; puanKilit=null;
   $("#sonuc").classList.remove("ac"); ciz();
 }
 function baskaBulmaca(rastgele){
@@ -265,7 +265,7 @@ function ciz(){
     : '<span class="bos-yan">henüz eşleşme yok</span>';
   const hn=$("#hataNot");
   if(puansiz){
-    hn.innerHTML='<span class="puan-yok">puan yok</span> — istersen sonuna kadar oyna · <a href="#" id="pesBtn">cevapları gör</a>';
+    hn.innerHTML='<span class="puan-yok">puan kilitlendi: '+puanKilit+'/8</span> — kalanından puan yok · <a href="#" id="pesBtn">cevapları gör</a>';
     const pb=$("#pesBtn"); if(pb) pb.onclick=e=>{e.preventDefault(); pesEt();};
   }else{
     const kalanHak=Math.max(0,MAX_HAK-hata);
@@ -340,7 +340,7 @@ function tamam(){
   setTimeout(()=>{
     masa.classList.remove("kotu"); if(esit){ esit.textContent="≟"; esit.style.color=""; esit.style.transform=""; }
     [by,ay].forEach(el=>{ el.style.borderColor=""; el.style.boxShadow=""; el.style.animation=""; });
-    secBitki=null; secAd=null; if(puansizOldu) puansiz=true; mesgul=false; ciz();
+    secBitki=null; secAd=null; if(puansizOldu){ puansiz=true; puanKilit=eslenen.length; } mesgul=false; ciz();
   },600);
 }
 
@@ -355,23 +355,24 @@ function revealDoldur(){
 }
 function tamamlandi(){
   bitti=true;
-  $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🌿" : "Hepsini eşledin! 🌿";
+  $("#sonucBas").textContent = puansiz ? `Tamamladın — ${puanKilit}/8 puan 🌿` : "Hepsini eşledin! 🌿";
   $("#sonucOzet").textContent = puansiz
-    ? "Hakların bitmişti ama pes etmedin, hepsini eşledin. Puan yok ama öğrenme tam."
-    : (hata===0 ? "Tek hata yok — benzeşen çiftlere düşmedin, keskin göz."
-                : `${hata} yanlışla tamamladın. Birbirine benzeyen türleri ayırt etmeyi öğrendin.`);
+    ? `Puanın ${puanKilit}/8 — hakların bitmeden bu kadarını doğru eşlemiştin, o puanın duruyor. Kalanını puansız tamamladın; öğrenme tam.`
+    : (hata===0 ? "8/8 kusursuz — benzeşen çiftlere düşmedin, keskin göz."
+                : `8/8 · ${hata} yanlışla tamamladın. Birbirine benzeyen türleri ayırt etmeyi öğrendin.`);
   revealDoldur();
 }
 function pesEt(){
   bitti=true; ciz();
-  $("#sonucBas").textContent="Cevaplar açıldı";
-  $("#sonucOzet").textContent=`${eslenen.length}/8 eşleşmiştin. Doğru adlar ve ayırt edici işaretler aşağıda.`;
+  $("#sonucBas").textContent=`Cevaplar açıldı — ${puanKilit}/8 puan`;
+  $("#sonucOzet").textContent=`Puanın ${puanKilit}/8 — hakların bitmeden bu kadarını doğru eşlemiştin. Doğru adlar ve ayırt edici işaretler aşağıda.`;
   revealDoldur();
 }
 
 function paylas(){
-  const isaret = eslenen.length===8 ? (puansiz?'puansız':(hata+'/'+MAX_HAK+' yanlış')) : (eslenen.length+'/8');
-  const metin=`Aşı 🌿 #${bulmacaNo+1}\n${eslenen.length===8?'✓':'✕'} ${isaret}\nverandatools.com/asi`;
+  const puan = puansiz ? puanKilit : eslenen.length;
+  const kusursuz = !puansiz && eslenen.length===8 && hata===0;
+  const metin=`Aşı 🌿 #${bulmacaNo+1}\n${puan}/8 puan${kusursuz?' ✨':''}\nverandatools.com/asi`;
   navigator.clipboard?.writeText(metin).then(()=>toast("sonuç kopyalandı 📋"),()=>toast("kopyalanamadı"));
 }
 let toastT;
