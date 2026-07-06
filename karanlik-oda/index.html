@@ -39,7 +39,7 @@
   .controls{display:flex; gap:8px; align-items:center;}
   select,button,input{font:inherit;}
   select{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; font-size:13px;}
-  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; font-size:13px;}
+  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
   .mini-btn:hover{border-color:var(--red); color:var(--red);}
 
   .status{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
@@ -167,6 +167,7 @@
   <header>
     <h1>KARANLIK ODA</h1>
     <div class="controls">
+      <a class="mini-btn" href="jenerik.html" title="Oyuncuyu ver, filmlerini say">🎭 jenerik</a>
       <button id="todayBtn" class="mini-btn" style="display:none">bugünün filmi</button>
       <button id="randomBtn" class="mini-btn">🎲 rastgele film</button>
       <select id="filmSelect" aria-label="Önizleme: gün seç"></select>
@@ -224,7 +225,7 @@
     <div class="guess">
       <div class="ac-list" id="acList"></div>
       <div class="guess-row">
-        <input type="text" id="guessInput" placeholder="Film adı yaz…" autocomplete="off" aria-label="Film tahmini">
+        <input type="text" id="guessInput" placeholder="Film adı yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Film tahmini">
         <button class="btn" id="guessBtn" disabled>Tahmin Et</button>
         <button class="btn ghost" id="passBtn">Pas →</button>
       </div>
@@ -429,6 +430,7 @@ function renderStep() {
 
   $("feedback").className = "feedback";
   $("guessInput").value = ""; G.selected = null; $("guessBtn").disabled = true;
+  $("passBtn").disabled = false;                 // yanlış tahminde kilitlenen geç düğmesini geri aç
   hideAc();
 }
 
@@ -468,13 +470,16 @@ function advance() {
 
 function hideAc(){ $("acList").style.display = "none"; }
 
+// başlık eşleştirme için katlama: İ/I ve aksanları (Amélie, Déjà Vu) sadeleştir.
+// toLocaleLowerCase('tr') KULLANMA — İngilizce "Inception"ı "ınception" yapar.
+const acFold = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 $("guessInput").addEventListener("input", e => {
-  const q = e.target.value.trim().toLowerCase();
+  const q = acFold(e.target.value.trim());
   G.selected = null; $("guessBtn").disabled = true;
   if (q.length < 2) { hideAc(); return; }
   const starts = [], contains = [];
   for (const f of window.AC_INDEX) {
-    const t = f.t.toLowerCase();
+    const t = acFold(f.t);
     if (t.startsWith(q)) starts.push(f);
     else if (t.includes(q)) contains.push(f);
     if (starts.length >= 6) break;
@@ -483,7 +488,7 @@ $("guessInput").addEventListener("input", e => {
   const list = $("acList");
   if (!results.length) { hideAc(); return; }
   list.innerHTML = results.map((r,i) =>
-    `<div class="ac-item" data-i="${i}">${r.t} <span class="yr">(${r.y || "?"})</span></div>`).join("");
+    `<div class="ac-item" data-i="${i}">${esc(r.t)} <span class="yr">(${esc(r.y || "?")})</span></div>`).join("");
   list.style.display = "block";
   list.querySelectorAll(".ac-item").forEach(el => el.addEventListener("click", () => {
     const r = results[+el.dataset.i];
@@ -497,17 +502,22 @@ $("guessInput").addEventListener("input", e => {
 $("guessBtn").addEventListener("click", () => {
   if (!G.selected || G.over) return;
   if (G.selected.id === G.film.id) { endGame(true); return; }
-  const hint = yearHint(G.selected);
-  G.guesses.push({ t: G.selected.t, y: G.selected.y, hint });   // yıl yönü kalıcı listede
+  // çift tıklama korumasɪ: yanlış tahminde advance zamanlanmadan önce girişi kilitle,
+  // yoksa ikinci tık ikinci advance()'i tetikleyip bir banyo adımını haksız atlatır.
+  const sel = G.selected;
+  G.selected = null;
+  $("guessBtn").disabled = true; $("passBtn").disabled = true;
+  const hint = yearHint(sel);
+  G.guesses.push({ t: sel.t, y: sel.y, hint });                 // yıl yönü kalıcı listede
   renderGuessLog();
   let yeniOrtak = 0;                                             // ortak oyuncu/yönetmen
-  sharedPeople(G.selected).forEach(p => {
+  sharedPeople(sel).forEach(p => {
     if (!G.shared.some(x => x.id === p.id)) { G.shared.push(p); yeniOrtak++; }
   });
   if (yeniOrtak) renderCast();
   const fb = $("feedback");
   fb.className = "feedback bad";
-  fb.innerHTML = `<b>"${esc(G.selected.t)}"</b> değil${hint ? ` — yıl: <b style="color:var(--red)">${esc(hint)}</b>` : ""}. Görüntü biraz daha netleşiyor…`;
+  fb.innerHTML = `<b>"${esc(sel.t)}"</b> değil${hint ? ` — yıl: <b style="color:var(--red)">${esc(hint)}</b>` : ""}. Görüntü biraz daha netleşiyor…`;
   setTimeout(advance, 1200);
 });
 
