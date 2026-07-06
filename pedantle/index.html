@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css">
 <script src="../ortak/adlar.js"></script>
+<script src="../ortak/bayrak.js"></script>
 <style>
 /* ===== tema (verandle: kâğıt / Akdeniz) ===== */
 body{
@@ -531,8 +532,8 @@ function thCiz(){
 
 // ---- tahmin ----
 let mesajZaman;
-function mesajVer(t){ const el=$('mesaj'); el.textContent=t; el.style.opacity=1; clearTimeout(mesajZaman);
-  if(t) mesajZaman=setTimeout(()=>{el.style.opacity=0;},2600); }
+function mesajVer(t,sure){ const el=$('mesaj'); el.textContent=t; el.style.opacity=1; clearTimeout(mesajZaman);
+  if(t) mesajZaman=setTimeout(()=>{el.style.opacity=0;},sure||2600); }
 
 function tahminYap(ham, hint){
   if(S.bitti) return;
@@ -541,7 +542,7 @@ function tahminYap(ham, hint){
   if(!hint && S.tahminler.find(t=>t.base===gBase)){ mesajVer('bunu zaten denedin'); return; }
   const gDisp=trLower(ham.trim());
   const r=uygula(gBase, gDisp);
-  if(r.vekYok && r.acilan===0){ mesajVer('bu kelimeyi bilmiyorum 🤷'); return; }   // sayma, listeye ekleme
+  if(r.vekYok && r.acilan===0){ mesajVer('bu kelimeyi bilmiyorum 🤷',9000); kelimeBayrak(gDisp,'parsel',S.mod==='gun'?S.gunNo:''); return; }   // sayma, listeye ekleme
   mesajVer('');
   // odak/yeni işaretle
   for(const grp of S.sonAcan){ const st=grp.tag==='b'?S.bSt:S.gSt; for(const i of grp.ix) st[i]._yeni=true; }

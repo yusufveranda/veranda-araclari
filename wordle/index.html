@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css">
 <script src="../ortak/adlar.js"></script>
+<script src="../ortak/bayrak.js"></script>
 <style>
 /* ===== oyuna özgü tema belirteçleri (sıcak Akdeniz / kâğıt) ===== */
 body{
@@ -690,7 +691,7 @@ function dene(){
   const g=hayalet(b), dolu=b.giris.map((h,i)=>h||g[i]||'');
   if(dolu.some(x=>!x)){ mesaj('kalan boşlukları doldur'); return; }
   const kelime=dolu.join('');
-  if(!GSET[b.uz].has(kelime)){ mesaj('listede yok: '+kelime); titret(); sKotu(); return; }
+  if(!GSET[b.uz].has(kelime)){ mesaj('listede yok: '+kelime); kelimeBayrak(kelime,({iskelime:'taraca',anlamca:'karine'})[oyun]||oyun,mod==='gun'?oyunGun:''); titret(); sKotu(); return; }
   mesaj('');
   const renk=degerlendir(kelime,b.cevap);
   b.gecmis.push({harfler:dolu.slice(),renkler:renk});

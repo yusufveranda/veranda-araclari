@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css">
 <script src="../ortak/adlar.js"></script>
+<script src="../ortak/bayrak.js"></script>
 <style>
 /* ===== oyuna özgü tema (verandle: sıcak Akdeniz / kâğıt) ===== */
 body{
@@ -447,7 +448,7 @@ function tahminYap(ham){
   if(S.bitti) return;
   const w = trLower(ham.trim()).replace(/[^a-zçğıöşüâîû]/g,'');
   if(!w){ return; }
-  if(!IDX.has(w)){ mesajVer('bu kelimeyi bilmiyorum 🤷'); return; }
+  if(!IDX.has(w)){ mesajVer('bu kelimeyi bilmiyorum 🤷',9000); kelimeBayrak(w,'somine',S.mod==='gun'?S.gunNo:''); return; }
   if(S.tahminler.find(t=>t.w===w)){ mesajVer('bunu zaten denedin'); vurgulaSatir(w); return; }
   mesajVer('');
   tahminEkle(w, false);
@@ -469,10 +470,10 @@ function ipucuAl(){
 }
 
 let mesajZaman;
-function mesajVer(t){
+function mesajVer(t,sure){
   const el=$('mesaj'); el.textContent=t; el.style.opacity=1;
   clearTimeout(mesajZaman);
-  if(t) mesajZaman=setTimeout(()=>{el.style.opacity=0;},2600);
+  if(t) mesajZaman=setTimeout(()=>{el.style.opacity=0;},sure||2600);
 }
 function vurgulaSatir(w){
   const el=document.querySelector('.satir[data-w="'+CSS.escape(w)+'"]');
