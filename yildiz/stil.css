@@ -117,7 +117,12 @@ img{display:block}
 .oyun-alt{color:var(--soluk);font-size:12.5px;font-style:italic}
 .oyun-durum{margin-left:auto;display:flex;gap:16px;align-items:center;
   background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:8px 16px;box-shadow:2px 3px 0 var(--golge)}
-.oyun-kap{margin-top:20px}
+.oyun-kural{margin-top:14px;background:var(--kart);border:1px solid var(--cizgi);border-left:4px solid var(--yildiz);
+  border-radius:11px;padding:10px 16px;font-size:14px;color:var(--soluk);line-height:1.5;box-shadow:2px 3px 0 var(--golge)}
+.oyun-kural:empty{display:none}
+.oyun-kural b{color:var(--murekkep);font-weight:700}
+.oyun-kural .ik{font-weight:700;color:var(--murekkep)}
+.oyun-kap{margin-top:16px}
 
 /* ——— tanıtım modalı ——— */
 .modal-perde{position:fixed;inset:0;z-index:200;background:rgba(20,15,10,.72);

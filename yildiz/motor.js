@@ -13,6 +13,18 @@ var GUN_HEDEF  = 6;
 var KART_CAN   = 3;
 var AILE_SIRA  = ['kelime','eslestirme','obek','film','cografya','anlam'];
 var AILE_AD    = { kelime:'kelime', eslestirme:'eşleştirme', obek:'öbek', film:'film', cografya:'coğrafya', anlam:'anlam' };
+/* her oyunun oynanırken görünen kısa kuralı — yıldız neyle dolar, kalp neyle gider */
+var KURALLAR = {
+  kur:'Bir kuş + bir ad seç; <b>doğru eşleşme</b> yıldızı doldurur (<span class="ik">3·5·8</span> eş). <b>Yanlış eşleşme</b> bir kalp götürür.',
+  asi:'Bir bitki + bir ad seç; <b>doğru eşleşme</b> yıldızı doldurur (<span class="ik">3·5·8</span> eş). <b>Yanlış eşleşme</b> bir kalp götürür.',
+  dortsuru:'<b>Her doğru öbek</b> yıldızı doldurur (<span class="ik">2·3·4</span> öbek). <b>Yanlış öbek</b> bir kalp götürür.',
+  dortdemet:'<b>Her doğru öbek</b> yıldızı doldurur (<span class="ik">2·3·4</span> öbek). <b>Yanlış öbek</b> bir kalp götürür.',
+  jenerik:'Oyuncunun filmlerini say — <b>ne kadar çok bulursan</b> o kadar yıldız. <b>Yanlış film</b> bir kalp götürür.',
+  atlas:'<b>Her doğru hücre</b> yıldızı doldurur (<span class="ik">3·6·9</span> hücre). <b>Yanlış tahmin</b> bir kalp götürür.',
+  sancak:'⏳ <b>Erken</b> bil, çok yıldız al: 1. tahminde <b>3★</b> · 2-3. → <b>2★</b> · 4-5. → <b>1★</b>. <b>Kalp yok</b> — geciktikçe yıldız düşer, acele et.',
+  karanlikoda:'⏳ <b>Erken</b> bil, çok yıldız al: 1. karede <b>3★</b> · 2-3. → <b>2★</b> · 4-5. → <b>1★</b>. <b>Kalp yok</b> — her pas/yanlışta yıldız düşer.',
+  cati:'Önce kelimeleri çöz. Yıldız = temayı <b>ne kadar erken</b> (az kelimeyle) bulduğun: 1 kelimede <b>3★</b> · 2-3 → <b>2★</b> · 4-5 → <b>1★</b>. <b>Yanlış tema tahmini</b> bir kalp götürür — <b>3 tema hakkın</b> var.'
+};
 
 /* ——— oyun kaydı (gömülecek gerçek oyunlar) ——— */
 var OYUNLAR=[];
@@ -135,6 +147,7 @@ function oyunAc(def){
   DURUM._aktif=def.id;
   $('#pano').hidden=true; var ek=$('#oyunEkran'); ek.hidden=false;
   $('#oyunAd').textContent=def.ad; $('#oyunAlt').textContent=def.alt;
+  var kEl=$('#oyunKural'); if(kEl) kEl.innerHTML=KURALLAR[def.id]||'';
   hudTazele(def); window.scrollTo(0,0);
   var kap=$('#oyunKap');
   Object.keys(cerceveler).forEach(function(id){ cerceveler[id].style.display = (id===def.id)?'block':'none'; });
@@ -160,7 +173,7 @@ window.addEventListener('message',function(e){
        gün toplamına yalnız bitince sayılır (oynarken gösterilen değer 'olası' kademe). */
     if(typeof d.yildiz==='number') kd.yildiz=Math.max(0,Math.min(3,d.yildiz|0));
     if(d.bitti) kd.bitti=true;
-    durumKaydet(); if(DURUM._aktif===def.id) hudTazele(def); kazanmaKontrol(); return;
+    metaBilgilendir(def,kd); durumKaydet(); if(DURUM._aktif===def.id) hudTazele(def); kazanmaKontrol(); return;
   }
   var oncedenKilit=kd.kilit;
   if(typeof d.dogru==='number') kd.dogru=d.dogru;
@@ -172,11 +185,22 @@ window.addEventListener('message',function(e){
   if(!kd.kilit) kd.yildiz=yeniYildiz;
   else if(!oncedenKilit) kd.yildiz=yeniYildiz;
   if(d.bitti) kd.bitti=true;
+  metaBilgilendir(def,kd);
   durumKaydet();
   if(DURUM._aktif===def.id) hudTazele(def);
   kazanmaKontrol();
 },false);
 
+/* yıldız/kalp değişince oynayana anlık söyle (yalnız açık oyunda, ilk bildirimde sessiz) */
+var _sonDeger={};
+function metaBilgilendir(def,kd){
+  var o=_sonDeger[def.id]; _sonDeger[def.id]={yildiz:kd.yildiz,can:kd.can,bitti:kd.bitti};
+  if(!o || DURUM._aktif!==def.id) return;
+  if(kd.bitti && !o.bitti){ toast(kd.yildiz>0?('bildin! '+kd.yildiz+' ⭐ aldın'):'bitti — 0 ⭐', kd.yildiz>0?'iyi':'kotu'); return; }
+  if(def.mod==='hiz'){ if(kd.yildiz<o.yildiz) toast('⏳ geç kaldın — artık en çok '+kd.yildiz+' ⭐','kotu'); }
+  else { if(kd.can<o.can) toast('💔 kalp gitti — '+kd.can+' kalp kaldı','kotu');
+         else if(kd.yildiz>o.yildiz) toast('⭐ yıldız doldu — '+kd.yildiz+'/3','iyi'); }
+}
 function hudTazele(def){
   var kd=oyunKaydi(def.id), hiz=def.mod==='hiz';
   var y=$('#oyunYildiz'); if(y) y.innerHTML = yildizGoster(def,kd,false,true);
@@ -245,7 +269,7 @@ function temaUygula(t){ document.documentElement.dataset.tema=t; var b=$('#temaB
 function rastgeleGun(){
   _ephemeral=true;
   GUN=Math.floor(Math.random()*100000);
-  DURUM={gun:GUN,oyunlar:{},kazandi:false};
+  DURUM={gun:GUN,oyunlar:{},kazandi:false}; _sonDeger={};
   Object.keys(cerceveler).forEach(function(id){ try{ cerceveler[id].remove(); }catch(e){} delete cerceveler[id]; });
   PLAN=gununSecki(GUN);
   var t=$('#tarih'); if(t) t.textContent='🎲 rastgele gün #'+GUN+' · debug';
