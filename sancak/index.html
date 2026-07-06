@@ -14,12 +14,12 @@
 <style>
   body{font-family:'Libre Baskerville',Georgia,serif}
   a.eve-don{margin-left:0}
-  .wrap{max-width:min(96vw,1240px)}
-  header.site .alt{max-width:56ch}
+  .wrap{max-width:min(95vw,1500px);padding:42px 30px 96px}
+  header.site .alt{max-width:64ch}
 
-  /* ---- tahta: geniş ekranda iki kolon ---- */
-  .tahta{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:34px;align-items:start;margin-top:22px}
-  @media(max-width:820px){.tahta{grid-template-columns:1fr;gap:24px}}
+  /* ---- tahta: geniş ekranda iki kolon; sağ kolon dikeyde ortalı, ekranı doldurur ---- */
+  .tahta{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(360px,1fr);gap:52px;align-items:center;margin-top:34px}
+  @media(max-width:900px){.tahta{grid-template-columns:1fr;gap:26px;align-items:start}}
 
   /* ---- bayrak çerçevesi ---- */
   .cerceve{position:relative;background:
@@ -40,6 +40,15 @@
   .direk .kita{color:var(--acc);font-style:normal;border:1px solid var(--acc-soft);background:var(--acc-soft);
     border-radius:20px;padding:2px 12px;font-size:13px;opacity:0;transition:opacity .5s}
   .direk .kita.acik{opacity:1}
+
+  /* ---- mod çubuğu: günlük / rastgele ---- */
+  .mod-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .mod-bar button{font:inherit;font-size:14px;padding:8px 15px;border-radius:20px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);display:inline-flex;align-items:center;gap:6px;line-height:1}
+  .mod-bar button:hover{border-color:var(--acc);color:var(--acc)}
+  .mod-bar .rastgele{border-color:var(--vurgu);color:var(--vurgu)}
+  .mod-bar .rastgele:hover{background:var(--vurgu);color:#F2E6CE;border-color:var(--vurgu)}
+  .gizli{display:none!important}
 
   /* ---- oyun yanı ---- */
   .durum{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
@@ -99,7 +108,7 @@
   .istat b{display:block;font-family:'Playfair Display',Georgia,serif;font-size:24px;color:var(--ink)}
   .istat span{font-size:12px;color:var(--muted)}
 
-  .not{margin-top:26px;color:var(--muted);font-size:13.5px;line-height:1.6;max-width:60ch}
+  .not{margin-top:20px;color:var(--muted);font-size:13.5px;line-height:1.6}
   .kupa{position:absolute;left:-9999px}
 </style>
 </head>
@@ -120,12 +129,16 @@
           <div class="rozet-adim" id="rozet">1 / 6</div>
         </div>
         <div class="direk">
-          <span>bugünün bayrağı</span>
+          <span id="direkEt">bugünün bayrağı</span>
           <span class="kita" id="kitaIp"></span>
         </div>
       </div>
 
       <div class="oyun-yan">
+        <div class="mod-bar">
+          <button type="button" id="rastgeleBtn" class="rastgele">🎲 rastgele bayrak</button>
+          <button type="button" id="gunlukBtn" class="gizli">↩ bugünkü bayrak</button>
+        </div>
         <div class="durum">
           <span class="say" id="say">tahmin et</span>
           <span class="nokta" id="noktalar"></span>
@@ -140,10 +153,9 @@
         </div>
         <div class="uyari" id="uyari"></div>
         <div id="sonucYuva"></div>
+        <p class="not">Otomatik tamamlamadan seçebilir ya da adını yazıp <b>tahmin</b>e basabilirsin. Türkçe ad esas; “İngiltere”, “ABD”, “BAE” gibi yaygın adlar da kabul. Yeni bir bayrak her gün gece yarısı; canın çekerse <b>🎲 rastgele</b> ile istediğin kadar antren yap.</p>
       </div>
     </div>
-
-    <p class="not">Otomatik tamamlamadan seçebilir ya da adını yazıp <b>tahmin</b>e basabilirsin. Türkçe ad esas; “İngiltere”, “ABD”, “BAE” gibi yaygın adlar da kabul. Yeni bir bayrak her gün gece yarısı.</p>
   </main>
 </div>
 
@@ -293,21 +305,21 @@ const BASLANGIC = new Date(2026,6,6);       /* 6 Temmuz 2026 = 0. gün */
 const bugun = new Date();
 const oyunGun = Math.floor((bugun - BASLANGIC)/86400000);
 const gunNo = ((oyunGun % SIRA.length)+SIRA.length)%SIRA.length;
-const hedefKod = SIRA[gunNo];
-const hedef = HARITA[hedefKod];
+const GUNLUK_KOD = SIRA[gunNo];
 
 /* ===================== durum ===================== */
 const MAKS = 6;
 const BULANIK = [24,15,9,5,2.4,1];          /* her adımda görünen bulanıklık (px) */
+let mod = "gunluk";                          /* "gunluk" | "rastgele" */
+let hedefKod = GUNLUK_KOD, hedef = HARITA[hedefKod];
 let deneme = 0, bitti = false, kazandi = false;
 let tahminler = [];                          /* {kod, ad, dogru} */
 
 const $ = s=>document.querySelector(s);
 const imgEl=$("#bayrak"), rozet=$("#rozet"), sayEl=$("#say"), noktaEl=$("#noktalar"),
       satirEl=$("#satirlar"), giris=$("#giris"), form=$("#form"), oneriEl=$("#oneriler"),
-      uyariEl=$("#uyari"), sonucYuva=$("#sonucYuva"), kitaIp=$("#kitaIp"), tahminBtn=$("#tahminBtn");
-
-imgEl.src = FLAG_BASE + hedefKod + ".svg";
+      uyariEl=$("#uyari"), sonucYuva=$("#sonucYuva"), kitaIp=$("#kitaIp"),
+      direkEt=$("#direkEt"), rastgeleBtn=$("#rastgeleBtn"), gunlukBtn=$("#gunlukBtn");
 
 function bulaniklikGoster(){
   const seviye = bitti ? 0 : BULANIK[Math.min(deneme,MAKS-1)];
@@ -403,8 +415,8 @@ function bitir(kzn){
   bulaniklikGoster(); noktaGuncelle();
   kitaIp.textContent=hedef[3]; kitaIp.classList.add("acik");
   form.style.display="none"; oneriKapat();
-  sayEl.textContent = kzn ? "buldun!" : "bugünlük bu kadar";
-  istatIsle(kzn);
+  sayEl.textContent = kzn ? "buldun!" : (mod==="gunluk" ? "bugünlük bu kadar" : "bilemedin");
+  if(mod==="gunluk") istatIsle(kzn);
   sonucCiz();
   kaydet();
 }
@@ -415,23 +427,30 @@ function sonucCiz(){
   const s = istatOku();
   const bar = kazandi ? '<span class="bar ok">'+deneme+'/'+MAKS+'</span>'
                       : '<span class="bar no">—</span>';
+  const dugmeler = (mod==="gunluk")
+    ? '<button class="pay" id="payBtn">sonucu paylaş</button>'+
+      '<button class="ist" id="rastgeleSonBtn">🎲 rastgele oyna</button>'+
+      '<a class="geridon" href="../">başka oyun →</a>'
+    : '<button class="pay" id="yeniRastgeleBtn">🎲 yeni rastgele</button>'+
+      '<button class="ist" id="gunlukeDonBtn">↩ bugünkü bayrak</button>';
+  const istat = (mod==="gunluk")
+    ? '<div class="istat">'+
+        '<div><b>'+s.oyun+'</b><span>oynanan</span></div>'+
+        '<div><b>'+(s.oyun?Math.round(100*s.galip/s.oyun):0)+'%</b><span>başarı</span></div>'+
+        '<div><b>'+s.seri+'</b><span>güncel seri</span></div>'+
+        '<div><b>'+s.enSeri+'</b><span>en uzun seri</span></div>'+
+      '</div>'
+    : '';
   sonucYuva.innerHTML =
     '<div class="sonuc">'+
       '<h2>'+hedef[1]+' '+bar+'</h2>'+
       '<div class="kunye">'+hedef[3]+' · başkenti <b>'+hedef[2]+'</b></div>'+
       '<div class="kareler">'+kareDizi()+'</div>'+
-      '<div class="dugmeler">'+
-        '<button class="pay" id="payBtn">sonucu paylaş</button>'+
-        '<a class="geridon" href="../">başka oyun →</a>'+
-      '</div>'+
-      '<div class="istat">'+
-        '<div><b>'+s.oyun+'</b><span>oynanan</span></div>'+
-        '<div><b>'+(s.oyun?Math.round(100*s.galip/s.oyun):0)+'%</b><span>başarı</span></div>'+
-        '<div><b>'+s.seri+'</b><span>güncel seri</span></div>'+
-        '<div><b>'+s.enSeri+'</b><span>en uzun seri</span></div>'+
-      '</div>'+
+      '<div class="dugmeler">'+dugmeler+'</div>'+
+      istat+
     '</div>';
-  $("#payBtn").onclick=paylas;
+  if(mod==="gunluk"){ $("#payBtn").onclick=paylas; $("#rastgeleSonBtn").onclick=rastgeleBaslat; }
+  else { $("#yeniRastgeleBtn").onclick=rastgeleBaslat; $("#gunlukeDonBtn").onclick=gunlukBaslat; }
 }
 function paylas(){
   const metin = "Sancak #"+(oyunGun+1)+"  "+(kazandi?deneme+"/"+MAKS:"X/"+MAKS)+"\n"+
@@ -462,6 +481,7 @@ function istatIsle(kzn){
 
 /* ===================== kaydet / geri yükle ===================== */
 function kaydet(){
+  if(mod!=="gunluk") return;   /* rastgele antrenman günlük durumu bozmaz */
   try{ localStorage.setItem(GUN, JSON.stringify({gun:oyunGun, kod:hedefKod, t:tahminler, bitti, kazandi})); }catch(e){}
 }
 function geriYukle(){
@@ -471,13 +491,41 @@ function geriYukle(){
   return true;
 }
 
-/* ===================== başlat ===================== */
-(function(){
+/* ===================== mod: günlük / rastgele ===================== */
+function govdeSifirla(){
+  deneme=0; bitti=false; kazandi=false; tahminler=[];
+  satirEl.innerHTML=""; sonucYuva.innerHTML=""; uyariEl.textContent="";
+  kitaIp.textContent=""; kitaIp.classList.remove("acik");
+  giris.value=""; oneriKapat(); form.style.display="";
+}
+function rastgeleBaslat(){
+  let k; do { k = SIRA[Math.floor(Math.random()*SIRA.length)]; } while(k===hedefKod && SIRA.length>1);
+  mod="rastgele"; hedefKod=k; hedef=HARITA[k];
+  govdeSifirla();
+  imgEl.src = FLAG_BASE + k + ".svg";
+  direkEt.textContent="rastgele bayrak";
+  gunlukBtn.classList.remove("gizli");
+  rastgeleBtn.textContent="🎲 yeni rastgele";
+  bulaniklikGoster(); noktaGuncelle(); sayGuncelle();
+  setTimeout(()=>giris.focus(),150);
+}
+function gunlukBaslat(){
+  mod="gunluk"; hedefKod=GUNLUK_KOD; hedef=HARITA[hedefKod];
+  govdeSifirla();
+  imgEl.src = FLAG_BASE + hedefKod + ".svg";
+  direkEt.textContent="bugünün bayrağı";
+  gunlukBtn.classList.add("gizli");
+  rastgeleBtn.textContent="🎲 rastgele bayrak";
   const vardi = geriYukle();
   satirCiz(); noktaGuncelle();
   if(vardi && bitti){ bulaniklikGoster(); kitaIp.textContent=hedef[3]; kitaIp.classList.add("acik"); form.style.display="none"; sayEl.textContent=kazandi?"buldun!":"bugünlük bu kadar"; sonucCiz(); }
-  else { bulaniklikGoster(); sayGuncelle(); setTimeout(()=>giris.focus(),200); }
-})();
+  else { bulaniklikGoster(); sayGuncelle(); setTimeout(()=>giris.focus(),150); }
+}
+rastgeleBtn.onclick = rastgeleBaslat;
+gunlukBtn.onclick = gunlukBaslat;
+
+/* ===================== başlat ===================== */
+gunlukBaslat();
 </script>
 </body>
 </html>
