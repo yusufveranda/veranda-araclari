@@ -27,7 +27,7 @@
       repeating-linear-gradient(90deg,#efe9dd 0 2px,#e8e1d3 2px 4px);
     border-radius:8px;box-shadow:0 10px 30px rgba(35,25,15,.18), inset 0 0 0 1px rgba(0,0,0,.05);
     aspect-ratio:3/2;overflow:hidden;display:flex;align-items:center;justify-content:center}
-  .cerceve img{width:100%;height:100%;object-fit:contain;padding:5%;
+  .cerceve canvas{width:100%;height:100%;object-fit:contain;padding:5%;
     transition:filter .9s cubic-bezier(.4,0,.2,1), transform .9s cubic-bezier(.4,0,.2,1);
     transform:scale(1.06)}
   /* açıldıkça çerçeveye ince ışık/vinyet */
@@ -125,7 +125,8 @@
     <div class="tahta">
       <div class="bayrak-yan">
         <div class="cerceve">
-          <img id="bayrak" alt="bugünün gizli bayrağı" draggable="false">
+          <img id="bayrak" alt="" draggable="false" hidden>
+          <canvas id="bayrakCv" aria-label="bugünün gizli bayrağı"></canvas>
           <div class="rozet-adim" id="rozet">1 / 6</div>
         </div>
         <div class="direk">
@@ -309,25 +310,48 @@ const GUNLUK_KOD = SIRA[gunNo];
 
 /* ===================== durum ===================== */
 const MAKS = 6;
-const BULANIK = [24,15,9,5,2.4,1];          /* her adımda görünen bulanıklık (px) */
+const PIKSEL  = [7,12,20,34,60,120];        /* yatay renk bloğu sayısı — az = daha kapalı */
+const BULANIK = [8,5.5,3.5,2,1,0];          /* piksellerin üstüne binen bulanıklık (px) */
+const _off = document.createElement("canvas");
+const _octx = _off.getContext("2d");
 let mod = "gunluk";                          /* "gunluk" | "rastgele" */
 let hedefKod = GUNLUK_KOD, hedef = HARITA[hedefKod];
 let deneme = 0, bitti = false, kazandi = false;
 let tahminler = [];                          /* {kod, ad, dogru} */
 
 const $ = s=>document.querySelector(s);
-const imgEl=$("#bayrak"), rozet=$("#rozet"), sayEl=$("#say"), noktaEl=$("#noktalar"),
+const imgEl=$("#bayrak"), cvEl=$("#bayrakCv"), ctx=$("#bayrakCv").getContext("2d"),
+      rozet=$("#rozet"), sayEl=$("#say"), noktaEl=$("#noktalar"),
       satirEl=$("#satirlar"), giris=$("#giris"), form=$("#form"), oneriEl=$("#oneriler"),
       uyariEl=$("#uyari"), sonucYuva=$("#sonucYuva"), kitaIp=$("#kitaIp"),
       direkEt=$("#direkEt"), rastgeleBtn=$("#rastgeleBtn"), gunlukBtn=$("#gunlukBtn");
 
 function bulaniklikGoster(){
-  const seviye = bitti ? 0 : BULANIK[Math.min(deneme,MAKS-1)];
-  imgEl.style.filter = "blur("+seviye+"px)" + (bitti?"":" saturate(1.02)");
-  if(bitti) imgEl.style.transform="scale(1)";
-  else imgEl.style.transform = "scale("+(1.06 - deneme*0.01)+")";
+  const seviye = Math.min(deneme,MAKS-1);
+  const blur = bitti ? 0 : BULANIK[seviye];
+  cvEl.style.filter = "blur("+blur+"px)" + (bitti?"":" saturate(1.02)");
+  cvEl.style.transform = bitti ? "scale(1)" : "scale("+(1.06 - deneme*0.01)+")";
   rozet.textContent = bitti ? (kazandi? "açıldı" : "kapandı") : ((deneme+1)+" / "+MAKS);
+  if(!imgEl.complete || !imgEl.naturalWidth) return;   /* SVG henüz yüklenmediyse onload çizecek */
+  const oran = (imgEl.naturalWidth/imgEl.naturalHeight) || 1.5;
+  const W = 640, H = Math.max(1, Math.round(W/oran));
+  cvEl.width = W; cvEl.height = H;
+  if(bitti){                                            /* tam açık: pürüzsüz çiz */
+    ctx.imageSmoothingEnabled = true;
+    ctx.clearRect(0,0,W,H);
+    ctx.drawImage(imgEl, 0,0,W,H);
+    return;
+  }
+  const bw = PIKSEL[seviye], bh = Math.max(1, Math.round(bw/oran));
+  _off.width = bw; _off.height = bh;                    /* önce küçük tuvale indir */
+  _octx.imageSmoothingEnabled = true;
+  _octx.clearRect(0,0,bw,bh);
+  _octx.drawImage(imgEl, 0,0,bw,bh);
+  ctx.imageSmoothingEnabled = false;                    /* sonra pikselli büyüt */
+  ctx.clearRect(0,0,W,H);
+  ctx.drawImage(_off, 0,0,bw,bh, 0,0,W,H);
 }
+imgEl.onload = bulaniklikGoster;                        /* her yeni bayrak yüklenince yeniden çiz */
 function noktaGuncelle(){
   let h="";
   for(let i=0;i<MAKS;i++){
