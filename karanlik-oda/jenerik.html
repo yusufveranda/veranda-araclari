@@ -41,6 +41,9 @@
   select{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; font-size:13px;}
   .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
   .mini-btn:hover{border-color:var(--red); color:var(--red);}
+  /* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+  body.gomulu header, body.gomulu footer, body.gomulu #againBtn{display:none;}
+  body.gomulu .wrap{padding-top:10px;}
 
   /* ---- oyuncu kartı: banyoda kurumuş bir portre ---- */
   .prompt{display:grid; grid-template-columns:auto 1fr; gap:20px; align-items:center;
@@ -195,6 +198,15 @@ FILMS.forEach(f => FILM_BY_ID[f.i] = f);
 
 let G = null;   // {actor, index, random, filmIds:Set, found:[], missed:[], sel, over}
 
+/* ——— Günün Yıldızları gömme kipi ——— */
+const _MP = new URLSearchParams(location.search);
+const GOMULU = _MP.get("meta") === "1";
+if (GOMULU) document.body.classList.add("gomulu");
+function metaBildir(){
+  if (!GOMULU || !G) return;
+  try{ parent.postMessage({kaynak:"jenerik", dogru:G.foundSet.size, toplam:G.total, hata:G.missed.length, bitti:G.over}, location.origin); }catch(e){}
+}
+
 function todayIndex(){
   const days = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
   const n = ACTORS.length;
@@ -304,11 +316,12 @@ function submit(){
   if (G.filmIds.has(f.i)){
     G.foundSet.add(f.i); G.found.push(f.i);
     flash("good", `<b>${esc(f.t)}</b> ✓ bu oyuncunun filmi!`);
-    updateMeter(); renderGrid(); persist();
+    updateMeter(); renderGrid(); persist(); metaBildir();
     if (G.foundSet.size === G.total){ resetInput(); finish(true); return; }
   } else {
     if (!G.missed.includes(f.t)){ G.missed.push(f.t); renderMisses(); persist(); }
     flash("bad", `<b>${esc(f.t)}</b> — bu oyuncu bu filmde yok.`);
+    metaBildir();
   }
   resetInput();
 }
@@ -346,7 +359,7 @@ function finish(won){
     ? `<b>${esc(G.actor.n)}</b> — bu oyundaki bütün filmlerini çıkardın: ${n} film, ${n} puan.`
     : `<b>${esc(G.actor.n)}</b> — ${n}/${total} film yazdın (${pct}%). Kalan ${total - n} film aşağıda gri açıldı.`;
   renderGrid();
-  persist();
+  persist(); metaBildir();
 }
 
 // ---- başlat ----
@@ -377,6 +390,7 @@ function startGame(index, random=false){
     resetInput();
   }
   $("actorSelect").value = String(index);
+  metaBildir();
 }
 
 // ---- olaylar ----
@@ -425,7 +439,8 @@ function pickRandom(){
     sel.appendChild(o);
   });
   sel.addEventListener("change", () => startGame(+sel.value));
-  startGame(today);
+  const _bulmaca = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%ACTORS.length)+ACTORS.length)%ACTORS.length : today;
+  startGame(_bulmaca);
 })();
 </script>
 </body>

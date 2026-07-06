@@ -110,6 +110,8 @@
 
   .not{margin-top:20px;color:var(--muted);font-size:13.5px;line-height:1.6}
   .kupa{position:absolute;left:-9999px}
+/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar{display:none}
 </style>
 </head>
 <body>
@@ -321,6 +323,17 @@ function skKaristir(n,rng){const a=[...Array(n).keys()];for(let i=n-1;i>0;i--){c
 let mod = "gunluk";                          /* "gunluk" | "rastgele" */
 let hedefKod = GUNLUK_KOD, hedef = HARITA[hedefKod];
 let deneme = 0, bitti = false, kazandi = false;
+/* ——— Günün Yıldızları gömme kipi (hız: kalpsiz, yıldız = kaçıncı tahminde bildiğin) ——— */
+const _MP=new URLSearchParams(location.search);
+const GOMULU=_MP.get("meta")==="1";
+const _METAKOD=(GOMULU&&_MP.has("bulmaca"))?SIRA[(((+_MP.get("bulmaca"))%SIRA.length)+SIRA.length)%SIRA.length]:null;
+if(GOMULU) document.body.classList.add("gomulu");
+function metaKademe(n){ return n<=1?3 : n<=3?2 : n<=5?1 : 0; }
+function metaBildir(){
+  if(!GOMULU) return;
+  const y = bitti ? (kazandi?metaKademe(deneme):0) : metaKademe(deneme+1);
+  try{ parent.postMessage({kaynak:"sancak", yildiz:y, bitti:bitti}, location.origin); }catch(e){}
+}
 let tahminler = [];                          /* {kod, ad, dogru} */
 
 const $ = s=>document.querySelector(s);
@@ -435,7 +448,7 @@ function tahminYap(u){
   if(dogru){ bitir(true); }
   else if(deneme>=MAKS){ bitir(false); }
   else { bulaniklikGoster(); sayGuncelle(); }
-  kaydet();
+  kaydet(); metaBildir();
 }
 form.addEventListener("submit", e=>{ e.preventDefault(); tahminYap(cozUlke()); });
 giris.addEventListener("input", oneriGuncelle);
@@ -519,10 +532,12 @@ function istatIsle(kzn){
 
 /* ===================== kaydet / geri yükle ===================== */
 function kaydet(){
+  if(GOMULU) return;           /* gömülü kipte standalone kaydına dokunma */
   if(mod!=="gunluk") return;   /* rastgele antrenman günlük durumu bozmaz */
   try{ localStorage.setItem(GUN, JSON.stringify({gun:oyunGun, kod:hedefKod, t:tahminler, bitti, kazandi})); }catch(e){}
 }
 function geriYukle(){
+  if(GOMULU) return false;
   let v; try{ v=JSON.parse(localStorage.getItem(GUN)); }catch(e){}
   if(!v || v.gun!==oyunGun || v.kod!==hedefKod) return false;
   tahminler=v.t||[]; deneme=tahminler.length; bitti=!!v.bitti; kazandi=!!v.kazandi;
@@ -548,7 +563,7 @@ function rastgeleBaslat(){
   setTimeout(()=>giris.focus(),150);
 }
 function gunlukBaslat(){
-  mod="gunluk"; hedefKod=GUNLUK_KOD; hedef=HARITA[hedefKod];
+  mod="gunluk"; hedefKod=(_METAKOD||GUNLUK_KOD); hedef=HARITA[hedefKod];
   govdeSifirla();
   imgEl.src = FLAG_BASE + hedefKod + ".svg";
   direkEt.textContent="bugünün bayrağı";
@@ -564,6 +579,7 @@ gunlukBtn.onclick = gunlukBaslat;
 
 /* ===================== başlat ===================== */
 gunlukBaslat();
+metaBildir();
 </script>
 </body>
 </html>

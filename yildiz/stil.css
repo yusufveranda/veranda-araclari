@@ -1,0 +1,171 @@
+/* Günün Yıldızları — meta oyun teması (veranda ailesi) */
+:root{
+  --kagit:#f1e9d7; --kagit-2:#e8dec8; --kart:#fbf6ea; --kart-2:#f4ecdb;
+  --murekkep:#241c14; --soluk:#6f6656; --cok-soluk:#9a9080; --cizgi:#d9cdb4;
+  --yildiz:#e0a02f; --yildiz-yumusak:rgba(224,160,47,.16); --yildiz-bos:#cdbe9d;
+  --kalp:#c2331f; --kalp-bos:#cdbe9d;
+  --dogru:#3c7a4c; --dogru-bg:rgba(60,122,76,.14);
+  --yanlis:#b5462b; --yanlis-bg:rgba(181,70,43,.13);
+  --vurgu:#b5533a; --yesil:#33606b; --yesil-koyu:#214048;
+  --golge:rgba(38,32,22,.15); --golge-sert:rgba(26,20,12,.24);
+  /* aile aksanları — mat, toprak tonları */
+  --a-kelime:#b0472f; --a-eslestirme:#33606b; --a-obek:#8a6a2e; --a-film:#6c4a7a; --a-cografya:#4a6b4a;
+}
+[data-tema="gece"]{
+  --kagit:#161310; --kagit-2:#1d1915; --kart:#221d17; --kart-2:#28221b;
+  --murekkep:#ece3d2; --soluk:#9a9080; --cok-soluk:#6b6252; --cizgi:#37301f;
+  --yildiz:#f0b64a; --yildiz-yumusak:rgba(240,182,74,.15); --yildiz-bos:#4a4230;
+  --kalp:#e0684e; --kalp-bos:#4a4230;
+  --dogru:#6fc283; --dogru-bg:rgba(111,194,131,.16); --yanlis:#e0714e; --yanlis-bg:rgba(224,113,78,.15);
+  --vurgu:#d98460; --yesil:#7fb8c2; --yesil-koyu:#a6d6df;
+  --golge:rgba(0,0,0,.45); --golge-sert:rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--kagit);color:var(--murekkep);
+  font-family:'Libre Baskerville',Georgia,serif;font-size:16px;line-height:1.55;min-height:100vh;
+  -webkit-tap-highlight-color:transparent;transition:background .4s,color .4s}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:url(../gorsel/doku.jpg) center/cover;opacity:.10;mix-blend-mode:soft-light}
+[data-tema="gece"] body::before{opacity:.16}
+button{font:inherit;cursor:pointer;color:inherit;border:none;background:none}
+a{color:var(--yesil-koyu)}
+img{display:block}
+
+/* ——— üst şerit ——— */
+.pano{width:100%;margin:0;padding:14px clamp(16px,2.4vw,46px) 50px}
+.ust{display:flex;align-items:center;gap:12px}
+.eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;
+  text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;box-shadow:2px 3px 0 var(--golge)}
+.eve-don::before{content:"";width:11px;height:11px;border-radius:50%;background:#f6efe0;flex:none}
+.eve-don:hover{transform:translateY(-1px)}
+.ust-sag{margin-left:auto;display:flex;gap:8px}
+.ikonbtn{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:6px 14px;
+  font-size:13.5px;color:var(--soluk)}
+.ikonbtn:hover{border-color:var(--yildiz);color:var(--murekkep)}
+
+/* ——— başlık + gün ölçer ——— */
+.baslik{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin:14px 0 2px}
+.baslik h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;
+  font-size:clamp(26px,3.4vw,40px);line-height:1;letter-spacing:-.5px}
+.tarih{color:var(--soluk);font-style:italic;font-size:14px;margin-top:6px}
+.gun-olcer{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:10px 16px;box-shadow:2px 3px 0 var(--golge)}
+.gun-olcer .g-yaz{font-family:'Playfair Display',serif;font-size:15px;color:var(--soluk);margin-right:2px}
+.gun-olcer .g-yaz b{color:var(--murekkep);font-size:19px}
+
+.giris-not{margin:10px 0 2px;color:var(--soluk);font-size:13.5px}
+.giris-not b{font-weight:700;color:var(--murekkep)}
+
+/* ——— kart yıldız/kalp ölçerleri ——— */
+.olcer{display:inline-flex;align-items:center;gap:3px;vertical-align:middle}
+.svg-ik{width:22px;height:22px;flex:none;display:block}
+.svg-ik.kucuk{width:18px;height:18px}
+.yildiz-dolu{fill:var(--yildiz)}
+.yildiz-bos{fill:none;stroke:var(--yildiz-bos);stroke-width:6}
+.kalp-dolu{fill:var(--kalp)}
+.kalp-bos{fill:none;stroke:var(--kalp-bos);stroke-width:6}
+.yildiz-yeni{animation:yildiz-parla .55s ease}
+@keyframes yildiz-parla{0%{transform:scale(.4) rotate(-25deg);opacity:0}
+  55%{transform:scale(1.35) rotate(8deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.kalp-gitti{animation:kalp-sars .5s ease}
+@keyframes kalp-sars{0%,100%{transform:none}25%{transform:translateX(-3px) scale(1.15)}75%{transform:translateX(3px)}}
+
+/* ——— gün panosu kartları (tam genişlik, kısa) ——— */
+.kartlar{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:14px}
+.kart{position:relative;display:flex;align-items:center;gap:13px;text-align:left;width:100%;
+  background:var(--kart);border:1px solid var(--cizgi);border-left:5px solid var(--aksan,var(--yildiz));
+  border-radius:12px;padding:12px 15px;box-shadow:3px 4px 0 var(--golge);
+  transition:transform .13s,box-shadow .13s;overflow:hidden}
+.kart:hover{transform:translateY(-3px);box-shadow:4px 8px 0 var(--golge-sert)}
+.kart.bitti{opacity:.9}
+.kart.kilit{opacity:.72}
+.kart-govde{flex:1;min-width:0}
+.kart-aile{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--aksan,var(--soluk));
+  font-family:'Libre Baskerville',serif;font-weight:700}
+.kart-ad{font-family:'Playfair Display',serif;font-weight:700;font-size:18px;line-height:1.05;margin:1px 0 2px}
+.kart-alt{color:var(--soluk);font-size:12px;font-style:italic;line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kart-durum{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.kart-durum .svg-ik.kucuk{width:16px;height:16px}
+.kart-rozet{font-size:12px;color:var(--soluk);font-family:'Libre Baskerville',serif}
+.kart-rozet.tamam{color:var(--dogru);font-weight:700}
+.kart-rozet.kilit{color:var(--yanlis)}
+.kart-git{font-size:13px;color:var(--cok-soluk);margin-top:1px}
+.kart:hover .kart-git{color:var(--vurgu)}
+
+/* ——— kazandın şeridi ——— */
+.kazandin{margin-top:22px;background:var(--kart);border:1px solid var(--dogru);border-radius:14px;
+  padding:22px 24px;box-shadow:4px 6px 0 var(--golge);animation:belir .4s ease}
+.kazandin h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--dogru);margin-bottom:4px}
+.kazandin p{color:var(--soluk);font-size:15px}
+.kazandin .pay{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+@keyframes belir{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.pano-alt{margin-top:48px;border-top:1px solid var(--cizgi);padding-top:16px;text-align:center;
+  color:var(--soluk);font-size:12.5px;line-height:1.7}
+.pano-alt .ince{color:var(--cok-soluk);font-style:italic}
+
+/* ——— oyun ekranı (drill-in) — tam genişlik ——— */
+.oyun-ekran{width:100%;margin:0;padding:0 clamp(16px,2.4vw,46px) 30px;min-height:100vh}
+.oyun-ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  position:sticky;top:0;z-index:20;background:var(--kagit);padding:12px 0;border-bottom:1px solid var(--cizgi)}
+.geri-btn{background:var(--kart);border:1px solid var(--cizgi);border-radius:20px;padding:8px 16px;font-size:14px;color:var(--soluk)}
+.geri-btn:hover{border-color:var(--yildiz);color:var(--murekkep)}
+.oyun-kimlik{display:flex;flex-direction:column;line-height:1.1}
+.oyun-ad{font-family:'Playfair Display',serif;font-weight:700;font-size:21px}
+.oyun-alt{color:var(--soluk);font-size:12.5px;font-style:italic}
+.oyun-durum{margin-left:auto;display:flex;gap:16px;align-items:center;
+  background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:8px 16px;box-shadow:2px 3px 0 var(--golge)}
+.oyun-kap{margin-top:20px}
+
+/* ——— tanıtım modalı ——— */
+.modal-perde{position:fixed;inset:0;z-index:200;background:rgba(20,15,10,.72);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-perde[hidden]{display:none}
+.modal{position:relative;width:min(430px,94vw);background:var(--kart);border:1px solid var(--cizgi);
+  border-radius:18px;padding:30px 28px 22px;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.modal-kapat{position:absolute;top:14px;right:16px;font-size:17px;color:var(--cok-soluk)}
+.slayt{text-align:center}
+.slayt-amblem{width:96px;height:96px;margin:6px auto 16px}
+.slayt h3{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:12px}
+.slayt p{color:var(--murekkep);font-size:15px;margin-bottom:10px;line-height:1.5}
+.slayt p .k{color:var(--soluk);font-style:italic}
+.slayt-nokta{display:flex;gap:7px;justify-content:center;margin:20px 0 16px}
+.slayt-nokta i{width:8px;height:8px;border-radius:50%;background:var(--cizgi);transition:background .2s,transform .2s}
+.slayt-nokta i.aktif{background:var(--yildiz);transform:scale(1.25)}
+.slayt-alt{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.slayt-yon{display:flex;gap:8px;margin-left:auto}
+.baglanti{color:var(--soluk);font-size:14px;text-decoration:underline;text-underline-offset:2px}
+.dugme{background:var(--yildiz);color:#1d1712;border-radius:22px;padding:10px 24px;font-size:15px;
+  font-family:'Playfair Display',serif;font-weight:600;box-shadow:2px 3px 0 var(--golge)}
+.dugme:hover{transform:translateY(-1px)}
+.dugme.sade{background:var(--kart-2);color:var(--soluk);border:1px solid var(--cizgi);box-shadow:none}
+
+/* ——— toast ——— */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:300;
+  background:#2a2114;color:#f6efe0;padding:12px 24px;border-radius:24px;font-size:15px;
+  font-family:'Playfair Display',serif;box-shadow:3px 5px 0 var(--golge-sert);opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+#toast.goster{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.kotu{background:#6d2a1c}
+#toast.iyi{background:#244a30}
+
+.paylas{background:var(--yildiz);color:#1d1712;border-radius:22px;padding:11px 24px;font-size:15px;
+  font-family:'Playfair Display',serif;font-weight:600;box-shadow:2px 3px 0 var(--golge)}
+.paylas:hover{transform:translateY(-1px)}
+.baglanti-btn{color:var(--yesil-koyu);text-decoration:none;font-size:14.5px;border-bottom:1px solid currentColor}
+
+/* ——— gömülü oyun (iframe) ——— */
+.oyun-cerceve{width:100%;height:calc(100vh - 96px);min-height:560px;border:0;display:block;
+  background:transparent;border-radius:12px}
+.oyun-durum .olcer{gap:4px}
+
+/* ——— kazandın bildirimi (açılır) ——— */
+.kazan-modal{text-align:center;width:min(400px,94vw)}
+.kazan-yildizlar{display:flex;justify-content:center;gap:4px;margin:2px 0 14px;flex-wrap:wrap}
+.kazan-yildizlar .svg-ik{width:34px;height:34px}
+.kazan-modal h3{font-family:'Playfair Display',serif;font-size:27px;color:var(--dogru);margin-bottom:8px}
+.kazan-modal p{color:var(--murekkep);font-size:15px;margin-bottom:18px}
+.kazan-alt{display:flex;flex-direction:column;gap:12px;align-items:center}
+.kazan-alt .baglanti{color:var(--soluk);font-size:14px;text-decoration:underline;text-underline-offset:2px}

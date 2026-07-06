@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gunduz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Günün Yıldızları — veranda</title>
+<meta name="description" content="Her gün 4 farklı bulmaca. Doğru cevaplar yıldız kazandırır, yanlışlar kalp götürür. Günde 6 yıldız topla.">
+<meta name="theme-color" content="#e7a33d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d1712'/%3E%3Cpath d='M32 12 L38 26 L53 27 L41 37 L45 52 L32 43 L19 52 L23 37 L11 27 L26 26 Z' fill='%23e7a33d'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="stil.css?v=3">
+</head>
+<body>
+
+<!-- ————— TANITIM (ilk girişte) ————— -->
+<div class="modal-perde" id="girisPerde" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Nasıl oynanır">
+    <button class="modal-kapat" id="girisKapat" aria-label="kapat">✕</button>
+    <div class="slayt-akis" id="slaytAkis"></div>
+    <div class="slayt-nokta" id="slaytNokta"></div>
+    <div class="slayt-alt">
+      <button class="baglanti" id="slaytAtla">atla</button>
+      <div class="slayt-yon">
+        <button class="dugme sade" id="slaytGeri" hidden>geri</button>
+        <button class="dugme" id="slaytIleri">ileri</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ————— GÜN PANOSU ————— -->
+<main class="pano" id="pano">
+  <div class="ust">
+    <a class="eve-don" href="../">veranda</a>
+    <div class="ust-sag">
+      <button class="ikonbtn" id="nasilBtn" type="button">nasıl oynanır</button>
+      <button class="ikonbtn" id="temaBtn" type="button">gece</button>
+      <button class="ikonbtn" id="rastgeleBtn" type="button" title="rastgele gün — sadece debug" hidden>🎲 rastgele</button>
+    </div>
+  </div>
+
+  <header class="baslik">
+    <div class="baslik-yaz">
+      <h1>Günün Yıldızları</h1>
+      <div class="tarih" id="tarih"></div>
+    </div>
+    <div class="gun-olcer" id="gunOlcer" title="günlük yıldızların"></div>
+  </header>
+
+  <p class="giris-not">Her biri ayrı bir alandan. Doğru cevaplar <b>yıldız</b> doldurur, yanlışlar <b>kalp</b> götürür — <b>6 yıldız</b> topla, günü kazan.</p>
+
+  <div class="kartlar" id="kartlar"></div>
+
+  <div class="kazandin" id="kazandin" hidden></div>
+
+  <footer class="pano-alt">
+    <div>Günün Yıldızları · veranda</div>
+    <div class="ince">bulmacalar mevcut oyunlardan derlenir — her gün başka bir seçki</div>
+  </footer>
+</main>
+
+<!-- ————— OYUN EKRANI (bulmacaya girince) ————— -->
+<section class="oyun-ekran" id="oyunEkran" hidden>
+  <div class="oyun-ust">
+    <button class="geri-btn" id="geriBtn">← gün panosu</button>
+    <div class="oyun-kimlik">
+      <span class="oyun-ad" id="oyunAd"></span>
+      <span class="oyun-alt" id="oyunAlt"></span>
+    </div>
+    <div class="oyun-durum">
+      <span class="olcer yildiz-olcer" id="oyunYildiz"></span>
+      <span class="olcer kalp-olcer" id="oyunKalp"></span>
+    </div>
+  </div>
+  <div class="oyun-kap" id="oyunKap"></div>
+</section>
+
+<!-- ————— KAZANDIN bildirimi ————— -->
+<div class="modal-perde" id="kazanPerde" hidden>
+  <div class="modal kazan-modal" role="dialog" aria-modal="true" aria-label="Günü kazandın">
+    <div id="kazanIcerik"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="motor.js?v=15"></script>
+<script>YILDIZ.baslat();</script>
+</body>
+</html>

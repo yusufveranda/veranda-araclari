@@ -160,6 +160,8 @@
   footer{margin-top:52px; text-align:center; font-size:11px; color:#4a423c;}
   footer a{color:var(--muted);}
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+  /* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+  body.gomulu header, body.gomulu footer, body.gomulu #randomBtn, body.gomulu #todayBtn{display:none;}
 </style>
 </head>
 <body>
@@ -244,6 +246,12 @@ const IMG = "https://image.tmdb.org/t/p/";
 const SCORES = [100, 75, 50, 30, 15];
 const PIXEL_W = [6, 9, 14, 22, 34];      // poster banyosu
 const EPOCH = new Date("2026-07-02T00:00:00"); // 1. günün tarihi
+/* ——— Günün Yıldızları gömme kipi (hız: kalpsiz, yıldız = kaçıncı karede bildiğin) ——— */
+const _MP = new URLSearchParams(location.search);
+const GOMULU = _MP.get("meta") === "1";
+if (GOMULU) document.body.classList.add("gomulu");
+function metaKademe(step){ return step===0?3 : step<=2?2 : step<=4?1 : 0; }
+function metaGonder(y, bitti){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"karanlikoda", yildiz:y, bitti:bitti}, location.origin); }catch(e){} }
 
 let G = null;
 const $ = id => document.getElementById(id);
@@ -458,11 +466,12 @@ function endGame(won) {
   $("guessBtn").disabled = true; $("passBtn").disabled = true; $("guessInput").disabled = true;
   startPosterLoop(G.film.pp);   // poster pikseli döngüde açıl-kapan (gif gibi)
   G.over = true;
+  metaGonder(won ? metaKademe(G.step) : 0, true);
 }
 
 function advance() {
   if (G.over) return;
-  if (G.step < 4) { G.step++; renderStep(); }
+  if (G.step < 4) { G.step++; renderStep(); metaGonder(metaKademe(G.step), false); }
   else endGame(false);
 }
 
@@ -540,6 +549,7 @@ function startGame(index, random = false) {
   renderGuessLog();
   renderCast();
   renderStep();
+  metaGonder(metaKademe(G.step), false);
 }
 
 (function init() {
@@ -567,7 +577,8 @@ function startGame(index, random = false) {
     startGame(i, true);
   });
   $("todayBtn").addEventListener("click", () => startGame(todayIndex()));
-  startGame(today);
+  const _b = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca") % window.PUZZLES.length) + window.PUZZLES.length) % window.PUZZLES.length : today;
+  startGame(_b);
 })();
 </script>
 </body>

@@ -164,6 +164,9 @@ details.nasil ul{margin:6px 0 0 18px}
 .lider li .p{margin-left:auto;font-weight:700}
 footer{margin-top:40px;text-align:center;color:var(--soluk);font-size:12px;line-height:1.7}
 footer a{color:var(--kiremit)}
+/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+body.gomulu .tepe{display:none}
+body.gomulu .sahne{padding-top:10px}
 </style>
 </head>
 <body>
@@ -275,6 +278,17 @@ function gunNo(){
   return Math.floor((bugun-ep)/86400000);
 }
 const GUN=gunNo();
+/* ——— Günün Yıldızları gömme kipi ——— */
+const _MP=new URLSearchParams(location.search);
+const GOMULU=_MP.get("meta")==="1";
+const _METAB=(GOMULU&&_MP.has("bulmaca"))?(+_MP.get("bulmaca")):null;
+if(GOMULU) document.body.classList.add("gomulu");
+function metaBildir(){
+  if(!GOMULU) return; const o=g(); if(!o) return;
+  const dolu=o.cells.flat().filter(x=>x.ans).length;
+  const hata=Math.max(0,o.deneme-dolu);   // sınırsız tahminde yanlış sayısı = deneme - doğru
+  try{ parent.postMessage({kaynak:"atlas",dogru:dolu,toplam:9,hata:hata,bitti:o.bitti}, location.origin); }catch(e){}
+}
 
 /* ---------- durum ---------- */
 let mod='dunya';
@@ -299,7 +313,8 @@ let secilenAday=null;  // aramada seçilen ama henüz "Tahmin et" ile gönderilm
 function g(){ return AKTIF||OYUN[mod]; }   // o an oynanan oyun
 function bulmacaSec(m){
   const dizi=ATLAS_BULMACA[m];
-  const p=dizi[((GUN%dizi.length)+dizi.length)%dizi.length];
+  const key=(_METAB!==null)?_METAB:GUN;
+  const p=dizi[((key%dizi.length)+dizi.length)%dizi.length];
   return p;
 }
 function kurOyun(m,puz){
@@ -315,6 +330,7 @@ function kurOyun(m,puz){
   return {p,enb,cells,deneme:0,kullanildi:new Set(),bitti:false,secili:null};
 }
 function yukleKayit(m){
+  if(GOMULU) return null;   // gömülü kipte Atlas kendi kaydını kullanmaz (çakışmasın)
   try{
     const s=JSON.parse(localStorage.getItem('atlas_'+m+'_'+GUN));
     if(s&&s.g===GUN) return s;
@@ -322,6 +338,7 @@ function yukleKayit(m){
   return null;
 }
 function kaydet(){
+  if(GOMULU) return;                  // gömülü kipte Atlas kendi kaydını yazmaz
   const o=g(); if(o.pratik) return;   // deneme oyunları kaydedilmez
   const kayit={g:GUN,deneme:o.deneme,bitti:o.bitti,
     cells:o.cells.map(row=>row.map(x=>x.ans?{ans:x.ans,puan:x.puan}:null)),
@@ -460,7 +477,7 @@ function gonder(id){
   }
   const dolu=o.cells.flat().filter(x=>x.ans).length;
   if(dolu===9) bitir();
-  ciz(); kaydet();
+  ciz(); kaydet(); metaBildir();
   if(!o.bitti&&o.secili){const inp=$('#arama');inp.disabled=false;}
 }
 
@@ -470,7 +487,7 @@ function unvanBul(skor){
   if(skor>=340)return'Gezgin';if(skor>=160)return'Turist';return'Acemi';
 }
 function bitir(){
-  const o=g(); o.bitti=true; o.secili=null;
+  const o=g(); o.bitti=true; o.secili=null; metaBildir();
   $('#arama').disabled=true; $('#tahmin-btn').disabled=true; $('#pes').style.display='none';
   $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
   $('#arama-bilgi').textContent='Oyun bitti.';
@@ -617,6 +634,7 @@ $('#arama').addEventListener('keydown',e=>{
 
 /* başlat */
 moda('dunya');
+metaBildir();
 </script>
 </body>
 </html>

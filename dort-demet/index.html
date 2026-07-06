@@ -127,6 +127,9 @@ footer a{color:var(--soluk)}
   box-shadow:3px 5px 0 var(--golge-sert);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
 #toast.goster{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.kotu{background:#6d2a1c}
+/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+body.gomulu .ust,body.gomulu footer,body.gomulu #baskaBtn{display:none}
+body.gomulu .sarmal{padding-top:8px}
 </style>
 </head>
 <body>
@@ -189,7 +192,11 @@ footer a{color:var(--soluk)}
 
 <script>
 const $=s=>document.querySelector(s);
-const MAX_HATA=4;
+const _MP=new URLSearchParams(location.search);
+const GOMULU=_MP.get("meta")==="1";
+const MAX_HATA = GOMULU ? 3 : 4;   /* gömülü kipte 3 kalp (meta modeline uyar) */
+if(GOMULU) document.body.classList.add("gomulu");
+function metaBildir(){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"dortdemet",dogru:cozulen.length,toplam:4,hata:hatalar,bitti:bitti}, location.origin); }catch(e){} }
 const RENKLER=["var(--g-sari)","var(--g-yesil)","var(--g-mavi)","var(--g-mor)"];
 const EMOJI=["🟨","🟩","🟦","🟪"];
 
@@ -218,7 +225,9 @@ function baskaBulmaca(rastgele){
 
 fetch("../bitki/data/oyun-bitkiler.json").then(r=>r.json())
   .then(bb=>{ BITKILER=bb; return fetch("bulmacalar.json").then(r=>r.json()); })
-  .then(pp=>{ BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); })
+  .then(pp=>{ BULMACALAR=pp;
+    bulmacaNo=(GOMULU&&_MP.has("bulmaca"))?((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length:Math.floor(Date.now()/864e5)%pp.length;
+    yukle(); metaBildir(); })
   .catch(()=>{ $("#izgara").innerHTML='<p style="color:var(--soluk)">Bulmaca yüklenemedi.</p>'; });
 
 function ciz(){
@@ -269,11 +278,11 @@ function gonder(){
   if(dogruGrup!==undefined){
     cozulen.push(+dogruGrup); secili=[];
     if(cozulen.length===4){ bitti=true; ciz(); bitir(true); return; }
-    toast("öbek doğru! 🌿"); ciz();
+    toast("öbek doğru! 🌿"); ciz(); metaBildir();
   }else{
     if(!puansiz) hatalar++;
     const idler=secili.slice();
-    ciz();
+    ciz(); metaBildir();
     idler.forEach(id=>{const h=$(`.hucre[data-id="${id}"]`); if(h){h.classList.add("sars"); setTimeout(()=>h.classList.remove("sars"),500);}});
     const puansizOldu=(!puansiz && hatalar>=MAX_HATA);
     if(puansizOldu){
@@ -289,7 +298,7 @@ function gonder(){
 }
 
 function bitir(kazandi){
-  bitti=true;
+  bitti=true; metaBildir();
   if(kazandi){
     $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🌿" : "Hepsini yerleştirdin! 🌿";
     $("#sonucOzet").textContent = puansiz

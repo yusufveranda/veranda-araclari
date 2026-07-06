@@ -320,6 +320,8 @@ body{transition:background .4s,color .4s}
   .mat{margin:12px auto 0;padding:8px}
   .tema-kart{margin-top:12px}
 }
+/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+body.gomulu .eve-don,body.gomulu .tepe-bar,body.gomulu .gecen-hafta,body.gomulu .oyun-tablar{display:none}
 </style>
 </head>
 <body>
@@ -440,6 +442,19 @@ let mod='gun';
 let gunVeri=null;                  // {t,kabul,k}
 let tahtalar=[], aktif=0, oyunBitti=false;
 let temaTahminler=[], temaAsama=0; // temaAsama: 0 = bulunamadı, 1..5 = kaçıncı biten kelimeden sonra
+/* ——— Günün Yıldızları gömme kipi (karma: yıldız=temayı kaç kelimede buldun, can=3 tema hakkı) ——— */
+const _MP=new URLSearchParams(location.search);
+const GOMULU=_MP.get("meta")==="1";
+const _METAB=(GOMULU&&_MP.has("bulmaca"))?(+_MP.get("bulmaca")):null;
+if(GOMULU) document.body.classList.add("gomulu");
+function metaKademe(a){ return a<=1?3 : a<=3?2 : 1; }
+function metaBildir(){
+  if(!GOMULU) return;
+  const y = temaBulundu() ? metaKademe(temaAsama) : 0;
+  const hata = Math.min(3, temaTahminler.length);          // temaTahminler = yalnız YANLIŞ tema tahminleri
+  const bitti = temaBulundu() || temaVazgec || temaTahminler.length>=3;
+  try{ parent.postMessage({kaynak:"cati", yildiz:y, hata:hata, bitti:bitti}, location.origin); }catch(e){}
+}
 let temaVazgec=false;              // oyun sonunda kalan hakları kullanmadan sonucu görme
 let animHarf=null, animCevir=null;
 let sonucHazir=false, sonucYeni=false, sonucKapali=false;
@@ -488,18 +503,22 @@ function yeniTahta(cevap){
   return {uz:cevap.length,cevap,gecmis:[],giris:Array(cevap.length).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:6};
 }
 function tahtalariKur(){
-  if(mod==='gun'){ oyunGun=gunSayisi(); gunVeri=GUNLER[gunIdx(oyunGun)]; }
+  if(mod==='gun'){ oyunGun=gunSayisi(); gunVeri = _METAB!=null ? GUNLER[((_METAB%GUNLER.length)+GUNLER.length)%GUNLER.length] : GUNLER[gunIdx(oyunGun)]; }
   else gunVeri=GUNLER[Math.floor(Math.random()*GUNLER.length)];
   tahtalar=gunVeri.k.map(c=>yeniTahta(c));
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null;
   temaTahminler=[]; temaAsama=0; temaVazgec=false; _tkSon=null;
   sonucHazir=false; sonucYeni=false; sonucKapali=false;
   revealAnim=false; bekleyenMesaj=''; bekleyenSes=null; clearTimeout(revealTimer); revealTimer=null;
+  metaBildir();
 }
 
 /* ===== tema tahmini ===== */
 function bitenSayisi(){ return tahtalar.filter(t=>t.bitti).length; }
-function temaHak(){ return temaAsama?0:Math.max(0,bitenSayisi()-temaTahminler.length); }
+function temaHak(){
+  if(GOMULU) return temaAsama ? 0 : (bitenSayisi()>=1 ? Math.max(0, 3-temaTahminler.length) : 0);  // gömülü: 3 toplam tema hakkı
+  return temaAsama?0:Math.max(0,bitenSayisi()-temaTahminler.length);
+}
 function temaBulundu(){ return temaAsama>0; }
 
 // pedantle-vec tembel yükleme (tema eşleşmesine anlamsal tolerans)
@@ -562,7 +581,7 @@ function temaDene(){
     temaAsama=bitenSayisi();
     sTema();
     kaydet(); durumKaydetBellek();
-    ciz(); sonucKontrol();
+    ciz(); sonucKontrol(); metaBildir();
     return;
   }
   temaTahminler.push(g);
@@ -574,10 +593,11 @@ function temaDene(){
   ciz();
   sKotu();
   sonucKontrol();
+  metaBildir();
 }
 let _tkSon=null;   // son tema geri bildirimi — panel yeniden çizilse de görünsün
 function tkGeri(m,cls){ _tkSon={m,cls}; const el=document.getElementById('tkGeri'); if(el){ el.textContent=m; el.className='tk-geri '+(cls||''); } }
-function temaGec(){ temaVazgec=true; durumKaydetBellek(); sonucKontrol(); ciz(); }
+function temaGec(){ temaVazgec=true; durumKaydetBellek(); sonucKontrol(); ciz(); metaBildir(); }
 
 /* ===== değerlendirme / giriş ===== */
 function degerlendir(tahmin,cevap){
@@ -738,7 +758,9 @@ function kacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;
 
 let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){
-  if(mod!=='gun' || !oyunBitti) return Promise.resolve(null);
+  // sonucHazir şart: kelimeler bitse de tema aşaması sürerken skor GÖNDERME —
+  // sunucu ilk-yazım kilidi yüzünden tema puansız skor kalıcılaşır (40 puana kadar kayıp).
+  if(mod!=='gun' || !oyunBitti || !sonucHazir) return Promise.resolve(null);
   const nick=nickAl(); if(!nick) return Promise.resolve({yokNick:true});
   const key='cati:'+oyunGun+':'+nick.toLowerCase();
   if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
@@ -798,6 +820,7 @@ function lbBeniEkle(){
   const not=document.getElementById('lbEkleNot');
   if(mod!=='gun'){ if(not) not.textContent='tablo yalnız günün oyununda'; return; }
   if(!oyunBitti){ if(not) not.textContent='önce oyunu bitir'; return; }
+  if(!sonucHazir){ if(not) not.textContent='önce temayı tahmin et (ya da geç)'; return; }
   if(!nickAl()){ const n=prompt('Tabloya girmek için bir isim:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else { if(not) not.textContent='isim gerekli'; return; } }
   const nick=nickAl();
   const key='cati:'+oyunGun+':'+nick.toLowerCase();
@@ -832,6 +855,7 @@ function gecenHaftaGetir(){
 
 /* ===== istatistik ===== */
 function istatGuncelle(kazandi){
+  if(GOMULU) return;
   if(mod!=='gun') return;
   try{
     if(localStorage.getItem('cati:istat-son')===String(oyunGun)){ istatGoster(); return; }
@@ -851,12 +875,14 @@ function istatGoster(){
 
 /* ===== günlük ilerleme + bellek ===== */
 function kaydet(){
+  if(GOMULU) return;
   if(mod!=='gun') return;
   try{ localStorage.setItem('cati:gun',JSON.stringify({gun:oyunGun, tema:gunVeri.t,
     t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi})),
     tt:temaTahminler, ta:temaAsama, tv:temaVazgec})); }catch(e){}
 }
 function yukle(){
+  if(GOMULU) return false;
   if(mod!=='gun') return false;
   // gün numarası YETMEZ: veri güncellenip günün bulmacası değişirse eski kayıt
   // yeni cevapların üstüne giydirilmesin (hayalet "çözülmüş" oyun bug'ı)

@@ -141,6 +141,9 @@ footer a{color:var(--soluk)}
 #toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);z-index:100;background:#244635;color:#f6efe0;padding:12px 24px;border-radius:24px;font-size:15.5px;font-family:'Playfair Display',serif;box-shadow:3px 5px 0 var(--golge-sert);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
 #toast.goster{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.kotu{background:#6d2a1c}
+/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+body.gomulu .ust,body.gomulu footer,body.gomulu #baskaBtn{display:none}
+body.gomulu .sarmal{padding-top:8px}
 </style>
 </head>
 <body>
@@ -226,6 +229,11 @@ let IDS=Object.keys(KUSLAR);
 const MAX_HAK=3;
 let TUZAK=new Set(["serce","agac-sercesi","ak-balikcil","buyuk-ak-balikcil"]);
 let BULMACALAR=null, bulmacaNo=0;
+/* ——— Günün Yıldızları gömme kipi ——— */
+const _MP=new URLSearchParams(location.search);
+const GOMULU=_MP.get("meta")==="1";
+if(GOMULU) document.body.classList.add("gomulu");
+function metaBildir(){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"kur",dogru:eslenen.length,toplam:8,hata:hata,bitti:bitti}, location.origin); }catch(e){} }
 
 let secKus=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false, puansiz=false, puanKilit=null;
 const $=s=>document.querySelector(s);
@@ -247,7 +255,9 @@ function baskaBulmaca(rastgele){
   yukle(); window.scrollTo({top:0,behavior:"smooth"});
 }
 Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulmacalar.json").then(r=>r.json())])
-  .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); }).catch(()=>{});
+  .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp;
+    bulmacaNo = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length : Math.floor(Date.now()/864e5)%pp.length;
+    yukle(); metaBildir(); }).catch(()=>{});
 
 function ciz(){
   $("#gunNo").textContent="#"+(bulmacaNo+1);
@@ -310,7 +320,7 @@ function eslesmeYap(id,otomatik){
     masa.classList.remove("iyi");
     [ky,ay].forEach(el=>{el.style.transform="";el.style.opacity="";el.style.borderColor="";});
     if(esit){ esit.textContent="≟"; esit.style.transform=""; esit.style.color=""; esit.style.opacity=""; }
-    mesgul=false; ciz();
+    mesgul=false; ciz(); metaBildir();
     if(eslenen.length===8){ setTimeout(tamamlandi,400); }
     else if(eslenen.length===7 && !bitti){ setTimeout(sonEslesmeTelegraf,400); }
   },680);
@@ -344,7 +354,7 @@ function tamam(){
   setTimeout(()=>{
     masa.classList.remove("kotu"); if(esit){ esit.textContent="≟"; esit.style.color=""; esit.style.transform=""; }
     [ky,ay].forEach(el=>{ el.style.borderColor=""; el.style.boxShadow=""; el.style.animation=""; });
-    secKus=null; secAd=null; if(puansizOldu){ puansiz=true; puanKilit=eslenen.length; } mesgul=false; ciz();
+    secKus=null; secAd=null; if(puansizOldu){ puansiz=true; puanKilit=eslenen.length; } mesgul=false; ciz(); metaBildir();
   },600);
 }
 
@@ -358,7 +368,7 @@ function revealDoldur(){
   $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function tamamlandi(){
-  bitti=true;
+  bitti=true; metaBildir();
   $("#sonucBas").textContent = puansiz ? `Tamamladın — ${puanKilit}/8 puan 🪶` : "Hepsini eşledin! 🪶";
   $("#sonucOzet").textContent = puansiz
     ? `Puanın ${puanKilit}/8 — hakların bitmeden bu kadarını doğru eşlemiştin, o puanın duruyor. Kalanını puansız tamamladın; öğrenme tam.`
@@ -367,7 +377,7 @@ function tamamlandi(){
   revealDoldur();
 }
 function pesEt(){
-  bitti=true; ciz();
+  bitti=true; ciz(); metaBildir();
   $("#sonucBas").textContent=`Cevaplar açıldı — ${puanKilit}/8 puan`;
   $("#sonucOzet").textContent=`Puanın ${puanKilit}/8 — hakların bitmeden bu kadarını doğru eşlemiştin. Doğru adlar ve ayırt edici işaretler aşağıda.`;
   revealDoldur();
