@@ -37,88 +37,103 @@ i,em,.la{font-style:italic}
 button{font:inherit;cursor:pointer;color:inherit}
 img{display:block}
 
-.sarmal{width:min(1120px,94vw);margin:0 auto;padding:18px 0 90px}
+.sarmal{width:min(1300px,95vw);margin:0 auto;padding:18px 0 90px}
 .ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:6px}
 .eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;box-shadow:2px 3px 0 var(--golge)}
 .eve-don:hover{transform:translateY(-1px)}
 .eve-don::before{content:"";width:11px;height:11px;border-radius:50%;background:#f6efe0;flex:none}
-.ust-sag{margin-left:auto;display:flex;gap:8px}
+.ust-sag{margin-left:auto;display:flex;gap:8px;align-items:center}
 .ikonbtn{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:6px 14px;font-size:13.5px;color:var(--soluk);text-decoration:none}
 .ikonbtn:hover{border-color:var(--yesil);color:var(--yesil)}
+.gizli-rast{opacity:0;transition:opacity .2s;padding:6px 10px;border-color:transparent;background:none}
+.gizli-rast:hover,.gizli-rast:focus{opacity:.85;border-color:var(--cizgi)}
 
 .marka{margin:22px 0 6px;display:flex;align-items:flex-end;gap:15px;flex-wrap:wrap}
 .marka .amblem{width:50px;height:50px;flex:none}
-.marka h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(30px,4.4vw,44px);line-height:1;letter-spacing:-.5px;color:var(--yesil-koyu)}
+.marka h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(30px,4.4vw,46px);line-height:1;letter-spacing:-.5px;color:var(--yesil-koyu)}
 .marka .tag{color:var(--soluk);font-style:italic;font-family:'Libre Baskerville',Georgia,serif;font-size:15px;padding-bottom:5px}
 .gun-no{margin-left:auto;text-align:right;font-family:'Libre Baskerville',serif;color:var(--soluk);font-size:13px;padding-bottom:4px}
 .gun-no b{display:block;font-family:'Playfair Display',serif;font-size:22px;color:var(--yesil-koyu)}
 
-.oyun-bas{margin:18px 0 8px;font-family:'Libre Baskerville',serif;font-style:italic;color:var(--soluk);font-size:15.5px;max-width:70ch}
+.oyun-bas{margin:18px 0 8px;font-family:'Libre Baskerville',serif;font-style:italic;color:var(--soluk);font-size:15.5px;max-width:74ch}
 .oyun-bas b{color:var(--murekkep)}
 
-.duzen{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start;margin-top:18px}
-@media(max-width:860px){.duzen{grid-template-columns:1fr}}
+.duzen{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:32px;align-items:start;margin-top:18px}
+@media(max-width:900px){.duzen{grid-template-columns:1fr}}
 
-.havuz-bas{font-family:'Libre Baskerville',serif;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--soluk);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.havuz-bas{font-family:'Libre Baskerville',serif;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--soluk);margin:0 0 13px;display:flex;align-items:center;gap:8px}
 .havuz-bas .sc{margin-left:auto;font-style:italic;text-transform:none;letter-spacing:0;font-size:13px}
 
-.bitki-havuz{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:13px}
-.bthumb{aspect-ratio:1;border-radius:10px;overflow:hidden;border:2px solid var(--cizgi);cursor:pointer;box-shadow:2px 3px 0 var(--golge);background:var(--kagit-2);transition:transform .1s,border-color .12s}
-.bthumb img{width:100%;height:100%;object-fit:cover}
-.bthumb:hover{border-color:var(--yesil);transform:translateY(-2px)}
+.bitki-havuz{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.bthumb{aspect-ratio:1;border-radius:12px;overflow:hidden;border:2px solid var(--cizgi);cursor:pointer;box-shadow:2px 4px 0 var(--golge);background:var(--kagit-2);transition:transform .12s,border-color .12s,box-shadow .12s}
+.bthumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.bthumb:hover{border-color:var(--yesil);transform:translateY(-3px);box-shadow:3px 6px 0 var(--golge-sert)}
+.bthumb:hover img{transform:scale(1.06)}
 
 /* orta nokta — eşleştirme masası */
-.masa{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;background:var(--kart);
-  border:2px solid var(--cizgi);border-radius:18px;padding:20px;margin:20px 0;box-shadow:3px 5px 0 var(--golge);transition:border-color .2s}
-.masa.iyi{border-color:var(--dogru)} .masa.iyi{animation:parla .5s}
+.masa{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;background:var(--kart);
+  border:2px solid var(--cizgi);border-radius:20px;padding:24px;margin:22px 0;box-shadow:3px 5px 0 var(--golge);transition:border-color .2s,box-shadow .3s}
+.masa.iyi{border-color:var(--dogru);animation:parla .55s}
 .masa.kotu{border-color:var(--yanlis);animation:sars .4s}
-@keyframes parla{0%{box-shadow:0 0 0 0 var(--dogru-bg)}50%{box-shadow:0 0 0 10px var(--dogru-bg)}100%{box-shadow:3px 5px 0 var(--golge)}}
+.masa.telegraf{border-color:var(--dogru);animation:telegraf 1.9s ease}
+@keyframes parla{0%{box-shadow:0 0 0 0 var(--dogru-bg)}50%{box-shadow:0 0 0 12px var(--dogru-bg)}100%{box-shadow:3px 5px 0 var(--golge)}}
 @keyframes sars{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-.myuva{width:190px;height:190px;border:2px dashed var(--cizgi);border-radius:13px;display:flex;align-items:center;justify-content:center;
-  text-align:center;color:var(--soluk);font-style:italic;overflow:hidden;position:relative;cursor:pointer;background:var(--kagit-2);flex:none}
+@keyframes telegraf{0%,100%{box-shadow:3px 5px 0 var(--golge)}30%,70%{box-shadow:0 0 0 9px var(--dogru-bg)}}
+.masa.telegraf .myuva{border-style:solid;border-color:var(--dogru)}
+.myuva{width:210px;height:210px;border:2px dashed var(--cizgi);border-radius:15px;display:flex;align-items:center;justify-content:center;
+  text-align:center;color:var(--soluk);font-style:italic;overflow:hidden;position:relative;cursor:pointer;background:var(--kagit-2);flex:none;
+  transition:transform .5s cubic-bezier(.4,.7,.3,1),opacity .5s}
 .myuva.dolu{border-style:solid;border-color:var(--yesil)}
 .myuva img{width:100%;height:100%;object-fit:cover}
-.myuva.ad{font-family:'Playfair Display',serif;font-size:19px;color:var(--soluk)}
-.myuva.ad.dolu{font-style:normal;color:var(--yesil-koyu);padding:10px}
-.esit{font-size:30px;color:var(--soluk);font-family:'Playfair Display',serif}
-.tamam{background:var(--yesil);color:#f6efe0;border:none;border-radius:24px;padding:14px 30px;font-size:16.5px;box-shadow:2px 3px 0 var(--golge);font-family:'Playfair Display',serif;align-self:center}
+.myuva.ad{font-family:'Playfair Display',serif;font-size:22px;color:var(--soluk)}
+.myuva.ad.dolu{font-style:normal;color:var(--yesil-koyu);padding:12px}
+.esit{font-size:34px;color:var(--soluk);font-family:'Playfair Display',serif;transition:transform .4s,color .4s}
+/* birleşme animasyonu */
+.masa.birlesiyor #bitkiYuva{transform:translateX(118px) scale(.8);opacity:0}
+.masa.birlesiyor #adYuva{transform:translateX(-118px) scale(.8);opacity:0}
+.masa.birlesiyor .esit{transform:scale(1.7);color:var(--dogru)}
+.tamam{background:var(--yesil);color:#f6efe0;border:none;border-radius:26px;padding:15px 34px;font-size:17px;box-shadow:2px 3px 0 var(--golge);font-family:'Playfair Display',serif;align-self:center}
 .tamam:hover:not(:disabled){transform:translateY(-1px)}
 .tamam:disabled{opacity:.4;cursor:default}
 
-.ad-havuz{display:flex;gap:10px;flex-wrap:wrap;min-height:44px}
-.ad-cip{background:var(--kart);border:1.5px solid var(--cizgi);border-radius:22px;padding:10px 20px;font-size:15.5px;color:var(--murekkep);font-family:'Playfair Display',serif;transition:transform .1s,border-color .12s,background .12s}
+.ad-havuz{display:flex;gap:11px;flex-wrap:wrap;min-height:48px}
+.ad-cip{background:var(--kart);border:1.5px solid var(--cizgi);border-radius:24px;padding:12px 22px;font-size:16px;color:var(--murekkep);font-family:'Playfair Display',serif;transition:transform .1s,border-color .12s,background .12s}
 .ad-cip:hover{border-color:var(--yesil);color:var(--yesil);transform:translateY(-1px)}
 
+/* uçan foto (birleşme → kenar) */
+.ucus{position:fixed;width:56px;height:56px;border-radius:11px;object-fit:cover;z-index:200;box-shadow:2px 4px 10px rgba(0,0,0,.3);
+  transition:transform .6s cubic-bezier(.4,.6,.25,1),opacity .6s;pointer-events:none}
+
 /* kenar — eşlenenler */
-.yan{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:16px 17px;box-shadow:3px 4px 0 var(--golge);position:sticky;top:16px}
-.eslenen-liste{display:flex;flex-direction:column;gap:8px;min-height:40px}
-.esl{display:flex;align-items:center;gap:10px;background:var(--dogru-bg);border-radius:9px;padding:6px 9px;animation:pop .3s ease}
-@keyframes pop{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
-.esl img{width:40px;height:40px;border-radius:7px;object-fit:cover;flex:none}
-.esl b{font-family:'Libre Baskerville',serif;font-size:14px;color:var(--dogru);line-height:1.15}
-.esl .ok{margin-left:auto;color:var(--dogru);font-size:16px}
+.yan{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:17px 18px;box-shadow:3px 4px 0 var(--golge);position:sticky;top:16px}
+.eslenen-liste{display:flex;flex-direction:column;gap:9px;min-height:44px}
+.esl{display:flex;align-items:center;gap:11px;background:var(--dogru-bg);border-radius:10px;padding:7px 10px;animation:pop .35s ease}
+@keyframes pop{from{opacity:0;transform:translateX(10px) scale(.95)}to{opacity:1;transform:none}}
+.esl img{width:46px;height:46px;border-radius:8px;object-fit:cover;flex:none}
+.esl b{font-family:'Libre Baskerville',serif;font-size:14.5px;color:var(--dogru);line-height:1.15}
+.esl .ok{margin-left:auto;color:var(--dogru);font-size:17px}
 .bos-yan{color:var(--soluk);font-style:italic;font-size:13.5px;padding:6px 0}
-.hata-not{margin-top:14px;border-top:1px dashed var(--cizgi);padding-top:11px;font-size:14px;color:var(--soluk)}
-.hata-not b{color:var(--yanlis);font-family:'Playfair Display',serif}
-.hata-not .hnk{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--vurgu);margin:0 4px 0 2px;vertical-align:middle;box-shadow:1px 1px 0 var(--golge)}
+.hata-not{margin-top:15px;border-top:1px dashed var(--cizgi);padding-top:12px;font-size:14px;color:var(--soluk)}
+.hata-not .hnk{display:inline-block;width:15px;height:15px;border-radius:50%;background:var(--vurgu);margin:0 4px 0 2px;vertical-align:middle;box-shadow:1px 1px 0 var(--golge)}
 .hata-not .hnk.bos{background:none;border:1.5px solid var(--cizgi);box-shadow:none}
 
-.sonuc{margin-top:28px;background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:20px 22px;box-shadow:4px 6px 0 var(--golge);display:none;animation:belir .35s ease}
+.sonuc{margin-top:28px;background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:22px 24px;box-shadow:4px 6px 0 var(--golge);display:none;animation:belir .35s ease}
 .sonuc.ac{display:block}
 @keyframes belir{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.sonuc h2{font-family:'Playfair Display',serif;font-size:23px;color:var(--yesil-koyu);margin-bottom:4px}
+.sonuc h2{font-family:'Playfair Display',serif;font-size:25px;color:var(--yesil-koyu);margin-bottom:4px}
 .sonuc .ozet{color:var(--soluk);font-style:italic;margin-bottom:16px}
-.reveal{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
-.rv{display:flex;gap:11px;background:var(--kagit-2);border-radius:10px;padding:10px;border:1px solid var(--cizgi)}
-.rv img{width:64px;height:64px;border-radius:8px;object-fit:cover;flex:none}
-.rv .yz b{font-family:'Playfair Display',serif;font-size:15.5px;color:var(--yesil-koyu);display:block;line-height:1.1}
+.reveal{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px}
+.rv{display:flex;gap:12px;background:var(--kagit-2);border-radius:11px;padding:11px;border:1px solid var(--cizgi)}
+.rv img{width:74px;height:74px;border-radius:9px;object-fit:cover;flex:none}
+.rv .yz b{font-family:'Playfair Display',serif;font-size:16px;color:var(--yesil-koyu);display:block;line-height:1.1}
 .rv .yz .la{color:var(--toprak);font-size:12px}
 .rv .yz p{font-size:12.5px;margin-top:4px;line-height:1.4}
 .rv.tuzak{border-color:var(--vurgu)}
 .rv.tuzak .rozet{display:inline-block;font-size:10.5px;background:var(--vurgu);color:#f6efe0;border-radius:9px;padding:1px 7px;margin-bottom:3px}
 .sonuc-alt{display:flex;gap:14px;margin-top:18px;align-items:center;flex-wrap:wrap}
-.paylas{background:var(--vurgu);color:#f6efe0;border:none;border-radius:22px;padding:10px 24px;font-size:15px;box-shadow:2px 3px 0 var(--golge)}
+.paylas{background:var(--vurgu);color:#f6efe0;border:none;border-radius:22px;padding:11px 24px;font-size:15px;box-shadow:2px 3px 0 var(--golge)}
 .paylas:hover{transform:translateY(-1px)}
+.paylas.yesil{background:var(--yesil)}
 .link-btn{color:var(--yesil-koyu);text-decoration:none;font-size:14.5px;border-bottom:1px solid currentColor;padding-bottom:1px}
 
 footer{margin-top:56px;border-top:1px solid var(--cizgi);padding-top:16px;color:var(--soluk);font-size:12.5px;text-align:center;line-height:1.7}
@@ -137,6 +152,7 @@ footer a{color:var(--soluk)}
       <a class="ikonbtn" href="../bitki/#oyunlar">← oyunlar</a>
       <a class="ikonbtn" href="../bitki/">bitki bilimi</a>
       <button class="ikonbtn" id="temaBtn" type="button">gece</button>
+      <button class="ikonbtn gizli-rast" id="rastBtn" type="button" title="rastgele bulmaca" aria-label="rastgele bulmaca">🎲</button>
     </div>
   </div>
 
@@ -149,10 +165,10 @@ footer a{color:var(--soluk)}
       <h1>Eş</h1>
       <div class="tag">günün bitki eşleştirmesi</div>
     </div>
-    <div class="gun-no">bugün<b id="gunNo">#1</b></div>
+    <div class="gun-no">bulmaca<b id="gunNo">#1</b></div>
   </header>
 
-  <p class="oyun-bas"><b>8 bitki, 8 ad.</b> Bir bitki, bir ad seç; ortada buluştur, <b>Tamam</b> de. Doğruysa eşlenir ve kenara yazılır; yanlışsa geri döner. Bazıları birbirine çok benzer — <b>iyi bak, kandırır.</b> Yalnızca <b>3 yanlış hakkın</b> var.</p>
+  <p class="oyun-bas"><b>8 bitki, 8 ad.</b> Bir bitki, bir ad seç; ortada buluştur, <b>Tamam</b> de. Doğruysa eşlenir ve kenara uçar; yanlışsa geri döner. Bazıları birbirine çok benzer — <b>iyi bak, kandırır.</b> Yalnızca <b>3 yanlış hakkın</b> var.</p>
 
   <div class="duzen">
     <div class="oyun">
@@ -171,9 +187,9 @@ footer a{color:var(--soluk)}
     </div>
 
     <aside class="yan">
-      <div class="havuz-bas">◈ eşlenenler <span class="sc" id="sayac">0/8</span></div>
+      <div class="havuz-bas" id="yanBas">◈ eşlenenler <span class="sc" id="sayac">0/8</span></div>
       <div class="eslenen-liste" id="eslenenListe"></div>
-      <div class="hata-not" id="hataNot">hata: <b>0</b></div>
+      <div class="hata-not" id="hataNot"></div>
     </aside>
   </div>
 
@@ -182,84 +198,123 @@ footer a{color:var(--soluk)}
     <div class="ozet" id="sonucOzet"></div>
     <div class="reveal" id="reveal"></div>
     <div class="sonuc-alt">
+      <button class="paylas yesil" id="baskaBtn">başka bulmaca ↻</button>
       <button class="paylas" id="paylasBtn">sonucu kopyala</button>
       <a class="link-btn" href="../bitki/">bitkileri ansiklopedide incele →</a>
     </div>
   </div>
 
   <footer>
-    <div>Eş · veranda — günün bitki eşleştirmesi (prototip)</div>
+    <div>Eş · veranda — günün bitki eşleştirmesi</div>
     <div style="margin-top:6px">görseller <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> (CC) · adlar ve taksonomi <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a></div>
   </footer>
 </div>
 <div id="toast"></div>
 
 <script>
-const BITKILER={
-  defne:{tr:"Defne",la:"Laurus nobilis",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Bay_Leaves_Lauris_nobilis.jpg/1280px-Bay_Leaves_Lauris_nobilis.jpg",tuzak:true,ayirt:"Yaprağı koparıp koklayınca o bildik defne baharatı kokusu gelir; yaprak daha küçük, mat-koyu yeşil, kenarı hafif dalgalı. Yemeğe konan, YENİR yaprak."},
-  taflan:{tr:"Taflan",la:"Prunus laurocerasus",foto:"https://upload.wikimedia.org/wikipedia/commons/8/86/Prunus_laurocerasus_-_Kragujevac.jpg",tuzak:true,ayirt:"Defneyi andıran ama çok daha iri (10-20 cm), parlak, deri gibi yaprak; ezilince acıbadem (siyanür) kokar. ZEHİRLİDİR, yenmez — bahçe çiti olarak yaygın."},
-  kartopu:{tr:"Kartopu",la:"Viburnum opulus",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Inflorescence_of_guelder_rose_%28Viburnum_opulus%29_in_backlight_from_the_setting_Sun%2C_Ukrainka_village%2C_Kharkiv_Oblast%2C_Ukraine.jpg/1280px-Inflorescence_of_guelder_rose_%28Viburnum_opulus%29_in_backlight_from_the_setting_Sun%2C_Ukrainka_village%2C_Kharkiv_Oblast%2C_Ukraine.jpg",tuzak:true,ayirt:"Bembeyaz, tam küre çiçek topları; çalı formunda. Sonbaharda kırmızı parlak meyveler verir. Ortancadan farkı: çiçeği hep BEYAZ, yaprağı akçaağaç gibi loplu."},
-  ortanca:{tr:"Ortanca",la:"Hydrangea macrophylla",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Bloomstruck.jpg/1280px-Bloomstruck.jpg",tuzak:true,ayirt:"Top biçiminde iri çiçek başları; rengi toprağın asidine göre MAVİ ya da PEMBE olur — kartopundan en büyük farkı bu renk. İri, dişli, damarlı yaprak."},
-  gul:{tr:"Gül",la:"Rosa × hybrida",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Rosa_Hybrida.JPG/1280px-Rosa_Hybrida.JPG",tuzak:false,ayirt:"Dikenli odunsu sap + katmerli, kokulu çiçek; tüysü bileşik dişli yaprak. Karışması zor."},
-  aycicegi:{tr:"Ayçiçeği",la:"Helianthus annuus",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/2014-365-201_I%27m_Just_Not_Like_the_Other_Flowers_%2814705542182%29.jpg/1280px-2014-365-201_I%27m_Just_Not_Like_the_Other_Flowers_%2814705542182%29.jpg",tuzak:false,ayirt:"Dev sarı taçlı, kahverengi göbekli tek büyük baş; güneşe döner, kalp biçimli kaba yaprak. Tartışmasız."},
-  lale:{tr:"Lale",la:"Tulipa gesneriana",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Liliales_-_Tulipa_gesneriana_-_1.jpg/1280px-Liliales_-_Tulipa_gesneriana_-_1.jpg",tuzak:false,ayirt:"Tek, dik, kadeh biçimli çiçek + şeritsi mavimsi yaprak + soğan; ilkbaharın simgesi."},
-  lavanta:{tr:"Lavanta",la:"Lavandula angustifolia",foto:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Coastal_Georgia_Botanical_Gardens%2C_Lavender_Lavandula_angustifolia_%27Elegance_Sky%27.jpg/1280px-Coastal_Georgia_Botanical_Gardens%2C_Lavender_Lavandula_angustifolia_%27Elegance_Sky%27.jpg",tuzak:false,ayirt:"Gümüşi, dar uzun yapraklı yastık üzerinde çıplak saplarda yükselen mor-mavi başak çiçekler; kuruyken bile güçlü lavanta kokusu."},
-};
-const GUN_NO=1;
-const IDS=Object.keys(BITKILER);
-const MAX_HAK=3;
-
-let secBitki=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false;
 const $=s=>document.querySelector(s);
+const MAX_HAK=3;
+let BITKILER={}, BULMACALAR=[], bulmacaNo=0;
+let IDS=[], TUZAK=new Set(), bitkiSira=[], adSira=[], fotoSec={};
+let secBitki=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false;
+
 function seedli(arr,tohum){const a=arr.slice(),o=[];let s=tohum;while(a.length){s=(s*1103515245+12345)&0x7fffffff;o.push(a.splice(s%a.length,1)[0]);}return o;}
-const bitkiSira=seedli(IDS,GUN_NO*53+11);
-const adSira=seedli(IDS,GUN_NO*29+5);
+function rastFoto(id){const f=(BITKILER[id]&&BITKILER[id].fotolar)||[];return f.length?f[Math.floor(Math.random()*f.length)]:"";}
+
+function yukle(){
+  const b=BULMACALAR[bulmacaNo];
+  IDS=b.bitkiler.slice(); TUZAK=new Set(b.tuzaklar);
+  bitkiSira=seedli(IDS,(bulmacaNo+1)*53+11); adSira=seedli(IDS,(bulmacaNo+1)*29+5);
+  fotoSec={}; IDS.forEach(id=>fotoSec[id]=rastFoto(id));
+  secBitki=null; secAd=null; eslenen=[]; hata=0; hataKayit=[]; bitti=false; mesgul=false;
+  $("#sonuc").classList.remove("ac"); ciz();
+}
+function baskaBulmaca(rastgele){
+  if(!BULMACALAR.length) return;
+  bulmacaNo = rastgele ? Math.floor(Math.random()*BULMACALAR.length) : (bulmacaNo+1)%BULMACALAR.length;
+  yukle(); window.scrollTo({top:0,behavior:"smooth"});
+}
+
+fetch("../bitki/data/oyun-bitkiler.json").then(r=>r.json())
+  .then(bb=>{ BITKILER=bb; return fetch("bulmacalar.json").then(r=>r.json()); })
+  .then(pp=>{ BULMACALAR=pp; bulmacaNo=Math.floor(Date.now()/864e5)%pp.length; yukle(); })
+  .catch(()=>{ $("#bitkiHavuz").innerHTML='<span class="bos-yan">Bulmaca yüklenemedi.</span>'; });
 
 function ciz(){
-  $("#gunNo").textContent="#"+GUN_NO;
-  // bitki havuzu (eşlenmemiş + ortada olmayan)
+  $("#gunNo").textContent="#"+(bulmacaNo+1);
   $("#bitkiHavuz").innerHTML=bitkiSira.filter(id=>!eslenen.includes(id)&&id!==secBitki).map(id=>
-    `<div class="bthumb" data-id="${id}"><img src="${BITKILER[id].foto}" alt=""></div>`).join("") || '<span class="bos-yan">— bitki kalmadı —</span>';
+    `<div class="bthumb" data-id="${id}"><img src="${fotoSec[id]}" alt="" loading="lazy"></div>`).join("") || '<span class="bos-yan">— bitki kalmadı —</span>';
   $("#bitkiHavuz").querySelectorAll(".bthumb").forEach(el=>el.onclick=()=>bitkiTik(el.dataset.id));
-  // ad havuzu
   $("#adHavuz").innerHTML=adSira.filter(id=>!eslenen.includes(id)&&id!==secAd).map(id=>
     `<button class="ad-cip" data-id="${id}">${BITKILER[id].tr}</button>`).join("") || '<span class="bos-yan">— ad kalmadı —</span>';
   $("#adHavuz").querySelectorAll(".ad-cip").forEach(el=>el.onclick=()=>adTik(el.dataset.id));
-  // orta yuvalar
   const by=$("#bitkiYuva");
-  if(secBitki){ by.className="myuva dolu"; by.innerHTML=`<img src="${BITKILER[secBitki].foto}" alt="">`; }
+  if(secBitki){ by.className="myuva dolu"; by.innerHTML=`<img src="${fotoSec[secBitki]}" alt="">`; }
   else{ by.className="myuva"; by.textContent="bitki seç"; }
   const ay=$("#adYuva");
   if(secAd){ ay.className="myuva ad dolu"; ay.textContent=BITKILER[secAd].tr; }
   else{ ay.className="myuva ad"; ay.textContent="ad seç"; }
-  $("#tamamBtn").disabled=!(secBitki&&secAd)||bitti;
-  // eşlenenler
+  $("#tamamBtn").disabled=!(secBitki&&secAd)||bitti||mesgul;
   $("#sayac").textContent=`${eslenen.length}/8`;
   $("#eslenenListe").innerHTML = eslenen.length? eslenen.map(id=>
-    `<div class="esl"><img src="${BITKILER[id].foto}" alt=""><b>${BITKILER[id].tr}</b><span class="ok">✓</span></div>`).join("")
+    `<div class="esl"><img src="${fotoSec[id]}" alt=""><b>${BITKILER[id].tr}</b><span class="ok">✓</span></div>`).join("")
     : '<span class="bos-yan">henüz eşleşme yok</span>';
-  const kalan=Math.max(0,MAX_HAK-hata);
-  $("#hataNot").innerHTML='kalan hak: '+Array.from({length:MAX_HAK},(_,i)=>`<span class="hnk${i<kalan?'':' bos'}"></span>`).join('');
+  const kalanHak=Math.max(0,MAX_HAK-hata);
+  $("#hataNot").innerHTML='kalan hak: '+Array.from({length:MAX_HAK},(_,i)=>`<span class="hnk${i<kalanHak?'':' bos'}"></span>`).join('');
 }
 
-function bitkiTik(id){ if(bitti)return; secBitki=(secBitki===id)?null:id; ciz(); }
-function adTik(id){ if(bitti)return; secAd=(secAd===id)?null:id; ciz(); }
-$("#bitkiYuva")&&($("#bitkiYuva").onclick=()=>{ if(!bitti&&secBitki){secBitki=null;ciz();} });
-$("#adYuva")&&($("#adYuva").onclick=()=>{ if(!bitti&&secAd){secAd=null;ciz();} });
+function bitkiTik(id){ if(bitti||mesgul)return; secBitki=(secBitki===id)?null:id; ciz(); }
+function adTik(id){ if(bitti||mesgul)return; secAd=(secAd===id)?null:id; ciz(); }
+$("#bitkiYuva").onclick=()=>{ if(!bitti&&!mesgul&&secBitki){secBitki=null;ciz();} };
+$("#adYuva").onclick=()=>{ if(!bitti&&!mesgul&&secAd){secAd=null;ciz();} };
+
+/* uçan foto: masadan kenardaki 'eşlenenler' başlığına */
+function ucur(url){
+  const from=$("#masa").getBoundingClientRect(), to=$("#yanBas").getBoundingClientRect();
+  if(!url) return;
+  const el=document.createElement("img"); el.src=url; el.className="ucus";
+  const x0=from.left+from.width/2-28, y0=from.top+from.height/2-28;
+  el.style.left=x0+"px"; el.style.top=y0+"px";
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{ el.style.transform=`translate(${to.left+14-x0}px,${to.top+6-y0}px) scale(.55)`; el.style.opacity="0"; });
+  setTimeout(()=>el.remove(),640);
+}
+
+function eslesmeYap(id,otomatik){
+  mesgul=true;
+  const masa=$("#masa"), esit=masa.querySelector(".esit");
+  masa.classList.remove("kotu"); masa.classList.add("iyi","birlesiyor");
+  if(esit) esit.textContent="✓";
+  ucur(fotoSec[id]);
+  toast(otomatik?"son çift eşleşti ✓":"eşleşti ✓");
+  setTimeout(()=>{
+    eslenen.push(id); secBitki=null; secAd=null;
+    masa.classList.remove("iyi","birlesiyor"); if(esit) esit.textContent="≟";
+    mesgul=false; ciz();
+    if(eslenen.length===8){ bitti=true; mesgul=true; setTimeout(()=>{mesgul=false;kazandin();},450); }
+    else if(eslenen.length===7 && !bitti){ setTimeout(sonEslesmeTelegraf,450); }
+  },600);
+}
+
+/* son çift: kendiliğinden ama belli ederek */
+function sonEslesmeTelegraf(){
+  if(bitti) return;
+  const kalan=bitkiSira.filter(id=>!eslenen.includes(id));
+  if(kalan.length!==1) return;
+  const id=kalan[0];
+  mesgul=true; secBitki=id; secAd=id; ciz();
+  $("#masa").classList.add("telegraf");
+  toast("son çift kaldı — kendiliğinden eşleşiyor…");
+  setTimeout(()=>{ $("#masa").classList.remove("telegraf"); eslesmeYap(id,true); },1500);
+}
 
 function tamam(){
-  if(!secBitki||!secAd||bitti) return;
-  const masa=$("#masa");
-  if(secBitki===secAd){
-    eslenen.push(secBitki); secBitki=null; secAd=null;
-    masa.classList.remove("kotu"); masa.classList.add("iyi"); setTimeout(()=>masa.classList.remove("iyi"),550);
-    toast("eşleşti ✓");
-    ciz();
-    if(eslenen.length===8){ bitti=true; setTimeout(kazandin,400); }
-  }else{
+  if(!secBitki||!secAd||bitti||mesgul) return;
+  if(secBitki===secAd){ eslesmeYap(secBitki,false); }
+  else{
     hata++; hataKayit.push([secBitki,secAd]);
     secBitki=null; secAd=null;
-    masa.classList.remove("iyi"); masa.classList.add("kotu"); setTimeout(()=>masa.classList.remove("kotu"),450);
+    const masa=$("#masa"); masa.classList.remove("iyi"); masa.classList.add("kotu"); setTimeout(()=>masa.classList.remove("kotu"),450);
     toast(hata>=MAX_HAK?"yanlış ✕ — hakların bitti":"yanlış ✕ — yerlerine döndü","kotu");
     ciz();
     if(hata>=MAX_HAK){ bitti=true; setTimeout(kaybettin,500); }
@@ -269,8 +324,8 @@ function tamam(){
 function revealDoldur(){
   $("#reveal").innerHTML=bitkiSira.map(id=>{
     const k=BITKILER[id];
-    return `<div class="rv${k.tuzak?' tuzak':''}"><img src="${k.foto}" alt=""><div class="yz">
-      ${k.tuzak?'<span class="rozet">tuzak</span>':''}<b>${k.tr}</b><span class="la">${k.la}</span><p>${k.ayirt}</p></div></div>`;
+    return `<div class="rv${TUZAK.has(id)?' tuzak':''}"><img src="${fotoSec[id]}" alt=""><div class="yz">
+      ${TUZAK.has(id)?'<span class="rozet">benzeşen</span>':''}<b>${k.tr}</b><span class="la">${k.la}</span><p>${k.ayirt||''}</p></div></div>`;
   }).join("");
   $("#sonuc").classList.add("ac");
   $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
@@ -278,18 +333,18 @@ function revealDoldur(){
 function kazandin(){
   $("#sonucBas").textContent="Hepsini eşledin! 🌿";
   $("#sonucOzet").textContent = hata===0
-    ? "Tek hata yok — tuzaklara düşmedin, keskin göz."
-    : `${hata} yanlışla tamamladın. Defne–taflan ve kartopu–ortanca ikizlerini ayırt etmeyi öğrendin.`;
+    ? "Tek hata yok — benzeşen çiftlere düşmedin, keskin göz."
+    : `${hata} yanlışla tamamladın. Birbirine benzeyen türleri ayırt etmeyi öğrendin.`;
   revealDoldur();
 }
 function kaybettin(){
   $("#sonucBas").textContent="Hakların bitti";
-  $("#sonucOzet").textContent=`${eslenen.length}/8 eşleştin. Doğru adlar ve ayırt edici işaretler aşağıda — yarın tekrar.`;
+  $("#sonucOzet").textContent=`${eslenen.length}/8 eşleştin. Doğru adlar ve ayırt edici işaretler aşağıda.`;
   revealDoldur();
 }
 
 function paylas(){
-  const metin=`Eş 🌿 #${GUN_NO}\n${eslenen.length===8?'✓':'✕'} ${eslenen.length}/8 · ${hata}/${MAX_HAK} yanlış\nverandatools.com/es-bitki`;
+  const metin=`Eş 🌿 #${bulmacaNo+1}\n${eslenen.length===8?'✓':'✕'} ${eslenen.length}/8 · ${hata}/${MAX_HAK} yanlış\nverandatools.com/es-bitki`;
   navigator.clipboard?.writeText(metin).then(()=>toast("sonuç kopyalandı 📋"),()=>toast("kopyalanamadı"));
 }
 let toastT;
@@ -298,8 +353,10 @@ const temaBtn=$("#temaBtn");
 function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("esbitki-tema",t);}
 temaUygula(localStorage.getItem("esbitki-tema")||"gunduz");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
-$("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas;
-ciz();
+$("#tamamBtn").onclick=tamam;
+$("#paylasBtn").onclick=paylas;
+$("#baskaBtn").onclick=()=>baskaBulmaca(false);
+$("#rastBtn").onclick=()=>baskaBulmaca(true);
 </script>
 </body>
 </html>
