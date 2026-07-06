@@ -186,10 +186,11 @@ footer a{color:var(--kiremit)}
         <h3>Durum</h3>
         <div class="pano-sayi">
           <div class="metrik"><div class="rakam" id="m-skor">0</div><div class="etk">puan · çok iyi</div></div>
-          <div class="metrik"><div class="rakam" id="m-hak">15</div><div class="etk">kalan hak</div></div>
           <div class="metrik"><div class="rakam" id="m-dogru">0</div><div class="etk">/9 doğru</div></div>
+          <div class="metrik"><div class="rakam" id="m-deneme">0</div><div class="etk">tahmin</div></div>
         </div>
         <p class="mini-not" id="durum-not">Bir kareye dokun, satır ve sütun ölçütüne birden uyan bir yer yaz.</p>
+        <button class="dug ikincil" id="pes" style="margin-top:12px">Pes et — cevapları gör</button>
       </div>
 
       <div class="kart" id="arama-kart">
@@ -224,7 +225,7 @@ footer a{color:var(--kiremit)}
           <p>3×3 ızgaranın her satırı ve her sütunu bir coğrafya ölçütüdür. Her kareye,
           o karenin <b>satır</b> ve <b>sütun</b> ölçütüne <b>birden</b> uyan bir yer yaz.</p>
           <ul>
-            <li>Toplam <b>15 hakkın</b> var (9 kare için); her tahmin (doğru ya da yanlış) bir hak götürür.</li>
+            <li><b>Sınırsız tahmin</b> hakkın var; yanlış tahmin puan götürmez. Bulamadığın kareler için <b>“Pes et”</b> ile bitir.</li>
             <li>Aynı yeri ızgarada <b>bir kez</b> kullanabilirsin — bir kareye yazdığın cevabı başka kareye yazamazsın.</li>
             <li>Bir karenin çok sayıda doğru cevabı olabilir. Cevabın <b>ne kadar az akla geliyorsa o kadar çok puan</b>
             getirir: “Asya'da &amp; nüfusu 1M+” için <b>Çin</b> az puan, <b>Tacikistan</b> çok puan. <b>Çok puan iyidir.</b>
@@ -281,7 +282,6 @@ hazirla('dunya'); hazirla('turkiye');
 
 const OYUN={};   // mod -> günlük oyun durumu
 let AKTIF=null;  // rastgele (deneme) oyunu; null ise günlük oynanıyor
-const HAK=15;    // toplam tahmin hakkı
 let secilenAday=null;  // aramada seçilen ama henüz "Tahmin et" ile gönderilmemiş cevap
 function g(){ return AKTIF||OYUN[mod]; }   // o an oynanan oyun
 function bulmacaSec(m){
@@ -299,7 +299,7 @@ function kurOyun(m,puz){
       enb[r].push(mx); cells[r].push({ans:null,puan:null,inter});
     }
   }
-  return {p,enb,cells,hak:HAK,kullanildi:new Set(),bitti:false,secili:null};
+  return {p,enb,cells,deneme:0,kullanildi:new Set(),bitti:false,secili:null};
 }
 function yukleKayit(m){
   try{
@@ -310,7 +310,7 @@ function yukleKayit(m){
 }
 function kaydet(){
   const o=g(); if(o.pratik) return;   // deneme oyunları kaydedilmez
-  const kayit={g:GUN,hak:o.hak,bitti:o.bitti,
+  const kayit={g:GUN,deneme:o.deneme,bitti:o.bitti,
     cells:o.cells.map(row=>row.map(x=>x.ans?{ans:x.ans,puan:x.puan}:null)),
     kullanildi:[...o.kullanildi]};
   try{localStorage.setItem('atlas_'+mod+'_'+GUN,JSON.stringify(kayit));}catch(e){}
@@ -356,7 +356,7 @@ function guncelleDurum(){
   for(let r=0;r<3;r++)for(let c=0;c<3;c++){
     const x=o.cells[r][c]; if(x.ans){skor+=x.puan;dogru++;}   // boş kare 0 puan
   }
-  $('#m-skor').textContent=skor; $('#m-hak').textContent=o.hak; $('#m-dogru').textContent=dogru;
+  $('#m-skor').textContent=skor; $('#m-deneme').textContent=o.deneme; $('#m-dogru').textContent=dogru;
   return {skor,dogru};
 }
 
@@ -426,8 +426,9 @@ function gonder(id){
   if(o.kullanildi.has(id)){ m.innerHTML='<span class="no">'+e.ad+'</span> zaten kullanıldı.'; return; }
   const ks=KATSET[mod], p=o.p;
   const rOK=ks[p.s[r]].has(id), cOK=ks[p.u[c]].has(id);
-  o.hak--; o.kullanildi.add(id);
+  o.deneme++;                          // sınırsız tahmin; sadece sayacı artar
   if(rOK&&cOK){
+    o.kullanildi.add(id);              // yalnız yerleşen doğru cevaplar tekrar kullanılamaz
     const puan=Math.max(1,Math.round(100*(1-e.fame/o.enb[r][c])));
     o.cells[r][c]={ans:id,puan};
     m.innerHTML='<span class="ok">✓ '+e.ad+'</span> — +'+puan+' puan'+(puan>=80?' 🔥':puan>=55?' 👏':'')+'.';
@@ -444,7 +445,7 @@ function gonder(id){
     secilenAday=null; $('#tahmin-btn').disabled=true;
   }
   const dolu=o.cells.flat().filter(x=>x.ans).length;
-  if(o.hak<=0||dolu===9) bitir();
+  if(dolu===9) bitir();
   ciz(); kaydet();
   if(!o.bitti&&o.secili){const inp=$('#arama');inp.disabled=false;}
 }
@@ -456,7 +457,8 @@ function unvanBul(skor){
 }
 function bitir(){
   const o=g(); o.bitti=true; o.secili=null;
-  $('#arama').disabled=true; $('#tahmin-btn').disabled=true; $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
+  $('#arama').disabled=true; $('#tahmin-btn').disabled=true; $('#pes').style.display='none';
+  $('#oner').innerHTML=''; $('#mesaj').innerHTML='';
   $('#arama-bilgi').textContent='Oyun bitti.';
   const {skor,dogru}=guncelleDurum();
   // emoji ızgara
@@ -467,7 +469,7 @@ function bitir(){
   }em+='\n';}
   $('#unvan').textContent=unvanBul(skor);
   $('#emoji').textContent=em;
-  $('#sonuc-ozet').innerHTML='Puan <b>'+skor+'</b> · '+dogru+'/9 doğru · '+(HAK-o.hak)+' tahmin. <i>(çok puan iyi)</i>';
+  $('#sonuc-ozet').innerHTML='Puan <b>'+skor+'</b> · '+dogru+'/9 doğru · '+o.deneme+' tahmin. <i>(çok puan iyi)</i>';
   // kaçan kareler için örnek cevaplar
   let kh='<div style="font-weight:700;color:var(--baslik);font-family:\'Playfair Display\',serif">Kaçan kareler</div>';
   let bosVar=false;
@@ -509,7 +511,7 @@ $('#skor-gonder').onclick=()=>{
   const gun=GUN*2+(mod==='turkiye'?1:0);
   $('#skor-gonder').textContent='Gönderiliyor…';
   fetch(LB_URL+'?fn=add&oyun=atlas&gun='+gun+'&nick='+encodeURIComponent(nick)+
-        '&puan='+puan+'&cozulen='+dogru+'&deneme='+(HAK-o.hak))
+        '&puan='+puan+'&cozulen='+dogru+'&deneme='+o.deneme)
     .then(r=>r.json()).then(()=>{ $('#skor-gonder').textContent='Gönderildi ✓'; liderGetir(); })
     .catch(()=>{ $('#skor-gonder').textContent='Olmadı — tekrar dene'; });
 };
@@ -529,7 +531,7 @@ function girisOyun(m){
     OYUN[m]=kurOyun(m);
     const k=yukleKayit(m);
     if(k){
-      OYUN[m].hak=k.hak; OYUN[m].kullanildi=new Set(k.kullanildi);
+      OYUN[m].deneme=k.deneme||0; OYUN[m].kullanildi=new Set(k.kullanildi);
       k.cells.forEach((row,r)=>row.forEach((x,c)=>{ if(x) OYUN[m].cells[r][c]={...OYUN[m].cells[r][c],ans:x.ans,puan:x.puan}; }));
       OYUN[m].bitti=k.bitti;
     }
@@ -546,6 +548,7 @@ function moda(m){
   secilenAday=null; $('#tahmin-btn').disabled=true;
   $('#arama-bilgi').textContent='Yukarıdan bir kare seç.';
   $('#durum-not').textContent=VARSAYILAN_NOT;
+  $('#pes').style.display='';
   ciz();
   if(OYUN[m].bitti) bitir();
 }
@@ -560,6 +563,7 @@ function rastgele(){
   $('#arama-bilgi').textContent='Yukarıdan bir kare seç.';
   $('#durum-not').innerHTML='🎲 <b>Rastgele bulmaca #'+i+'</b> — deneme modu, puan kaydedilmez. '+
     '<span style="opacity:.8">Beğenmezsen tekrar bas.</span>';
+  $('#pes').style.display='';
   ciz();
 }
 function bugune(){ AKTIF=null; moda(mod); }
@@ -567,6 +571,12 @@ document.querySelectorAll('.mod-sec button').forEach(b=>b.onclick=()=>moda(b.dat
 $('#rastgele').onclick=rastgele;
 $('#bugun').onclick=bugune;
 $('#tahmin-btn').onclick=tahminEt;
+$('#pes').onclick=()=>{
+  const o=g(); if(o.bitti) return;
+  const dolu=o.cells.flat().filter(x=>x.ans).length;
+  if(dolu<9 && !confirm('Pes edip kalan kareler için cevapları görmek istiyor musun?')) return;
+  bitir();
+};
 $('#gece').onclick=()=>{
   document.body.classList.toggle('gece');
   const g=document.body.classList.contains('gece');
