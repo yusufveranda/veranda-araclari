@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jenerik — Bu oyuncunun kaç filmini çıkarırsın?</title>
+<meta name="description" content="Bir oyuncu veriyoruz; onun oynadığı filmleri say. Kaç film yazarsan o kadar puan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0a09; --bg2:#141110; --card:#1a1614; --border:#2e2724;
+    --paper:#efe9dc; --paper-dim:#c9c2b2;
+    --text:#ece7de; --muted:#94897c;
+    --red:#e5382e; --red-glow:rgba(229,56,46,0.35); --red-dim:rgba(229,56,46,0.12);
+    --ok:#7cb46b; --ok-dim:rgba(124,180,107,0.12); --radius:4px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{color-scheme:dark;}
+  body{
+    background:
+      radial-gradient(900px 500px at 50% -150px, rgba(229,56,46,0.09), transparent 70%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Inter", -apple-system, sans-serif;
+    min-height:100dvh; padding:22px clamp(12px, 3vw, 44px) 90px;
+  }
+  .wrap{max-width:1280px; margin:0 auto;}
+
+  header{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:6px;}
+  h1{
+    font-family:"Special Elite", cursive; font-size:30px; font-weight:400;
+    color:var(--red); text-shadow:0 0 18px var(--red-glow), 0 0 40px var(--red-glow);
+    letter-spacing:2px;
+  }
+  .day-no{font-size:12px; color:var(--muted); letter-spacing:1px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:18px; font-style:italic;}
+
+  .controls{display:flex; gap:8px; align-items:center;}
+  select,button,input{font:inherit;}
+  select{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; font-size:13px;}
+  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
+  .mini-btn:hover{border-color:var(--red); color:var(--red);}
+
+  /* ---- oyuncu kartı: banyoda kurumuş bir portre ---- */
+  .prompt{display:grid; grid-template-columns:auto 1fr; gap:20px; align-items:center;
+    background:linear-gradient(var(--card), var(--bg2)); border:1px solid var(--border);
+    border-radius:var(--radius); padding:18px; margin-bottom:20px;}
+  .portrait{
+    width:132px; aspect-ratio:2/3; flex:none; border:5px solid var(--paper); border-radius:2px;
+    background:#000; overflow:hidden; position:relative;
+    box-shadow:0 6px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.8);
+  }
+  .portrait img{width:100%; height:100%; object-fit:cover; display:block;}
+  .portrait .no{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:"Special Elite",cursive; font-size:52px; color:var(--border);}
+  .prompt-body{min-width:0;}
+  .p-label{font-family:"Special Elite",cursive; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;}
+  .p-name{font-family:"Special Elite",cursive; font-size:clamp(24px,4.4vw,38px); line-height:1.1; color:var(--paper); margin-bottom:12px;}
+  .p-ask{font-size:14px; color:var(--paper-dim); margin-bottom:14px; line-height:1.5;}
+  .p-ask b{color:var(--red);}
+  .meter{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .meter .score{font-size:13px; color:var(--muted);}
+  .meter .score b{color:var(--ok); font-size:26px; font-family:"Special Elite",cursive; text-shadow:0 0 12px rgba(124,180,107,0.35);}
+  .bar{flex:1; min-width:140px; height:10px; background:var(--bg2); border:1px solid var(--border); border-radius:20px; overflow:hidden;}
+  .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--red),var(--ok)); transition:width .4s ease;}
+  @media(max-width:560px){ .prompt{grid-template-columns:1fr; justify-items:center; text-align:center;} .prompt-body{text-align:center;} }
+
+  /* ---- tahmin kutusu (ana oyunla aynı) ---- */
+  .guess{margin:0 auto 4px; max-width:760px; position:relative;}
+  .guess-row{display:flex; gap:8px;}
+  .guess input{flex:1; background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:14px 16px; font-size:16px; outline:none; min-height:52px;}
+  .guess input:focus{border-color:var(--red); box-shadow:0 0 0 3px var(--red-dim);}
+  .guess input:disabled{opacity:.5;}
+  .btn{background:var(--red); color:#fff; border:none; border-radius:6px; padding:0 24px; font-size:14px; font-weight:600; cursor:pointer; min-height:52px; letter-spacing:0.5px;}
+  .btn:hover{filter:brightness(1.1);}
+  .btn:disabled{opacity:0.35; cursor:default; filter:none;}
+  .btn.ghost{background:transparent; color:var(--muted); border:1px solid var(--border); font-weight:500;}
+  .btn.ghost:hover{color:var(--text); border-color:var(--muted);}
+  .ac-list{position:absolute; bottom:100%; left:0; right:0; margin-bottom:6px; background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; z-index:30; display:none; box-shadow:0 -8px 30px rgba(0,0,0,0.6);}
+  .ac-item{padding:12px 16px; cursor:pointer; font-size:15px; border-bottom:1px solid var(--border);}
+  .ac-item:last-child{border-bottom:none;}
+  .ac-item:hover,.ac-item.sel{background:var(--red-dim);}
+  .ac-item .yr{color:var(--muted); font-size:13px;}
+
+  .feedback{margin:12px auto 0; max-width:760px; padding:12px 16px; border-radius:6px; font-size:14px; min-height:0; line-height:1.5; transition:opacity .2s;}
+  .feedback.bad{background:var(--red-dim); border:1px solid rgba(229,56,46,0.4);}
+  .feedback.good{background:var(--ok-dim); border:1px solid rgba(124,180,107,0.4);}
+  .feedback.dup{background:var(--card); border:1px solid var(--border); color:var(--muted);}
+  .feedback:empty{display:none;}
+
+  /* yanlış tahmin izi */
+  .misses{max-width:760px; margin:12px auto 0; display:flex; gap:6px; flex-wrap:wrap;}
+  .misses .m{font-size:12px; color:var(--muted); background:var(--card); border:1px solid var(--border); border-radius:2px; padding:4px 9px; text-decoration:line-through;}
+
+  /* ---- bulunan filmler: kâğıt karolar ---- */
+  .grid-label{max-width:1080px; margin:26px auto 10px; font-family:"Special Elite",cursive; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);}
+  .grid{max-width:1080px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(112px,1fr)); gap:14px;}
+  .fcard{border:4px solid var(--paper); border-radius:2px; background:#000; overflow:hidden; position:relative;
+    box-shadow:0 4px 14px rgba(0,0,0,0.5); animation:pop .35s ease;}
+  .fcard.slot{border-style:dashed; border-color:var(--border); background:transparent; box-shadow:none; aspect-ratio:2/3;}
+  .fcard.missed{border-color:#4a423c; filter:grayscale(1); opacity:.62;}
+  .fcard .po{aspect-ratio:2/3; width:100%; object-fit:cover; display:block;}
+  .fcard .noimg{aspect-ratio:2/3; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; font-family:"Special Elite",cursive; font-size:13px; color:var(--paper-dim); background:var(--bg2);}
+  .fcard .cap{position:absolute; left:0; right:0; bottom:0; padding:20px 8px 7px; font-size:12px; line-height:1.25;
+    background:linear-gradient(transparent, rgba(5,4,3,0.94));}
+  .fcard .cap .yr{color:var(--muted); font-size:11px;}
+  .fcard.missed .cap{background:linear-gradient(transparent, rgba(5,4,3,0.96));}
+  .slot .q{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:"Special Elite",cursive; font-size:34px; color:var(--border);}
+  @keyframes pop{from{opacity:0; transform:scale(.9) translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ---- bitiş paneli ---- */
+  .result{max-width:760px; margin:24px auto 0; padding:18px 20px; border-radius:6px; display:none;
+    background:var(--ok-dim); border:1px solid rgba(124,180,107,0.4);}
+  .result.show{display:block;}
+  .result h2{font-family:"Special Elite",cursive; font-weight:400; font-size:22px; color:var(--paper); margin-bottom:6px;}
+  .result p{font-size:14px; color:var(--paper-dim); line-height:1.55;}
+  .result .share-row{margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;}
+
+  .loading{padding:80px 0; text-align:center; color:var(--muted); font-size:15px; font-family:"Special Elite",cursive;}
+  footer{margin-top:52px; text-align:center; font-size:11px; color:#4a423c;}
+  footer a{color:var(--muted);}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>JENERİK</h1>
+    <div class="controls">
+      <a class="mini-btn" href="./" title="Günün filmini bul">🎬 film oyunu</a>
+      <button id="randomBtn" class="mini-btn">🎲 rastgele oyuncu</button>
+      <select id="actorSelect" aria-label="Önizleme: oyuncu seç"></select>
+    </div>
+  </header>
+  <p class="tagline">Bir oyuncu veriyoruz. Bu oyundaki filmlerinden oynadıklarını sırayla yaz — kaç film çıkarırsan o kadar puan. <span class="day-no" id="dayNo"></span></p>
+
+  <div id="loading" class="loading">Kadro çağrılıyor…</div>
+
+  <div id="game" style="display:none">
+    <div class="prompt">
+      <div class="portrait" id="portrait"></div>
+      <div class="prompt-body">
+        <div class="p-label">Oyuncu</div>
+        <div class="p-name" id="actorName"></div>
+        <div class="p-ask">Bu oyuncunun <b id="totalN">0</b> filmi bu oyunda. Kaçını hatırlıyorsun?</div>
+        <div class="meter">
+          <div class="score"><b id="foundN">0</b> puan</div>
+          <div class="bar"><i id="barFill"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="guess">
+      <div class="ac-list" id="acList"></div>
+      <div class="guess-row">
+        <input type="text" id="guessInput" placeholder="Film adı yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Film adı">
+        <button class="btn" id="guessBtn" disabled>Ekle</button>
+        <button class="btn ghost" id="finishBtn">Bitir</button>
+      </div>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="misses" id="misses"></div>
+
+    <div class="result" id="result">
+      <h2 id="resultTitle"></h2>
+      <p id="resultBody"></p>
+      <div class="share-row">
+        <button class="btn ghost" id="shareBtn">Sonucu Kopyala</button>
+        <button class="btn ghost" id="againBtn">🎲 başka oyuncu</button>
+      </div>
+    </div>
+
+    <div class="grid-label" id="gridLabel"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <footer>Veri: <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>. Bu ürün TMDB tarafından onaylanmamış ya da desteklenmemiştir.</footer>
+</div>
+
+<script src="jenerik.js"></script>
+<script>
+const IMG = "https://image.tmdb.org/t/p/";
+const EPOCH = new Date("2026-07-06T00:00:00");   // 1. gün
+const LS = "jenerik_v1";
+const $ = id => document.getElementById(id);
+const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// İ/I ve aksan katlaması — toLocaleLowerCase('tr') KULLANMA (İngilizce başlıkları bozar)
+const fold = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+
+const FILMS = window.JEN_FILMS || [];
+const ACTORS = window.JEN_OYUNCULAR || [];
+const FILM_BY_ID = {};
+FILMS.forEach(f => FILM_BY_ID[f.i] = f);
+
+let G = null;   // {actor, index, random, filmIds:Set, found:[], missed:[], sel, over}
+
+function todayIndex(){
+  const days = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
+  const n = ACTORS.length;
+  return ((days % n) + n) % n;
+}
+
+// ---- kalıcılık (yalnız günün oyuncusu) ----
+function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){ return {}; } }
+function persist(){
+  if (G.random) return;
+  const s = loadSave();
+  s[G.index] = { found:[...G.foundSet], missed:G.missed, over:G.over };
+  try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
+}
+
+// ---- render ----
+function renderPrompt(){
+  const a = G.actor;
+  $("portrait").innerHTML = a.p
+    ? `<img src="${IMG}w185${a.p}" alt="${esc(a.n)}">`
+    : `<div class="no">?</div>`;
+  $("actorName").textContent = a.n;
+  $("totalN").textContent = G.total;
+  $("dayNo").textContent = G.random ? "Rastgele oyuncu" : `Gün #${G.index + 1}`;
+  updateMeter();
+}
+function updateMeter(){
+  const n = G.foundSet.size;
+  $("foundN").textContent = n;
+  $("barFill").style.width = (100 * n / G.total) + "%";
+}
+function filmCard(f, missed){
+  const poster = f.p
+    ? `<img class="po" src="${IMG}w185${f.p}" alt="" loading="lazy">`
+    : `<div class="noimg">${esc(f.t)}</div>`;
+  return `<div class="fcard${missed?" missed":""}">${poster}`
+    + `<div class="cap">${esc(f.t)}<span class="yr">${f.y?` · ${f.y}`:""}</span></div></div>`;
+}
+function renderGrid(){
+  const total = G.total, n = G.foundSet.size;
+  $("gridLabel").textContent = G.over
+    ? `${n}/${total} film — kadro açıldı`
+    : `Bulunanlar · ${n}/${total}`;
+  let html = "";
+  // bulunanlar (bulma sırasına göre)
+  G.found.forEach(id => html += filmCard(FILM_BY_ID[id], false));
+  if (G.over){
+    // kaçırılanlar açığa çıkar
+    G.actor.f.forEach(id => { if (!G.foundSet.has(id)) html += filmCard(FILM_BY_ID[id], true); });
+  } else {
+    // kalan boş slotlar
+    for (let i = n; i < total; i++) html += `<div class="fcard slot"><div class="q">?</div></div>`;
+  }
+  $("grid").innerHTML = html;
+}
+function renderMisses(){
+  $("misses").innerHTML = G.missed.map(t => `<span class="m">${esc(t)}</span>`).join("");
+}
+
+// ---- otomatik tamamlama (TÜM filmler; bulunmuşlar elenir) ----
+let acResults = [], acIdx = -1;
+function hideAc(){ $("acList").style.display = "none"; acResults = []; acIdx = -1; }
+function showAc(){
+  const q = fold($("guessInput").value.trim());
+  G.sel = null; $("guessBtn").disabled = true;
+  if (q.length < 2){ hideAc(); return; }
+  const starts = [], contains = [];
+  for (const f of FILMS){
+    if (G.foundSet.has(f.i)) continue;      // bulduğun film önerilerde çıkmasın
+    const t = fold(f.t);
+    if (t.startsWith(q)) starts.push(f);
+    else if (t.includes(q)) contains.push(f);
+    if (starts.length >= 8) break;
+  }
+  acResults = [...starts, ...contains].slice(0, 8);
+  if (!acResults.length){ hideAc(); return; }
+  acIdx = -1;
+  $("acList").innerHTML = acResults.map((r,i) =>
+    `<div class="ac-item" data-i="${i}">${esc(r.t)} <span class="yr">(${r.y||"?"})</span></div>`).join("");
+  $("acList").style.display = "block";
+  $("acList").querySelectorAll(".ac-item").forEach(el =>
+    el.addEventListener("click", () => choose(acResults[+el.dataset.i])));
+}
+function choose(f){
+  G.sel = f;
+  $("guessInput").value = f.t;
+  $("guessBtn").disabled = false;
+  hideAc();
+  $("guessInput").focus();
+}
+function highlightAc(){
+  $("acList").querySelectorAll(".ac-item").forEach((el,i) =>
+    el.classList.toggle("sel", i === acIdx));
+}
+
+function flash(cls, html){
+  const fb = $("feedback");
+  fb.className = "feedback " + cls;
+  fb.innerHTML = html;
+}
+
+function submit(){
+  if (G.over) return;
+  const f = G.sel;
+  if (!f) return;
+  if (G.foundSet.has(f.i)){ flash("dup", `<b>${esc(f.t)}</b> — zaten listende.`); resetInput(); return; }
+  if (G.filmIds.has(f.i)){
+    G.foundSet.add(f.i); G.found.push(f.i);
+    flash("good", `<b>${esc(f.t)}</b> ✓ bu oyuncunun filmi!`);
+    updateMeter(); renderGrid(); persist();
+    if (G.foundSet.size === G.total){ resetInput(); finish(true); return; }
+  } else {
+    if (!G.missed.includes(f.t)){ G.missed.push(f.t); renderMisses(); persist(); }
+    flash("bad", `<b>${esc(f.t)}</b> — bu oyuncu bu filmde yok.`);
+  }
+  resetInput();
+}
+function resetInput(){
+  $("guessInput").value = ""; G.sel = null; $("guessBtn").disabled = true; hideAc();
+  $("guessInput").focus();
+}
+
+// ---- paylaşım ----
+function shareText(){
+  const n = G.foundSet.size, total = G.total;
+  const etiket = G.random ? "🎲" : "#" + (G.index + 1);
+  let sq = "";
+  for (let i = 0; i < total; i++) sq += (i < n ? "🟩" : "⬛");
+  // uzun satırları böl (10'arlı)
+  sq = sq.match(/.{1,10}/gu).join("\n");
+  return `Jenerik ${etiket} · 🎭 ${G.actor.n}\n${sq}\n${n}/${total} film`;
+}
+
+function finish(won){
+  if (G.over) return;
+  G.over = true;
+  const n = G.foundSet.size, total = G.total;
+  $("guessInput").disabled = true; $("guessBtn").disabled = true; $("finishBtn").disabled = true;
+  hideAc();
+  const res = $("result");
+  res.classList.add("show");
+  res.style.background = won ? "var(--ok-dim)" : "var(--card)";
+  res.style.borderColor = won ? "rgba(124,180,107,0.4)" : "var(--border)";
+  $("resultTitle").textContent = won
+    ? "Tam kadro! 🎬"
+    : `${n}/${total} film`;
+  const pct = Math.round(100 * n / total);
+  $("resultBody").innerHTML = won
+    ? `<b>${esc(G.actor.n)}</b> — bu oyundaki bütün filmlerini çıkardın: ${n} film, ${n} puan.`
+    : `<b>${esc(G.actor.n)}</b> — ${n}/${total} film yazdın (${pct}%). Kalan ${total - n} film aşağıda gri açıldı.`;
+  renderGrid();
+  persist();
+}
+
+// ---- başlat ----
+function startGame(index, random=false){
+  const actor = ACTORS[index];
+  G = { actor, index, random,
+        filmIds:new Set(actor.f), total:actor.f.length,
+        foundSet:new Set(), found:[], missed:[], sel:null, over:false };
+  // günün oyuncusuysa kayıt yükle
+  if (!random){
+    const s = loadSave()[index];
+    if (s){
+      s.found.forEach(id => { if (G.filmIds.has(id) && !G.foundSet.has(id)){ G.foundSet.add(id); G.found.push(id); } });
+      G.missed = s.missed || [];
+      G.over = !!s.over;
+    }
+  }
+  $("loading").style.display = "none";
+  $("game").style.display = "block";
+  $("guessInput").disabled = false; $("finishBtn").disabled = false;
+  $("feedback").className = "feedback"; $("feedback").innerHTML = "";
+  $("result").classList.remove("show");
+  $("todayBtn") && ($("todayBtn").style.display = random ? "" : "none");
+  renderPrompt(); renderMisses(); renderGrid();
+  if (G.over){ // tamamlanmış günü tekrar açınca sonucu göster
+    G.over = false; finish(G.foundSet.size === G.total);
+  } else {
+    resetInput();
+  }
+  $("actorSelect").value = String(index);
+}
+
+// ---- olaylar ----
+$("guessInput").addEventListener("input", showAc);
+$("guessInput").addEventListener("keydown", e => {
+  const open = $("acList").style.display === "block";
+  if (e.key === "ArrowDown" && open){ e.preventDefault(); acIdx = Math.min(acIdx+1, acResults.length-1); highlightAc(); }
+  else if (e.key === "ArrowUp" && open){ e.preventDefault(); acIdx = Math.max(acIdx-1, 0); highlightAc(); }
+  else if (e.key === "Enter"){
+    e.preventDefault();
+    if (open && acIdx >= 0){ choose(acResults[acIdx]); }
+    else if (G.sel){ submit(); }
+    else if (acResults.length){ choose(acResults[0]); }   // yazıp Enter'a basınca ilk öneriyi al
+  } else if (e.key === "Escape"){ hideAc(); }
+});
+$("guessBtn").addEventListener("click", submit);
+$("finishBtn").addEventListener("click", () => finish(G.foundSet.size === G.total));
+$("shareBtn").addEventListener("click", () => {
+  navigator.clipboard.writeText(shareText()).then(() => { $("shareBtn").textContent = "Kopyalandı!"; });
+});
+$("againBtn").addEventListener("click", () => pickRandom());
+$("randomBtn").addEventListener("click", () => pickRandom());
+document.addEventListener("click", e => { if (!e.target.closest(".guess")) hideAc(); });
+
+function pickRandom(){
+  let i;
+  do { i = Math.floor(Math.random() * ACTORS.length); }
+  while (ACTORS.length > 1 && G && i === G.index);
+  startGame(i, true);
+}
+
+// ---- init ----
+(function init(){
+  if (!ACTORS.length){
+    $("loading").textContent = "jenerik.js bulunamadı. Önce jenerik_uret.py çalıştır.";
+    return;
+  }
+  const today = todayIndex();
+  const sel = $("actorSelect");
+  const show = new URLSearchParams(location.search).get("preview") === "1";
+  if (!show) sel.style.display = "none";
+  ACTORS.forEach((a,i) => {
+    const o = document.createElement("option");
+    o.value = String(i);
+    o.textContent = `Gün #${i+1} — ${a.n}${i===today?" (bugün)":""}`;
+    sel.appendChild(o);
+  });
+  sel.addEventListener("change", () => startGame(+sel.value));
+  startGame(today);
+})();
+</script>
+</body>
+</html>
