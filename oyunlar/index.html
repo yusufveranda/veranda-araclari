@@ -5,41 +5,77 @@
 <script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lunapark — veranda</title>
-<meta name="description" content="veranda'nın tüm günlük oyunları tek yerde: verandle, güverte, sinema, kuş ve bitki oyunları, Günün Yıldızları.">
+<meta name="description" content="veranda'nın tüm günlük oyunları tek yerde: verandle, Atlas, Sancak, Karanlık Oda, Jenerik, kuş ve bitki oyunları, Günün Yıldızları.">
 <meta property="og:title" content="Lunapark — veranda">
 <meta property="og:description" content="veranda'nın tüm günlük oyunları tek yerde.">
 <meta property="og:image" content="https://verandatools.com/gorsel/doku.jpg">
 <meta property="og:url" content="https://verandatools.com/oyunlar/">
-<meta name="theme-color" content="#D7261D">
+<meta name="theme-color" content="#B84B2A">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23F09A36'/%3E%3Ccircle cx='32' cy='28' r='17' fill='%23D7261D'/%3E%3Cpath d='M0 50 L14 42 L26 49 L40 40 L52 47 L64 43 V64 H0 Z' fill='%231C1510'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css?v=9">
 <style>
-.oyunlar-bas{margin:26px 2px 4px}
+/* ===================== Lunapark — vitrin ===================== */
+.oyunlar-bas{margin:22px 2px 4px;max-width:60ch}
 .oyunlar-bas h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;
-  font-size:clamp(34px,6vw,60px);color:var(--ink,#221C16);letter-spacing:-.5px;line-height:1.02}
-.oyunlar-bas p{color:var(--muted,#6E6353);font-style:italic;font-size:clamp(14px,1.7vw,18px);margin-top:8px}
-.grup-bas{margin-bottom:5px;font-size:16px}
-.grup-bas a{color:inherit;text-decoration:none;border-bottom:1px dashed var(--acc,#C2331F)}
-.grup-bas a:hover{color:var(--acc,#C2331F)}
+  font-size:clamp(38px,6.4vw,66px);color:var(--baslik-ink);letter-spacing:-.5px;line-height:1.0}
+.oyunlar-bas p{color:var(--alan-ink);opacity:.9;font-style:italic;
+  font-size:clamp(14px,1.7vw,18px);margin-top:10px;line-height:1.5}
 
-/* altı kart tek sırada — dar kart için sıkı ama okunur ölçüler */
-body.vitrin .kartlar{grid-template-columns:repeat(6,1fr);gap:12px}
-body.vitrin .kart{padding:12px}
-body.vitrin .kart .kart-gorsel{margin:-12px -12px 10px}
-body.vitrin .kart p{font-size:12.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* --- ızgara: rahat, hizalı --- */
+body.vitrin .kartlar{grid-template-columns:repeat(3,1fr);gap:26px;align-items:stretch}
+@media(max-width:920px){body.vitrin .kartlar{grid-template-columns:1fr 1fr;gap:20px}}
+@media(max-width:560px){body.vitrin .kartlar{grid-template-columns:1fr}}
 
-/* alt-oyun bağlantı çubuğu (bir kategori birden fazla ayrı sayfayı topluyorsa) — dar kartta alt alta */
-.alt-oyunlar{display:flex;flex-direction:column;gap:5px;margin-top:8px}
-.alt-oyunlar a{text-align:center;border:1px solid var(--line);border-radius:8px;padding:6px 4px;
-  font-size:12px;color:var(--acc);text-decoration:none;font-family:'Libre Baskerville',Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.alt-oyunlar a:hover{background:var(--acc-soft,rgba(194,51,31,.08));border-color:var(--acc)}
+/* --- oyun kartı: tek tık hedefi, dikey akış, düz hizalı --- */
+body.vitrin .kart.oyun{padding:0;overflow:hidden;transform:none;display:flex;flex-direction:column;height:100%}
+.kart.oyun .kapak{position:relative;aspect-ratio:800/410;background:#1d1712;overflow:hidden}
+.kart.oyun .kapak img,.kart.oyun .kapak svg{display:block;width:100%;height:100%;object-fit:cover}
+.kart.oyun .govde{padding:17px 20px 18px;display:flex;flex-direction:column;flex:1}
+.kart.oyun .tur{font-family:'Libre Baskerville',Georgia,serif;font-size:11px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--td,#C2331F);display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.kart.oyun .tur::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--td,#C2331F);flex:none}
+.kart.oyun h2{font-family:'Playfair Display',Georgia,serif;font-size:23px;font-weight:600;
+  color:var(--kagit-ink);line-height:1.08;margin:0}
+.kart.oyun p{font-size:14px;color:var(--kagit-soluk);margin-top:7px;line-height:1.5;flex:1}
+.kart.oyun .oyna{margin-top:15px;font-family:'Libre Baskerville',Georgia,serif;font-size:13px;font-weight:700;
+  color:var(--kirmizi);display:inline-flex;align-items:center;gap:7px;letter-spacing:.02em}
+.kart.oyun .oyna .ok{transition:transform .22s ease}
+body.vitrin .kart.oyun:hover .oyna .ok,body.vitrin .kart.oyun:focus-visible .oyna .ok{transform:translateX(4px)}
 
-@media(max-width:1100px){body.vitrin .kartlar{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:640px){body.vitrin .kartlar{grid-template-columns:1fr 1fr}}
-@media(max-width:420px){body.vitrin .kartlar{grid-template-columns:1fr}}
+/* --- öne çıkan (hero) --- */
+body.vitrin .kart.hero{grid-column:1/-1;padding:0;overflow:hidden;transform:none;
+  display:grid;grid-template-columns:minmax(0,1.02fr) 1.3fr}
+.kart.hero .kapak{position:relative;min-height:290px;background:#141019}
+.kart.hero .kapak svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.kart.hero .govde{padding:clamp(24px,3vw,40px) clamp(24px,3.4vw,46px);display:flex;flex-direction:column;justify-content:center}
+.kart.hero .tur{font-family:'Libre Baskerville',Georgia,serif;font-size:11.5px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;color:#C98A2E;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.kart.hero .tur::before{content:"";width:8px;height:8px;border-radius:50%;background:#C98A2E}
+.kart.hero h2{font-family:'Playfair Display',Georgia,serif;font-weight:700;
+  font-size:clamp(25px,2.7vw,34px);color:var(--kagit-ink);line-height:1.05;letter-spacing:-.3px}
+.kart.hero p{font-size:15px;color:var(--kagit-soluk);margin-top:11px;line-height:1.55;max-width:48ch}
+.kart.hero .oyna{margin-top:18px;font-family:'Libre Baskerville',Georgia,serif;font-size:14px;font-weight:700;
+  color:var(--kirmizi);display:inline-flex;align-items:center;gap:8px}
+.kart.hero .oyna .ok{transition:transform .22s ease}
+body.vitrin .kart.hero:hover .oyna .ok,body.vitrin .kart.hero:focus-visible .oyna .ok{transform:translateX(4px)}
+@media(max-width:680px){
+  body.vitrin .kart.hero{grid-template-columns:1fr}
+  .kart.hero .kapak{aspect-ratio:800/320;min-height:0}
+}
+
+/* bölüm başlığı */
+body.vitrin .bolum-bas{font-family:'Libre Baskerville',Georgia,serif;font-size:12.5px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--alan-ink);opacity:.72;margin:0 2px 15px;
+  display:flex;align-items:center;gap:12px}
+body.vitrin .bolum-bas::after{content:"";flex:1;height:1px;background:currentColor;opacity:.3}
+body.vitrin .grup.grup-oyunlar{margin-top:34px}
+
+/* sıcak paletle uyumlu footer bağlantısı */
+body.vitrin footer a{color:var(--alan-ink);text-decoration:none;border-bottom:1px solid rgba(247,233,210,.45)}
+body.vitrin footer a:hover{border-bottom-color:var(--alan-ink)}
 </style>
 </head>
 <body class="vitrin">
@@ -47,81 +83,216 @@ body.vitrin .kart p{font-size:12.5px;line-height:1.4;display:-webkit-box;-webkit
   <div class="wrap">
     <header class="oyunlar-bas">
       <h1>Lunapark</h1>
-      <p>veranda'nın tüm günlük oyunları, tek yerde.</p>
+      <p>veranda'nın bütün günlük oyunları — her gün yenilenir, her biri bir dakikalık mola.</p>
     </header>
+
     <main>
+      <!-- öne çıkan -->
       <section class="grup grup-one">
         <div class="kartlar">
-
-          <div class="kart">
-            <h2 class="grup-bas"><a href="../wordle/">verandle</a></h2>
-            <a href="../wordle/">
-              <div class="kart-gorsel"><img src="../gorsel/verandle.jpg" alt="harf kareleri" loading="lazy"></div>
-            </a>
-            <p>Altı kelime oyunu bir arada: Harfiyat, Taraça, Avlu, Çatı, Şömine, Parsel.</p>
-          </div>
-
-          <div class="kart">
-            <h2 class="grup-bas">Güverte</h2>
-            <a href="../atlas/">
-              <div class="kart-gorsel"><img src="../gorsel/harita.jpg?v=2" alt="antika harita" loading="lazy"></div>
-            </a>
-            <p>Coğrafya oyunları: ülke, il, bayrak.</p>
-            <div class="alt-oyunlar">
-              <a href="../atlas/">Atlas →</a>
-              <a href="../sancak/">Sancak →</a>
+          <a class="kart hero" href="../yildiz/">
+            <div class="kapak">
+              <svg viewBox="0 0 640 520" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <radialGradient id="hg" cx="52%" cy="40%" r="78%">
+                    <stop offset="0" stop-color="#2c2318"/><stop offset=".55" stop-color="#1c1620"/><stop offset="1" stop-color="#100c16"/>
+                  </radialGradient>
+                </defs>
+                <rect width="640" height="520" fill="url(#hg)"/>
+                <g fill="#EBDFC6">
+                  <circle cx="86" cy="78" r="2.4" opacity=".55"/><circle cx="150" cy="150" r="1.5" opacity=".4"/>
+                  <circle cx="512" cy="96" r="2.2" opacity=".5"/><circle cx="576" cy="188" r="1.6" opacity=".45"/>
+                  <circle cx="108" cy="300" r="1.8" opacity=".4"/><circle cx="70" cy="420" r="2.2" opacity=".5"/>
+                  <circle cx="560" cy="360" r="2" opacity=".45"/><circle cx="500" cy="452" r="1.6" opacity=".4"/>
+                  <circle cx="330" cy="70" r="1.6" opacity=".4"/><circle cx="250" cy="440" r="1.7" opacity=".4"/>
+                  <circle cx="430" cy="410" r="1.5" opacity=".35"/><circle cx="200" cy="96" r="1.4" opacity=".35"/>
+                </g>
+                <path d="M320 150 L350 220 L425 225 L365 275 L385 350 L320 305 L255 350 L275 275 L215 225 L290 220 Z" fill="#D99A3A"/>
+                <path d="M320 150 L350 220 L425 225 L365 275 L320 305 Z" fill="#C6862B"/>
+                <path d="M470 300 L479 320 L501 321 L483 334 L490 356 L470 343 L450 356 L457 334 L439 321 L461 320 Z" fill="#B98A3A" opacity=".85"/>
+                <path d="M168 205 L175 221 L192 222 L178 232 L184 249 L168 239 L152 249 L158 232 L144 222 L161 221 Z" fill="#B98A3A" opacity=".7"/>
+              </svg>
             </div>
-          </div>
-
-          <div class="kart">
-            <h2 class="grup-bas">Sinema</h2>
-            <a href="../karanlik-oda/">
-              <div class="kart-gorsel"><img src="../ortak/kart/karanlik-oda.jpg" alt="karanlık odada kırmızı lamba ve banyo masası" loading="lazy"></div>
-            </a>
-            <p>Film oyunları: kare ve oyuncu tahmini.</p>
-            <div class="alt-oyunlar">
-              <a href="../karanlik-oda/">Karanlık Oda →</a>
-              <a href="../karanlik-oda/jenerik.html">Jenerik →</a>
+            <div class="govde">
+              <span class="tur">Günün Yıldızları</span>
+              <h2>Bugünün dört bulmacası, tek sayfada</h2>
+              <p>Dört mini bulmaca peş peşe. Her doğru bir yıldız kazandırır, her hata bir kalp götürür — günlük skorunu topla, sonra paylaş.</p>
+              <span class="oyna">Bugünü oyna <span class="ok">→</span></span>
             </div>
-          </div>
+          </a>
+        </div>
+      </section>
 
-          <div class="kart">
-            <h2 class="grup-bas">Kuş</h2>
-            <a href="../dort-suru/">
-              <div class="kart-gorsel"><img src="../gorsel/kus.svg" alt="alacakaranlıkta dalda bir kuş" loading="lazy"></div>
-            </a>
-            <p>Kuş bulmacaları: öbekleme ve eşleştirme.</p>
-            <div class="alt-oyunlar">
-              <a href="../dort-suru/">Dört Sürü →</a>
-              <a href="../kur/">Kur →</a>
+      <!-- tüm oyunlar -->
+      <section class="grup grup-oyunlar">
+        <h2 class="bolum-bas">Tüm oyunlar</h2>
+        <div class="kartlar">
+
+          <!-- KELİME -->
+          <a class="kart oyun" href="../wordle/" style="--td:#B98A34">
+            <div class="kapak"><img src="../gorsel/verandle.jpg" alt="gün batımında harf kareleri" loading="lazy"></div>
+            <div class="govde">
+              <span class="tur">Kelime</span>
+              <h2>verandle</h2>
+              <p>Altı kelime oyunu bir arada: Harfiyat, Taraça, Avlu, Çatı, Şömine, Parsel.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
             </div>
-          </div>
+          </a>
 
-          <div class="kart">
-            <h2 class="grup-bas">Bitki</h2>
-            <a href="../dort-demet/">
-              <div class="kart-gorsel"><img src="../gorsel/bitki.jpg" alt="saksıda bitki" loading="lazy"></div>
-            </a>
-            <p>Bitki bulmacaları: öbekleme ve eşleştirme.</p>
-            <div class="alt-oyunlar">
-              <a href="../dort-demet/">Dört Demet →</a>
-              <a href="../asi/">Aşı →</a>
+          <!-- COĞRAFYA -->
+          <a class="kart oyun" href="../atlas/" style="--td:#2E7D64">
+            <div class="kapak"><img src="../gorsel/harita.jpg?v=2" alt="antika dünya haritası" loading="lazy"></div>
+            <div class="govde">
+              <span class="tur">Coğrafya</span>
+              <h2>Atlas</h2>
+              <p>Üç-e-üç ızgarada ipuçlarına uyan ülkeyi ve ili bul.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
             </div>
-          </div>
+          </a>
 
-          <div class="kart">
-            <h2 class="grup-bas"><a href="../yildiz/">Günün Yıldızları</a></h2>
-            <a href="../yildiz/">
-              <div class="kart-gorsel" style="background:#1d1712;display:flex;align-items:center;justify-content:center">
-                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:100px;height:100px"><path d="M32 12 L38 26 L53 27 L41 37 L45 52 L32 43 L19 52 L23 37 L11 27 L26 26 Z" fill="#e7a33d"/></svg>
-              </div>
-            </a>
-            <p>Günlük özet: 4 bulmaca, yıldız kazan, kalp kaybetme.</p>
-          </div>
+          <a class="kart oyun" href="../sancak/" style="--td:#2E7D64">
+            <div class="kapak">
+              <svg viewBox="0 0 800 410" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs><radialGradient id="sg" cx="50%" cy="40%" r="82%"><stop offset="0" stop-color="#33271b"/><stop offset="1" stop-color="#150f08"/></radialGradient></defs>
+                <rect width="800" height="410" fill="url(#sg)"/>
+                <!-- alacakaranlık tepeleri -->
+                <path d="M0 348 q150 -34 300 -6 q170 32 340 0 q90 -18 160 8 V410 H0 Z" fill="#0f0a06" opacity=".55"/>
+                <!-- arka soluk bayrak -->
+                <g opacity=".3">
+                  <rect x="214" y="150" width="10" height="180" rx="5" fill="#E8DCC4"/>
+                  <circle cx="219" cy="148" r="9" fill="#C98A2E"/>
+                  <path d="M224 162 q46 15 94 3 q-16 22 0 44 q-48 -12 -94 3 z" fill="#9A6B4A"/>
+                </g>
+                <!-- ana bayrak -->
+                <rect x="392" y="84" width="17" height="248" rx="8" fill="#EDE1C8"/>
+                <circle cx="400.5" cy="82" r="13" fill="#CE9433"/>
+                <path d="M409 100 q84 26 170 5 q-28 40 0 80 q-86 -21 -170 5 z" fill="#B5533A"/>
+                <path d="M409 100 q84 26 170 5 q-14 20 -7 40 q-84 -18 -163 6 z" fill="#C56042" opacity=".7"/>
+              </svg>
+            </div>
+            <div class="govde">
+              <span class="tur">Coğrafya</span>
+              <h2>Sancak</h2>
+              <p>Bulanıklıktan sıyrılan bayraktan günün ülkesini çıkar.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
+            </div>
+          </a>
+
+          <!-- SİNEMA -->
+          <a class="kart oyun" href="../karanlik-oda/" style="--td:#C2331F">
+            <div class="kapak"><img src="../ortak/kart/karanlik-oda.jpg" alt="karanlık odada kırmızı lamba" loading="lazy"></div>
+            <div class="govde">
+              <span class="tur">Sinema</span>
+              <h2>Karanlık Oda</h2>
+              <p>Bulanık kareden günün filmini çöz; ipuçları yavaşça netleşir.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
+            </div>
+          </a>
+
+          <a class="kart oyun" href="../karanlik-oda/jenerik.html" style="--td:#C2331F">
+            <div class="kapak">
+              <svg viewBox="0 0 800 410" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <radialGradient id="jg" cx="50%" cy="30%" r="85%"><stop offset="0" stop-color="#241a13"/><stop offset="1" stop-color="#0e0a07"/></radialGradient>
+                  <linearGradient id="jc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C98A2E" stop-opacity=".55"/><stop offset="1" stop-color="#C98A2E" stop-opacity="0"/></linearGradient>
+                </defs>
+                <rect width="800" height="410" fill="url(#jg)"/>
+                <!-- film şeridi kenarları -->
+                <g fill="#E8DCC4" opacity=".16">
+                  <rect x="40" y="0" width="60" height="410"/><rect x="700" y="0" width="60" height="410"/>
+                </g>
+                <g fill="#171009">
+                  <rect x="52" y="24" width="36" height="26" rx="4"/><rect x="52" y="70" width="36" height="26" rx="4"/><rect x="52" y="116" width="36" height="26" rx="4"/><rect x="52" y="162" width="36" height="26" rx="4"/><rect x="52" y="208" width="36" height="26" rx="4"/><rect x="52" y="254" width="36" height="26" rx="4"/><rect x="52" y="300" width="36" height="26" rx="4"/><rect x="52" y="346" width="36" height="26" rx="4"/>
+                  <rect x="712" y="24" width="36" height="26" rx="4"/><rect x="712" y="70" width="36" height="26" rx="4"/><rect x="712" y="116" width="36" height="26" rx="4"/><rect x="712" y="162" width="36" height="26" rx="4"/><rect x="712" y="208" width="36" height="26" rx="4"/><rect x="712" y="254" width="36" height="26" rx="4"/><rect x="712" y="300" width="36" height="26" rx="4"/><rect x="712" y="346" width="36" height="26" rx="4"/>
+                </g>
+                <!-- spot ışığı + yıldız -->
+                <path d="M400 20 L300 250 L500 250 Z" fill="url(#jc)"/>
+                <path d="M400 96 L413 132 L451 133 L421 157 L432 194 L400 171 L368 194 L379 157 L349 133 L387 132 Z" fill="#D99A3A"/>
+                <!-- jenerik satırları -->
+                <g fill="#E8DCC4">
+                  <rect x="290" y="286" width="220" height="9" rx="4.5" opacity=".55"/>
+                  <rect x="320" y="314" width="160" height="8" rx="4" opacity=".4"/>
+                  <rect x="305" y="340" width="190" height="8" rx="4" opacity=".3"/>
+                </g>
+              </svg>
+            </div>
+            <div class="govde">
+              <span class="tur">Sinema</span>
+              <h2>Jenerik</h2>
+              <p>Bu oyuncunun kaç filmini hatırlayıp çıkarabilirsin?</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
+            </div>
+          </a>
+
+          <!-- KUŞ -->
+          <a class="kart oyun" href="../dort-suru/" style="--td:#3A6B74">
+            <div class="kapak"><img src="../gorsel/kus.svg" alt="alacakaranlıkta dalda bir kuş" loading="lazy"></div>
+            <div class="govde">
+              <span class="tur">Kuş</span>
+              <h2>Dört Sürü</h2>
+              <p>Karışık on altı kuşu ortak yönlerine göre dört öbeğe ayır.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
+            </div>
+          </a>
+
+          <a class="kart oyun" href="../kur/" style="--td:#3A6B74">
+            <div class="kapak">
+              <svg viewBox="0 0 800 410" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs><radialGradient id="kg" cx="50%" cy="44%" r="78%"><stop offset="0" stop-color="#22271f"/><stop offset="1" stop-color="#0f1210"/></radialGradient></defs>
+                <rect width="800" height="410" fill="url(#kg)"/>
+                <path d="M0 356 q150 -26 300 -2 q160 28 320 0 q80 -14 150 6 V410 H0 Z" fill="#0b0e0b" opacity=".5"/>
+                <circle cx="356" cy="210" r="93" fill="none" stroke="#3E7B84" stroke-width="18"/>
+                <circle cx="452" cy="210" r="93" fill="none" stroke="#B5533A" stroke-width="18"/>
+                <!-- iki minik kuş -->
+                <path d="M330 118 q10 -11 24 -7 q-3 -11 7 -15 q5 9 1 15 q13 -1 21 8 q-13 5 -27 3 q-15 0 -26 -4 z" fill="#EBDFC6" opacity=".92"/>
+                <path d="M452 118 q10 -11 24 -7 q-3 -11 7 -15 q5 9 1 15 q13 -1 21 8 q-13 5 -27 3 q-15 0 -26 -4 z" fill="#EBDFC6" opacity=".92"/>
+              </svg>
+            </div>
+            <div class="govde">
+              <span class="tur">Kuş</span>
+              <h2>Kur</h2>
+              <p>Kuşları doğru çiftlerine eşle; kurulan tuzağa düşme.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
+            </div>
+          </a>
+
+          <!-- BİTKİ -->
+          <a class="kart oyun" href="../dort-demet/" style="--td:#4F7A5C">
+            <div class="kapak"><img src="../gorsel/bitki.jpg" alt="pencere önünde saksı bitkisi" loading="lazy"></div>
+            <div class="govde">
+              <span class="tur">Bitki</span>
+              <h2>Dört Demet</h2>
+              <p>Karışık on altı bitkiyi ortak yönlerine göre dört öbeğe ayır.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
+            </div>
+          </a>
+
+          <a class="kart oyun" href="../asi/" style="--td:#4F7A5C">
+            <div class="kapak">
+              <svg viewBox="0 0 800 410" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs><radialGradient id="ag" cx="50%" cy="44%" r="78%"><stop offset="0" stop-color="#20261e"/><stop offset="1" stop-color="#0e1210"/></radialGradient></defs>
+                <rect width="800" height="410" fill="url(#ag)"/>
+                <path d="M0 356 q150 -26 300 -2 q160 28 320 0 q80 -14 150 6 V410 H0 Z" fill="#0a0f0b" opacity=".5"/>
+                <circle cx="356" cy="210" r="93" fill="none" stroke="#5A8A66" stroke-width="18"/>
+                <circle cx="452" cy="210" r="93" fill="none" stroke="#B5533A" stroke-width="18"/>
+                <!-- aşı dalı + yaprak -->
+                <path d="M404 96 q-6 40 0 78" stroke="#EBDFC6" stroke-width="5" fill="none" opacity=".85"/>
+                <path d="M404 128 q28 -14 50 -6 q-20 22 -50 6 z" fill="#6E9A6A" opacity=".92"/>
+                <path d="M404 150 q-26 -12 -46 -4 q18 20 46 4 z" fill="#8AA97E" opacity=".85"/>
+              </svg>
+            </div>
+            <div class="govde">
+              <span class="tur">Bitki</span>
+              <h2>Aşı</h2>
+              <p>Bitkileri doğru çiftlerle eşleştir, aşıyı tuttur.</p>
+              <span class="oyna">Oyna <span class="ok">→</span></span>
+            </div>
+          </a>
 
         </div>
       </section>
     </main>
+
     <footer>Lunapark · <a href="../">verandatools.com</a></footer>
   </div>
 </body>
