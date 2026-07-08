@@ -321,7 +321,7 @@ body{transition:background .4s,color .4s}
   .mat{margin:12px auto 0;padding:8px}
   .tema-kart{margin-top:12px}
 }
-/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+/* Takımyıldız — gömme kipi (yalnız ?meta=1) */
 body.gomulu .eve-don,body.gomulu .tepe-bar,body.gomulu .gecen-hafta,body.gomulu .oyun-tablar{display:none}
 </style>
 </head>
@@ -443,7 +443,7 @@ let mod='gun';
 let gunVeri=null;                  // {t,kabul,k}
 let tahtalar=[], aktif=0, oyunBitti=false;
 let temaTahminler=[], temaAsama=0; // temaAsama: 0 = bulunamadı, 1..5 = kaçıncı biten kelimeden sonra
-/* ——— Günün Yıldızları gömme kipi (karma: yıldız=temayı kaç kelimede buldun, can=3 tema hakkı) ——— */
+/* ——— Takımyıldız gömme kipi (karma: yıldız=temayı kaç kelimede buldun, can=3 tema hakkı) ——— */
 const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
 const _METAB=(GOMULU&&_MP.has("bulmaca"))?(+_MP.get("bulmaca")):null;

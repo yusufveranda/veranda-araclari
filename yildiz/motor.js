@@ -1,5 +1,5 @@
 /* ============================================================
-   Günün Yıldızları — motor (v2, gömülü/iframe mimarisi)
+   Takımyıldız — motor (v2, gömülü/iframe mimarisi)
    Gerçek oyunlar kendi arayüzüyle iframe içinde çalışır; meta
    yalnızca üstüne kademeli-dolan yıldız + kalp + kazandın bildirimi
    koyar. Oyun, ?meta=1 kipinde ilerlemesini postMessage ile bildirir.
@@ -228,7 +228,7 @@ function kazandinAc(){
 }
 function paylas(){
   var satir=PLAN.map(function(def){ var kd=oyunKaydi(def.id),y=''; for(var i=0;i<3;i++)y+= i<kd.yildiz?'★':'·'; return y+' '+def.ad; }).join('\n');
-  var metin='Günün Yıldızları · '+gunToplam()+'/'+GUN_HEDEF+' ⭐\n'+satir+'\nverandatools.com/yildiz';
+  var metin='Takımyıldız · '+gunToplam()+'/'+GUN_HEDEF+' ⭐\n'+satir+'\nverandatools.com/yildiz';
   if(navigator.clipboard) navigator.clipboard.writeText(metin).then(function(){ toast('kopyalandı 📋','iyi'); },function(){ toast('kopyalanamadı'); });
 }
 
@@ -236,7 +236,7 @@ function paylas(){
    TANITIM
    ============================================================ */
 var SLAYT=[
-  { a:cokYildiz(), bas:'Günün Yıldızları', p:['Her gün <b>4 farklı bulmaca</b>.','Farklı alanlar, farklı biçimler.','Sevdiğini oyna, gerisini atla.'] },
+  { a:cokYildiz(), bas:'Takımyıldız', p:['Her gün <b>4 farklı bulmaca</b>.','Farklı alanlar, farklı biçimler.','Sevdiğini oyna, gerisini atla.'] },
   { a:'<svg viewBox="0 0 64 64">'+yzOne(-14,4,.62,.66)+yzOne(12,4,.62,.33)+yzOne(38,4,.62,0)+'</svg>',
     bas:'Yıldızlar', p:['Her bulmacada <b>3 yıldız</b> var.','Doğru cevaplar onları <b>azar azar doldurur</b>.','Gün boyunca <b>6 yıldız</b> topla, günü kazan.'] },
   { a:'<svg viewBox="0 0 64 64"><path d="'+HEART+'" class="kalp-dolu" transform="translate(-14,4) scale(.6)"/><path d="'+HEART+'" class="kalp-dolu" transform="translate(12,4) scale(.6)"/><path d="'+HEART+'" class="kalp-bos" transform="translate(38,4) scale(.6)"/></svg>',

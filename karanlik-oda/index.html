@@ -164,7 +164,7 @@
   footer{margin-top:52px; text-align:center; font-size:11px; color:#4a423c;}
   footer a{color:var(--muted);}
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
-  /* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+  /* Takımyıldız — gömme kipi (yalnız ?meta=1) */
   body.gomulu header, body.gomulu footer, body.gomulu #randomBtn, body.gomulu #todayBtn{display:none;}
 </style>
 </head>
@@ -250,7 +250,7 @@ const IMG = "https://image.tmdb.org/t/p/";
 const SCORES = [100, 75, 50, 30, 15];
 const PIXEL_W = [6, 9, 14, 22, 34];      // poster banyosu
 const EPOCH = new Date("2026-07-02T00:00:00"); // 1. günün tarihi
-/* ——— Günün Yıldızları gömme kipi (hız: kalpsiz, yıldız = kaçıncı karede bildiğin) ——— */
+/* ——— Takımyıldız gömme kipi (hız: kalpsiz, yıldız = kaçıncı karede bildiğin) ——— */
 const _MP = new URLSearchParams(location.search);
 const GOMULU = _MP.get("meta") === "1";
 if (GOMULU) document.body.classList.add("gomulu");

@@ -126,7 +126,7 @@
 
   .not{margin-top:20px;color:var(--muted);font-size:13.5px;line-height:1.6}
   .kupa{position:absolute;left:-9999px}
-/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+/* Takımyıldız — gömme kipi (yalnız ?meta=1) */
 body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar,body.gomulu .gece-dug{display:none}
 .ust-satir{display:flex;align-items:center;justify-content:space-between;gap:12px}
 </style>
@@ -343,7 +343,7 @@ function skKaristir(n,rng){const a=[...Array(n).keys()];for(let i=n-1;i>0;i--){c
 let mod = "gunluk";                          /* "gunluk" | "rastgele" */
 let hedefKod = GUNLUK_KOD, hedef = HARITA[hedefKod];
 let deneme = 0, bitti = false, kazandi = false;
-/* ——— Günün Yıldızları gömme kipi (hız: kalpsiz, yıldız = kaçıncı tahminde bildiğin) ——— */
+/* ——— Takımyıldız gömme kipi (hız: kalpsiz, yıldız = kaçıncı tahminde bildiğin) ——— */
 const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
 const _METAKOD=(GOMULU&&_MP.has("bulmaca"))?SIRA[(((+_MP.get("bulmaca"))%SIRA.length)+SIRA.length)%SIRA.length]:null;

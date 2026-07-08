@@ -168,7 +168,7 @@ details.nasil ul{margin:6px 0 0 18px}
 .lider li .p{margin-left:auto;font-weight:700}
 footer{margin-top:40px;text-align:center;color:var(--soluk);font-size:12px;line-height:1.7}
 footer a{color:var(--kiremit)}
-/* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
+/* Takımyıldız — gömme kipi (yalnız ?meta=1) */
 body.gomulu .tepe{display:none}
 body.gomulu .sahne{padding-top:10px}
 </style>
@@ -282,7 +282,7 @@ function gunNo(){
   return Math.floor((bugun-ep)/86400000);
 }
 const GUN=gunNo();
-/* ——— Günün Yıldızları gömme kipi ——— */
+/* ——— Takımyıldız gömme kipi ——— */
 const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
 const _METAB=(GOMULU&&_MP.has("bulmaca"))?(+_MP.get("bulmaca")):null;
