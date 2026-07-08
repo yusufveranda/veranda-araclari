@@ -273,6 +273,20 @@ function renderMisses(){
 // ---- otomatik tamamlama (TÜM filmler; bulunmuşlar elenir) ----
 let acResults = [], acIdx = -1;
 function hideAc(){ $("acList").style.display = "none"; acResults = []; acIdx = -1; }
+// yaklaşık eşleşme: sorguyu başlık içinde en az kaç düzeltmeyle bulabiliriz (ekle/sil/değiştir).
+// "forest gump" → "forrest gump" gibi yazım hatalarını hoş görür.
+function acYakin(q, t){
+  const m = q.length, n = t.length;
+  if (!m || n < m - 2) return 99;
+  let prev = new Array(n + 1).fill(0);
+  for (let i = 1; i <= m; i++){
+    const cur = [i], qc = q.charCodeAt(i - 1);
+    for (let j = 1; j <= n; j++)
+      cur[j] = Math.min(prev[j - 1] + (qc === t.charCodeAt(j - 1) ? 0 : 1), prev[j] + 1, cur[j - 1] + 1);
+    prev = cur;
+  }
+  return Math.min(...prev);
+}
 function showAc(){
   const q = fold($("guessInput").value.trim());
   G.sel = null; $("guessBtn").disabled = true;
@@ -285,7 +299,19 @@ function showAc(){
     else if (t.includes(q)) contains.push(f);
     if (starts.length >= 8) break;
   }
-  acResults = [...starts, ...contains].slice(0, 8);
+  let results = [...starts, ...contains];
+  if (results.length < 8 && q.length >= 4){              // tam eşleşme az → yazım hatası toleransı
+    const seen = new Set(results.map(f => f.i));
+    const maxErr = q.length <= 7 ? 1 : 2, fuz = [];
+    for (const f of FILMS){
+      if (G.foundSet.has(f.i) || seen.has(f.i)) continue;
+      const d = acYakin(q, fold(f.t));
+      if (d <= maxErr) fuz.push([d, f]);
+    }
+    fuz.sort((a, b) => a[0] - b[0]);
+    for (const p of fuz){ if (results.length >= 8) break; results.push(p[1]); }
+  }
+  acResults = results.slice(0, 8);
   if (!acResults.length){ hideAc(); return; }
   acIdx = -1;
   $("acList").innerHTML = acResults.map((r,i) =>

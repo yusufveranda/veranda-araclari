@@ -486,6 +486,20 @@ function hideAc(){ $("acList").style.display = "none"; }
 // başlık eşleştirme için katlama: İ/I ve aksanları (Amélie, Déjà Vu) sadeleştir.
 // toLocaleLowerCase('tr') KULLANMA — İngilizce "Inception"ı "ınception" yapar.
 const acFold = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+// yaklaşık eşleşme: sorguyu başlık içinde en az kaç düzeltmeyle bulabiliriz (ekle/sil/değiştir).
+// "forest gump" → "forrest gump" gibi yazım hatalarını hoş görür.
+function acYakin(q, t){
+  const m = q.length, n = t.length;
+  if (!m || n < m - 2) return 99;
+  let prev = new Array(n + 1).fill(0);
+  for (let i = 1; i <= m; i++){
+    const cur = [i], qc = q.charCodeAt(i - 1);
+    for (let j = 1; j <= n; j++)
+      cur[j] = Math.min(prev[j - 1] + (qc === t.charCodeAt(j - 1) ? 0 : 1), prev[j] + 1, cur[j - 1] + 1);
+    prev = cur;
+  }
+  return Math.min(...prev);
+}
 $("guessInput").addEventListener("input", e => {
   const q = acFold(e.target.value.trim());
   G.selected = null; $("guessBtn").disabled = true;
@@ -497,7 +511,19 @@ $("guessInput").addEventListener("input", e => {
     else if (t.includes(q)) contains.push(f);
     if (starts.length >= 6) break;
   }
-  const results = [...starts, ...contains].slice(0, 6);
+  let results = [...starts, ...contains];
+  if (results.length < 6 && q.length >= 4) {              // tam eşleşme az → yazım hatası toleransı
+    const seen = new Set(results.map(f => f.id));
+    const maxErr = q.length <= 7 ? 1 : 2, fuz = [];
+    for (const f of window.AC_INDEX) {
+      if (seen.has(f.id)) continue;
+      const d = acYakin(q, acFold(f.t));
+      if (d <= maxErr) fuz.push([d, f]);
+    }
+    fuz.sort((a, b) => a[0] - b[0]);
+    for (const p of fuz) { if (results.length >= 6) break; results.push(p[1]); }
+  }
+  results = results.slice(0, 6);
   const list = $("acList");
   if (!results.length) { hideAc(); return; }
   list.innerHTML = results.map((r,i) =>

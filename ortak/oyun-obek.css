@@ -19,7 +19,7 @@ i,em,.la{font-style:italic}
 button{font:inherit;cursor:pointer;color:inherit}
 img{display:block}
 
-.sarmal{width:min(1680px,96vw);margin:0 auto;padding:18px 0 90px}
+.sarmal{width:min(1512px,86.4vw);margin:0 auto;padding:18px 0 90px}
 .ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:6px}
 .eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;
   text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;
