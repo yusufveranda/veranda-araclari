@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
-<link rel="stylesheet" href="../ortak/oyun-obek.css?v=3">
+<link rel="stylesheet" href="../ortak/oyun-obek.css?v=4">
 <style>
 :root{
   --kagit:#f3eee0; --kagit-2:#ece4d2; --kart:#fbf8ef;
@@ -60,18 +60,22 @@
     <div class="gun-no">bulmaca<b id="gunNo">#1</b></div>
   </header>
 
-  <p class="oyun-bas">16 bitki, 4 gizli öbek. En çok <b>4 bitki</b> seç, aynı öbekten olduğunu düşündüklerini <b>gönder</b>. Kimi öbek familya bağıyla saklı — görünüşe aldanma, ele. <b>4 hata</b> hakkın var; bitse de puansız çözmeye devam edebilirsin.</p>
-
-  <div class="bantlar" id="bantlar"></div>
-  <div class="izgara" id="izgara"></div>
-
-  <div class="alt">
-    <div class="canlar" id="canlar">kalan hak: <span class="noktalar" id="noktalar"></span></div>
-    <div class="alt-btnlar">
-      <button class="mini" id="karistirBtn">karıştır</button>
-      <button class="mini" id="temizleBtn">seçimi temizle</button>
-      <button class="btn-ana" id="gonderBtn" disabled>Gönder</button>
+  <div class="sahne">
+    <div class="oyun-sol">
+      <div class="bantlar" id="bantlar"></div>
+      <div class="izgara" id="izgara"></div>
     </div>
+    <aside class="yan">
+      <p class="oyun-bas">16 bitki, 4 gizli öbek. En çok <b>4 bitki</b> seç, aynı öbekten olduğunu düşündüklerini <b>gönder</b>. Kimi öbek familya bağıyla saklı — görünüşe aldanma, ele. <b>4 hata</b> hakkın var; bitse de puansız çözmeye devam edebilirsin.</p>
+      <div class="alt">
+        <div class="canlar" id="canlar">kalan hak: <span class="noktalar" id="noktalar"></span></div>
+        <div class="alt-btnlar">
+          <button class="mini" id="karistirBtn">karıştır</button>
+          <button class="mini" id="temizleBtn">seçimi temizle</button>
+          <button class="btn-ana" id="gonderBtn" disabled>Gönder</button>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <div class="sonuc" id="sonuc">
