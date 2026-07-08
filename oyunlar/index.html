@@ -17,14 +17,36 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css?v=9">
 <style>
-body.vitrin .wrap{max-width:min(95vw,1400px);padding:22px 20px 70px}
-.oyunlar-bas{margin:26px 2px 4px}
+body.vitrin .wrap{max-width:min(96vw,1500px);padding:14px 20px 30px}
+.oyunlar-bas{margin:10px 2px 2px}
 .oyunlar-bas h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;
-  font-size:clamp(34px,6vw,60px);color:var(--ink,#221C16);letter-spacing:-.5px;line-height:1.02}
-.oyunlar-bas p{color:var(--muted,#6E6353);font-style:italic;font-size:clamp(14px,1.7vw,18px);margin-top:8px}
+  font-size:clamp(22px,3vw,32px);color:var(--ink,#221C16);letter-spacing:-.5px;line-height:1.02}
+.oyunlar-bas p{color:var(--muted,#6E6353);font-style:italic;font-size:clamp(11px,1.2vw,13px);margin-top:2px}
+
+/* kompakt, kare kartlar — kaydırmadan hepsi görünsün */
+body.vitrin .kartlar{grid-template-columns:repeat(auto-fill,minmax(118px,132px));gap:10px}
+body.vitrin .kart{padding:10px;border-radius:10px;box-shadow:3px 4px 0 rgba(15,8,4,.18)}
+body.vitrin .kart:nth-child(n){transform:none}
+body.vitrin .kart:hover,body.vitrin .kart:focus-visible{transform:translateY(-2px);box-shadow:4px 6px 0 rgba(15,8,4,.22)}
+body.vitrin .kart .kart-gorsel{margin:-10px -10px 8px;aspect-ratio:1/1;height:auto}
+body.vitrin .kart .kart-gorsel:has(img){aspect-ratio:1/1;height:auto}
+body.vitrin .kart h2{font-size:14px;line-height:1.2}
+body.vitrin .kart p{font-size:11px;margin-top:3px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
 .oy-ikon{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
 .oy-ikon svg{width:56%;height:56%}
-.grup-bas{margin-top:38px}
+main{display:flex;flex-wrap:wrap;gap:8px 30px;align-items:flex-start}
+.grup{flex:0 0 auto}
+.grup-bas{margin:0 0 10px;font-size:15px}
+
+/* ikili (çift oyunlu) kartlar */
+.kart-ikili{cursor:default}
+.ikili-gorsel{display:flex;margin:-10px -10px 8px;aspect-ratio:1/1;overflow:hidden}
+.ikili-gorsel>div{width:50%;height:100%;display:flex;align-items:center;justify-content:center}
+.ikili-gorsel svg{width:60%;height:60%}
+.ikili-linkler{display:flex;gap:6px;margin-top:6px}
+.ikili-linkler a{flex:1;text-align:center;border:1px solid var(--line);border-radius:7px;padding:4px 2px;font-size:10.5px;color:var(--acc);text-decoration:none;font-family:'Libre Baskerville',Georgia,serif}
+.ikili-linkler a:hover{background:var(--acc-soft,rgba(194,51,31,.08))}
 </style>
 </head>
 <body class="vitrin">
@@ -38,32 +60,36 @@ body.vitrin .wrap{max-width:min(95vw,1400px);padding:22px 20px 70px}
 
       <section class="grup grup-one">
         <h2 class="grup-bas">Kelime Oyunları</h2>
-        <div class="kartlar">
+        <div class="kartlar" style="grid-template-columns:repeat(2,minmax(118px,132px))">
           <a class="kart" href="../wordle/">
             <div class="kart-gorsel"><img src="../gorsel/verandle.jpg" alt="harf kareleri" loading="lazy"></div>
             <h2>Harfiyat &amp; Taraça</h2>
-            <p>Klasik Wordle ve farklı harf sayılı hali, tek sayfada.</p>
+            <p>Klasik Wordle ve farklı harf sayılı hali.</p>
           </a>
-          <a class="kart" href="../karine/">
-            <div class="kart-gorsel" style="background:#f1ebdd"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#f1ebdd"/><g fill="#33606b"><ellipse cx="28" cy="34" rx="14" ry="10"/><circle cx="43" cy="24" r="7.5"/><path d="M50 22 l11 3 l-11 4 z"/></g><circle cx="45" cy="23" r="1.5" fill="#f1ebdd"/><path d="M20 44 l-8 12 M28 44 l0 13" stroke="#a4673a" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="47" cy="47" r="9" fill="none" stroke="#b5533a" stroke-width="2.6"/><path d="M54 54 l7 7" stroke="#b5533a" stroke-width="2.6" stroke-linecap="round"/></svg></div></div>
-            <h2>Avlu</h2>
-            <p>İpuçlu, kısa bir kelime bulmacası — beş harf, üç deneme.</p>
-          </a>
-          <a class="kart" href="../cati/">
-            <div class="kart-gorsel" style="background:#EFE4CB"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#EFE4CB"/><path d="M10 34 L32 14 L54 34" stroke="#C2331F" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="18" y="36" width="8" height="8" rx="2" fill="#5E7F4B"/><rect x="28" y="36" width="8" height="8" rx="2" fill="#CF9A3C"/><rect x="38" y="36" width="8" height="8" rx="2" fill="#988A79"/><rect x="23" y="47" width="8" height="8" rx="2" fill="#C2331F"/><rect x="33" y="47" width="8" height="8" rx="2" fill="#5E7F4B"/></svg></div></div>
-            <h2>Çatı</h2>
-            <p>Beş kelime çöz, hepsini birleştiren gizli temayı bul.</p>
-          </a>
-          <a class="kart" href="../sicaksoguk/">
-            <div class="kart-gorsel" style="background:#EFE4CB"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#EFE4CB"/><circle cx="32" cy="40" r="13" fill="#C2331F"/><rect x="27" y="10" width="10" height="30" rx="5" fill="#C2331F"/><rect x="29.5" y="14" width="5" height="26" rx="2.5" fill="#F09A36"/></svg></div></div>
-            <h2>Şömine</h2>
-            <p>Gizli kelimeyi anlam yakınlığıyla bul — her tahmin ne kadar sıcak?</p>
-          </a>
-          <a class="kart" href="../pedantle/">
-            <div class="kart-gorsel" style="background:#EFE4CB"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#EFE4CB"/><rect x="12" y="16" width="40" height="7" rx="3.5" fill="#B6A079"/><rect x="12" y="29" width="28" height="7" rx="3.5" fill="#C2331F"/><rect x="12" y="42" width="34" height="7" rx="3.5" fill="#B6A079"/></svg></div></div>
-            <h2>Parsel</h2>
-            <p>Günün gizli Vikipedi maddesini kelime kelime aç.</p>
-          </a>
+          <div class="kart kart-ikili">
+            <div class="ikili-gorsel">
+              <div style="background:#f1ebdd"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#f1ebdd"/><g fill="#33606b"><ellipse cx="28" cy="34" rx="14" ry="10"/><circle cx="43" cy="24" r="7.5"/><path d="M50 22 l11 3 l-11 4 z"/></g><circle cx="45" cy="23" r="1.5" fill="#f1ebdd"/><path d="M20 44 l-8 12 M28 44 l0 13" stroke="#a4673a" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="47" cy="47" r="9" fill="none" stroke="#b5533a" stroke-width="2.6"/><path d="M54 54 l7 7" stroke="#b5533a" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+              <div style="background:#EFE4CB"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#EFE4CB"/><path d="M10 34 L32 14 L54 34" stroke="#C2331F" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="18" y="36" width="8" height="8" rx="2" fill="#5E7F4B"/><rect x="28" y="36" width="8" height="8" rx="2" fill="#CF9A3C"/><rect x="38" y="36" width="8" height="8" rx="2" fill="#988A79"/><rect x="23" y="47" width="8" height="8" rx="2" fill="#C2331F"/><rect x="33" y="47" width="8" height="8" rx="2" fill="#5E7F4B"/></svg></div>
+            </div>
+            <h2>Avlu &amp; Çatı</h2>
+            <p>İpuçlu kısa bulmaca; beş kelime tek tema.</p>
+            <div class="ikili-linkler">
+              <a href="../karine/">Avlu →</a>
+              <a href="../cati/">Çatı →</a>
+            </div>
+          </div>
+          <div class="kart kart-ikili">
+            <div class="ikili-gorsel">
+              <div style="background:#EFE4CB"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#EFE4CB"/><circle cx="32" cy="40" r="13" fill="#C2331F"/><rect x="27" y="10" width="10" height="30" rx="5" fill="#C2331F"/><rect x="29.5" y="14" width="5" height="26" rx="2.5" fill="#F09A36"/></svg></div>
+              <div style="background:#EFE4CB"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#EFE4CB"/><rect x="12" y="16" width="40" height="7" rx="3.5" fill="#B6A079"/><rect x="12" y="29" width="28" height="7" rx="3.5" fill="#C2331F"/><rect x="12" y="42" width="34" height="7" rx="3.5" fill="#B6A079"/></svg></div>
+            </div>
+            <h2>Şömine &amp; Parsel</h2>
+            <p>Anlam yakınlığıyla kelime/madde bulma.</p>
+            <div class="ikili-linkler">
+              <a href="../sicaksoguk/">Şömine →</a>
+              <a href="../pedantle/">Parsel →</a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -73,12 +99,12 @@ body.vitrin .wrap{max-width:min(95vw,1400px);padding:22px 20px 70px}
           <a class="kart" href="../atlas/">
             <div class="kart-gorsel"><img src="../gorsel/harita.jpg" alt="antika harita" loading="lazy"></div>
             <h2>Atlas</h2>
-            <p>3×3 ızgara: satır ve sütuna birden uyan ülkeyi (ya da ili) bul.</p>
+            <p>3×3 ızgara: satır/sütuna uyan ülkeyi bul.</p>
           </a>
           <a class="kart" href="../sancak/">
             <div class="kart-gorsel" style="background:#B84B2A"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#B84B2A"/><rect x="16" y="14" width="4" height="40" rx="2" fill="#F2E6CE"/><path d="M20 16 h26 l-6 8 l6 8 h-26 z" fill="#D7261D"/></svg></div></div>
             <h2>Sancak</h2>
-            <p>Bulanık bir bayrak her gün biraz açılır — bir köşesinden tanı.</p>
+            <p>Bulanık bayrak her gün biraz açılır.</p>
           </a>
         </div>
       </section>
@@ -89,7 +115,12 @@ body.vitrin .wrap{max-width:min(95vw,1400px);padding:22px 20px 70px}
           <a class="kart" href="../karanlik-oda/">
             <div class="kart-gorsel"><img src="../ortak/kart/karanlik-oda.jpg" alt="karanlık odada kırmızı lamba ve banyo masası" loading="lazy"></div>
             <h2>Karanlık Oda</h2>
-            <p>Bulanık kareden günün filmini bul; Jenerik'te oyuncunun filmlerini say.</p>
+            <p>Bulanık kareden günün filmini bul.</p>
+          </a>
+          <a class="kart" href="../karanlik-oda/jenerik.html">
+            <div class="kart-gorsel" style="background:#1C1510"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#1C1510"/><circle cx="32" cy="24" r="10" fill="#F2E6CE"/><path d="M14 54 C14 40 22 34 32 34 C42 34 50 40 50 54 Z" fill="#F2E6CE"/></svg></div></div>
+            <h2>Jenerik</h2>
+            <p>Oyuncuyu ver, oynadığı filmleri say.</p>
           </a>
         </div>
       </section>
@@ -100,12 +131,12 @@ body.vitrin .wrap{max-width:min(95vw,1400px);padding:22px 20px 70px}
           <a class="kart" href="../dort-suru/">
             <div class="kart-gorsel" style="background:#f1ebdd"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#f1ebdd"/><rect x="12" y="12" width="17" height="17" rx="3" fill="#c19a3e"/><rect x="35" y="12" width="17" height="17" rx="3" fill="#5a8f5a"/><rect x="12" y="35" width="17" height="17" rx="3" fill="#33606b"/><rect x="35" y="35" width="17" height="17" rx="3" fill="#8f6699"/></svg></div></div>
             <h2>Dört Sürü</h2>
-            <p>16 kuşu 4 gizli öbeğe böl — akıl yürüt, ele, doğru yere yerleştir.</p>
+            <p>16 kuşu 4 gizli öbeğe böl.</p>
           </a>
           <a class="kart" href="../kur/">
             <div class="kart-gorsel" style="background:#f1ebdd"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#f1ebdd"/><circle cx="26" cy="32" r="13" fill="none" stroke="#33606b" stroke-width="4"/><circle cx="40" cy="32" r="13" fill="none" stroke="#b5533a" stroke-width="4"/></svg></div></div>
             <h2>Kur</h2>
-            <p>Kuş ve adını eşleştir — bazıları birbirine benzer, kandırır.</p>
+            <p>Kuş ve adını eşleştir, benzerleri kandırır.</p>
           </a>
         </div>
       </section>
@@ -116,12 +147,12 @@ body.vitrin .wrap{max-width:min(95vw,1400px);padding:22px 20px 70px}
           <a class="kart" href="../dort-demet/">
             <div class="kart-gorsel" style="background:#f3eee0"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#f3eee0"/><rect x="12" y="12" width="17" height="17" rx="3" fill="#c19a3e"/><rect x="35" y="12" width="17" height="17" rx="3" fill="#5a8f5a"/><rect x="12" y="35" width="17" height="17" rx="3" fill="#3a7f8c"/><rect x="35" y="35" width="17" height="17" rx="3" fill="#8f6699"/></svg></div></div>
             <h2>Dört Demet</h2>
-            <p>16 bitkiyi 4 gizli öbeğe ayır — akıl yürüt, ele, doğru öbeğe yerleştir.</p>
+            <p>16 bitkiyi 4 gizli öbeğe ayır.</p>
           </a>
           <a class="kart" href="../asi/">
             <div class="kart-gorsel" style="background:#f3eee0"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#f3eee0"/><circle cx="26" cy="32" r="13" fill="none" stroke="#33614a" stroke-width="4"/><circle cx="40" cy="32" r="13" fill="none" stroke="#b5462b" stroke-width="4"/></svg></div></div>
             <h2>Aşı</h2>
-            <p>Bitki ve adını eşleştir — bazıları birbirine benzer, kandırır.</p>
+            <p>Bitki ve adını eşleştir, benzerleri kandırır.</p>
           </a>
         </div>
       </section>
@@ -132,7 +163,7 @@ body.vitrin .wrap{max-width:min(95vw,1400px);padding:22px 20px 70px}
           <a class="kart" href="../yildiz/">
             <div class="kart-gorsel" style="background:#1d1712"><div class="oy-ikon"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#1d1712"/><path d="M32 12 L38 26 L53 27 L41 37 L45 52 L32 43 L19 52 L23 37 L11 27 L26 26 Z" fill="#e7a33d"/></svg></div></div>
             <h2>Günün Yıldızları</h2>
-            <p>Her gün 4 farklı bulmaca; doğrular yıldız kazandırır, yanlışlar kalp götürür.</p>
+            <p>4 bulmaca; yıldız kazan, kalp kaybetme.</p>
           </a>
         </div>
       </section>
