@@ -4,6 +4,8 @@
 
 ## Yüksek öncelik
 
+- **`gorsel/harita.jpg` üzerinde "AI-generated content" filigranı var** (görselin sol alt köşesine gömülü, kırpılmamış) — hem hub'daki Harita kartında hem Lunapark/Güverte kartında görünüyor. Kaynağı temizlenmiş/kırpılmış bir versiyonla değiştir.
+
 - **CSS token konsolidasyonu**: 13/19+ oyun `../ortak/stil.css` yerine kendi `<style>` bloğunu embed ediyor (aynı `--kirmizi`/`--kagit` değerlerini elle kopyalayarak). Hedef: ortak bir `ortak/tokens.css` + her oyunun kendine özgü override'ları. Fable 5 ile tasarım-tutarlılık incelemesi yapıp uygulamadan önce onay al (bkz. plan dosyası).
 - **PWA**: Her oyuna `manifest.json` + gerçek 192/512 PNG ikon seti (şu an sadece hub'da SVG "any" ikon var — MVP). Service worker + offline fallback sonrası.
 - **Dark mode standardizasyonu**: 3 farklı toggle yöntemi var (`data-tema` attr / `.gece` class / `body.gece`). Tek yönteme (`.gece` class) geçir; `karsilik` ve `pedantle`'da dark mode eksik/eksik olabilir, tekrar kontrol et.
