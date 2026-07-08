@@ -1,0 +1,18 @@
+{
+  "name": "kuş bilimi — gördüğün kuşu tanı",
+  "short_name": "Kuş Bilimi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1ebdd",
+  "theme_color": "#33606b",
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
