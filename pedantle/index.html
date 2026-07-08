@@ -372,10 +372,10 @@ footer a{color:var(--soluk)}
 const $ = id => document.getElementById(id);
 const TRMAP = {'İ':'i','I':'ı','Ş':'ş','Ğ':'ğ','Ü':'ü','Ö':'ö','Ç':'ç','Â':'â','Î':'î','Û':'û'};
 function trLower(s){ return s.replace(/[İIŞĞÜÖÇÂÎÛ]/g,c=>TRMAP[c]||c).toLowerCase(); }
-const HARFLER = "abcçdefgğhıijklmnoöprsştuüvyzâîû";
+const HARFLER = "abcçdefgğhıijklmnoöprsştuüvyzâîû0123456789";   // rakamlar da say → sayı kutusu doğru genişlik
 function harfSay(s){ let n=0; for(const c of trLower(s)) if(HARFLER.indexOf(c)>=0) n++; return n; }
 function escHTML(s){ return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
-function baseForm(w){ return trLower(w).replace(/[^a-zçğıöşüâîû']/g,'').split("'")[0]; }
+function baseForm(w){ return trLower(w).replace(/[^a-zçğıöşüâîû0-9']/g,'').split("'")[0]; }  // rakamları koru → sayı tahmini
 
 // ---- Türkçe ek eşleştirme (açma için; istemcide tek otorite) ----
 const SUFFIX = new Set([
@@ -401,9 +401,16 @@ function extend(a,b){
     if(b.length>a2.length && b.startsWith(a2) && suffixOK(b.slice(a2.length))) return true; }
   return false;
 }
+// aynı gövde, yalnız son ünsüz yumuşak/sert varyantı: mehmet=mehmed, mahmut=mahmud, ahmet=ahmed
+const DENK=[['t','d'],['p','b'],['ç','c'],['k','ğ','g']];
+function sonHarfDenk(a,b){
+  if(a.length!==b.length || a.length<3 || a.slice(0,-1)!==b.slice(0,-1)) return false;
+  const x=a[a.length-1], y=b[b.length-1];
+  return DENK.some(gr=>gr.includes(x)&&gr.includes(y));
+}
 function acmaEslesir(g,k){ if(!g||!k) return false; if(g===k) return true;
   if(g.length<3||k.length<3) return g===k;
-  return extend(g,k)||extend(k,g); }
+  return extend(g,k)||extend(k,g)||sonHarfDenk(g,k); }
 
 // ---- vektör motoru (pedantle-vec) ----
 const VEC = window.PEDANTLE_VEC;
