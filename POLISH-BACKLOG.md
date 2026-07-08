@@ -8,7 +8,7 @@
 
 - **CSS token konsolidasyonu — devam ediyor.** İlk dilim tamamlandı: `dort-suru`+`dort-demet` (öbekleme ailesi) → `ortak/oyun-obek.css`; `kur`+`asi` (eşleştirme ailesi) → `ortak/oyun-eslestir.css`. Fable 5 incelemesinden geçti (bkz. yaklaşım: paylaşılan dosya SIFIR renk tanımlar, her oyun kendi `:root`/`[data-tema="gece"]` bloğunu korur; JS'in ürettiği/sorguladığı sınıf adları — `.kus-havuz`/`.kthumb` gibi — asla ortak dosyaya taşınmaz, yerel kalır). Her ikisi de tarayıcıda gündüz+gece modunda görsel olarak doğrulandı.
   Kalan aday gruplar: `karine` (Avlu bulmaca — bu ailenin `:root` yapısına çok yakın ama farklı oyun türü, tek başına incelenmeli), `siir-defteri`/`nota`/`pedantle`/`cati` grubu (farklı bir `:root` şablonu paylaşıyor, ayrı bir konsolidasyon turu gerekir), `bulmaca`/`politika`/`sozluk` grubu (üçüncü bir şablon: `--bg`/`--card`/`--ink`/`--acc`), `karakapli`/`atlas` (dördüncü şablon). `karanlik-oda` kasıtlı olarak dışarıda bırakılmalı — kendine özgü noir tasarım dili var, paylaşılan "kağıt" estetiğine zorlanmamalı.
-- **PWA — kısmen tamamlandı.** Lunapark'taki 9 araca (verandle, Atlas, Sancak, Karanlık Oda, Jenerik, Dört Sürü, Kur, Dört Demet, Aşı, Günün Yıldızları) `manifest.json` + SVG ikon eklendi. Kalan 14 oyun (sözlük, karşılık, siir-defteri, nota, karakapli, bulmaca, politika, bitki, kus, karanlik-oda hariç film aile üyeleri yok zaten dahil, vs.) hâlâ yok. PNG 192/512 fallback + service worker/offline hiçbirinde yok.
+- **PWA — büyük ölçüde tamamlandı.** Lunapark'taki 9 araca (verandle, Atlas, Sancak, Karanlık Oda, Jenerik, Dört Sürü, Kur, Dört Demet, Aşı, Günün Yıldızları) zaten vardı. Bu oturumda 11 oyuna daha eklendi: bitki, cati, karakapli, kus, nota, pedantle, politika, sicaksoguk, sozluk, bulmaca (aynı desen: `icon.svg` + `manifest.json`, `start_url`/`scope` "./"). Kalan: `karsilik` (henüz yok), `siir-defteri` (kullanıcı isteğiyle bu turda dokunulmadı), `karine` (kod hazır ama dizin hâlâ commitlenmemiş WIP), `harita`/`oyunlar` (hub sayfaları — bilinçli olarak atlandı, PWA kurulum hedefi değiller). PNG 192/512 fallback + service worker/offline hiçbir yerde yok (mevcut desen sadece SVG "any" size kullanıyor, tutarlılık için aynı desen izlendi).
 - **Dark mode standardizasyonu — kontrol edildi, gerçek durum netleşti.** `karsilik` ve `pedantle`'da gece modu zaten VARMIŞ (yanlış alarmdı — `body.classList.toggle('gece')` deseni kullanıyorlar). Lunapark'taki 9 araçta gerçek durum: `body.gece` class (wordle/cati/sicaksoguk/pedantle/Atlas — 5 oyun) vs `data-tema` attribute (Dört Sürü/Kur/Dört Demet/Aşı/Günün Yıldızları — 5 oyun); Karanlık Oda+Jenerik kasıtlı olarak her zaman koyu (toggle yok, doğru tasarım). **Sancak'ta hiç gece modu yoktu** — gerçek eksiklik buydu, düzeltildi (`body.gece` + 🌙/☀️ buton + `sancak:gece` localStorage, tarayıcıda doğrulandı). İki mekanizmayı (class vs attribute) tek yönteme indirmek hâlâ bekliyor ama bu daha büyük/riskli bir CSS taraması gerektiriyor — kullanıcıya görünür bir sorun değil, geliştirici tutarlılığı meselesi.
 - **localStorage namespace göçü — tamamlandı.** `karakapli`'nin `kk-*` anahtarları önceki oturumda `karakapli:*`'ye taşınmıştı. Bu oturumda kalan 11 oyun da `oyun:anahtar` biçimine getirildi (her biri: yeni anahtar yoksa eskiyi bir kere oku → yeni anahtara yaz → eskiyi sil): `asi` (`esbitki-tema`→`asi:tema`), `dort-demet` (`herbaryum-tema`→`dort-demet:tema`), `dort-suru` (`obek-tema`→`dort-suru:tema`), `karine` (`karine-tema`→`karine:tema`), `kur` (`es-tema`→`kur:tema`), `sozluk` (`tema`/`defter`→`sozluk:tema`/`sozluk:defter`, kaynak `veri/template.html`'den `build.py` ile yeniden üretildi), `nota` (`nota-favoriler`/`nota-loops`→`nota:favoriler`/`nota:loops`), `bitki` (`bitki-*` 7 anahtar→`bitki:*`), `kus` (`kus-*` 7 anahtar→`kus:*`), `karsilik` (`karsilik-*`→`karsilik:*`), `atlas` (`atlas_mod_gun`→`atlas:mod:gun`, eski isim kalıntısı `vt_nick`/`vt_gece`→`atlas:nick`/`atlas:gece`), `siir-defteri` (`siir_defteri_v1`→`siir-defteri:v1`, `siir_drive_cid`/`siir_drive_on`→`siir-defteri:drive-cid`/`siir-defteri:drive-on`). Her sayfa tarayıcıda eski-anahtar→yeni-anahtar göçü test edilerek doğrulandı (konsol hatası yok). Bilinçli olarak dokunulmadı: `siir-defteri`'nin dahili teşhis/yedek anahtarları (`siir_defteri_goconcesi`, `siir_defteri_yedek_*`) — bunlar kurtarma amaçlı tek seferlik yan kanallar, birincil durum değil.
 
@@ -19,16 +19,16 @@
 
 ## Orta öncelik
 
-- Font-weight 800 (Playfair Display) `cati` ve `yildiz`'de var, eski oyunlarda yok — ya hepsine ekle ya cati/yildiz'i 700'e indir.
-- Footer yazar atıfı bazı oyunlarda eksik (`cati`, `yildiz` "veranda" yazıyor, "yusuf veranda" değil). Tek pattern'e getir.
-- Paylaşım/emoji-kopyalama butonu bazı oyunlarda göze çarpıyor, bazılarında JS-lazy. Görünürlük tutarlılığı.
-- `og:image` şu an sadece hub + 2 oyunda (sozluk, bulmaca) eklendi; kalan 20 oyuna da kendi `gorsel/*.jpg` görseliyle ekle.
-- Google Fonts her oyunda ayrı ayrı yükleniyor (preconnect var ama `rel="preload"` yok); font-display:swap zaten var, preload eklenebilir.
+- ~~Font-weight 800 (Playfair Display) `cati` ve `yildiz`'de var, eski oyunlarda yok~~ — düzeltildi, ikisi de 700'e indirildi (aile standardı), tarayıcıda doğrulandı.
+- ~~Footer yazar atıfı bazı oyunlarda eksik~~ — Fable'la danışılarak 3 sınıfa ayrıldı (lisans-atıflı/hub/dinamik footer'lara dokunulmadı); tek gerçek tutarsızlık (`cati`'nin `data-ad="cati"` yerine kardeşleri gibi `data-ad="verandle"` olması) düzeltildi.
+- Paylaşım/emoji-kopyalama butonu bazı oyunlarda göze çarpıyor, bazılarında JS-lazy. Görünürlük tutarlılığı — hâlâ bekliyor.
+- ~~`og:image` şu an sadece hub + 2 oyunda eklendi~~ — 22 oyuna eklendi (kendi markalı görseli olanlar kendi görselini, diğerleri `doku.jpg` fallback'ini kullanıyor).
+- ~~Google Fonts preload yok~~ — 23 oyuna `rel="preload"` eklendi, çift istek olmadığı doğrulandı.
 
 ## Düşük öncelik
 
-- Favicon: her oyunun kendi SVG'si var (iyi), ama `.png` fallback yok — küçük performans etkisi.
-- `og:image` boyutu/oranı standardize edilmemiş (sosyal paylaşım kırpması test edilmeli).
+- ~~Favicon `.png` fallback yok~~ — 24 oyuna (sözlük dahil, favicon'u hiç yoktu) 32×32+180×180 PNG eklendi, tarayıcı canvas ile native kütüphane gerekmeden üretildi.
+- `og:image` boyutu/oranı standardize edilmemiş (sosyal paylaşım kırpması test edilmeli) — hâlâ bekliyor.
 
 ## Yapıldı (bu oturumda referans)
 
