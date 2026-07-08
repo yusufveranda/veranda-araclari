@@ -42,6 +42,10 @@ Yeni `index.html` üretildiğinde `site/sozluk/index.html` üzerine kopyala, pus
 Site birkaç sayfa içerikle oturunca Google AdSense'e başvur; onaydan sonra
 verilen script `ortak/` üzerinden tüm sayfalara tek yerden eklenir.
 
+`site/ads.txt` şu an placeholder — AdSense onayı gelince orada verilen
+`google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0` satırıyla
+placeholder yorumu değiştir ve push'la.
+
 ## Sıradaki araçlar
 
 - nota çevirici (piyano ↔ gitar): tamamen istemci tarafı, veri gerektirmez.

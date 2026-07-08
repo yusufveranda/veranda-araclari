@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>şömine — verandle</title>
@@ -637,7 +638,7 @@ function paylas(){
   // küçük termometre: en sıcak tahminlerin yüz emojileri
   const top = S.tahminler.slice().sort((a,b)=>b.pct-a.pct).slice(0,6);
   const bar = top.map(emoji).join('');
-  const metin = kafa+' — '+sonuc+'\n'+bar+'\nyusufveranda.github.io/veranda-araclari/sicaksoguk/';
+  const metin = kafa+' — '+sonuc+'\n'+bar+'\nverandatools.com/sicaksoguk/';
   if(navigator.clipboard){ navigator.clipboard.writeText(metin).then(()=>mesajVer('kopyalandı ✓'),()=>mesajVer(metin)); }
   else mesajVer('kopyalandı ✓');
 }

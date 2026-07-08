@@ -1,0 +1,13 @@
+{
+  "name": "veranda — ne içeride ne dışarıda",
+  "short_name": "veranda",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F4EDDD",
+  "theme_color": "#D7261D",
+  "lang": "tr",
+  "icons": [
+    { "src": "gorsel/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

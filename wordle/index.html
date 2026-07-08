@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>verandle — Türkçe Wordle</title>
@@ -956,11 +957,13 @@ function istatGoster(){
 const gA=()=> 'harfiyat:gun:'+oyun;
 function kaydet(){
   if(mod!=='gun') return;
-  try{ localStorage.setItem(gA(),JSON.stringify({gun:oyunGun,oyun,t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi}))})); }catch(e){}
+  try{ localStorage.setItem(gA(),JSON.stringify({gun:oyunGun,oyun,t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi,c:b.cevap}))})); }catch(e){}
 }
 function yukle(){
   if(mod!=='gun') return false;
   try{ const v=JSON.parse(localStorage.getItem(gA())); if(!v||v.gun!==oyunGun||v.oyun!==oyun) return false;
+    // havuz deploy ile değişmişse eski kayıt yeni cevabın üstüne binmesin → cevabı doğrula
+    if(v.t.some((sv,i)=>tahtalar[i] && sv.c && sv.c!==tahtalar[i].cevap)) return false;
     v.t.forEach((sv,i)=>{ const b=tahtalar[i]; if(!b) return;
       sv.k.forEach(kel=>b.gecmis.push({harfler:kel.split(''),renkler:degerlendir(kel,b.cevap)}));
       b.bitti=sv.b; b.kazandi=sv.w; });

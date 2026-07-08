@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /karakapli/
+
+Sitemap: https://verandatools.com/sitemap.xml

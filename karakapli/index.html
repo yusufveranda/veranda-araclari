@@ -443,6 +443,17 @@ details.nasil code{background:var(--kagit);padding:1px 5px;border-radius:4px;fon
 (function(){
 'use strict';
 
+/* eski kk-* anahtarlarından yeni karakapli:* isim alanına bir kereye mahsus göç */
+(function(){
+  var esk = {'kk-kasa':'karakapli:kasa','kk-tema':'karakapli:tema','kk-cihaz':'karakapli:cihaz','kk-token':'karakapli:token'};
+  for (var e in esk){
+    var y = esk[e];
+    if (localStorage.getItem(y) === null && localStorage.getItem(e) !== null){
+      localStorage.setItem(y, localStorage.getItem(e));
+    }
+  }
+})();
+
 /* ============ sabitler, yardımcılar ============ */
 var yaz = new TextEncoder(), oku = new TextDecoder();
 var REPO = 'yusufveranda/veranda-araclari';
@@ -469,6 +480,9 @@ var IKON = {
 
 function $(s){ return document.querySelector(s); }
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+// fotoğraf eki YALNIZ gömülü data:image/ olabilir; dışarıdan gelen (içe aktarım) her şey
+// aksi halde reddedilir → kaçışsız <img src> üzerinden XSS enjeksiyonunu kapatır.
+function guvenliFoto(src){ return (typeof src === 'string' && /^data:image\/(png|jpe?g|gif|webp);base64,[a-z0-9+/=]+$/i.test(src)) ? src : ''; }
 function kucult(s){ return (s || '').toLocaleLowerCase('tr'); }
 function kid(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + '-' + Math.random().toString(36).slice(2); }
 function b64e(buf){
@@ -613,7 +627,7 @@ async function kaydet(){
   if(!S.anahtar || !S.kasa) return;
   var metin = await kasaSifrele();
   S.yerelMetin = metin;
-  try{ localStorage.setItem('kk-kasa', metin); }
+  try{ localStorage.setItem('karakapli:kasa', metin); }
   catch(e){ if(!S.token){ durum('hata', 'yerel kopya sığmadı, fotoğraflar çok büyük olabilir'); return; } }
   if(S.token) uzagaYaz(metin);
   else { S.kirli = false; durum('yerel', 'yalnız bu cihazda'); }
@@ -624,10 +638,10 @@ function yeniMi(){ return !S.uzakMetin && !S.yerelMetin; }
 function kilitMesaj(m){ $('#kilitMesaj').textContent = m || ''; }
 
 async function boot(){
-  temaKur(localStorage.getItem('kk-tema') || 'gunduz');
+  temaKur(localStorage.getItem('karakapli:tema') || 'gunduz');
   kilitMesaj('defter aranıyor...');
   S.uzakMetin = await uzakOku();
-  S.yerelMetin = localStorage.getItem('kk-kasa');
+  S.yerelMetin = localStorage.getItem('karakapli:kasa');
   var yeni = yeniMi();
   $('#parola2').hidden = !yeni;
   $('#acBtn').textContent = yeni ? 'defteri oluştur' : 'aç';
@@ -636,14 +650,14 @@ async function boot(){
     : '';
   kilitMesaj('');
   if(yeni) return;
-  var c = localStorage.getItem('kk-cihaz');
+  var c = localStorage.getItem('karakapli:cihaz');
   if(c){
     try{
       var d = JSON.parse(c);
       var anahtar = await crypto.subtle.importKey('raw', b64c(d.a), 'AES-GCM', true, ['encrypt','decrypt']);
       if(await adaylariCoz(null, anahtar, d.salt)){ girisTamam(); return; }
     }catch(e){}
-    localStorage.removeItem('kk-cihaz');
+    localStorage.removeItem('karakapli:cihaz');
   }
 }
 
@@ -662,11 +676,17 @@ async function adaylariCoz(parola, anahtar, salt){
   if(!coz.length) return false;
   coz.sort(function(x, y){ return (y.kasa.zaman || 0) - (x.kasa.zaman || 0); });
   var sec = coz[0];
+  // uzakta bir kasa VAR ama bu parola/anahtarla ÇÖZÜLEMEDİYSE → depodaki defter
+  // başka bir parolayla (muhtemelen başka cihazda değiştirilmiş) şifrelenmiş demektir.
+  // Bu durumda yerel kopyayı otomatik yazıp uzaktakini EZMEK veri kaybıdır.
+  var uzakCozuldu = coz.some(function(x){ return x.kaynak === 'uzak'; });
+  S.uzakCozulemedi = !!(S.uzakMetin && !uzakCozuldu);
   S.kasa = sec.kasa; S.anahtar = sec.anahtar; S.salt = sec.salt; S.iter = sec.iter;
   S.kasa.kategoriler = S.kasa.kategoriler || [];
   S.kasa.notlar = S.kasa.notlar || [];
-  if(sec.kaynak === 'yerel' && S.uzakMetin && S.uzakMetin !== sec.metin) S.kirli = true;
-  if(sec.kaynak === 'uzak'){ S.yerelMetin = sec.metin; try{ localStorage.setItem('kk-kasa', sec.metin); }catch(e){} }
+  // yalnız uzak ÇÖZÜLDÜ ve yerelden eskiyse kirli say (gerçek senkron gecikmesi)
+  if(sec.kaynak === 'yerel' && uzakCozuldu && S.uzakMetin !== sec.metin) S.kirli = true;
+  if(sec.kaynak === 'uzak'){ S.yerelMetin = sec.metin; try{ localStorage.setItem('karakapli:kasa', sec.metin); }catch(e){} }
   return true;
 }
 
@@ -680,7 +700,7 @@ async function defterOlustur(parola){
 
 async function tokenYukle(){
   S.token = null;
-  var t = localStorage.getItem('kk-token');
+  var t = localStorage.getItem('karakapli:token');
   if(!t) return;
   try{
     var d = JSON.parse(t);
@@ -692,6 +712,15 @@ async function tokenYukle(){
 function bannerGuncelle(){ $('#banner').hidden = !!S.token; }
 
 async function girisTamam(){
+  if(S.uzakCozulemedi){
+    // depodaki defter farklı bir parolayla şifrelenmiş → yerel kopyayla ezme, güncel parola iste
+    S.kasa = null; S.anahtar = null; S.uzakCozulemedi = false;
+    localStorage.removeItem('karakapli:cihaz');
+    $('#kilit').hidden = false; $('#uygulama').hidden = true;
+    $('#acBtn').disabled = false;
+    kilitMesaj('depodaki defter farklı bir parolayla şifrelenmiş — güncel parolanı gir');
+    return;
+  }
   await tokenYukle();
   $('#kilit').hidden = true;
   $('#uygulama').hidden = false;
@@ -699,6 +728,7 @@ async function girisTamam(){
   kilitMesaj('');
   bannerGuncelle();
   gozlemciKur();
+  otoKilitSifirla();
   if(S.kirli) kaydet();
   else durum(S.token ? 'kayitli' : 'yerel', S.token ? 'depoda kayıtlı' : 'yalnız bu cihazda');
   ciz();
@@ -722,19 +752,28 @@ $('#acForm').addEventListener('submit', async function(e){
     }
     if($('#hatirla').checked){
       var raw = await crypto.subtle.exportKey('raw', S.anahtar);
-      localStorage.setItem('kk-cihaz', JSON.stringify({ a:b64e(raw), salt:S.salt }));
-    }else localStorage.removeItem('kk-cihaz');
+      localStorage.setItem('karakapli:cihaz', JSON.stringify({ a:b64e(raw), salt:S.salt }));
+    }else localStorage.removeItem('karakapli:cihaz');
     await girisTamam();
   }finally{
     $('#acBtn').disabled = false;
   }
 });
 
+/* otomatik kilit: hareketsizlik sonrası defteri kilitle (şifreli defter ekranda açık kalmasın) */
+var OTO_KILIT_SURE = 15 * 60 * 1000;
+function otoKilitSifirla(){
+  clearTimeout(S.otoKilit);
+  if($('#uygulama').hidden) return;                 // yalnız defter açıkken sayacı çalıştır
+  S.otoKilit = setTimeout(function(){ if(!$('#uygulama').hidden) kilitle(); }, OTO_KILIT_SURE);
+}
+
 function kilitle(){
   clearTimeout(S.zml);
+  clearTimeout(S.otoKilit);
   S.anahtar = null; S.kasa = null; S.token = null; S.sha = undefined; S.kirli = false;
-  localStorage.removeItem('kk-cihaz');
-  S.yerelMetin = localStorage.getItem('kk-kasa');
+  localStorage.removeItem('karakapli:cihaz');
+  S.yerelMetin = localStorage.getItem('karakapli:kasa');
   $('#uygulama').hidden = true;
   $('#uygulama').classList.remove('acik-yan');
   $('#kilit').hidden = false;
@@ -747,7 +786,7 @@ function kilitle(){
 function temaKur(t){
   document.body.classList.toggle('gece', t === 'gece');
   $('#temaBtn').textContent = t === 'gece' ? '☀' : '☾';
-  try{ localStorage.setItem('kk-tema', t); }catch(e){}
+  try{ localStorage.setItem('karakapli:tema', t); }catch(e){}
 }
 
 /* ============ süzme, benzerlik ============ */
@@ -863,7 +902,7 @@ function kartHtml(n){
   var q = kucult(S.gorunum.arama.trim());
   var h = '<article class="not" data-id="' + n.id + '" style="--nc:' + (RENKLER[n.renk] || RENKLER.varsayilan) + '" tabindex="0">';
   if(n.ekler && n.ekler.length){
-    h += '<div class="not-foto"><img src="' + n.ekler[0] + '" alt="" loading="lazy">' +
+    h += '<div class="not-foto"><img src="' + guvenliFoto(n.ekler[0]) + '" alt="" loading="lazy">' +
       (n.ekler.length > 1 ? '<span class="foto-say">+' + (n.ekler.length - 1) + '</span>' : '') + '</div>';
   }
   if(n.baslik) h += '<h3>' + vurgula(n.baslik, q) + '</h3>';
@@ -1070,6 +1109,9 @@ $('#perde').addEventListener('click', kapatYan);
 $('#ayarBtn').addEventListener('click', ayarlarAc);
 $('#bannerAyar').addEventListener('click', ayarlarAc);
 $('#kilitleBtn').addEventListener('click', kilitle);
+['mousedown','keydown','touchstart','scroll'].forEach(function(ev){
+  document.addEventListener(ev, otoKilitSifirla, {passive:true});
+});
 $('#yeniBtn').addEventListener('click', function(){ editorAc(null); kapatYan(); });
 $('#hizliNot').addEventListener('click', function(){ editorAc(null); });
 $('#hizliListe').addEventListener('click', function(){ editorAc(null, true); });
@@ -1324,7 +1366,7 @@ function acNotunu(id){
 function cizFotolar(){
   var h = '';
   (E.not.ekler || []).forEach(function(src, i){
-    h += '<div class="foto-kucuk" data-i="' + i + '"><img src="' + src + '" alt=""><button class="f-sil" title="fotoğrafı kaldır">×</button></div>';
+    h += '<div class="foto-kucuk" data-i="' + i + '"><img src="' + guvenliFoto(src) + '" alt=""><button class="f-sil" title="fotoğrafı kaldır">×</button></div>';
   });
   h += '<button type="button" class="foto-ekle-d" id="fotoEkleBtn" title="fotoğraf ekle">+</button>';
   $('#eFotolar').innerHTML = h;
@@ -1479,7 +1521,7 @@ $('#tokenKaydetBtn').addEventListener('click', async function(){
   }catch(e){ m.textContent = 'anahtar işe yaramadı, izinleri gözden geçir'; m.className = 'a-mesaj kotu'; return; }
   var iv = crypto.getRandomValues(new Uint8Array(12));
   var sif = await crypto.subtle.encrypt({ name:'AES-GCM', iv:iv }, S.anahtar, yaz.encode(t));
-  localStorage.setItem('kk-token', JSON.stringify({ iv:b64e(iv), veri:b64e(sif) }));
+  localStorage.setItem('karakapli:token', JSON.stringify({ iv:b64e(iv), veri:b64e(sif) }));
   S.token = t;
   $('#tokenGirdi').value = '';
   m.textContent = 'tamam, depoya yazma açık'; m.className = 'a-mesaj iyi';
@@ -1488,7 +1530,7 @@ $('#tokenKaydetBtn').addEventListener('click', async function(){
   kaydet();
 });
 $('#tokenSilBtn').addEventListener('click', function(){
-  localStorage.removeItem('kk-token');
+  localStorage.removeItem('karakapli:token');
   S.token = null;
   $('#tokenMesaj').textContent = 'anahtar silindi'; $('#tokenMesaj').className = 'a-mesaj';
   bannerGuncelle();
@@ -1507,11 +1549,11 @@ $('#parolaDegistirBtn').addEventListener('click', async function(){
   if(S.token){
     var iv = crypto.getRandomValues(new Uint8Array(12));
     var sif = await crypto.subtle.encrypt({ name:'AES-GCM', iv:iv }, S.anahtar, yaz.encode(S.token));
-    localStorage.setItem('kk-token', JSON.stringify({ iv:b64e(iv), veri:b64e(sif) }));
+    localStorage.setItem('karakapli:token', JSON.stringify({ iv:b64e(iv), veri:b64e(sif) }));
   }
-  if(localStorage.getItem('kk-cihaz')){
+  if(localStorage.getItem('karakapli:cihaz')){
     var raw = await crypto.subtle.exportKey('raw', S.anahtar);
-    localStorage.setItem('kk-cihaz', JSON.stringify({ a:b64e(raw), salt:S.salt }));
+    localStorage.setItem('karakapli:cihaz', JSON.stringify({ a:b64e(raw), salt:S.salt }));
   }
   $('#yeniParola1').value = ''; $('#yeniParola2').value = '';
   m.textContent = 'parola değişti'; m.className = 'a-mesaj iyi';
@@ -1519,7 +1561,7 @@ $('#parolaDegistirBtn').addEventListener('click', async function(){
 });
 
 $('#hatirlamaSilBtn').addEventListener('click', function(){
-  localStorage.removeItem('kk-cihaz');
+  localStorage.removeItem('karakapli:cihaz');
   $('#hatirla').checked = false;
 });
 
@@ -1560,7 +1602,7 @@ $('#iceAktarDosya').addEventListener('change', function(){
           etiketler:Array.isArray(n.etiketler) ? n.etiketler.map(String) : [],
           baglar:[], sabit:!!n.sabit, arsiv:!!n.arsiv,
           olusturma:n.olusturma || Date.now(), guncelleme:n.guncelleme || Date.now(),
-          ekler:Array.isArray(n.ekler) ? n.ekler : []
+          ekler:Array.isArray(n.ekler) ? n.ekler.map(guvenliFoto).filter(Boolean) : []
         });
         say++;
       });
