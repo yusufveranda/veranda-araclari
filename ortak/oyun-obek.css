@@ -43,11 +43,13 @@ img{display:block}
 /* iki sütun: solda büyük ızgara (ekran BOYUNA göre ölçeklenir → 16 kutu sığar ama
    büyük kalır), sağda durum + kontrol. böylece alan da dolar, kareler de küçülmez. */
 .sahne{display:flex;align-items:flex-start;gap:clamp(16px,1.8vw,30px);margin-top:16px;flex-wrap:wrap;justify-content:center}
-.oyun-sol{flex:1 1 1200px;min-width:min(100%,300px);max-width:calc((100vh - 210px)*1.3333)}
-.yan{flex:1 1 300px;max-width:400px;display:flex;flex-direction:column;gap:16px;
+/* ızgara ÖNCE kendi yükseklik-sınırı boyutunu alır (grow yok), panel kalan yeri alır →
+   ızgara dikey sınıra kadar büyür, yatay boşluk dar panelle dolar, kareler en büyük halinde. */
+.oyun-sol{flex:0 1 auto;width:calc((100vh - 205px)*1.3333);max-width:100%;min-width:min(100%,300px)}
+.yan{flex:0 0 320px;display:flex;flex-direction:column;gap:16px;
   background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:20px;box-shadow:3px 5px 0 var(--golge)}
 /* dar/kare ekran: yan panel alta insin, ızgara tam genişlik (normal kaydırma) */
-@media(max-width:1200px){.yan{max-width:none;flex-basis:100%}.oyun-sol{max-width:none}}
+@media(max-width:1200px){.yan{flex:1 1 100%}.oyun-sol{width:100%;max-width:none}}
 
 .oyun-bas{margin:0;font-family:'Libre Baskerville',serif;font-style:italic;color:var(--soluk);font-size:14.5px;line-height:1.5}
 
