@@ -276,8 +276,9 @@ function paylas(){
 let toastT;
 function toast(m,snf){const t=$("#toast");t.textContent=m;t.className="goster"+(snf?" "+snf:"");clearTimeout(toastT);toastT=setTimeout(()=>t.className="",2200);}
 const temaBtn=$("#temaBtn");
-function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("esbitki-tema",t);}
-temaUygula(localStorage.getItem("esbitki-tema")||"gunduz");
+function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("asi:tema",t);}
+temaUygula(localStorage.getItem("asi:tema")||localStorage.getItem("esbitki-tema")||"gunduz");
+localStorage.removeItem("esbitki-tema");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
 $("#tamamBtn").onclick=tamam;
 $("#paylasBtn").onclick=paylas;

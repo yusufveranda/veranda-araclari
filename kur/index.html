@@ -284,8 +284,9 @@ function paylas(){
 let toastT;
 function toast(m,snf){const t=$("#toast");t.textContent=m;t.className="goster"+(snf?" "+snf:"");clearTimeout(toastT);toastT=setTimeout(()=>t.className="",2200);}
 const temaBtn=$("#temaBtn");
-function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("es-tema",t);}
-temaUygula(localStorage.getItem("es-tema")||"gunduz");
+function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("kur:tema",t);}
+temaUygula(localStorage.getItem("kur:tema")||localStorage.getItem("es-tema")||"gunduz");
+localStorage.removeItem("es-tema");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
 $("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas; $("#baskaBtn").onclick=()=>baskaBulmaca(false);
 $("#rastBtn").onclick=()=>baskaBulmaca(true);

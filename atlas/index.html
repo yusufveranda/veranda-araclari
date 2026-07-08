@@ -336,7 +336,12 @@ function kurOyun(m,puz){
 function yukleKayit(m){
   if(GOMULU) return null;   // gömülü kipte Atlas kendi kaydını kullanmaz (çakışmasın)
   try{
-    const s=JSON.parse(localStorage.getItem('atlas_'+m+'_'+GUN));
+    let raw=localStorage.getItem('atlas:'+m+':'+GUN);
+    if(raw==null){
+      const eski=localStorage.getItem('atlas_'+m+'_'+GUN);
+      if(eski!=null){ localStorage.setItem('atlas:'+m+':'+GUN, eski); localStorage.removeItem('atlas_'+m+'_'+GUN); raw=eski; }
+    }
+    const s=JSON.parse(raw);
     if(s&&s.g===GUN) return s;
   }catch(e){}
   return null;
@@ -347,7 +352,7 @@ function kaydet(){
   const kayit={g:GUN,deneme:o.deneme,bitti:o.bitti,
     cells:o.cells.map(row=>row.map(x=>x.ans?{ans:x.ans,puan:x.puan}:null)),
     kullanildi:[...o.kullanildi]};
-  try{localStorage.setItem('atlas_'+mod+'_'+GUN,JSON.stringify(kayit));}catch(e){}
+  try{localStorage.setItem('atlas:'+mod+':'+GUN,JSON.stringify(kayit));}catch(e){}
 }
 
 /* ---------- çizim ---------- */
@@ -538,10 +543,10 @@ $('#paylas').onclick=()=>{
 };
 $('#skor-gonder').onclick=()=>{
   const o=g(); const {skor,dogru}=guncelleDurum();
-  let nick=localStorage.getItem('vt_nick')||'';
-  nick=(prompt('Takma adın (liderlik için):',nick)||'').trim().slice(0,18);
+  let nick=localStorage.getItem('atlas:nick'); if(nick==null){ nick=localStorage.getItem('vt_nick')||''; if(nick){ localStorage.setItem('atlas:nick', nick); localStorage.removeItem('vt_nick'); } }
+  nick=(prompt('Takma adın (liderlik için):',nick||'')||'').trim().slice(0,18);
   if(!nick) return;
-  localStorage.setItem('vt_nick',nick);
+  localStorage.setItem('atlas:nick',nick);
   const puan=Math.max(0,Math.min(100,Math.round(skor/9)));   // yüksek iyi (backend uyumu)
   const gun=GUN*2+(mod==='turkiye'?1:0);
   $('#skor-gonder').textContent='Gönderiliyor…';
@@ -616,9 +621,13 @@ $('#gece').onclick=()=>{
   document.body.classList.toggle('gece');
   const g=document.body.classList.contains('gece');
   $('#gece').textContent=g?'☀️':'🌙';
-  try{localStorage.setItem('vt_gece',g?'1':'0');}catch(e){}
+  try{localStorage.setItem('atlas:gece',g?'1':'0');}catch(e){}
 };
-if(localStorage.getItem('vt_gece')==='1'){document.body.classList.add('gece');$('#gece').textContent='☀️';}
+(function(){
+  let v=localStorage.getItem('atlas:gece');
+  if(v==null){ v=localStorage.getItem('vt_gece'); if(v!=null){ localStorage.setItem('atlas:gece', v); localStorage.removeItem('vt_gece'); } }
+  if(v==='1'){document.body.classList.add('gece');$('#gece').textContent='☀️';}
+})();
 
 /* arama olayları */
 $('#arama').addEventListener('input',e=>{

@@ -255,8 +255,9 @@ let toastT;
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("goster");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("goster"),2400);}
 
 const temaBtn=$("#temaBtn");
-function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("obek-tema",t);}
-temaUygula(localStorage.getItem("obek-tema")||"gunduz");
+function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textContent=t==="gece"?"gündüz":"gece";localStorage.setItem("dort-suru:tema",t);}
+temaUygula(localStorage.getItem("dort-suru:tema")||localStorage.getItem("obek-tema")||"gunduz");
+localStorage.removeItem("obek-tema");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
 
 $("#gonderBtn").onclick=gonder;

@@ -2,6 +2,16 @@
 (function () {
   'use strict';
 
+  (function () {
+    try {
+      ['tema', 'skor', 'ist', 'yildiz', 'bolge', 'raporlar', 'zormod'].forEach(function (k) {
+        const eski = localStorage.getItem('bitki-' + k);
+        if (eski != null && localStorage.getItem('bitki:' + k) == null) localStorage.setItem('bitki:' + k, eski);
+        if (eski != null) localStorage.removeItem('bitki-' + k);
+      });
+    } catch (e) { }
+  })();
+
   const BUILD = '13';
   const KAT = {
     agac: 'Ağaç', cali: 'Çalı', cicek: 'Çiçek',
@@ -33,12 +43,12 @@
   function temaKur(t) {
     document.documentElement.setAttribute('data-tema', t);
     document.getElementById('temaBtn').textContent = t === 'gece' ? 'gündüz' : 'gece';
-    try { localStorage.setItem('bitki-tema', t); } catch (e) { }
+    try { localStorage.setItem('bitki:tema', t); } catch (e) { }
   }
   document.getElementById('temaBtn').addEventListener('click', () =>
     temaKur(document.documentElement.getAttribute('data-tema') === 'gece' ? 'gunduz' : 'gece'));
   (function () {
-    let t; try { t = localStorage.getItem('bitki-tema'); } catch (e) { }
+    let t; try { t = localStorage.getItem('bitki:tema'); } catch (e) { }
     if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'gece' : 'gunduz';
     temaKur(t);
   })();
@@ -50,12 +60,12 @@
 
   /* ---------- skor (oturum + kalıcı en iyi seri) ---------- */
   const skor = { dogru: 0, toplam: 0, seri: 0, enSeri: 0 };
-  function skorYukle() { try { skor.enSeri = JSON.parse(localStorage.getItem('bitki-skor') || '{}').enSeri || 0; } catch (e) { } }
-  function skorKaydet() { try { localStorage.setItem('bitki-skor', JSON.stringify({ enSeri: skor.enSeri })); } catch (e) { } }
+  function skorYukle() { try { skor.enSeri = JSON.parse(localStorage.getItem('bitki:skor') || '{}').enSeri || 0; } catch (e) { } }
+  function skorKaydet() { try { localStorage.setItem('bitki:skor', JSON.stringify({ enSeri: skor.enSeri })); } catch (e) { } }
   /* öğrenme istatistiği (kalıcı, aralıklı tekrar için): id -> {d:doğru, y:yanlış, son:soruNo} */
   let qNo = 0;
-  let IST; try { IST = JSON.parse(localStorage.getItem('bitki-ist') || '{}'); } catch (e) { IST = {}; }
-  function istKaydet() { try { localStorage.setItem('bitki-ist', JSON.stringify(IST)); } catch (e) { } }
+  let IST; try { IST = JSON.parse(localStorage.getItem('bitki:ist') || '{}'); } catch (e) { IST = {}; }
+  function istKaydet() { try { localStorage.setItem('bitki:ist', JSON.stringify(IST)); } catch (e) { } }
   function istGuncelle(id, dogruMu) {
     const s = IST[id] || (IST[id] = { d: 0, y: 0, son: 0 });
     if (dogruMu) s.d++; else s.y++;
@@ -64,13 +74,13 @@
   function ogrenilenSayisi() { return Object.values(IST).filter(s => (s.d - s.y) >= 2).length; }
 
   /* ---------- yıldızlananlar (favoriler) ---------- */
-  let YILDIZ; try { YILDIZ = new Set(JSON.parse(localStorage.getItem('bitki-yildiz') || '[]')); } catch (e) { YILDIZ = new Set(); }
-  function yildizKaydet() { try { localStorage.setItem('bitki-yildiz', JSON.stringify([...YILDIZ])); } catch (e) { } }
+  let YILDIZ; try { YILDIZ = new Set(JSON.parse(localStorage.getItem('bitki:yildiz') || '[]')); } catch (e) { YILDIZ = new Set(); }
+  function yildizKaydet() { try { localStorage.setItem('bitki:yildiz', JSON.stringify([...YILDIZ])); } catch (e) { } }
   function yildizToggle(id) { if (YILDIZ.has(id)) YILDIZ.delete(id); else YILDIZ.add(id); yildizKaydet(); return YILDIZ.has(id); }
 
   /* ---------- bölge (kapsam): Türkiye / Dünya geneli ---------- */
   let bolge;
-  try { bolge = localStorage.getItem('bitki-bolge'); } catch (e) { }
+  try { bolge = localStorage.getItem('bitki:bolge'); } catch (e) { }
   if (bolge !== 'dunya' && bolge !== 'tr') bolge = 'tr';
   function veri() { return bolge === 'dunya' ? DATA : DATA.filter(t => t.bolge === 'tr'); }
   function bolgeSayiGuncelle() {
@@ -82,7 +92,7 @@
   }
   function bolgeKur(b) {
     bolge = b;
-    try { localStorage.setItem('bitki-bolge', b); } catch (e) { }
+    try { localStorage.setItem('bitki:bolge', b); } catch (e) { }
     bolgeSayiGuncelle();
     ekran.dataset.cevaplandi = '0';
     router();
@@ -106,10 +116,10 @@
     ['diger', '✏️ Başka sorun']
   ];
   const sebepAd = Object.fromEntries(SEBEPLER.map(s => s));
-  function raporlariAl() { try { return JSON.parse(localStorage.getItem('bitki-raporlar') || '[]'); } catch (e) { return []; } }
+  function raporlariAl() { try { return JSON.parse(localStorage.getItem('bitki:raporlar') || '[]'); } catch (e) { return []; } }
   function raporKaydet(k) {
     const r = raporlariAl(); r.push(k);
-    try { localStorage.setItem('bitki-raporlar', JSON.stringify(r)); } catch (e) { }
+    try { localStorage.setItem('bitki:raporlar', JSON.stringify(r)); } catch (e) { }
     if (RAPOR_URL) {
       try {
         fetch(RAPOR_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
@@ -206,7 +216,7 @@
   /* ===================== TANI (QUIZ) ===================== */
   let quizHedef = null, sonId = null, gecmis = [];   // gecmis = son gösterilen id'ler (en yeni başta)
   let sonFoto = {};                                  // tür id -> son gösterilen foto url (tekrarda farklı açı)
-  let zorMod; try { zorMod = localStorage.getItem('bitki-zormod') === '1'; } catch (e) { zorMod = false; }
+  let zorMod; try { zorMod = localStorage.getItem('bitki:zormod') === '1'; } catch (e) { zorMod = false; }
 
   function quizSec() {                                // yedek seçici (override edilir)
     const havuz = veri().filter(t => quizFotolari(t).length);
@@ -301,7 +311,7 @@
     document.getElementById('quizFoto').onerror = function () { this.src = YAPRAK_SVG; };
     document.getElementById('zorBtn').addEventListener('click', () => {
       zorMod = !zorMod;
-      try { localStorage.setItem('bitki-zormod', zorMod ? '1' : '0'); } catch (e) { }
+      try { localStorage.setItem('bitki:zormod', zorMod ? '1' : '0'); } catch (e) { }
       ekran.dataset.cevaplandi = '0'; quizGoster();
     });
     quizKategoriCipleri();
@@ -673,11 +683,11 @@
         .then(() => toast('Panoya kopyalandı')).catch(() => toast('Kopyalanamadı — JSON indir kullan'));
     });
     document.getElementById('rTemiz').addEventListener('click', () => {
-      if (confirm('Tüm raporlar silinsin mi?')) { localStorage.removeItem('bitki-raporlar'); raporlarGoster(); }
+      if (confirm('Tüm raporlar silinsin mi?')) { localStorage.removeItem('bitki:raporlar'); raporlarGoster(); }
     });
     ekran.querySelectorAll('[data-sil]').forEach(b => b.addEventListener('click', () => {
       const arr = raporlariAl(); arr.splice(+b.dataset.sil, 1);
-      try { localStorage.setItem('bitki-raporlar', JSON.stringify(arr)); } catch (e) { }
+      try { localStorage.setItem('bitki:raporlar', JSON.stringify(arr)); } catch (e) { }
       raporlarGoster();
     }));
   }

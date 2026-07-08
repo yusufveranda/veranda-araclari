@@ -150,8 +150,16 @@ let curCtx = null;
 
 /* yerel hafıza: geçmiş + yıldızlar */
 const LS = {
-  get(k, d){ try{ const v = localStorage.getItem('karsilik-' + k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem('karsilik-' + k, JSON.stringify(v)); }catch(e){} }
+  get(k, d){
+    try{
+      const v = localStorage.getItem('karsilik:' + k);
+      if(v != null) return JSON.parse(v);
+      const eski = localStorage.getItem('karsilik-' + k);
+      if(eski != null){ localStorage.setItem('karsilik:' + k, eski); localStorage.removeItem('karsilik-' + k); return JSON.parse(eski); }
+      return d;
+    }catch(e){ return d; }
+  },
+  set(k, v){ try{ localStorage.setItem('karsilik:' + k, JSON.stringify(v)); }catch(e){} }
 };
 let recent = LS.get('recent', []);
 let favs = LS.get('favs', []);
@@ -253,8 +261,16 @@ async function loadIndexes(){
 }
 async function fetchEntry(dir, id, b){
   const k = dir + '/' + b;
-  if(!bucketCache[k])                       // 404/ağ hatasında patlamasın → {} (openRec yeniden çözer)
-    bucketCache[k] = fetch(`data/entries/${dir}/${b}.json` + DV).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+  if(!bucketCache[k])
+    // 404 = bucket gerçekten yok → {} cache'lenir (kalıcı bilgi).
+    // Ağ hatası / 5xx = geçici → cache'ten düş ve fırlat; sonraki tıklama yeniden dener.
+    bucketCache[k] = fetch(`data/entries/${dir}/${b}.json` + DV)
+      .then(r => {
+        if(r.ok) return r.json();
+        if(r.status === 404) return {};
+        throw new Error('http ' + r.status);
+      })
+      .catch(err => { delete bucketCache[k]; throw err; });
   return (await bucketCache[k])[id];
 }
 
@@ -499,15 +515,23 @@ function renderNoResult(q){
 }
 
 /* ----------------------------------------------------------------- gezinme */
-async function openRec(rec, push){
+async function openRec(rec, push, retried){
   let dir = rec.dir, id = rec.id, b = +rec.b, ph = rec.ph;
-  let entry = await fetchEntry(dir, id, b);
-  if(!entry && rec.l){                      // veri güncellendiyse bucket değişmiş olabilir → indeksten çöz
-    const cur = foldToRec[dir] && foldToRec[dir].get(fold(rec.l));
-    if(cur){ id = cur.id; b = cur.b; entry = await fetchEntry(dir, id, b); }
+  let entry;
+  try{
+    entry = await fetchEntry(dir, id, b);
+    if(!entry && rec.l){                    // veri güncellendiyse bucket değişmiş olabilir → indeksten çöz
+      const cur = foldToRec[dir] && foldToRec[dir].get(fold(rec.l));
+      if(cur){ id = cur.id; b = cur.b; entry = await fetchEntry(dir, id, b); }
+    }
+  }catch(err){                              // ağ/geçici hata: veriyi silme, kullanıcıyı bilgilendir ve çık
+    main.innerHTML = `<div class="noresult"><div class="big">bağlantı hatası</div>` +
+      `<div class="didyou">“${esc(rec.l || rec.id)}” yüklenemedi — bağlantını kontrol edip tekrar dene.</div></div>`;
+    return;
   }
-  if(!entry){                               // hâlâ yok → ölü kaydı düş, aramaya düş
-    if(rec.l){ pruneSaved(rec); openWord(rec.l, push); }
+  if(!entry){                               // 404: kayıt gerçekten yok → ölü kaydı düş, aramaya düş
+    // retried bayrağı: openWord'den ikinci kez geldiysek tekrar arama YAPMA → sonsuz döngüyü kır
+    if(rec.l && !retried){ pruneSaved(rec); openWord(rec.l, push, true); }
     else renderNoResult(rec.l || rec.id);
     return;
   }
@@ -520,9 +544,9 @@ async function openRec(rec, push){
     history.pushState({id: ctx.id, b: ctx.b, dir: ctx.dir, ph: ctx.ph ?? null, l: ctx.l}, '',
       `?q=${encodeURIComponent(ctx.l)}&d=${ctx.dir}`);
 }
-function openWord(q, push){
+function openWord(q, push, retried){
   const r = search(q, 1)[0];
-  if(r) openRec(r, push);
+  if(r) openRec(r, push, retried);
   else { renderNoResult(q); if(push !== false) history.pushState({nf: q}, '', `?q=${encodeURIComponent(q)}`); }
 }
 // rastgele: TÜM indekslenmiş başlıklardan (en+tr, öbek hariç) eşit olasılıkla — en nadir
@@ -578,7 +602,7 @@ function setDir(d){
 function applyTheme(gece){
   document.body.classList.toggle('gece', gece);
   $('#themebtn').textContent = gece ? 'gündüz' : 'gece';
-  try{ localStorage.setItem('karsilik-gece', gece ? '1' : '0'); }catch(e){}
+  try{ localStorage.setItem('karsilik:gece', gece ? '1' : '0'); }catch(e){}
 }
 
 /* ----------------------------------------------------------------- olaylar */
@@ -695,6 +719,7 @@ window.addEventListener('popstate', e => {
   const s = e.state;
   if(s && s.id){ qEl.value = s.l || ''; openRec(s, false); }
   else if(s && s.nf){ qEl.value = s.nf; renderNoResult(s.nf); }
+  else if(s && s.q){ qEl.value = s.q; openWord(s.q, false); }   // ilk ?q= girişine dönüş
   else { qEl.value = ''; renderLanding(); }
 });
 
@@ -702,7 +727,8 @@ window.addEventListener('popstate', e => {
 (function init(){
   let gece = false;
   try{
-    const saved = localStorage.getItem('karsilik-gece');
+    let saved = localStorage.getItem('karsilik:gece');
+    if(saved == null){ saved = localStorage.getItem('karsilik-gece'); if(saved != null){ localStorage.setItem('karsilik:gece', saved); localStorage.removeItem('karsilik-gece'); } }
     gece = saved != null ? saved === '1'
       : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   }catch(e){}
@@ -712,10 +738,16 @@ window.addEventListener('popstate', e => {
     $('#stat').textContent = `${meta.dirs.en.count} ingilizce · ${meta.dirs.tr.count} türkçe başlık`;
     const p = new URLSearchParams(location.search);
     const q = p.get('q'), d = p.get('d');
-    if(d) setDir(d);
-    if(q){ qEl.value = q; $('#clearbtn').style.display = 'block'; openWord(q, false); }
+    if(d === 'en' || d === 'tr') setDir(d);        // yalnız geçerli yön; ?d=xx önceliği sessizce bozmasın
+    if(q){
+      qEl.value = q; $('#clearbtn').style.display = 'block';
+      openWord(q, false);
+      // ilk kayıt için history state kur → geri tuşunda URL/ekran tutarsız kalmasın
+      history.replaceState({q}, '', location.search);
+    }
     else renderLanding();
   }).catch(err => {
+    $('#stat').textContent = 'veri yüklenemedi';
     main.innerHTML = `<div class="noresult"><div class="big">veri yüklenemedi</div>
       <div class="didyou">${esc(String(err))}</div></div>`;
   });

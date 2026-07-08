@@ -778,8 +778,8 @@ const DUR_BEATS = [0.5, 1, 2, 3, 4, 8, 16];                                    /
 const DUR_AD = { 0.5: '⅛', 1: '¼', 2: '½', 3: '¾', 4: '1', 8: '2', 16: '4' };
 const PXB = 60, LABEL_W = 124;                                                 // piksel/vuruş + kanal başlığı (enstrüman+ses+sil) genişliği
 const escapeHtml = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-function load(){ try { return JSON.parse(localStorage.getItem('nota-favoriler')) || []; } catch { return []; } }
-function persist(){ try { localStorage.setItem('nota-favoriler', JSON.stringify(state.favorites)); } catch {} }
+function load(){ try { const v=localStorage.getItem('nota:favoriler'); if(v!=null) return JSON.parse(v)||[]; const eski=localStorage.getItem('nota-favoriler'); if(eski!=null){ localStorage.setItem('nota:favoriler', eski); localStorage.removeItem('nota-favoriler'); return JSON.parse(eski)||[]; } return []; } catch { return []; } }
+function persist(){ try { localStorage.setItem('nota:favoriler', JSON.stringify(state.favorites)); } catch {} }
 
 /* ---- arayüzü kur ---- */
 const app = $('#uygulama');
@@ -1761,8 +1761,8 @@ function lanesCiz(){
 }
 
 /* ===================== döngü kütüphanesi (kalıcı; localStorage) ===================== */
-function loopsYukle(){ try { return JSON.parse(localStorage.getItem('nota-loops')) || []; } catch { return []; } }
-function loopsKaydet(a){ try { localStorage.setItem('nota-loops', JSON.stringify(a)); } catch {} }
+function loopsYukle(){ try { const v=localStorage.getItem('nota:loops'); if(v!=null) return JSON.parse(v)||[]; const eski=localStorage.getItem('nota-loops'); if(eski!=null){ localStorage.setItem('nota:loops', eski); localStorage.removeItem('nota-loops'); return JSON.parse(eski)||[]; } return []; } catch { return []; } }
+function loopsKaydet(a){ try { localStorage.setItem('nota:loops', JSON.stringify(a)); } catch {} }
 function loopKaydet(){
   const inp = $('#loopAd'); if (!inp) return;
   const toplam = looper.tracks.reduce((s, t) => s + t.blocks.length, 0);
