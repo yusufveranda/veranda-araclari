@@ -19,7 +19,9 @@ i,em,.la{font-style:italic}
 button{font:inherit;cursor:pointer;color:inherit}
 img{display:block}
 
-.sarmal{width:min(1512px,86.4vw);margin:0 auto;padding:18px 0 90px}
+/* genişlik hem ekran enine hem de BOYUNA bağlı: 4x4 (4/3 kare) ızgaranın 4 satırı
+   da ekrana sığsın diye yükseklik-tabanlı sınır. yükseklik ≈ 0.75×genişlik → tersi ×1.333 */
+.sarmal{width:min(1512px,86.4vw,calc((100vh - 320px)*1.3333));margin:0 auto;padding:18px 0 90px}
 .ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:6px}
 .eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;
   text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;
