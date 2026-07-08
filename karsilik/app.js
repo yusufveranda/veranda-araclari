@@ -495,11 +495,19 @@ function renderSide(){
   side.innerHTML = h;
 }
 
+const OZET_KELIMELER = ['pencere','gökyüzü','gölge','ay','sessizlik','kor','kök','dalga','ayna','yürek','rüzgâr','iplik','yağmur','deniz','ışık'];
+const OZET_EN = {pencere:'window', gökyüzü:'sky', gölge:'shadow', ay:'moon', sessizlik:'silence', kor:'ember', kök:'root', dalga:'wave', ayna:'mirror', yürek:'heart', rüzgâr:'wind', iplik:'thread', yağmur:'rain', deniz:'sea', ışık:'light'};
+
 function renderLanding(){
   curCtx = null; curRel = {};
+  const kelimeler = OZET_KELIMELER.slice().sort(() => Math.random() - .5).slice(0, 10);
   main.innerHTML = `<div class="landing">
     <div class="lead">bir kelimenin öteki dildeki karşılığı.</div>
     <div class="note">İngilizce ↔ Türkçe · her anlam bağlamına göre, deyimler ve örnek cümlelerle. Yazım hatasını ve Türkçe ekleri affeder — yukarıya bir kelime yaz.</div>
+    <div class="examples">
+      <div class="ex-h">birkaç kelime</div>
+      <div class="chips">${kelimeler.map(k => `<a class="chip" data-word="${esc(OZET_EN[k])}">${esc(k)}</a>`).join('')}</div>
+    </div>
   </div>`;
   renderSide(curRel);
 }

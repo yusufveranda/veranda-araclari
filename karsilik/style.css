@@ -266,8 +266,10 @@ main{margin-top:10px}
 .landing .lead{font-family:var(--display); font-size:27px; font-style:italic; color:var(--muted);
   line-height:1.38; max-width:20ch; letter-spacing:-.01em}
 .landing .note{font-family:var(--sans); font-size:12px; color:var(--faint); margin-top:22px; line-height:1.8}
-.landing .examples{margin-top:32px}
-.chips{display:flex; flex-wrap:wrap; gap:6px 20px}
+.landing .examples{margin-top:44px; max-width:640px}
+.ex-h{font-family:var(--sans); font-size:9.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--faint); margin-bottom:14px}
+.chips{display:flex; flex-wrap:wrap; gap:14px 26px}
 .chip{font-family:var(--display); font-size:17px; color:var(--ink); text-decoration:none; cursor:pointer;
   border-bottom:1px solid transparent; transition:color .2s, border-color .2s}
 .chip:hover{color:var(--acc); border-color:var(--acc)}
