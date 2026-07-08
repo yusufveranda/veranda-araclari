@@ -11,7 +11,7 @@
 
 ## Düzeltme (önceki taramanın hatası)
 
-- Araştırma ajanı karakapli'de pinch-zoom kapalı sanmıştı — kontrol edince öyle değildi, gerçek sorun sadece `nota`'daydı (bu oturumda düzeltildi). Ama `cati`, `sicaksoguk`, `wordle` (klavye tabanlı Wordle ailesi) `user-scalable=no` kullanıyor — hızlı dokunuşta yanlışlıkla zoom'u engellemek için bilinçli bir tercih olabilir. Kaldırmadan önce karar ver: erişilebilirlik mi, klavye-tap UX'i mi öncelikli? Onay olmadan bu oturumda dokunulmadı.
+- `cati`, `sicaksoguk`, `wordle` (klavye tabanlı Wordle ailesi) `user-scalable=no` kullanıyor — kullanıcı kararı: **kalsın**, klavye-tap UX'i erişilebilirlikten öncelikli tutuldu. Değişiklik yapılmayacak, kapandı.
 - Araştırma ajanı karakapli'de "sidebar mobilde collapse olmuyor" demişti — kod incelemesinde (`#uygulama` grid + `.yan{position:fixed;transform:translateX(-100%)}` + `.acik-yan`/`.perde` toggle, `@media(max-width:860px)`) bunun zaten doğru bir off-canvas menü olarak kurulu olduğu görüldü; mobil önizlemede kilit ekranı da tam genişlikte, ortalanmış render oluyor (DOM inceleme ile doğrulandı). Bu madde de yanlış alarmdı, kod değişikliği yapılmadı.
 
 ## Orta öncelik
