@@ -1,0 +1,17 @@
+/* harfiyat ailesi (wordle/cati/sicaksoguk/pedantle) ortak tema değişkenleri.
+   Sadece dört oyunda da BİREBİR AYNI olan renkler burada; her oyun kendi
+   ek değişkenlerini (harf kutusu renkleri, sıcaklık skalası, vb.) kendi
+   <style> bloğunda tutmaya devam eder. */
+body{
+  --oyun-bg:#EFE4CB; --mat:#F8F1DE; --mat-golge:rgba(45,32,18,.20);
+  --mur:#241C16; --soluk:#7A6E59; --ince:#E3D6B8;
+  --kirmizi:#C2331F; --kirmizi-yum:rgba(194,51,31,.12);
+}
+body.gece{
+  --oyun-bg:#16110C; --mat:#211A12; --mat-golge:rgba(0,0,0,.55);
+  --mur:#EFE2C6; --soluk:#9C8C70; --ince:#332919;
+  --kirmizi:#E8472E; --kirmizi-yum:rgba(232,71,46,.16);
+  /* paylaşılan araç paleti (üst başlık/nav) koyuya çevrilir */
+  --bg:#16110C; --card:#241C14; --ink:#EFE2C6; --muted:#9C8C70; --line:#3A2E20;
+  --acc:#86B98E; --acc-soft:rgba(134,185,142,.14); --vurgu:#E0935A; --shadow:rgba(0,0,0,.4);
+}

@@ -16,36 +16,28 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css">
+<link rel="stylesheet" href="../ortak/oyun-harfiyat.css">
 <script src="../ortak/adlar.js"></script>
 <script src="../ortak/bayrak.js"></script>
 <style>
-/* ===== oyuna özgü tema belirteçleri (sıcak Akdeniz / kâğıt) ===== */
+/* ===== oyuna özgü tema belirteçleri (paylaşılanlar ../ortak/oyun-harfiyat.css'te) ===== */
 body{
-  --oyun-bg:#EFE4CB; --mat:#F8F1DE; --mat-golge:rgba(45,32,18,.20);
   --kutu-bos:#FCF6E7; --kutu-cizgi:#D7C7A2; --kutu-dolu:#B6A079;
-  --mur:#241C16; --soluk:#7A6E59; --ince:#E3D6B8;
   --dogru:#5E7F4B; --dogru-ink:#F8F1DE;
   --varr:#CF9A3C; --varr-ink:#2B2117;
   --yok:#9A8C7A; --yok-ink:#F3EADB;
-  --kirmizi:#C2331F; --kirmizi-yum:rgba(194,51,31,.12);
   --altin:#B8860B;
   --tus:#F7F0DE; --tus-cizgi:#DAC9A4; --tus-yok:#9A8C7A; --tus-yok-ink:#F3EADB;
   background:var(--oyun-bg);
   touch-action:manipulation;            /* telefonda çift-dokunma zoom yok */
 }
 body.gece{
-  --oyun-bg:#16110C; --mat:#211A12; --mat-golge:rgba(0,0,0,.55);
   --kutu-bos:#241C13; --kutu-cizgi:#3A2E20; --kutu-dolu:#564636;
-  --mur:#EFE2C6; --soluk:#9C8C70; --ince:#332919;
   --dogru:#6E9558; --dogru-ink:#16110C;
   --varr:#D8A845; --varr-ink:#1C1510;
   --yok:#615746; --yok-ink:#EAE0CC;
-  --kirmizi:#E8472E; --kirmizi-yum:rgba(232,71,46,.16);
   --altin:#E6C25A;
   --tus:#33291C; --tus-cizgi:#4A3A28; --tus-yok:#181109; --tus-yok-ink:#6A5E48;
-  /* paylaşılan araç paleti (üst başlık/nav) koyuya çevrilir */
-  --bg:#16110C; --card:#241C14; --ink:#EFE2C6; --muted:#9C8C70; --line:#3A2E20;
-  --acc:#86B98E; --acc-soft:rgba(134,185,142,.14); --vurgu:#E0935A; --shadow:rgba(0,0,0,.4);
 }
 body{transition:background .4s,color .4s}
 
