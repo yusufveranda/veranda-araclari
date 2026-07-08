@@ -14,10 +14,24 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css?v=9">
 <style>
-  body{font-family:'Libre Baskerville',Georgia,serif}
+  body{font-family:'Libre Baskerville',Georgia,serif;transition:background .4s,color .4s}
   a.eve-don{margin-left:0}
   .wrap{max-width:min(95vw,1500px);padding:42px 30px 96px}
   header.site .alt{max-width:64ch}
+
+  body.gece{
+    --bg:#15110d; --card:#1f1912; --ink:#efe3c6; --muted:#a6977a; --line:#3a2f22;
+    --acc:#4fa08c; --acc-soft:rgba(79,160,140,.14); --vurgu:#e0955a; --shadow:rgba(0,0,0,.4);
+  }
+  body.gece .cerceve{background:
+      linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.1)),
+      repeating-linear-gradient(90deg,#23201a 0 2px,#1c1a15 2px 4px)}
+  body.gece .cerceve::after{box-shadow:inset 0 0 90px rgba(0,0,0,.4)}
+
+  .gece-dug{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);
+    color:var(--ink);font-size:16px;display:inline-flex;align-items:center;justify-content:center;
+    box-shadow:2px 3px 0 var(--shadow);cursor:pointer}
+  .gece-dug:hover{transform:translateY(-1px)}
 
   /* ---- tahta: geniş ekranda iki kolon; sağ kolon dikeyde ortalı, ekranı doldurur ---- */
   .tahta{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(360px,1fr);gap:52px;align-items:center;margin-top:34px}
@@ -113,12 +127,16 @@
   .not{margin-top:20px;color:var(--muted);font-size:13.5px;line-height:1.6}
   .kupa{position:absolute;left:-9999px}
 /* Günün Yıldızları — gömme kipi (yalnız ?meta=1) */
-body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar{display:none}
+body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar,body.gomulu .gece-dug{display:none}
+.ust-satir{display:flex;align-items:center;justify-content:space-between;gap:12px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <a class="eve-don" href="../">verandaya dön</a>
+  <div class="ust-satir">
+    <a class="eve-don" href="../">verandaya dön</a>
+    <button class="gece-dug" id="gece" title="gece / gündüz" type="button">🌙</button>
+  </div>
 
   <header class="site" style="margin-top:16px">
     <a href="./"><h1>Sancak</h1></a>
@@ -578,6 +596,15 @@ function gunlukBaslat(){
 }
 rastgeleBtn.onclick = rastgeleBaslat;
 gunlukBtn.onclick = gunlukBaslat;
+
+/* ===================== gece / gündüz ===================== */
+$("#gece").onclick=()=>{
+  document.body.classList.toggle('gece');
+  const g=document.body.classList.contains('gece');
+  $("#gece").textContent=g?'☀️':'🌙';
+  try{localStorage.setItem('sancak:gece',g?'1':'0');}catch(e){}
+};
+if(localStorage.getItem('sancak:gece')==='1'){document.body.classList.add('gece');$("#gece").textContent='☀️';}
 
 /* ===================== başlat ===================== */
 gunlukBaslat();
