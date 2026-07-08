@@ -4,9 +4,10 @@
 
 ## Yüksek öncelik
 
-- **`gorsel/harita.jpg` üzerinde "AI-generated content" filigranı var** (görselin sol alt köşesine gömülü, kırpılmamış) — hem hub'daki Harita kartında hem Lunapark/Güverte kartında görünüyor. Kaynağı temizlenmiş/kırpılmış bir versiyonla değiştir.
+- ~~`gorsel/harita.jpg` üzerinde "AI-generated content" filigranı~~ — düzeltildi (kırpıldı + cache-bust eklendi).
 
-- **CSS token konsolidasyonu**: 13/19+ oyun `../ortak/stil.css` yerine kendi `<style>` bloğunu embed ediyor (aynı `--kirmizi`/`--kagit` değerlerini elle kopyalayarak). Hedef: ortak bir `ortak/tokens.css` + her oyunun kendine özgü override'ları. Fable 5 ile tasarım-tutarlılık incelemesi yapıp uygulamadan önce onay al (bkz. plan dosyası).
+- **CSS token konsolidasyonu — devam ediyor.** İlk dilim tamamlandı: `dort-suru`+`dort-demet` (öbekleme ailesi) → `ortak/oyun-obek.css`; `kur`+`asi` (eşleştirme ailesi) → `ortak/oyun-eslestir.css`. Fable 5 incelemesinden geçti (bkz. yaklaşım: paylaşılan dosya SIFIR renk tanımlar, her oyun kendi `:root`/`[data-tema="gece"]` bloğunu korur; JS'in ürettiği/sorguladığı sınıf adları — `.kus-havuz`/`.kthumb` gibi — asla ortak dosyaya taşınmaz, yerel kalır). Her ikisi de tarayıcıda gündüz+gece modunda görsel olarak doğrulandı.
+  Kalan aday gruplar: `karine` (Avlu bulmaca — bu ailenin `:root` yapısına çok yakın ama farklı oyun türü, tek başına incelenmeli), `siir-defteri`/`nota`/`pedantle`/`cati` grubu (farklı bir `:root` şablonu paylaşıyor, ayrı bir konsolidasyon turu gerekir), `bulmaca`/`politika`/`sozluk` grubu (üçüncü bir şablon: `--bg`/`--card`/`--ink`/`--acc`), `karakapli`/`atlas` (dördüncü şablon). `karanlik-oda` kasıtlı olarak dışarıda bırakılmalı — kendine özgü noir tasarım dili var, paylaşılan "kağıt" estetiğine zorlanmamalı.
 - **PWA**: Her oyuna `manifest.json` + gerçek 192/512 PNG ikon seti (şu an sadece hub'da SVG "any" ikon var — MVP). Service worker + offline fallback sonrası.
 - **Dark mode standardizasyonu**: 3 farklı toggle yöntemi var (`data-tema` attr / `.gece` class / `body.gece`). Tek yönteme (`.gece` class) geçir; `karsilik` ve `pedantle`'da dark mode eksik/eksik olabilir, tekrar kontrol et.
 - **localStorage namespace göçü**: `karakapli`'nin `kk-*` anahtarları bu oturumda `karakapli:*`'ye taşındı (bkz. Phase 2). Diğer oyunlarda da `nota-*` gibi tire-tabanlı anahtarlar var; hepsini `oyun:anahtar` biçimine getir, eski anahtarı bir kere okuyup göç ettir.
