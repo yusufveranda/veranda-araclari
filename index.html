@@ -302,23 +302,56 @@
         <p>Coğrafya oyunları: Atlas (3×3 ızgara) ve Sancak (bayrak).</p>
       </a>
       <a class="kart" href="oyunlar/">
-        <div class="kart-gorsel" style="background:#1C1510;display:flex;align-items:center;justify-content:center">
-          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:52%;height:52%">
-            <circle cx="32" cy="30" r="18" fill="none" stroke="#F2E6CE" stroke-width="3"/>
-            <line x1="32" y1="12" x2="32" y2="48" stroke="#F2E6CE" stroke-width="2"/>
-            <line x1="14" y1="30" x2="50" y2="30" stroke="#F2E6CE" stroke-width="2"/>
-            <line x1="19" y1="17" x2="45" y2="43" stroke="#F2E6CE" stroke-width="2"/>
-            <line x1="45" y1="17" x2="19" y2="43" stroke="#F2E6CE" stroke-width="2"/>
-            <circle cx="32" cy="12" r="4" fill="#D7261D"/>
-            <circle cx="50" cy="30" r="4" fill="#F09A36"/>
-            <circle cx="32" cy="48" r="4" fill="#5E7F4B"/>
-            <circle cx="14" cy="30" r="4" fill="#CF9A3C"/>
-            <circle cx="45" cy="43" r="4" fill="#C2331F"/>
-            <circle cx="19" cy="17" r="4" fill="#8f6699"/>
-            <circle cx="45" cy="17" r="4" fill="#988A79"/>
-            <circle cx="19" cy="43" r="4" fill="#33606b"/>
-            <line x1="32" y1="48" x2="20" y2="58" stroke="#F2E6CE" stroke-width="3"/>
-            <line x1="32" y1="48" x2="44" y2="58" stroke="#F2E6CE" stroke-width="3"/>
+        <div class="kart-gorsel" style="aspect-ratio:800/410;height:auto">
+          <svg viewBox="0 0 800 410" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="lp-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#E8732A"/><stop offset=".42" stop-color="#F09A36"/>
+                <stop offset=".74" stop-color="#F4B65E"/><stop offset="1" stop-color="#ECCF92"/>
+              </linearGradient>
+            </defs>
+            <rect width="800" height="410" fill="url(#lp-sky)"/>
+            <!-- batan güneş: birinci halka -->
+            <circle cx="556" cy="250" r="122" fill="#F3B457" opacity=".5"/>
+            <circle cx="556" cy="250" r="90" fill="#D7261D"/>
+            <g fill="#F7D98F" opacity=".32"><rect x="0" y="234" width="800" height="7"/><rect x="0" y="256" width="800" height="7"/><rect x="0" y="278" width="800" height="7"/></g>
+            <!-- zemin -->
+            <rect x="0" y="300" width="800" height="6" fill="#7A4E26" opacity=".55"/>
+            <rect x="0" y="304" width="800" height="106" fill="#241B10"/>
+            <!-- çarkıfelek: ikinci halka -->
+            <g stroke="#1C1510" stroke-linecap="round" fill="none">
+              <line x1="250" y1="208" x2="182" y2="304" stroke-width="9"/>
+              <line x1="250" y1="208" x2="318" y2="304" stroke-width="9"/>
+              <circle cx="250" cy="208" r="112" stroke-width="7"/>
+              <circle cx="250" cy="208" r="99" stroke-width="2.5"/>
+              <line x1="250" y1="208" x2="362" y2="208" stroke-width="4"/>
+              <line x1="250" y1="208" x2="329" y2="129" stroke-width="4"/>
+              <line x1="250" y1="208" x2="250" y2="96" stroke-width="4"/>
+              <line x1="250" y1="208" x2="171" y2="129" stroke-width="4"/>
+              <line x1="250" y1="208" x2="138" y2="208" stroke-width="4"/>
+              <line x1="250" y1="208" x2="171" y2="287" stroke-width="4"/>
+              <line x1="250" y1="208" x2="329" y2="287" stroke-width="4"/>
+            </g>
+            <circle cx="250" cy="208" r="13" fill="#1C1510"/>
+            <!-- gondollar = oyunlar -->
+            <g stroke="#1C1510" stroke-width="2">
+              <circle cx="362" cy="208" r="12" fill="#D7261D"/><circle cx="329" cy="129" r="12" fill="#F09A36"/>
+              <circle cx="250" cy="96" r="12" fill="#CF9A3C"/><circle cx="171" cy="129" r="12" fill="#5E7F4B"/>
+              <circle cx="138" cy="208" r="12" fill="#33606B"/><circle cx="171" cy="287" r="12" fill="#8F6699"/>
+              <circle cx="329" cy="287" r="12" fill="#988A79"/>
+            </g>
+            <!-- veranda korkuluğu (ön plan) -->
+            <g fill="#1C1510">
+              <rect x="0" y="352" width="800" height="11"/>
+              <rect x="34" y="363" width="9" height="47"/><rect x="134" y="363" width="9" height="47"/><rect x="234" y="363" width="9" height="47"/><rect x="334" y="363" width="9" height="47"/><rect x="434" y="363" width="9" height="47"/><rect x="534" y="363" width="9" height="47"/><rect x="634" y="363" width="9" height="47"/><rect x="734" y="363" width="9" height="47"/>
+            </g>
+            <!-- saksı bitki (olive aksan) -->
+            <g fill="#5F6B37">
+              <path d="M714 352 q-26 -14 -30 -46 q26 8 34 46 z"/>
+              <path d="M714 352 q26 -12 32 -44 q-24 10 -34 44 z"/>
+              <path d="M714 352 q-2 -30 4 -50 q10 22 4 50 z" fill="#6E7A42"/>
+            </g>
+            <path d="M700 352 h30 l-5 21 h-20 z" fill="#1C1510"/>
           </svg>
         </div>
         <h2>Lunapark</h2>
