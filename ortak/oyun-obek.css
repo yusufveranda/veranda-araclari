@@ -19,7 +19,7 @@ i,em,.la{font-style:italic}
 button{font:inherit;cursor:pointer;color:inherit}
 img{display:block}
 
-.sarmal{width:min(1680px,96vw);margin:0 auto;padding:18px 0 40px}
+.sarmal{width:96vw;margin:0 auto;padding:18px 0 40px}
 .ust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:6px}
 .eve-don{display:inline-flex;align-items:center;gap:7px;background:var(--vurgu);color:#f6efe0;
   text-decoration:none;font-size:14px;padding:7px 15px 7px 12px;border-radius:20px;
@@ -43,7 +43,7 @@ img{display:block}
 /* iki sütun: solda büyük ızgara (ekran BOYUNA göre ölçeklenir → 16 kutu sığar ama
    büyük kalır), sağda durum + kontrol. böylece alan da dolar, kareler de küçülmez. */
 .sahne{display:flex;align-items:flex-start;gap:clamp(16px,1.8vw,30px);margin-top:16px;flex-wrap:wrap;justify-content:center}
-.oyun-sol{flex:1 1 900px;min-width:min(100%,300px);max-width:calc((100vh - 220px)*1.3333)}
+.oyun-sol{flex:1 1 1200px;min-width:min(100%,300px);max-width:calc((100vh - 210px)*1.3333)}
 .yan{flex:1 1 300px;max-width:400px;display:flex;flex-direction:column;gap:16px;
   background:var(--kart);border:1px solid var(--cizgi);border-radius:16px;padding:20px;box-shadow:3px 5px 0 var(--golge)}
 /* dar/kare ekran: yan panel alta insin, ızgara tam genişlik (normal kaydırma) */
