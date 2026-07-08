@@ -1,0 +1,11 @@
+{
+  "name": "verandle — Türkçe Wordle",
+  "short_name": "verandle",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EFE4CB",
+  "theme_color": "#EFE4CB",
+  "lang": "tr",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

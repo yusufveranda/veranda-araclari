@@ -1,0 +1,11 @@
+{
+  "name": "Sancak — her gün bir bayrak açılır",
+  "short_name": "Sancak",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#B84B2A",
+  "theme_color": "#B84B2A",
+  "lang": "tr",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

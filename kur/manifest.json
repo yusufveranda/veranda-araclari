@@ -1,0 +1,11 @@
+{
+  "name": "Kur — günün kuş eşleştirmesi",
+  "short_name": "Kur",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1ebdd",
+  "theme_color": "#33606b",
+  "lang": "tr",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

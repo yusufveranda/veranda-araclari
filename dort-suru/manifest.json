@@ -1,0 +1,11 @@
+{
+  "name": "Dört Sürü — günün kuş bulmacası",
+  "short_name": "Dört Sürü",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1ebdd",
+  "theme_color": "#33606b",
+  "lang": "tr",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

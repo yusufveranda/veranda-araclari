@@ -1,0 +1,11 @@
+{
+  "name": "Aşı — günün bitki eşleştirmesi",
+  "short_name": "Aşı",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3eee0",
+  "theme_color": "#33614a",
+  "lang": "tr",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

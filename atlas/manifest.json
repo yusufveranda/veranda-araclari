@@ -1,0 +1,11 @@
+{
+  "name": "Atlas — 3×3 coğrafya ızgarası",
+  "short_name": "Atlas",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#2E6F5C",
+  "theme_color": "#2E6F5C",
+  "lang": "tr",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
