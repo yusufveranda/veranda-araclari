@@ -37,7 +37,7 @@
     <h1>Panel</h1>
     <button id="girisBtn">Google ile giriş</button>
   </div>
-  <div class="panel-alt">tüm oyunların bugünkü durumu — kaç kişi oynadı ve sen oynadın mı</div>
+  <div class="panel-alt">tüm oyunlarda bugün senin durumun</div>
   <div class="izgara" id="izgara"></div>
 </div>
 
@@ -85,19 +85,10 @@ OYUNLAR.forEach(function(o, i){
   el.id='kart'+i;
   el.innerHTML =
     '<h2><a href="'+o.klasor+'">'+o.ad+'</a></h2>'+
-    (o.oyun ? '<div class="satir" id="ist'+i+'"><span class="yukleniyor">yükleniyor…</span></div><div class="durum yok" id="sen'+i+'"></div>'
+    (o.oyun ? '<div class="durum yok" id="sen'+i+'"><span class="yukleniyor">yükleniyor…</span></div>'
             : '<div class="not">'+(o.not||'')+'</div>');
   izgara.appendChild(el);
 });
-
-function dagilimYaz(oyun, gun, i){
-  if(!window.VF) return;
-  VF.istatistikOku(oyun, gun).then(function(ist){
-    const el = document.getElementById('ist'+i);
-    if(!el) return;
-    el.innerHTML = '<span>bugün</span><b>'+(ist.toplamCozen||0)+' kişi oynadı</b>';
-  }).catch(function(){});
-}
 
 function senYaz(oyun, gun, i){
   const u = VF.kullanici; const el = document.getElementById('sen'+i);
@@ -125,10 +116,10 @@ VF.kullaniciDinle(function(u){
   girisBtn.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
   OYUNLAR.forEach(function(o,i){
     if(!o.oyun) return;
-    dagilimYaz(o.oyun, o.gun, i);
     senYaz(o.oyun, o.gun, i);
   });
 });
 </script>
+<script src="../ortak/nav-panel.js"></script>
 </body>
 </html>
