@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel — tüm oyunların durumu</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../ortak/stil.css">
+<style>
+  body{background:var(--bg);color:var(--ink)}
+  .panel-wrap{max-width:min(94vw,1700px);margin:0 auto;padding:28px 20px 70px}
+  .panel-ust{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+  .panel-ust h1{font-family:'Playfair Display',serif;font-size:30px;margin:0}
+  .panel-alt{color:var(--muted);font-size:14.5px;margin-bottom:22px}
+  #girisBtn{padding:9px 18px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    font-size:14px;cursor:pointer;font-family:Georgia,serif}
+  #girisBtn:hover{border-color:var(--acc)}
+  .izgara{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .kart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    box-shadow:2px 3px 0 var(--shadow);display:flex;flex-direction:column;gap:8px}
+  .kart h2{font-family:'Playfair Display',serif;font-size:19px;margin:0}
+  .kart h2 a{color:var(--ink);text-decoration:none}
+  .kart h2 a:hover{color:var(--acc)}
+  .kart .aile{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .satir{font-size:14px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+  .satir b{color:var(--ink);font-weight:600}
+  .durum{font-size:14px;padding:7px 10px;border-radius:8px;background:var(--acc-soft);color:var(--acc)}
+  .durum.yok{background:transparent;color:var(--muted);padding-left:0}
+  .yukleniyor{color:var(--muted);font-size:13px}
+  .not{font-size:12.5px;color:var(--muted);font-style:italic}
+  @media(max-width:600px){.izgara{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="panel-wrap">
+  <div class="panel-ust">
+    <h1>Panel</h1>
+    <button id="girisBtn">Google ile giriş</button>
+  </div>
+  <div class="panel-alt">tüm oyunların bugünkü durumu — kaç kişi oynadı ve sen oynadın mı</div>
+  <div class="izgara" id="izgara"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
+<script src="../atlas/bulmacalar.js"></script>
+<script>
+/* ===================== gün hesapları — her oyun ailesi kendi epoch'unu kullanıyor,
+   bkz. LEADERBOARD-PLAN.md. Karanlık Oda/Jenerik hariç: onların gün-indeksi ağır bir
+   veri dosyasının (puzzles.js ~4MB / jenerik.js ~150KB) uzunluğuna göre mod alınıyor,
+   sadece bu sayıyı öğrenmek için o dosyaları burada yüklemek anlamsız — o ikisi için
+   canlı durum yok, sadece oyna bağlantısı var. ===================== */
+function gunSayisi2026(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
+function gunSayisi2026UTC(){ const n=new Date(); return Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(2026,0,1))/86400000); }
+function atlasGun(){ const n=new Date(); const bugun=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate());
+  const ep=Date.parse(ATLAS_BULMACA.epoch+'T00:00:00'); return Math.floor((bugun-ep)/86400000); }
+
+const G2026 = gunSayisi2026(), G2026UTC = gunSayisi2026UTC(), GATLAS = atlasGun();
+
+const OYUNLAR = [
+  {ad:'Harfiyat', klasor:'../wordle/?oyun=harfiyat', oyun:'harfiyat', gun:G2026},
+  {ad:'Taraça',   klasor:'../wordle/?oyun=taraca',   oyun:'taraca',   gun:G2026},
+  {ad:'Avlu',     klasor:'../wordle/?oyun=avlu',     oyun:'avlu',     gun:G2026},
+  {ad:'Çatı',     klasor:'../cati/',                 oyun:'cati',     gun:G2026},
+  {ad:'Şömine',   klasor:'../sicaksoguk/',           oyun:'sicak',    gun:G2026UTC},
+  {ad:'Parsel',   klasor:'../pedantle/',             oyun:'pedantle', gun:G2026UTC},
+  {ad:'Atlas · Dünya',   klasor:'../atlas/',         oyun:'atlas',    gun:GATLAS*2},
+  {ad:'Atlas · Türkiye', klasor:'../atlas/',         oyun:'atlas',    gun:GATLAS*2+1},
+  {ad:'Sancak',   klasor:'../sancak/',               oyun:'sancak',   gun:Math.floor((new Date()-new Date(2026,6,6))/86400000)},
+  {ad:'Takımyıldız', klasor:'../yildiz/',            oyun:'yildiz',   gun:(function(){ const n=new Date(); return Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(2026,6,6))/86400000); })()},
+  {ad:'Dört Sürü', klasor:'../dort-suru/',           oyun:'dortsuru', gun:Math.floor(Date.now()/864e5)%400, not:'gün indeksi 400 bulmacalık havuza göre döngülü'},
+  {ad:'Dört Demet',klasor:'../dort-demet/',          oyun:'dortdemet',gun:Math.floor(Date.now()/864e5)%400, not:'gün indeksi 400 bulmacalık havuza göre döngülü'},
+  {ad:'Kur',       klasor:'../kur/',                 oyun:'kur',      gun:Math.floor(Date.now()/864e5)%400, not:'gün indeksi 400 bulmacalık havuza göre döngülü'},
+  {ad:'Aşı',       klasor:'../asi/',                 oyun:'asi',      gun:Math.floor(Date.now()/864e5)%400, not:'gün indeksi 400 bulmacalık havuza göre döngülü'},
+  {ad:'Karanlık Oda', klasor:'../karanlik-oda/',     oyun:null, not:'canlı durum yakında — bulmaca havuzu büyük, burada yüklenmiyor'},
+  {ad:'Jenerik',   klasor:'../karanlik-oda/jenerik.html', oyun:null, not:'canlı durum yakında — bulmaca havuzu büyük, burada yüklenmiyor'}
+];
+
+const izgara = document.getElementById('izgara');
+OYUNLAR.forEach(function(o, i){
+  const el = document.createElement('div');
+  el.className='kart';
+  el.id='kart'+i;
+  el.innerHTML =
+    '<h2><a href="'+o.klasor+'">'+o.ad+'</a></h2>'+
+    (o.oyun ? '<div class="satir" id="ist'+i+'"><span class="yukleniyor">yükleniyor…</span></div><div class="durum yok" id="sen'+i+'"></div>'
+            : '<div class="not">'+(o.not||'')+'</div>');
+  izgara.appendChild(el);
+});
+
+function dagilimYaz(oyun, gun, i){
+  if(!window.VF) return;
+  VF.istatistikOku(oyun, gun).then(function(ist){
+    const el = document.getElementById('ist'+i);
+    if(!el) return;
+    el.innerHTML = '<span>bugün</span><b>'+(ist.toplamCozen||0)+' kişi oynadı</b>';
+  }).catch(function(){});
+}
+
+function senYaz(oyun, gun, i){
+  const u = VF.kullanici; const el = document.getElementById('sen'+i);
+  if(!el) return;
+  if(!u){ el.textContent='giriş yaparsan burada görünür'; el.classList.add('yok'); return; }
+  firebase.firestore().collection('skorlar').doc(oyun).collection(String(gun)).doc(u.uid).get().then(function(snap){
+    if(snap.exists){
+      const d = snap.data();
+      const parcalar=[];
+      if(d.puan!=null) parcalar.push('puan '+d.puan);
+      if(d.deneme!=null) parcalar.push('deneme '+d.deneme);
+      if(d.cozulen!=null) parcalar.push('çözülen '+d.cozulen);
+      el.textContent = '✓ bugün oynadın'+(parcalar.length?' — '+parcalar.join(', '):'');
+      el.classList.remove('yok');
+    } else {
+      el.textContent = 'bugün henüz oynamadın';
+      el.classList.add('yok');
+    }
+  }).catch(function(){ el.textContent=''; });
+}
+
+const girisBtn = document.getElementById('girisBtn');
+girisBtn.onclick = function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){ console.error(e); }); };
+VF.kullaniciDinle(function(u){
+  girisBtn.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
+  OYUNLAR.forEach(function(o,i){
+    if(!o.oyun) return;
+    dagilimYaz(o.oyun, o.gun, i);
+    senYaz(o.oyun, o.gun, i);
+  });
+});
+</script>
+</body>
+</html>
