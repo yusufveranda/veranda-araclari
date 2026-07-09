@@ -20,6 +20,14 @@
   const provider = new firebase.auth.GoogleAuthProvider();
 
   let kullaniciAdi = null;
+  /* skorYaz, kullaniciAdi Firestore'dan yüklenmeden (ilk auth çözümü tamamlanmadan) asla
+     yazmasın diye — auth.currentUser hemen (yerel önbellekten) dolarken kullaniciAdi'nin
+     kendisi ayrı bir Firestore okumasıyla geliyor; sayfa yeni açılıp oyun zaten bitmiş
+     durumda hemen skorYaz çağrılırsa bu ikisi arasında yarış oluşup ad:null yazılabiliyordu
+     (create-only kural yüzünden sonra düzeltilemiyor). */
+  let ilkAuthCozuldu = false, ilkAuthCozulduResolve;
+  const kullaniciHazir = new Promise(res=>{ ilkAuthCozulduResolve=res; });
+  function authHazirIsaretle(){ if(!ilkAuthCozuldu){ ilkAuthCozuldu=true; ilkAuthCozulduResolve(); } }
 
   /* gizli tuş/URL-parametresi yerine gerçek yetki kontrolü — sadece bu uid'e admin-only
      özellikler (önizleme seçicisi, rastgele-gün debug modu vb.) gösterilir. */
@@ -84,7 +92,7 @@
   /* cb(null) → çıkış yapılmış; cb({uid, ad}) → giriş yapılmış */
   function kullaniciDinle(cb){
     auth.onAuthStateChanged(async (u)=>{
-      if(!u){ kullaniciAdi=null; cb(null); return; }
+      if(!u){ kullaniciAdi=null; authHazirIsaretle(); cb(null); return; }
       try{
         const ref = db.collection('kullanicilar').doc(u.uid);
         const snap = await ref.get();
@@ -95,8 +103,9 @@
         } else {
           kullaniciAdi = snap.data().ad;
         }
+        authHazirIsaretle();
         cb({uid:u.uid, ad:kullaniciAdi});
-      }catch(e){ console.error('VF kullanici hata', e); cb(null); }
+      }catch(e){ console.error('VF kullanici hata', e); authHazirIsaretle(); cb(null); }
     });
   }
 
@@ -110,9 +119,12 @@
 
   /* günün skorunu yaz — create-only, bir gün/bir kullanıcı tek satır (doküman ID = uid) */
   function skorYaz(oyun, gun, veri){
-    const u = auth.currentUser; if(!u) return Promise.resolve();
-    const ref = db.collection('skorlar').doc(oyun).collection(String(gun)).doc(u.uid);
-    return ref.set(Object.assign({ad:kullaniciAdi}, veri, {zaman: firebase.firestore.FieldValue.serverTimestamp()}));
+    if(!auth.currentUser) return Promise.resolve();
+    return kullaniciHazir.then(()=>{
+      const u = auth.currentUser; if(!u) return;   // bu arada çıkış yapıldıysa yazma
+      const ref = db.collection('skorlar').doc(oyun).collection(String(gun)).doc(u.uid);
+      return ref.set(Object.assign({ad:kullaniciAdi}, veri, {zaman: firebase.firestore.FieldValue.serverTimestamp()}));
+    });
   }
 
   function leaderboardOku(oyun, gun){
