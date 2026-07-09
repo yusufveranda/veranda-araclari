@@ -228,7 +228,7 @@ function kazandinAc(){
     '<h3>Günü kazandın! ✨</h3>'+
     '<p>Bugün '+gunToplam()+' yıldız topladın. İstersen kalan bulmacaları da bitir.</p>'+
     '<div class="kazan-alt"><button class="dugme" id="kazanKapat2">devam</button>'+
-      '<button class="baglanti" id="kazanPay">sonucu kopyala</button></div>';
+      '<button class="baglanti" id="kazanPay">📋 kopyala</button></div>';
   perde.hidden=false;
   $('#kazanKapat2').onclick=function(){ perde.hidden=true; };
   $('#kazanPay').onclick=paylas;

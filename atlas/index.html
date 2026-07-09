@@ -230,7 +230,7 @@ body.gomulu .sahne{padding-top:10px}
         <div class="emoji-izgara" id="emoji"></div>
         <div id="sonuc-ozet" style="font-size:14px"></div>
         <div class="dugmeler">
-          <button class="dug" id="paylas">Sonucu kopyala</button>
+          <button class="dug" id="paylas">📋 kopyala</button>
           <button class="dug ikincil" id="skor-gonder">Skoru gönder</button>
         </div>
         <div class="kacan" id="kacan"></div>
@@ -543,7 +543,7 @@ function paylasMetin(){
 $('#paylas').onclick=()=>{
   const t=paylasMetin();
   navigator.clipboard?.writeText(t).then(()=>{
-    $('#paylas').textContent='Kopyalandı ✓'; setTimeout(()=>$('#paylas').textContent='Sonucu kopyala',1600);
+    $('#paylas').textContent='Kopyalandı ✓'; setTimeout(()=>$('#paylas').textContent='📋 kopyala',1600);
   }).catch(()=>{prompt('Kopyala:',t);});
 };
 $('#skor-gonder').onclick=()=>{

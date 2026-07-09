@@ -501,7 +501,7 @@ function endGame(won) {
     : `<b>Banyo bitti.</b> Filmimiz:`) +
     `<div class="reveal"><img src="${IMG}w154${G.film.fp}" alt="${esc(G.film.title)} posteri"><div class="t">${esc(G.film.title)}${G.film.ot && G.film.ot !== G.film.title ? " · " + esc(G.film.ot) : ""}</div></div>` +
     lbHtml +
-    `<div class="share-row"><button class="btn ghost" id="shareBtn">Sonucu Kopyala</button></div>`;
+    `<div class="share-row"><button class="btn ghost" id="shareBtn">📋 kopyala</button></div>`;
   $("shareBtn").addEventListener("click", () => {
     navigator.clipboard.writeText(shareText(won)).then(() => { $("shareBtn").textContent = "Kopyalandı!"; });
   });
