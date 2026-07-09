@@ -926,6 +926,14 @@ function ghCiz(arr){
 }
 function gecenHaftaGetir(){
   if(ghCache){ ghCiz(ghCache); return; }
+  if(window.VF && VF.kullanici){
+    const bas=gecenHaftaBas(), gunler=[]; for(let g=bas; g<bas+7; g++) gunler.push(g);
+    VF.leaderboardOkuAralik('cati', gunler).then(arr=>{
+      ghCache = arr.slice().map(r=>({nick:r.ad, puan:r.puan})).sort((a,b)=>b.puan-a.puan);
+      ghCiz(ghCache);
+    }).catch(()=>{ document.getElementById('gecenHafta').classList.add('gizli'); });
+    return;
+  }
   const q=new URLSearchParams({fn:'list',oyun:'cati',kapsam:'hafta',hbas:String(gecenHaftaBas())});
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{ ghCache=(j&&j.liste)||[]; ghCiz(ghCache); }).catch(()=>{ document.getElementById('gecenHafta').classList.add('gizli'); });
 }

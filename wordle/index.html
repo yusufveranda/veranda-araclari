@@ -925,6 +925,14 @@ function gecenHaftaGetir(){
   document.getElementById('ghAlt').textContent='';
   document.getElementById('ghListe').innerHTML='<div class="gh-sat" style="border:none;color:var(--soluk)">yükleniyor…</div>';
   document.getElementById('ghTum').classList.add('gizli');
+  if(window.VF && VF.kullanici){
+    const bas=gecenHaftaBas(), gunler=[]; for(let g=bas; g<bas+7; g++) gunler.push(g);
+    VF.leaderboardOkuAralik(key, gunler).then(arr=>{
+      arr = arr.slice().map(r=>({nick:r.ad, puan:r.puan})).sort((a,b)=>b.puan-a.puan);
+      ghCache[key]=arr; if(key===lbOyun()) ghCiz(arr);
+    }).catch(()=>{ if(key===lbOyun()) panel.classList.add('gizli'); });
+    return;
+  }
   const q=new URLSearchParams({fn:'list',oyun:key,kapsam:'hafta',hbas:String(gecenHaftaBas())});
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{ const arr=(j&&j.liste)||[]; ghCache[key]=arr; if(key===lbOyun()) ghCiz(arr); }).catch(()=>{ if(key===lbOyun()) panel.classList.add('gizli'); });
 }
