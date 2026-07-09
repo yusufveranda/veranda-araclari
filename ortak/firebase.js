@@ -21,7 +21,10 @@
 
   let kullaniciAdi = null;
 
-  function girisYap(){ return auth.signInWithPopup(provider); }
+  /* signInWithPopup DEĞİL: barındırmanın Cross-Origin-Opener-Policy başlığı popup'ın
+     kapanışını izlemeyi engelliyor (popup açılır açılmaz kapanmış gibi görünüyor).
+     Redirect bu sorunu tamamen atlıyor — sayfa Google'a gidip aynı URL'ye geri döner. */
+  function girisYap(){ return auth.signInWithRedirect(provider); }
   function cikisYap(){ return auth.signOut(); }
 
   const esc = s=>String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
