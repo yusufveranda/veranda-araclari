@@ -152,7 +152,7 @@
     <h1>JENERİK</h1>
     <div class="controls">
       <a class="mini-btn" href="./" title="Günün filmini bul">🎬 film oyunu</a>
-      <button id="randomBtn" class="mini-btn">🎲 rastgele oyuncu</button>
+      <button id="randomBtn" class="mini-btn" hidden>🎲 rastgele oyuncu</button>
       <button id="lbBtn" class="mini-btn">🏆 leaderboard</button>
       <button id="girisDug" class="mini-btn">Google ile giriş</button>
       <select id="actorSelect" aria-label="Önizleme: oyuncu seç"></select>
@@ -510,7 +510,10 @@ const girisDug=$("girisDug"), lbBtn=$("lbBtn"), lbPerde=$("lbPerde"), lbIcerik=$
 girisDug.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
 if(window.VF) VF.kullaniciDinle(u=>{
   girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
-  if(VF.adminMi){ const sel=$("actorSelect"); if(sel) sel.style.display=""; }
+  if(VF.adminMi){
+    const sel=$("actorSelect"); if(sel) sel.style.display="";
+    const rb=$("randomBtn"); if(rb) rb.hidden=false;
+  }
 });
 
 function lbDoldur(){

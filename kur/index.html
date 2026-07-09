@@ -52,7 +52,7 @@
       <a class="ikonbtn" href="../kus/#oyunlar">← oyunlar</a>
       <a class="ikonbtn" href="../kus/">kuş ansiklopedisi</a>
       <button class="ikonbtn" id="temaBtn" type="button">gece</button>
-      <button class="ikonbtn gizli-rast" id="rastBtn" type="button" title="rastgele bulmaca" aria-label="rastgele bulmaca">🎲</button>
+      <button class="ikonbtn" id="rastBtn" type="button" title="rastgele bulmaca — admin" aria-label="rastgele bulmaca" hidden>🎲</button>
       <button class="ikonbtn" id="lbBtn" type="button">🏆 leaderboard</button>
       <button class="ikonbtn" id="girisBtn" type="button">Google ile giriş</button>
     </div>
@@ -322,7 +322,10 @@ ciz();
 /* ===================== giriş / leaderboard ===================== */
 const girisBtn=$("#girisBtn"), lbBtn=$("#lbBtn"), lbPerde=$("#lbPerde"), lbIcerik=$("#lbIcerik"), lbKapat=$("#lbKapat");
 girisBtn.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
-if(window.VF) VF.kullaniciDinle(u=>{ girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş"; });
+if(window.VF) VF.kullaniciDinle(u=>{
+  girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
+  if(VF.adminMi){ const rb=$("#rastBtn"); if(rb) rb.hidden=false; }
+});
 
 function lbBarCiz(dagilim){
   const anahtarlar=["0","1","2","X"];

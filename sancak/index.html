@@ -193,7 +193,7 @@ body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar,body.gomulu .g
 
       <div class="oyun-yan">
         <div class="mod-bar">
-          <button type="button" id="rastgeleBtn" class="rastgele">🎲 rastgele bayrak</button>
+          <button type="button" id="rastgeleBtn" class="rastgele" hidden>🎲 rastgele bayrak</button>
           <button type="button" id="gunlukBtn" class="gizli">↩ bugünkü bayrak</button>
           <button type="button" id="lbBtn" class="lb-btn">🏆 leaderboard</button>
         </div>
@@ -552,7 +552,7 @@ function sonucCiz(){
                       : '<span class="bar no">—</span>';
   const dugmeler = (mod==="gunluk")
     ? '<button class="pay" id="payBtn">sonucu paylaş</button>'+
-      '<button class="ist" id="rastgeleSonBtn">🎲 rastgele oyna</button>'+
+      ((window.VF && VF.adminMi) ? '<button class="ist" id="rastgeleSonBtn">🎲 rastgele oyna</button>' : '')+
       '<a class="geridon" href="../">başka oyun →</a>'
     : '<button class="pay" id="yeniRastgeleBtn">🎲 yeni rastgele</button>'+
       '<button class="ist" id="gunlukeDonBtn">↩ bugünkü bayrak</button>';
@@ -572,7 +572,7 @@ function sonucCiz(){
       '<div class="dugmeler">'+dugmeler+'</div>'+
       istat+
     '</div>';
-  if(mod==="gunluk"){ $("#payBtn").onclick=paylas; $("#rastgeleSonBtn").onclick=rastgeleBaslat; }
+  if(mod==="gunluk"){ $("#payBtn").onclick=paylas; const rsb=$("#rastgeleSonBtn"); if(rsb) rsb.onclick=rastgeleBaslat; }
   else { $("#yeniRastgeleBtn").onclick=rastgeleBaslat; $("#gunlukeDonBtn").onclick=gunlukBaslat; }
 }
 function paylas(){
@@ -663,6 +663,7 @@ const girisDug=$("#girisDug"), lbBtn=$("#lbBtn"), lbPerde=$("#lbPerde"), lbIceri
 girisDug.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
 if(window.VF) VF.kullaniciDinle(u=>{
   girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
+  if(VF.adminMi){ const rb=$("#rastgeleBtn"); if(rb) rb.hidden=false; }
 });
 
 function barCiz(dagilim, toplam){

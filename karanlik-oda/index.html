@@ -200,7 +200,7 @@
     <div class="controls">
       <a class="mini-btn" href="jenerik.html" title="Oyuncuyu ver, filmlerini say">🎭 jenerik</a>
       <button id="todayBtn" class="mini-btn" style="display:none">bugünün filmi</button>
-      <button id="randomBtn" class="mini-btn">🎲 rastgele film</button>
+      <button id="randomBtn" class="mini-btn" hidden>🎲 rastgele film</button>
       <button id="lbBtn" class="mini-btn">🏆 leaderboard</button>
       <button id="girisDug" class="mini-btn">Google ile giriş</button>
       <select id="filmSelect" aria-label="Önizleme: gün seç"></select>
@@ -659,7 +659,10 @@ const girisDug=$("girisDug"), lbBtn=$("lbBtn"), lbPerde=$("lbPerde"), lbIcerik=$
 girisDug.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
 if(window.VF) VF.kullaniciDinle(u=>{
   girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
-  if(VF.adminMi){ const sel=$("filmSelect"); if(sel) sel.style.display=""; }
+  if(VF.adminMi){
+    const sel=$("filmSelect"); if(sel) sel.style.display="";
+    const rb=$("randomBtn"); if(rb) rb.hidden=false;
+  }
 });
 
 function barCiz(dagilim){

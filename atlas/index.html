@@ -188,7 +188,7 @@ body.gomulu .sahne{padding-top:10px}
       <button id="mod-dunya" class="acik" data-mod="dunya">🌍 Dünya</button>
       <button id="mod-turkiye" data-mod="turkiye">🇹🇷 Türkiye</button>
     </div>
-    <button class="ust-dug" id="rastgele" title="rastgele bir bulmaca dene">🎲 Rastgele</button>
+    <button class="ust-dug" id="rastgele" title="rastgele bir bulmaca dene — admin" hidden>🎲 Rastgele</button>
     <button class="ust-dug" id="bugun" hidden>Bugüne dön</button>
     <button class="ust-dug" id="girisBtn">Google ile giriş</button>
     <button class="gece-dug" id="gece" title="gece / gündüz">🌙</button>
@@ -706,6 +706,7 @@ metaBildir();
   VF.kullaniciDinle(function(u){
     b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
+    if(VF.adminMi){ var rb=document.getElementById('rastgele'); if(rb) rb.hidden=false; }
   });
 })();
 </script>
