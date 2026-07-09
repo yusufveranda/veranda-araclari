@@ -493,8 +493,7 @@ function pickRandom(){
   }
   const today = todayIndex();
   const sel = $("actorSelect");
-  const show = new URLSearchParams(location.search).get("preview") === "1";
-  if (!show) sel.style.display = "none";
+  sel.style.display = "none";   // varsayılan gizli; sadece admin uid girişinde açılır (bkz. kullaniciDinle altta)
   ACTORS.forEach((a,i) => {
     const o = document.createElement("option");
     o.value = String(i);
@@ -509,7 +508,10 @@ function pickRandom(){
 /* ===================== giriş / leaderboard ===================== */
 const girisDug=$("girisDug"), lbBtn=$("lbBtn"), lbPerde=$("lbPerde"), lbIcerik=$("lbIcerik"), lbKapat=$("lbKapat");
 girisDug.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
-if(window.VF) VF.kullaniciDinle(u=>{ girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş"; });
+if(window.VF) VF.kullaniciDinle(u=>{
+  girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
+  if(VF.adminMi){ const sel=$("actorSelect"); if(sel) sel.style.display=""; }
+});
 
 function lbDoldur(){
   const gunIndex = todayIndex();

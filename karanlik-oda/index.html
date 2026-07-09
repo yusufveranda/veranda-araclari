@@ -632,10 +632,9 @@ function startGame(index, random = false) {
     return;
   }
   const today = todayIndex();
-  // Önizleme seçici yayında gizli; ?preview=1 ile açılır
+  // Önizleme seçici varsayılan gizli; sadece admin uid girişinde açılır (bkz. kullaniciDinle altta)
   const sel = $("filmSelect");
-  const show = new URLSearchParams(location.search).get("preview") === "1";
-  if (!show) sel.style.display = "none";
+  sel.style.display = "none";
   window.PUZZLES.forEach((p,i) => {
     const o = document.createElement("option");
     o.value = String(i);
@@ -658,7 +657,10 @@ function startGame(index, random = false) {
 /* ===================== giriş / leaderboard ===================== */
 const girisDug=$("girisDug"), lbBtn=$("lbBtn"), lbPerde=$("lbPerde"), lbIcerik=$("lbIcerik"), lbKapat=$("lbKapat");
 girisDug.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
-if(window.VF) VF.kullaniciDinle(u=>{ girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş"; });
+if(window.VF) VF.kullaniciDinle(u=>{
+  girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
+  if(VF.adminMi){ const sel=$("filmSelect"); if(sel) sel.style.display=""; }
+});
 
 function barCiz(dagilim){
   const anahtarlar=["1","2","3","4","5","X"];

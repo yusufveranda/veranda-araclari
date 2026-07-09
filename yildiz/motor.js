@@ -300,9 +300,6 @@ function baslat(){
   $('#slaytIleri').onclick=function(){ if(slaytNo<SLAYT.length-1){slaytNo++;slaytCiz();} else girisKapat(); };
   $('#girisPerde').addEventListener('click',function(e){ if(e.target===this) girisKapat(); });
   var kp=$('#kazanPerde'); if(kp) kp.addEventListener('click',function(e){ if(e.target===this) kp.hidden=true; });
-  /* gizli debug tuşu: ?dev=1 ile aç (sonra bu tarayıcıda kalıcı). Normal kullanıcı görmez. */
-  if(new URLSearchParams(location.search).get('dev')==='1'){ try{ localStorage.setItem('yildiz:dev','1'); }catch(e){} }
-  if(localStorage.getItem('yildiz:dev')==='1'){ var rb=$('#rastgeleBtn'); if(rb){ rb.hidden=false; rb.onclick=rastgeleGun; } }
   if(!localStorage.getItem('yildiz:giris')) girisAc();
 }
 
@@ -327,5 +324,5 @@ kayit({ id:'karanlikoda', ad:'Karanlık Oda', aile:'film', mod:'hiz', len:1310,
 kayit({ id:'cati', ad:'Çatı', aile:'kelime', mod:'sayac', len:150,
   alt:'5 kelime + gizli tema', src:function(i){ return '../cati/?meta=1&bulmaca='+i; } });
 
-window.YILDIZ={ kayit:kayit, baslat:baslat, toast:toast, gun:function(){ return GUN; }, toplam:function(){ return gunToplam(); } };
+window.YILDIZ={ kayit:kayit, baslat:baslat, toast:toast, gun:function(){ return GUN; }, toplam:function(){ return gunToplam(); }, rastgeleGun:rastgeleGun };
 })();

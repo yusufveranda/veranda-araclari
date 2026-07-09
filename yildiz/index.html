@@ -116,7 +116,10 @@ YILDIZ.baslat();
   var $=function(s){ return document.querySelector(s); };
   var girisBtn=$("#girisBtn"), lbBtn=$("#lbBtn"), lbPerde=$("#lbPerde"), lbIcerik=$("#lbIcerik"), lbKapat=$("#lbKapat");
   girisBtn.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){ console.error(e); }); };
-  if(window.VF) VF.kullaniciDinle(function(u){ girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş"; });
+  if(window.VF) VF.kullaniciDinle(function(u){
+    girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
+    if(VF.adminMi){ var rb=$("#rastgeleBtn"); if(rb){ rb.hidden=false; rb.onclick=YILDIZ.rastgeleGun; } }
+  });
 
   function lbDoldur(){
     var gun = YILDIZ.gun();
