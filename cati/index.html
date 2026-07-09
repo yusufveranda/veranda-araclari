@@ -756,6 +756,21 @@ function haftaAraligiYazi(){ const b=haftaBas(), f=g=>gunTarih(g).toLocaleDateSt
 function nickAl(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function kacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
+function lbHistogramHTML(ist){
+  if(!window.VF || !VF.kullanici) return '';
+  const anahtarlar=Array.from({length:6},(_,i)=>String(i));
+  const dagilim=(ist&&ist.dagilim)||{};
+  const maxSay=Math.max(1, ...anahtarlar.map(k=>dagilim[k]||0));
+  const cubuklar=anahtarlar.map(k=>{
+    const say=dagilim[k]||0, genislik=Math.round((say/maxSay)*140)+3;
+    return '<div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--soluk);margin:4px 0">'+
+      '<span style="width:18px;text-align:right">'+k+'</span>'+
+      '<span style="height:14px;background:var(--kirmizi);border-radius:3px;min-width:3px;width:'+genislik+'px"></span>'+
+      '<span style="width:26px">'+say+'</span></div>';
+  }).join('');
+  return '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--kutu-cizgi);font-size:13px;color:var(--soluk)">'+
+    'toplam '+(ist.toplamCozen||0)+' kişi oynadı<br>'+cubuklar+'</div>';
+}
 let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){
   // sonucHazir şart: kelimeler bitse de tema aşaması sürerken skor GÖNDERME —
@@ -767,6 +782,7 @@ function lbGonder(){
     if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
     const pr=VF.skorYaz('cati', oyunGun, {puan:s.puan100, cozulen:s.cozulen, deneme:s.toplamDeneme})
       .then(()=>({ok:true})).catch(()=>({ok:true}));
+    VF.istatistikArttir('cati', oyunGun, String(s.cozulen));
     lbGonderildi[key]=pr; return pr;
   }
   const nick=nickAl(); if(!nick) return Promise.resolve({yokNick:true});
@@ -802,13 +818,13 @@ function lbGoster(kapsam){
   liderEl.textContent=''; listeEl.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   if(window.VF && VF.kullanici){
     if(kapsam!=='gun'){ listeEl.innerHTML='<div class="lb-bos">haftalık/tüm-zamanlar görünümü Google hesaplarında yakında geliyor — şimdilik "bugün" sekmesine bak.</div>'; return; }
-    VF.leaderboardOku('cati', oyunGun).then(arr=>{
+    Promise.all([ VF.leaderboardOku('cati', oyunGun), VF.istatistikOku('cati', oyunGun) ]).then(([arr, ist])=>{
       if(kapsam!==lbKapsam) return;
       arr = arr.slice().sort((a,b)=>b.puan-a.puan || a.deneme-b.deneme);
-      if(!arr.length){ listeEl.innerHTML='<div class="lb-bos">henüz kimse yok — ilk sen ol</div>'; return; }
-      listeEl.innerHTML=arr.map((r,i)=>
+      const liste = arr.length ? arr.map((r,i)=>
         `<div class="lb-sat${(r.ad===VF.ad)?' ben':''}"><span class="lb-sira">${i+1}</span><span class="lb-nick">${kacis(r.ad||'isimsiz')}</span><span class="lb-puan">${r.puan} <small>puan</small></span></div>`
-      ).join('');
+      ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
+      listeEl.innerHTML = liste + lbHistogramHTML(ist);
     }).catch(()=>{ if(kapsam===lbKapsam) listeEl.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
     return;
   }
@@ -1198,6 +1214,7 @@ setTimeout(vecYukle, 2500);   // tema eşleşmesi için vektörleri arkadan geti
   b.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
   VF.kullaniciDinle(function(u){
     b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
+    document.getElementById('lbEkleBtn').style.display = u ? 'none' : '';
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
   });
 })();
