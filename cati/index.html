@@ -774,9 +774,9 @@ function barCubuklariHTML(dagilim, anahtarlar){
 function lbHistogramHTML(ist){ return ''; }
 /* bir kelime bitince o kelimeye özel küçük bir popup: kaç kişi kaçıncı denemede çözmüş */
 function kelimeIstatPopup(b){
-  if(!window.VF || !VF.kullanici) return;
+  if(!window.VF) return;
   const statOyun='w_cati_'+b.uz, bucket=b.kazandi?String(b.gecmis.length):'X';
-  VF.istatistikArttir(statOyun, oyunGun, bucket);
+  if(VF.kullanici) VF.istatistikArttir(statOyun, oyunGun, bucket);   // yazma girişli gerektirir, okuma herkese açık
   VF.istatistikOku(statOyun, oyunGun).then(ist=>{
     const anahtarlar=Array.from({length:b.maxSatir},(_,i)=>String(i+1)).concat(['X']);
     const kapak=document.createElement('div');
