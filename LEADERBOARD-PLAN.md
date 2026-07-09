@@ -245,4 +245,6 @@ Yukarıdaki "diğer bekleyen fikirler" listesindeki ilk 3 madde bitti:
 
 Hepsi gerçek Google oturumuyla (Yusuf Verandle hesabı) uçtan uca test edildi, konsol hatasız.
 
-**Hâlâ karar bekleyen**: haftalık/tüm-zamanlar sıralaması — kullanıcı "gün, hafta ve ay sıralaması yeterli gibi" dedi (üç ayrı zaman penceresi: günlük zaten var, haftalık zaten vardı eski sistemde, aylık yeni eklenecek) — min-oyun-eşiği veya çoklu-tablo YOK, sadece üç granülerlik. Henüz kodlanmadı.
+## Gün/hafta/ay leaderboard (2026-07-09) — tamamlandı
+
+Kullanıcının kararı ("gün, hafta ve ay sıralaması yeterli gibi") kodlandı. `VF.leaderboardOkuAralik(oyun, gunListesi)` eklendi (`ortak/firebase.js`) — periyot başından bugüne kadar günleri paralel okuyup kişi bazında `puan`+`deneme` toplar. Harfiyat/Taraça/Avlu (wordle), Çatı, Şömine, Parsel'de "tüm zamanlar" sekmesi "bu ay"a çevrildi; ortalama her iki sekmede de (periyot başından bugüne geçen gün sayısı) ile bölünüyor — az oynayıp yüksek ortalama tutturma sorunu (min-eşik icat etmeden) kendiliğinden azalıyor. Eski Sheets/girişsiz yol dokunulmadı (yeni "ay" sekmesi eskisi gibi `kapsam=tum` sorgusuna eşleniyor). Gerçek oturumla 5 oyunda test edildi. Atlas/Sancak/Karanlık Oda/Jenerik/Dört Sürü/Kur/Dört Demet/Aşı/Takımyıldız'da zaten hafta/ay sekmesi yok (sadece "bugün"), kapsam dışı bırakıldı.
