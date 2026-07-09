@@ -14,8 +14,7 @@
     {ad:'Bitki Bilimi',   href:B+'bitki/'},
     {ad:'Kuş Bilimi',     href:B+'kus/'},
     {ad:'Veranda Band',   href:B+'nota/'},
-    {ad:'Bitmeyen Şiir',  href:B+'siir-defteri/'},
-    {ad:'Kara Kaplı 🔒',  href:B+'karakapli/'}
+    {ad:'Bitmeyen Şiir',  href:B+'siir-defteri/'}
   ];
 
   const OYUNLAR = [
