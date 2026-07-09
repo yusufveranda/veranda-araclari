@@ -1,6 +1,7 @@
 // bayrak.js — "bu kelime olmalı" bildirimi
 // Oyunlar bilinmeyen kelime mesajı gösterdikten sonra kelimeBayrak(kelime, oyun, gun)
-// çağırır; #mesaj kutusuna bir 🚩 düğmesi ekler. Basılınca kelime Google Sheets'teki
+// çağırır; #mesaj kutusuna bir 🚩 düğmesi ekler. Basılınca kelime, girişliyse Firestore'a
+// (bayraklar/{oyun}_{kelime}, VF.bayrakYaz), girişli değilse eskisi gibi Google Sheets'teki
 // "bayraklar" sayfasına yazılır (leaderboard ile aynı Apps Script, fn=flag).
 (function(){
   const URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeNH7-M9udtLovpo7Wh_vdTTz9sc31ccdZ050IJdgqt2/exec';
@@ -24,15 +25,20 @@
     else b.textContent='🚩 bu kelime olmalı';
     b.onclick=function(){
       b.disabled=true; b.textContent='🚩 gönderiliyor…';
+      const bitti=function(j){
+        if(j&&j.ok){ b.textContent='🚩 bildirildi ✓';
+          const g=eski(); g[anah]=1; try{ localStorage.setItem(LS,JSON.stringify(g)); }catch(e){} }
+        else { b.textContent='🚩 olmadı — tekrar dene'; b.disabled=false; }
+      };
+      if(window.VF && VF.kullanici){
+        VF.bayrakYaz(oyun, k, gun).then(bitti).catch(()=>bitti({ok:false}));
+        return;
+      }
       fetch(URL+'?fn=flag&oyun='+encodeURIComponent(oyun)+'&kelime='+encodeURIComponent(k)+
             (gun!==''&&gun!=null?'&gun='+encodeURIComponent(gun):''))
         .then(r=>r.json())
-        .then(j=>{
-          if(j&&j.ok){ b.textContent='🚩 bildirildi ✓';
-            const g=eski(); g[anah]=1; try{ localStorage.setItem(LS,JSON.stringify(g)); }catch(e){} }
-          else { b.textContent='🚩 olmadı — tekrar dene'; b.disabled=false; }
-        })
-        .catch(()=>{ b.textContent='🚩 olmadı — tekrar dene'; b.disabled=false; });
+        .then(bitti)
+        .catch(()=>bitti({ok:false}));
     };
     el.appendChild(b);
   };

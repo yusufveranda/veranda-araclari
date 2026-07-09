@@ -139,6 +139,20 @@
       .then(s=>s.exists?s.data():{dagilim:{},toplamCozen:0});
   }
 
+  /* "bu kelime olmalı" bayrağı — girişliyse Firestore'a (bayraklar/{oyun}_{kelime}),
+     aynı oyun+kelime tekrar bildirilirse sayaç +1 (dedup, satır çoğalmaz — Sheets'teki
+     davranışın aynısı). Girişli değilse çağrılmaz, bayrak.js eski Sheets yoluna düşer. */
+  function bayrakYaz(oyun, kelime, gun){
+    const u = auth.currentUser; if(!u) return Promise.resolve({ok:false});
+    const k = String(kelime||'').trim().toLowerCase(); if(!k) return Promise.resolve({ok:false});
+    const ref = db.collection('bayraklar').doc(oyun+'_'+k);
+    return db.runTransaction(async (t)=>{
+      const snap = await t.get(ref);
+      if(!snap.exists) t.set(ref, {sayi:1, ilkGun: (gun!=null && gun!=='') ? gun : null});
+      else t.update(ref, {sayi:(snap.data().sayi||0)+1});
+    }).then(()=>({ok:true})).catch(e=>{ console.error('VF bayrak hata', e); return {ok:false}; });
+  }
+
   /* ===================== eski Sheets verisinin göçü (yalnız verandle ailesi + Atlas) ===================== */
   /* canlı sorgu — bulk export YOK; kullanıcı nick yazdığı an Apps Script'e sorulur */
   const GOC_LB_URL = 'https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeNH7-M9udtLovpo7Wh_vdTTz9sc31ccdZ050IJdgqt2/exec';
@@ -188,7 +202,7 @@
 
   window.VF = {
     girisYap, cikisYap, kullaniciDinle, adDegistir, gocKontrolEt, eskiOyuncuBanner,
-    skorYaz, leaderboardOku, istatistikArttir, istatistikOku,
+    skorYaz, leaderboardOku, istatistikArttir, istatistikOku, bayrakYaz,
     get kullanici(){ return auth.currentUser; },
     get ad(){ return kullaniciAdi; }
   };
