@@ -363,7 +363,7 @@
   <section class="grup">
     <h2 class="grup-bas">Defterler</h2>
     <div class="kartlar">
-      <a class="kart kart-kilitli" href="karakapli/">
+      <a class="kart kart-kilitli" href="karakapli/" id="karakapliKart" hidden>
         <div class="kart-gorsel"><img src="gorsel/kara-kapli.jpg" alt="kilitli defter" loading="lazy"></div>
         <h2>Kara Kaplı<span class="yakinda kilit-rozet">kilitli</span></h2>
         <p>Gizli defterin.</p>
@@ -575,6 +575,16 @@
     b.classList.add(acik ? 'lamba-kapali' : 'lamba-acik');
   });
 })();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="ortak/firebase.js"></script>
+<script>
+/* Kara Kaplı tamamen özel — ana sayfada bile sadece admin girişinde görünür. */
+if(window.VF) VF.kullaniciDinle(function(u){
+  if(VF.adminMi){ var kk=document.getElementById('karakapliKart'); if(kk) kk.hidden=false; }
+});
 </script>
 <script src="ortak/nav-panel.js"></script>
 </body>
