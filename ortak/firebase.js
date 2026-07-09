@@ -120,6 +120,25 @@
       .then(qs=>{ const arr=[]; qs.forEach(d=>arr.push(d.data())); return arr; });
   }
 
+  /* haftalık/aylık leaderboard — Firestore günleri listeleyemediği için verilen gün
+     numaralarını (periyot başından bugüne) paralel okuyup kişi bazında (ad alanına göre)
+     toplar. Dönen satır: {ad, puan, deneme (ikisi de periyot toplamı), oyunSayisi
+     (kaç farklı günde oynamış)} — oyuna göre puan (yüksek iyi) ya da deneme (düşük iyi)
+     kullanılır. */
+  function leaderboardOkuAralik(oyun, gunListesi){
+    return Promise.all(gunListesi.map(g=>leaderboardOku(oyun, g))).then(gunler=>{
+      const kisi = {};
+      gunler.forEach(gun=>gun.forEach(k=>{
+        const ad = k.ad || 'isimsiz';
+        if(!kisi[ad]) kisi[ad] = {ad, puan:0, deneme:0, oyunSayisi:0};
+        kisi[ad].puan += (k.puan||0);
+        kisi[ad].deneme += (k.deneme||0);
+        kisi[ad].oyunSayisi += 1;
+      }));
+      return Object.values(kisi);
+    });
+  }
+
   /* günlük deneme-dağılımı sayaçları — client-side transaction, Cloud Function/Blaze gerekmez.
      bucket: kazandıysa deneme sayısı (1..MAKS), kaybettiyse "X" */
   function istatistikArttir(oyun, gun, bucket){
@@ -208,7 +227,7 @@
 
   window.VF = {
     girisYap, cikisYap, kullaniciDinle, adDegistir, gocKontrolEt, eskiOyuncuBanner,
-    skorYaz, leaderboardOku, istatistikArttir, istatistikOku, bayrakYaz,
+    skorYaz, leaderboardOku, leaderboardOkuAralik, istatistikArttir, istatistikOku, bayrakYaz,
     get kullanici(){ return auth.currentUser; },
     get ad(){ return kullaniciAdi; },
     get adminMi(){ return !!(auth.currentUser && auth.currentUser.uid===ADMIN_UID); }

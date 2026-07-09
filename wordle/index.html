@@ -533,7 +533,7 @@ body{transition:background .4s,color .4s}
     <div class="lb-tablar" id="lbTablar">
       <button data-k="gun" class="secili">bugün</button>
       <button data-k="hafta">bu hafta</button>
-      <button data-k="tum">tüm zamanlar</button>
+      <button data-k="ay">bu ay</button>
     </div>
     <div class="lb-ekle-sar"><button class="lb-ekle" id="lbEkleBtn">＋ beni tabloya ekle</button><span class="lb-ekle-not" id="lbEkleNot"></span></div>
     <div class="lb-geri" id="lbGeri"></div>
@@ -808,6 +808,7 @@ function lbOyun(){ return oyun==='iskelime'?'taraca':oyun==='anlamca'?'avlu':oyu
 function oyunAdi(){ return oyun==='iskelime'?'taraça':oyun==='anlamca'?'avlu':'harfiyat'; }
 function lbDestekli(){ return oyun==='iskelime'||oyun==='anlamca'||oyun==='harfiyat'; }   // verandle'ın üç oyunu da
 function haftaBas(){ const g=oyunGun; return g-(((g-1)%7)+7)%7; }   // haftanın başı = en son Cuma (gün no). hafta: Cuma 00:00 → Cuma 00:00 · sabit güne göre
+function ayBas(){ const n=new Date(); return Math.floor((new Date(n.getFullYear(),n.getMonth(),1)-new Date(2026,0,1))/86400000); }
 function gunTarih(g){ const d=new Date(2026,0,1); d.setDate(d.getDate()+g); return d; }
 function haftaAraligiYazi(){ const b=haftaBas(), f=g=>gunTarih(g).toLocaleDateString('tr-TR',{day:'numeric',month:'long'}); return 'Cuma '+f(b)+' → '+f(b+6); }
 function nickAl(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
@@ -887,7 +888,7 @@ function lbAc(){
 function lbKapat(){ document.getElementById('lbModal').classList.add('gizli'); lbTimerDur(); }
 function lbGeriCiz(){   // bugün → yeni kelimelere; bu hafta → hafta kapanışına
   const el=document.getElementById('lbGeri'); if(!el) return;
-  if(lbKapsam==='tum'){ el.textContent=''; return; }
+  if(lbKapsam==='ay'){ el.textContent=''; return; }
   const hedef=(lbKapsam==='gun'?gunTarih(gunSayisi()+1):gunTarih(haftaBas()+7)).getTime();
   let s=Math.max(0,Math.floor((hedef-Date.now())/1000));
   const g=Math.floor(s/86400); s-=g*86400; const sa=Math.floor(s/3600); s-=sa*3600; const dk=Math.floor(s/60), sn=s-dk*60;
@@ -952,30 +953,47 @@ function lbGoster(kapsam){
   const listeEl=document.getElementById('lbListe'), liderEl=document.getElementById('lbLider');
   liderEl.textContent=''; listeEl.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   if(window.VF && VF.kullanici){
-    if(kapsam!=='gun'){ listeEl.innerHTML='<div class="lb-bos">haftalık/tüm-zamanlar görünümü Google hesaplarında yakında geliyor — şimdilik "bugün" sekmesine bak.</div>'; return; }
-    Promise.all([ VF.leaderboardOku(lbOyun(), oyunGun), VF.istatistikOku(lbOyun(), oyunGun) ]).then(([arr, ist])=>{
+    if(kapsam==='gun'){
+      Promise.all([ VF.leaderboardOku(lbOyun(), oyunGun), VF.istatistikOku(lbOyun(), oyunGun) ]).then(([arr, ist])=>{
+        if(kapsam!==lbKapsam) return;
+        arr = arr.slice().sort((a,b)=>b.puan-a.puan || a.deneme-b.deneme);
+        const liste = arr.length ? arr.map((r,i)=>
+          `<div class="lb-sat${(r.ad===VF.ad)?' ben':''}"><span class="lb-sira">${i+1}</span><span class="lb-nick">${kacis(r.ad||'isimsiz')}</span><span class="lb-puan">${r.puan} <small>puan</small></span></div>`
+        ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
+        listeEl.innerHTML = liste + lbHistogramHTML(ist);
+      }).catch(()=>{ if(kapsam===lbKapsam) listeEl.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
+      return;
+    }
+    const periyotBas = kapsam==='hafta' ? haftaBas() : ayBas();
+    const gunler2=[]; for(let g=periyotBas; g<=oyunGun; g++) gunler2.push(g);
+    const gecen2 = Math.max(1, oyunGun-periyotBas+1);
+    VF.leaderboardOkuAralik(lbOyun(), gunler2).then(arr=>{
       if(kapsam!==lbKapsam) return;
-      arr = arr.slice().sort((a,b)=>b.puan-a.puan || a.deneme-b.deneme);
-      const liste = arr.length ? arr.map((r,i)=>
-        `<div class="lb-sat${(r.ad===VF.ad)?' ben':''}"><span class="lb-sira">${i+1}</span><span class="lb-nick">${kacis(r.ad||'isimsiz')}</span><span class="lb-puan">${r.puan} <small>puan</small></span></div>`
+      arr = arr.slice();
+      arr.forEach(r=>{ r._gun=r.oyunSayisi; r._ort=r.puan/gecen2; });
+      arr.sort((a,b)=>b._ort-a._ort || b._gun-a._gun);
+      let ust = kapsam==='hafta' ? '<div class="lb-aralik">'+haftaAraligiYazi()+'</div>' : '';
+      if(arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'bu ayın')+' lideri: <b>'+kacis(arr[0].ad)+'</b> · '+arr[0]._ort.toFixed(1)+' ort';
+      liderEl.innerHTML=ust;
+      listeEl.innerHTML = arr.length ? arr.map((r,i)=>
+        `<div class="lb-sat${(r.ad===VF.ad)?' ben':''}"><span class="lb-sira">${i+1}</span><span class="lb-nick">${kacis(r.ad||'isimsiz')}</span><span class="lb-puan">${r._ort.toFixed(1)} <small>ort · ${r._gun} gün</small></span></div>`
       ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
-      listeEl.innerHTML = liste + lbHistogramHTML(ist);
     }).catch(()=>{ if(kapsam===lbKapsam) listeEl.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
     return;
   }
-  const q=new URLSearchParams({fn:'list',oyun:lbOyun(),kapsam});
+  const q=new URLSearchParams({fn:'list',oyun:lbOyun(),kapsam: kapsam==='ay'?'tum':kapsam});
   if(kapsam==='gun') q.set('gun',String(oyunGun));
   if(kapsam==='hafta') q.set('hbas',String(haftaBas()));
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{
     if(kapsam!==lbKapsam) return;   // arada sekme değiştiyse eski cevabı yazma
     const ben=nickAl().toLowerCase(), arr=(j&&j.liste)||[];
-    if(kapsam!=='gun'){   // bu hafta: toplam / o ana dek geçen gün (1..7, kaçırılan geçmiş gün=0) · tüm zamanlar: toplam / oynanan gün
+    if(kapsam!=='gun'){   // bu hafta: toplam / o ana dek geçen gün (1..7, kaçırılan geçmiş gün=0) · bu ay: toplam / oynanan gün
       const gecen=Math.max(1, oyunGun-haftaBas()+1);
       arr.forEach(r=>{ r._gun=r.oyunSayisi||0; r._ort = kapsam==='hafta' ? r.puan/gecen : (r._gun?r.puan/r._gun:0); });
       arr.sort((a,b)=> b._ort-a._ort || b._gun-a._gun);
     }
     let ust = kapsam==='hafta' ? '<div class="lb-aralik">'+haftaAraligiYazi()+'</div>' : '';
-    if(kapsam!=='gun' && arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'tüm zamanların')+' lideri: <b>'+kacis(arr[0].nick)+'</b> · '+arr[0]._ort.toFixed(1)+' ort';
+    if(kapsam!=='gun' && arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'bu ayın')+' lideri: <b>'+kacis(arr[0].nick)+'</b> · '+arr[0]._ort.toFixed(1)+' ort';
     liderEl.innerHTML=ust;
     const liste = arr.length ? arr.map((r,i)=>{
       const benMi=String(r.nick).toLowerCase()===ben;

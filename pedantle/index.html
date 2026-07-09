@@ -353,7 +353,7 @@ footer a{color:var(--soluk)}
     <div class="lb-tablar" id="skTablar">
       <button data-k="gun" class="secili">bugün</button>
       <button data-k="hafta">bu hafta</button>
-      <button data-k="tum">tüm zamanlar</button>
+      <button data-k="ay">bu ay</button>
     </div>
     <button class="lb-ekle" id="skEkleBtn">＋ beni tabloya ekle</button>
     <span class="lb-ekle-not" id="skEkleNot"></span>
@@ -696,6 +696,7 @@ const LB_URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeN
 function lbNick(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function lbGun(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
 function lbHaftaBas(){ const g=S.gunNo; return g-(((g-1)%7)+7)%7; }   // sabitlenmiş güne göre (madde ile aynı takvim)
+function lbAyBas(){ const n=new Date(); return Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),1)-Date.UTC(2026,0,1))/86400000); }
 function lbGunTarih(g){ const d=new Date(2026,0,1); d.setDate(d.getDate()+g); return d; }
 function lbHaftaAralik(){ const b=lbHaftaBas(), f=g=>lbGunTarih(g).toLocaleDateString('tr-TR',{day:'numeric',month:'long'}); return 'Cuma '+f(b)+' → '+f(b+6); }
 function lbKacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -736,18 +737,35 @@ function skGoster(kapsam){ skKapsam=kapsam;
   document.querySelectorAll('#skTablar button').forEach(b=>b.classList.toggle('secili',b.dataset.k===kapsam));
   skGeriCiz(); const L=$('skListe'),Li=$('skLider'); Li.textContent=''; L.innerHTML='<div class="lb-bos">yükleniyor…</div>';
   if(window.VF && VF.kullanici){
-    if(kapsam!=='gun'){ L.innerHTML='<div class="lb-bos">haftalık/tüm-zamanlar görünümü Google hesaplarında yakında geliyor — şimdilik "bugün" sekmesine bak.</div>'; return; }
-    Promise.all([ VF.leaderboardOku('pedantle', S.gunNo), VF.istatistikOku('pedantle', S.gunNo) ]).then(([arr, ist])=>{
+    if(kapsam==='gun'){
+      Promise.all([ VF.leaderboardOku('pedantle', S.gunNo), VF.istatistikOku('pedantle', S.gunNo) ]).then(([arr, ist])=>{
+        if(kapsam!==skKapsam) return;
+        arr = arr.slice().sort((a,b)=>a.deneme-b.deneme);
+        const liste = arr.length ? arr.map((r,i)=>
+          '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+'</span><span class="lb-puan">'+r.deneme+' <small>tahmin</small></span></div>'
+        ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
+        L.innerHTML = liste + skHistogramHTML(ist);
+      }).catch(()=>{ if(kapsam===skKapsam) L.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
+      return;
+    }
+    const periyotBas = kapsam==='hafta' ? lbHaftaBas() : lbAyBas();
+    const gunler=[]; for(let g=periyotBas; g<=S.gunNo; g++) gunler.push(g);
+    VF.leaderboardOkuAralik('pedantle', gunler).then(arr=>{
       if(kapsam!==skKapsam) return;
-      arr = arr.slice().sort((a,b)=>a.deneme-b.deneme);
-      const liste = arr.length ? arr.map((r,i)=>
-        '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+'</span><span class="lb-puan">'+r.deneme+' <small>tahmin</small></span></div>'
+      arr = arr.slice();
+      arr.forEach(r=>{ r._gun=r.oyunSayisi; r._deg = r._gun ? r.deneme/r._gun : Infinity; });
+      arr.sort((a,b)=>a._deg-b._deg || b._gun-a._gun);
+      const ort=v=>Number.isFinite(v)?v.toFixed(1):'—';
+      let ust = kapsam==='hafta' ? '<div class="lb-aralik">'+lbHaftaAralik()+'</div>' : '';
+      if(arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'bu ayın')+' lideri: <b>'+lbKacis(arr[0].ad)+'</b> · '+ort(arr[0]._deg)+' ort tahmin';
+      Li.innerHTML=ust;
+      L.innerHTML = arr.length ? arr.map((r,i)=>
+        '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+'</span><span class="lb-puan">'+ort(r._deg)+' <small>ort · '+r._gun+' gün</small></span></div>'
       ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
-      L.innerHTML = liste + skHistogramHTML(ist);
     }).catch(()=>{ if(kapsam===skKapsam) L.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
     return;
   }
-  const q=new URLSearchParams({fn:'list',oyun:'pedantle',kapsam});
+  const q=new URLSearchParams({fn:'list',oyun:'pedantle',kapsam: kapsam==='ay'?'tum':kapsam});
   if(kapsam==='gun') q.set('gun',String(S.gunNo)); if(kapsam==='hafta') q.set('hbas',String(lbHaftaBas()));
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{ if(kapsam!==skKapsam) return;
     const ben=lbNick().toLowerCase(), arr=(j&&j.liste)||[];
@@ -755,7 +773,7 @@ function skGoster(kapsam){ skKapsam=kapsam;
     arr.sort((a,b)=>a._deg-b._deg||a._gun-b._gun);
     const ort=v=>Number.isFinite(v)?v.toFixed(1):'—';
     let ust=kapsam==='hafta'?'<div class="lb-aralik">'+lbHaftaAralik()+'</div>':'';
-    if(kapsam!=='gun'&&arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'tüm zamanların')+' lideri: <b>'+lbKacis(arr[0].nick)+'</b> · '+ort(arr[0]._deg)+' ort tahmin';
+    if(kapsam!=='gun'&&arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'bu ayın')+' lideri: <b>'+lbKacis(arr[0].nick)+'</b> · '+ort(arr[0]._deg)+' ort tahmin';
     Li.innerHTML=ust;
     const liste = arr.length ? arr.map((r,i)=>{ const benMi=String(r.nick).toLowerCase()===ben;
       const sag=kapsam==='gun'?r.deneme+' <small>tahmin</small>':ort(r._deg)+' <small>ort · '+r._gun+' gün</small>';
@@ -776,7 +794,7 @@ function skBeniEkle(){ const not=$('skEkleNot');
   if(!lbNick()){ const n=prompt('adın:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else { not.textContent='isim gerekli'; return; } }
   const key=S.gunNo+':'+lbNick().toLowerCase(); delete skGonderildi[key]; not.textContent='ekleniyor…';
   skGonder().then(j=>{ not.textContent=(j&&j.kilit)?('zaten ekliydin: '+lbNick()):('eklendi: '+lbNick()+' ✓'); skGoster(skKapsam); }); }
-function skGeriCiz(){ const el=$('skGeri'); if(!el) return; if(skKapsam==='tum'){ el.textContent=''; return; }
+function skGeriCiz(){ const el=$('skGeri'); if(!el) return; if(skKapsam==='ay'){ el.textContent=''; return; }
   const hedef=(skKapsam==='gun'?lbGunTarih(lbGun()+1):lbGunTarih(lbHaftaBas()+7)).getTime();
   let s=Math.max(0,Math.floor((hedef-Date.now())/1000));
   const g=Math.floor(s/86400); s-=g*86400; const sa=Math.floor(s/3600); s-=sa*3600; const dk=Math.floor(s/60),sn=s-dk*60;
