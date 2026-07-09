@@ -72,6 +72,10 @@ img{display:block}
 .ad-cip{background:var(--kart);border:1.5px solid var(--cizgi);border-radius:26px;padding:13px 26px;font-size:17px;color:var(--murekkep);font-family:'Playfair Display',serif;transition:transform .1s,border-color .12s,background .12s}
 .ad-cip:hover{border-color:var(--yesil);color:var(--yesil);transform:translateY(-1px)}
 
+/* adlar kenarda — dikey liste, kaydırmadan tek bakışta okunur */
+.yan .ad-havuz{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-bottom:18px}
+.yan .ad-cip{width:100%;text-align:left;padding:10px 16px;font-size:15.5px;border-radius:11px}
+
 /* uçan foto (birleşme → kenar) */
 .ucus{position:fixed;width:96px;height:96px;border-radius:16px;object-fit:cover;z-index:200;
   box-shadow:0 8px 26px rgba(0,0,0,.4);border:3px solid var(--dogru);
