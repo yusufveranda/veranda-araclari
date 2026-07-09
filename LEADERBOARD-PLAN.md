@@ -189,3 +189,34 @@ Karar: dual-write YOK. Tek kural — **Google ile girişliyse → sadece Firesto
 - Sahte (mock) `VF` nesnesiyle girişli senaryo tüm 5 dosyada test edildi, hata yok. Gerçek Google oturumuyla uçtan uca test edilmedi (headless'ta OAuth yapılamıyor) — kullanıcının bir oyunu gerçekten bitirip "bugün" sekmesinde kendi skorunu görmesi gerekiyor.
 
 Kalan: haftalık/tüm-zamanlar Firestore aggregation (ayrı toplam-sayaç şeması + index).
+
+## Google giriş sorunu + düzeltmeler (2026-07-09) — çözüldü
+
+- `verandatools.com` Firebase'in "Authorized domains" listesinde yoktu → eklendi.
+- `signInWithPopup` ilk denemede anında kapanıyordu (o zaman domain yetkisizdi, asıl sebep oydu).
+- Sonra `signInWithRedirect`'e geçildi, ama bu Chrome'a (tarayıcı hesabına) girişliyken üçüncü taraf depolama bölümlemesi yüzünden hiç başlamıyordu (bilinen Firebase/Chrome sorunu — [firebase-js-sdk#8329](https://github.com/firebase/firebase-js-sdk/issues/8329), SDK sürümünden bağımsız).
+- **Karar: `signInWithPopup`'a geri dönüldü** — domain artık yetkili olduğu için popup sorunsuz çalışıyor, redirect'in Chrome-hesabı sorunu da böylece atlanmış oldu. Gerçek kullanıcıyla (Chrome'a girişliyken) test edildi, çalıştı.
+
+## Eski 6 oyun + Atlas'a histogram + "beni ekle" temizliği (2026-07-09) — tamamlandı
+
+- Girişliyken "beni tabloya ekle" butonu gizleniyor (otomatik gönderildiği için gereksiz).
+- Günlük dağılım histogramı eklendi: Harfiyat/Avlu (0/1 çözüldü mü), Taraça (0-6 kelime), Çatı (0-5 kelime), Şömine/Parsel (tahmin sayısı sınırsız olduğu için 5'li aralık kovaları: 1-5/6-10/11-15/16-20/21+), Atlas (0-9 doğru hücre).
+
+## Açık tartışma / karar bekleyen konular (2026-07-09)
+
+**Haftalık hesaplama**: Firestore günleri listeleyemediği için, "bu haftanın 7 günü" zaten bilinen sabit gün numaraları — o 7 `skorlar/{oyun}/{gün}` belgesini paralel okuyup istemci tarafında kişi bazında topluyoruz (Sheets'in sunucu tarafında yaptığının istemci karşılığı).
+
+**Tüm zamanlar — "hep aynı kişi birinci" sorunu**: Mevcut (eski Sheets) sistem zaten ortalama puana göre sıralıyor (toplam/oynanan gün), ham toplam değil — ama az oynayıp şansına yüksek ortalama tutturanlar da haksız üste çıkabiliyor (küçük örneklem sorunu). Konuşulan çözüm seçenekleri (KARAR VERİLMEDİ):
+1. Minimum oyun sayısı eşiği (ör. en az 10 gün oynamamış sıralamaya giremez).
+2. Birden fazla ayrı tablo (en yüksek ortalama / en çok oyun / en uzun seri).
+3. Periyodik sıfırlama (ör. "bu ay" görünümü, sürekli aynı kişi kalmasın).
+
+Bu üçü konuşulacak, Firestore aggregation'ı bu karara göre kurulacak.
+
+**Diğer bekleyen fikirler (Gemini'nin de önerdiği, henüz uygulanmadı)**:
+- Bayrak (kelime bayrağı) sistemini Sheets'ten Firestore'a taşımak — `bayraklar` koleksiyonu için rules zaten hazır (bugün eklendi), asıl UI değişikliği küçük bir iş.
+- Gizli "rastgele/arşiv" tuşu yerine gerçek yetki kontrolü: artık Google girişi olduğu için "sadece benim uid'im" kontrolüyle admin-only özellikler gösterilebilir, gizli buton yerine.
+- Tüm sayfalarda görünen ortak bir yan sekme/nav + tüm oyunların istatistik+leaderboard'unu tek sayfada gösteren bir dashboard — büyük, ayrı bir proje.
+- Kara Kaplı (şifreli not defteri) senkron/yedek + Takımyıldız seri senkronu — leaderboard işinden bağımsız, ayrı planlanmalı.
+
+**Bilinen, düzeltilmeyecek (şimdilik) davranış**: "Bugün çözdüm mü?" bilgisi cihaza özgü (localStorage), hesaba değil — aynı hesapla farklı cihazdan girilince o cihaz "çözülmemiş" gösterip tekrar oynatabiliyor. Veri kaybı yok (ikinci gönderim create-only kilit yüzünden sessizce reddediliyor), sadece gereksiz tekrar oynama. Düzeltmek istenirse: girişte "bugün bu hesapla zaten skor var mı" diye Firestore'a bakıp varsa sonucu göstermek gerekir (14 dosyada tekrar edilecek bir iş) — şimdilik ertelendi.
