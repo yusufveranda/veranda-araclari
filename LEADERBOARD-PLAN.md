@@ -35,6 +35,10 @@ haftalikOzet/{oyun}/{haftaBaslangicGunu}/{uid}
   // Cuma 00:00'da bir Cloud Function (ya da istemci tarafı hesaplayıp
   // yazan bir "kapanış" işlemi) skorlar'ı toplayıp burayı doldurur.
 
+istatistik/{oyun}_{gun}      // düz koleksiyon, birleşik ID (skorlar/{oyun}/{gun}/{uid}'den farklı —
+  dagilim: {"1":n,"2":n,...,"X":n}   // orada {gun} alt-koleksiyon adı olarak geçerli, burada
+  toplamCozen: number                // tek bir özet dokümanı olduğu için birleşik ID kullanıyoruz)
+
 bayraklar/{oyun}_{kelime}
   sayi: number
   ilkGun: number
@@ -74,3 +78,114 @@ Sadece verandle ailesi + Atlas için gerekli (diğer 8 zaten temiz).
 4. Proje ayarları (⚙️) → "Your apps" → **Web app ekle** (`</>` ikonu) → bana çıkan `firebaseConfig` nesnesini (apiKey, projectId vb.) ver.
 
 Bu 4 adımdan sonra devam ederim.
+
+## Firebase kurulumu tamamlandı (2026-07-09)
+
+Proje: `veranda-oyunlar` (Spark/ücretsiz plan). Firestore Standard edition, eur3 bölgesi, production mode. Authentication → Google sağlayıcısı açılıyor (kontrol edilmeli). Web app kaydedildi (`Veranda Tools`, Hosting işaretlenmedi — barındırma zaten GitHub Pages/Cloudflare'de).
+
+```js
+const firebaseConfig = {
+  apiKey: "AIzaSyDJmpIrOYS4XOr2P3HNyHeTpukhpoW3pAE",
+  authDomain: "veranda-oyunlar.firebaseapp.com",
+  projectId: "veranda-oyunlar",
+  storageBucket: "veranda-oyunlar.firebasestorage.app",
+  messagingSenderId: "930330517511",
+  appId: "1:930330517511:web:21d9c43053798a0b964aa2",
+  measurementId: "G-7454N68TXC"
+};
+```
+
+Not: `apiKey` bir sır değil — Firebase'de bu client tarafında herkese açık olacak şekilde tasarlanmış, gerçek koruma Firestore security rules ve (istenirse) Google Cloud Console'da "API key restrictions" (domain kısıtı) ile sağlanıyor. Canlıya almadan önce bu kısıtı eklemek iyi bir ek güvenlik katmanı olur ama şu an engelleyici değil.
+
+İstatistik/analitik kararı: kelime tekrarı önemsiz, sadece günlük dağılım yeterli (bkz. yukarıdaki düzeltilmiş `istatistik/{oyun}_{gun}` şeması). Sayaç güncelleme yöntemi: client-side Firestore transaction (Cloud Function/Blaze gerekmiyor, Spark planında kalınıyor).
+
+Gizlilik kararı: Google ile girişte gerçek ad hiç gösterilmiyor. İlk girişte hemen "Görünen adın ne olsun?" sorusu çıkar (Google adı varsayılan/otomatik doldurulmuş DEĞİL, boş/placeholder) — kullanıcı kendi takma adını seçer, insanlar gerçek isimlerinin göründüğünü düşünüp gerilmesin diye. Bu `ad` alanı her yerde (leaderboard dahil) gösterilen tek isim; sonra ayarlardan değiştirilebilir.
+
+## Ortak kod: site/ortak/firebase.js (2026-07-09)
+
+Tüm oyunların paylaşacağı tek dosya. `window.VF` namespace'i: `girisYap()`, `cikisYap()`, `kullaniciDinle(cb)` (ilk girişte takma ad sorar, gerçek Google adı hiç kullanılmaz), `adDegistir(ad)`, `skorYaz(oyun, gun, veri)`, `leaderboardOku(oyun, gun)`, `istatistikArttir(oyun, gun, bucket)`, `istatistikOku(oyun, gun)`.
+
+Kullanım (her oyun sayfasının `</body>`'den önce):
+```html
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
+```
+
+## Firestore security rules — SENİN YAPMAN GEREKEN (Firebase Console → Firestore → Rules)
+
+Aşağıdaki kuralları yapıştırıp **Publish** et:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /kullanicilar/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /skorlar/{oyun}/{gun}/{uid} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == uid;
+      allow update, delete: if false;
+    }
+    match /istatistik/{belge} {
+      allow read: if true;
+      allow create: if request.auth != null && request.resource.data.toplamCozen == 1;
+      allow update: if request.auth != null
+        && request.resource.data.toplamCozen == resource.data.toplamCozen + 1;
+      allow delete: if false;
+    }
+    match /bayraklar/{belge} {
+      allow read: if true;
+      allow create: if request.auth != null && request.resource.data.sayi == 1;
+      allow update: if request.auth != null && request.resource.data.sayi == resource.data.sayi + 1;
+    }
+  }
+}
+```
+
+Mantık: herkes okuyabilir (leaderboard herkese açık), ama sadece kendi uid'in altına yazabilirsin ve skorlar create-only (üzerine yazamazsın — bir gün/bir kullanıcı kilidi). İstatistik/bayrak sayaçları sadece +1 artabilir, başka türlü değiştirilemez.
+
+## Sancak entegrasyonu (2026-07-09, ilk oyun)
+
+Skor: kazanınca `deneme` (1-6), kaybedince bucket `"X"` (Wordle usulü). Leaderboard en az denemeyle sıralanır. `istatistikArttir('sancak', oyunGun, kazandi?deneme:'X')` her günlük oyun bitişinde çağrılıyor.
+
+Sıradaki 7 oyun (Karanlık Oda, Jenerik, Dört Sürü, Kur, Dört Demet, Aşı, Günün Yıldızları) aynı `ortak/firebase.js`'i kullanacak, sadece skorYaz'a geçirilen `veri` alanları oyuna göre değişecek.
+
+## İlerleme (2026-07-09)
+
+- **Sancak**: bitti, test edildi (gerçek Google girişiyle uçtan uca). oyun anahtarı `"sancak"`.
+- **Karanlık Oda**: bitti, test edildi. `puan` = SCORES[step] (100/75/50/30/15). oyun anahtarı `"karanlikoda"`.
+- **Jenerik**: bitti, test edildi. `puan` = bulunan film sayısı. oyun anahtarı `"jenerik"`. DİKKAT: bu oyun sayfa yeniden açıldığında bitmiş günü `finish()` ile yeniden çiziyor — çift sayım olmasın diye `finish(won, redisplay)` ikinci parametresi eklendi, redisplay=true iken VF yazma atlanıyor. Benzer "sonucu yeniden çizen" bir oyun eklenirse aynı deseni uygula.
+- **Dört Sürü / Dört Demet** (oyun-obek.css ailesi): `puan`=(MAX_HATA-hatalar)*25 sadece tam+puanlı çözümde, yoksa 0. bucket = hatalar sayısı ya da "X" (puansız/pes). oyun anahtarları `"dortsuru"`, `"dortdemet"`.
+- **Kur / Aşı** (oyun-eslestir.css ailesi): `puan`=eşlenen sayısı (puansızsa kilitlenen puan). bucket = hata sayısı ya da "X". oyun anahtarları `"kur"`, `"asi"`.
+- **Günün Yıldızları**: meta-oyun, kendi skoru = günü kazanınca (6★ toplayınca) `gunToplam()`. Sadece kazanma anında yazılıyor (kaybedilen/yarım günler kaydedilmiyor — bilinçli basitleştirme). `motor.js`'e `YILDIZ.gun()`/`YILDIZ.toplam()` eklendi ki index.html'deki leaderboard kodu günü okuyabilsin. oyun anahtarı `"yildiz"`.
+- **Ortak CSS**: `ortak/leaderboard.css` oluşturuldu — dört-lü ve eşleştirme ailesindeki tüm oyunlar (dortsuru/dortdemet/kur/asi) ve yıldız bunu paylaşıyor, tekrar yazılmadı.
+- Hepsi tarayıcıda gerçek Firestore'a karşı test edildi (leaderboard modalı açılıp veri okuyor, hata yok).
+
+## Verandle ailesi + Atlas göçü (2026-07-09) — Cuma'yı beklemeden yapıldı
+
+Karar değişikliği: bulk export yerine **canlı sorgu**. Kullanıcı eski nick'ini yazdığı an Apps Script'e sorulup direkt Firestore'a taşınıyor — Cuma'daki haftalık geçişi beklemeye gerek kalmadı.
+
+- `taraca-leaderboard.gs`'e `fn=nickozet` eklendi (verilen nick için 7 oyunun toplamlarını döner, ham günlük satır yok). **Kullanıcı redeploy etti.**
+- `ortak/firebase.js`'e `gocKontrolEt()` eklendi: uid başına bir kez (kullanicilar/{uid}.gocSoruldu ile işaretli) "Daha önce oynadıysanız ve bir isim kullandıysanız, verilerinizi kaybetmemek için doğru şekilde buraya yazın (opsiyonel)" diyaloğu çıkar. Nick girilirse `kilitliNickler/{nickLc}` kontrol edilir (doluysa sessizce reddeder — basit MVP), boşsa `.gs`'e sorup `kullanicilar/{uid}.gocmusOzet` + `eskiNick` yazılır ve nick kilitlenir.
+- Firestore rules'a `kilitliNickler/{nick}` eklendi (create-only, kilitlenince bir daha değişmez). **Kullanıcı yayınladı.**
+- 5 canlı sayfaya (wordle=Harfiyat/Taraça/Avlu, cati, sicaksoguk=Şömine, pedantle=Parsel, atlas) Firebase script'leri + "Google ile giriş" butonu + `kullaniciDinle`→`gocKontrolEt` zinciri eklendi. **Eski Sheets/nick sistemine hiç dokunulmadı** — ikisi paralel çalışıyor, mevcut leaderboard/skor akışı bozulmadı.
+- Buton yerleşimi sayfaya göre değişti (bazılarında sabit üst-sağ, bazılarında mevcut ikon satırına eklendi) çünkü her oyun kendi CSS'ini kullanıyor; hepsi konsol hatasız yüklendiğini doğrulandı.
+- **Uçtan uca doğrulandı (2026-07-09)**: gerçek Google girişiyle Şömine'de test edildi. İlk denemede sessizce yazılmadı (muhtemelen rules'ın yeni yayınlanmasından hemen sonraki geçici bir gecikme — kod tarafında hata yoktu), `gocSoruldu` alanı silinip tekrar denenince `eskiNick` + `gocmusOzet` (avlu/çatı/harfiyat/taraca/sicak/pedantle/makas — 7 oyunun tamamı) doğru şekilde Firestore'a yazıldı, Apps Script'teki gerçek geçmiş verilerle birebir eşleşti.
+- ~~Kalan: bu 5 sayfada henüz Firestore'a skor yazımı yok~~ — aşağıda tamamlandı.
+
+## Skor yazma/okuma geçişi (2026-07-09) — tamamlandı
+
+Karar: dual-write YOK. Tek kural — **Google ile girişliyse → sadece Firestore'a yaz/oku; girişli değilse → eskisi gibi Sheets'e yaz/oku.** Migrate olmuş olmak zaten "girişli olmak" ile eşanlamlı (oturum kalıcı), o yüzden ayrıca "bu kullanıcı migrate oldu mu" kontrolüne gerek yok.
+
+- 5 dosyada (`wordle`=Harfiyat/Taraça/Avlu, `cati`, `sicaksoguk`=Şömine, `pedantle`=Parsel, `atlas`) skor gönderme fonksiyonları (`lbGonder`/`skGonder`/`skor-gonder onclick`) ve okuma fonksiyonları (`lbGoster`/`skGoster`/`liderGetir`) baştan `if(window.VF && VF.kullanici){ ... Firestore yolu ... } else { ... eski Sheets yolu (değişmedi) ... }` şeklinde dallandırıldı.
+- **Günlük (gün)** görünüm Firestore'da tam çalışıyor. **Haftalık/tüm-zamanlar** girişli kullanıcılar için şimdilik "yakında geliyor" mesajı gösteriyor (Firestore'da günlerin listelenemiyor olması yüzünden — tüm-zamanlar için ayrı bir toplam-sayaç şeması gerekir, ayrı iş).
+- Sonuç kartındaki nick input'u: girişliyse dolu+disabled gösterilip otomatik gönderiliyor (kullanıcı hiçbir şey yazmıyor); girişli değilse eskisi gibi elle nick giriliyor.
+- Auto-submit: Sancak/Karanlık Oda tarzı, oyun bitince otomatik açılan panel (`skAc`/`payBagla`) zaten varsa, o tetikleyici branch'i de kapsıyor — ekstra hook gerekmedi.
+- `eskiOyuncuBanner()`: girişli değilse VE bu tarayıcıda eski nick varsa, sayfanın altında "Merhaba {nick} — oyun gelişiyor, Google ile giriş yaparsan çok sevinirim 🙂 yoksa istatistiklerin kaybolabilir" banner'ı çıkar (kapatılabilir, `sessionStorage` ile bir daha o oturumda çıkmaz).
+- Sahte (mock) `VF` nesnesiyle girişli senaryo tüm 5 dosyada test edildi, hata yok. Gerçek Google oturumuyla uçtan uca test edilmedi (headless'ta OAuth yapılamıyor) — kullanıcının bir oyunu gerçekten bitirip "bugün" sekmesinde kendi skorunu görmesi gerekiyor.
+
+Kalan: haftalık/tüm-zamanlar Firestore aggregation (ayrı toplam-sayaç şeması + index).

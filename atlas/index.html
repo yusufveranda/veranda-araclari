@@ -190,6 +190,7 @@ body.gomulu .sahne{padding-top:10px}
     </div>
     <button class="ust-dug" id="rastgele" title="rastgele bir bulmaca dene">🎲 Rastgele</button>
     <button class="ust-dug" id="bugun" hidden>Bugüne dön</button>
+    <button class="ust-dug" id="girisBtn">Google ile giriş</button>
     <button class="gece-dug" id="gece" title="gece / gündüz">🌙</button>
   </div>
 
@@ -547,12 +548,19 @@ $('#paylas').onclick=()=>{
 };
 $('#skor-gonder').onclick=()=>{
   const o=g(); const {skor,dogru}=guncelleDurum();
+  const puan=Math.max(0,Math.min(100,Math.round(skor/9)));   // yüksek iyi (backend uyumu)
+  const gun=GUN*2+(mod==='turkiye'?1:0);
+  if(window.VF && VF.kullanici){
+    $('#skor-gonder').textContent='Gönderiliyor…';
+    VF.skorYaz('atlas', gun, {puan, cozulen:dogru, deneme:o.deneme})
+      .then(()=>{ $('#skor-gonder').textContent='Gönderildi ✓'; liderGetir(); })
+      .catch(()=>{ $('#skor-gonder').textContent='Gönderildi ✓'; liderGetir(); });   // create-only: ikinci gönderim zaten kilitli, hata değil
+    return;
+  }
   let nick=localStorage.getItem('atlas:nick'); if(nick==null){ nick=localStorage.getItem('vt_nick')||''; if(nick){ localStorage.setItem('atlas:nick', nick); localStorage.removeItem('vt_nick'); } }
   nick=(prompt('Takma adın (liderlik için):',nick||'')||'').trim().slice(0,18);
   if(!nick) return;
   localStorage.setItem('atlas:nick',nick);
-  const puan=Math.max(0,Math.min(100,Math.round(skor/9)));   // yüksek iyi (backend uyumu)
-  const gun=GUN*2+(mod==='turkiye'?1:0);
   $('#skor-gonder').textContent='Gönderiliyor…';
   fetch(LB_URL+'?fn=add&oyun=atlas&gun='+gun+'&nick='+encodeURIComponent(nick)+
         '&puan='+puan+'&cozulen='+dogru+'&deneme='+o.deneme)
@@ -561,6 +569,16 @@ $('#skor-gonder').onclick=()=>{
 };
 function liderGetir(){
   const gun=GUN*2+(mod==='turkiye'?1:0);
+  if(window.VF && VF.kullanici){
+    VF.leaderboardOku('atlas', gun).then(arr=>{
+      if(!arr.length) return;
+      arr=arr.slice().sort((a,b)=>b.puan-a.puan);
+      let h='<h3 style="margin-top:4px">Bugünün lideri</h3><ol>';
+      arr.slice(0,8).forEach(x=>{h+='<li><span>'+(x.ad||'isimsiz')+'</span><span class="p">'+x.puan+'</span></li>';});
+      $('#lider').innerHTML=h+'</ol>';
+    }).catch(()=>{});
+    return;
+  }
   fetch(LB_URL+'?fn=list&oyun=atlas&kapsam=gun&gun='+gun).then(r=>r.json()).then(j=>{
     if(!j||!j.ok||!j.veri||!j.veri.length) return;
     let h='<h3 style="margin-top:4px">Bugünün lideri</h3><ol>';
@@ -652,6 +670,20 @@ $('#arama').addEventListener('keydown',e=>{
 /* başlat */
 moda('dunya');
 metaBildir();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
+<script>
+(function(){
+  var b=document.getElementById('girisBtn');
+  b.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
+  VF.kullaniciDinle(function(u){
+    b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
+    if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
+  });
+})();
 </script>
 </body>
 </html>

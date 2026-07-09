@@ -17,6 +17,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/oyun-eslestir.css?v=1">
+<link rel="stylesheet" href="../ortak/leaderboard.css">
 <style>
 :root{
   --kagit:#f1ebdd; --kagit-2:#e7dfcc; --kart:#faf5ea;
@@ -52,6 +53,8 @@
       <a class="ikonbtn" href="../kus/">kuş ansiklopedisi</a>
       <button class="ikonbtn" id="temaBtn" type="button">gece</button>
       <button class="ikonbtn gizli-rast" id="rastBtn" type="button" title="rastgele bulmaca" aria-label="rastgele bulmaca">🎲</button>
+      <button class="ikonbtn" id="lbBtn" type="button">🏆 leaderboard</button>
+      <button class="ikonbtn" id="girisBtn" type="button">Google ile giriş</button>
     </div>
   </div>
 
@@ -109,6 +112,17 @@
 </div>
 <div id="toast"></div>
 
+<div class="lb-perde gizli" id="lbPerde">
+  <div class="lb-kutu">
+    <div class="lb-ust"><h3>🏆 bugünün tablosu</h3><button class="lb-kapat" id="lbKapat">✕</button></div>
+    <div id="lbIcerik"><div class="lb-bos">yükleniyor…</div></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
 <script>
 let KUSLAR={
   serce:{tr:"Serçe",la:"Passer domesticus",foto:"https://upload.wikimedia.org/wikipedia/commons/b/bd/Gr%C3%A5sparv_-_%28Passer_domesticus%29_-_Ystad-2025.jpg",tuzak:true,ayirt:"Yanağı SADE, leke yok. Erkekte siyah göğüs önlüğü, kastanyel ense."},
@@ -123,7 +137,7 @@ let KUSLAR={
 let IDS=Object.keys(KUSLAR);
 const MAX_HAK=3;
 let TUZAK=new Set(["serce","agac-sercesi","ak-balikcil","buyuk-ak-balikcil"]);
-let BULMACALAR=null, bulmacaNo=0;
+let BULMACALAR=null, bulmacaNo=0, GUNUN_NO=null;
 /* ——— Takımyıldız gömme kipi ——— */
 const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
@@ -151,7 +165,8 @@ function baskaBulmaca(rastgele){
 }
 Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulmacalar.json").then(r=>r.json())])
   .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp;
-    bulmacaNo = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length : Math.floor(Date.now()/864e5)%pp.length;
+    GUNUN_NO = Math.floor(Date.now()/864e5)%pp.length;
+    bulmacaNo = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length : GUNUN_NO;
     yukle(); metaBildir(); }).catch(()=>{});
 
 function ciz(){
@@ -270,12 +285,21 @@ function tamamlandi(){
     : (hata===0 ? "8/8 kusursuz — tuzaklara düşmedin, keskin göz."
                 : `8/8 · ${hata} yanlışla tamamladın. Benzerleri ayırt etmeyi öğrendin.`);
   revealDoldur();
+  kurSkorYaz();
 }
 function pesEt(){
   bitti=true; ciz(); metaBildir();
   $("#sonucBas").textContent=`Cevaplar açıldı — ${puanKilit}/8 puan`;
   $("#sonucOzet").textContent=`Puanın ${puanKilit}/8 — hakların bitmeden bu kadarını doğru eşlemiştin. Doğru adlar ve ayırt edici işaretler aşağıda.`;
   revealDoldur();
+  kurSkorYaz();
+}
+function kurSkorYaz(){
+  if(bulmacaNo!==GUNUN_NO || GOMULU) return;
+  const puan = puansiz ? puanKilit : eslenen.length;
+  const bucket = puansiz ? "X" : String(hata);
+  if(window.VF && VF.kullanici) VF.skorYaz("kur", GUNUN_NO, {puan, hata, puansiz, kazandi:eslenen.length===8});
+  if(window.VF) VF.istatistikArttir("kur", GUNUN_NO, bucket);
 }
 
 function paylas(){
@@ -294,6 +318,41 @@ temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"g
 $("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas; $("#baskaBtn").onclick=()=>baskaBulmaca(false);
 $("#rastBtn").onclick=()=>baskaBulmaca(true);
 ciz();
+
+/* ===================== giriş / leaderboard ===================== */
+const girisBtn=$("#girisBtn"), lbBtn=$("#lbBtn"), lbPerde=$("#lbPerde"), lbIcerik=$("#lbIcerik"), lbKapat=$("#lbKapat");
+girisBtn.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
+if(window.VF) VF.kullaniciDinle(u=>{ girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş"; });
+
+function lbBarCiz(dagilim){
+  const anahtarlar=["0","1","2","X"];
+  const maxSay=Math.max(1, ...anahtarlar.map(k=>dagilim[k]||0));
+  return anahtarlar.filter(k=>(dagilim[k]||0)>0 || k!=="X").map(k=>{
+    const say=dagilim[k]||0, genislik=Math.round((say/maxSay)*140)+3;
+    return '<div class="lb-bar-satir"><span class="et">'+(k==="X"?"✕":k)+'</span>'+
+      '<span class="cubuk" style="width:'+genislik+'px"></span><span class="say">'+say+'</span></div>';
+  }).join("");
+}
+function lbDoldur(){
+  if(GUNUN_NO==null){ lbIcerik.innerHTML='<div class="lb-bos">bulmaca henüz yüklenmedi.</div>'; return; }
+  lbIcerik.innerHTML='<div class="lb-bos">yükleniyor…</div>';
+  Promise.all([ VF.leaderboardOku("kur", GUNUN_NO), VF.istatistikOku("kur", GUNUN_NO) ]).then(([liste, ist])=>{
+    const siralı = liste.slice().sort((a,b)=>b.puan-a.puan || a.hata-b.hata);
+    const benAd = VF.ad;
+    let h = '<div style="font-size:13px;color:var(--soluk);margin-bottom:8px">bugün · #'+(GUNUN_NO+1)+'</div>';
+    h += siralı.length
+      ? siralı.map((r,i)=> '<div class="lb-satir'+(r.ad===benAd?' ben':'')+'"><span class="sira">'+(i+1)+'</span>'+
+          '<span class="ad">'+(r.ad||'isimsiz')+'</span><span class="puan">'+r.puan+'/8</span></div>').join("")
+      : '<div class="lb-bos">bugün henüz kimse oynamadı.</div>';
+    h += '<div class="lb-alt">toplam '+(ist.toplamCozen||0)+' kişi oynadı<br>'+lbBarCiz(ist.dagilim||{})+'</div>';
+    if(VF.kullanici) h += '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
+    lbIcerik.innerHTML = h;
+    const a=$("#lbAdDeg"); if(a) a.onclick=()=>{ const yeni=prompt("yeni görünen adın:", VF.ad||""); if(yeni) VF.adDegistir(yeni).then(lbDoldur); };
+  }).catch(e=>{ console.error(e); lbIcerik.innerHTML='<div class="lb-bos">yüklenemedi.</div>'; });
+}
+lbBtn.onclick=()=>{ lbPerde.classList.remove("gizli"); lbDoldur(); };
+lbKapat.onclick=()=>lbPerde.classList.add("gizli");
+lbPerde.addEventListener("click", e=>{ if(e.target===lbPerde) lbPerde.classList.add("gizli"); });
 </script>
 </body>
 </html>

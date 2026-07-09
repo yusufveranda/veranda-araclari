@@ -212,7 +212,14 @@ function hudTazele(def){
    KAZANDIN bildirimi (açılır)
    ============================================================ */
 function kazanmaKontrol(){
-  if(gunToplam()>=GUN_HEDEF && !DURUM.kazandi){ DURUM.kazandi=true; durumKaydet(); kazandinAc(); }
+  if(gunToplam()>=GUN_HEDEF && !DURUM.kazandi){
+    DURUM.kazandi=true; durumKaydet(); kazandinAc();
+    if(!_ephemeral){
+      var puan=gunToplam();
+      if(window.VF && VF.kullanici) VF.skorYaz("yildiz", GUN, {puan, kazandi:true});
+      if(window.VF) VF.istatistikArttir("yildiz", GUN, String(puan));
+    }
+  }
 }
 function kazandinAc(){
   var perde=$('#kazanPerde'); if(!perde) return;
@@ -320,5 +327,5 @@ kayit({ id:'karanlikoda', ad:'Karanlık Oda', aile:'film', mod:'hiz', len:1310,
 kayit({ id:'cati', ad:'Çatı', aile:'kelime', mod:'sayac', len:150,
   alt:'5 kelime + gizli tema', src:function(i){ return '../cati/?meta=1&bulmaca='+i; } });
 
-window.YILDIZ={ kayit:kayit, baslat:baslat, toast:toast };
+window.YILDIZ={ kayit:kayit, baslat:baslat, toast:toast, gun:function(){ return GUN; }, toplam:function(){ return gunToplam(); } };
 })();

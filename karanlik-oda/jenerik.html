@@ -128,6 +128,22 @@
   footer{margin-top:52px; text-align:center; font-size:11px; color:#4a423c;}
   footer a{color:var(--muted);}
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+
+  /* ---- giriş / leaderboard ---- */
+  .lb-perde{position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px;}
+  .lb-perde.gizli{display:none;}
+  .lb-kutu{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:24px; max-width:420px; width:100%; max-height:82vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,.6);}
+  .lb-ust{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .lb-ust h3{font-family:"Special Elite",cursive; font-size:19px; color:var(--red); margin:0;}
+  .lb-kapat{background:none; border:none; color:var(--muted); font-size:18px; cursor:pointer;}
+  .lb-satir{display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); font-size:14px;}
+  .lb-satir .sira{width:22px; color:var(--muted); text-align:right;}
+  .lb-satir .ad{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .lb-satir .puan{color:var(--red); font-weight:600;}
+  .lb-satir.ben{background:var(--red-dim); border-radius:6px; padding-left:6px;}
+  .lb-bos{color:var(--muted); font-size:13.5px; padding:10px 0;}
+  .lb-alt{margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted);}
+  .lb-alt a{color:var(--red); cursor:pointer; text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -137,6 +153,8 @@
     <div class="controls">
       <a class="mini-btn" href="./" title="Günün filmini bul">🎬 film oyunu</a>
       <button id="randomBtn" class="mini-btn">🎲 rastgele oyuncu</button>
+      <button id="lbBtn" class="mini-btn">🏆 leaderboard</button>
+      <button id="girisDug" class="mini-btn">Google ile giriş</button>
       <select id="actorSelect" aria-label="Önizleme: oyuncu seç"></select>
     </div>
   </header>
@@ -185,6 +203,17 @@
   <footer>Veri: <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>. Bu ürün TMDB tarafından onaylanmamış ya da desteklenmemiştir.</footer>
 </div>
 
+<div class="lb-perde gizli" id="lbPerde">
+  <div class="lb-kutu">
+    <div class="lb-ust"><h3>🏆 bugünün tablosu</h3><button class="lb-kapat" id="lbKapat">✕</button></div>
+    <div id="lbIcerik"><div class="lb-bos">yükleniyor…</div></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
 <script src="jenerik.js"></script>
 <script>
 const IMG = "https://image.tmdb.org/t/p/";
@@ -371,7 +400,7 @@ function shareText(){
   return `Jenerik ${etiket} · 🎭 ${G.actor.n}\n${sq}\n${n}/${total} film`;
 }
 
-function finish(won){
+function finish(won, redisplay){
   if (G.over) return;
   G.over = true;
   const n = G.foundSet.size, total = G.total;
@@ -390,6 +419,10 @@ function finish(won){
     : `<b>${esc(G.actor.n)}</b> — ${n}/${total} film yazdın (${pct}%). Kalan ${total - n} film aşağıda gri açıldı.`;
   renderGrid();
   persist(); metaBildir();
+  if (!G.random && !redisplay) {
+    if (window.VF && VF.kullanici) VF.skorYaz("jenerik", G.index, { puan:n, toplam:total, kazandi:won });
+    if (window.VF) VF.istatistikArttir("jenerik", G.index, String(n));
+  }
 }
 
 // ---- başlat ----
@@ -415,7 +448,7 @@ function startGame(index, random=false){
   $("todayBtn") && ($("todayBtn").style.display = random ? "" : "none");
   renderPrompt(); renderMisses(); renderGrid();
   if (G.over){ // tamamlanmış günü tekrar açınca sonucu göster
-    G.over = false; finish(G.foundSet.size === G.total);
+    G.over = false; finish(G.foundSet.size === G.total, true);
   } else {
     resetInput();
   }
@@ -472,6 +505,31 @@ function pickRandom(){
   const _bulmaca = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%ACTORS.length)+ACTORS.length)%ACTORS.length : today;
   startGame(_bulmaca);
 })();
+
+/* ===================== giriş / leaderboard ===================== */
+const girisDug=$("girisDug"), lbBtn=$("lbBtn"), lbPerde=$("lbPerde"), lbIcerik=$("lbIcerik"), lbKapat=$("lbKapat");
+girisDug.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
+if(window.VF) VF.kullaniciDinle(u=>{ girisDug.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş"; });
+
+function lbDoldur(){
+  const gunIndex = todayIndex();
+  lbIcerik.innerHTML='<div class="lb-bos">yükleniyor…</div>';
+  VF.leaderboardOku("jenerik", gunIndex).then(liste=>{
+    const siralı = liste.slice().sort((a,b)=>b.puan-a.puan);
+    const benAd = VF.ad;
+    let h = '<div style="font-size:13px;color:var(--muted);margin-bottom:8px">bugün · Gün #'+(gunIndex+1)+'</div>';
+    h += siralı.length
+      ? siralı.map((r,i)=> '<div class="lb-satir'+(r.ad===benAd?' ben':'')+'"><span class="sira">'+(i+1)+'</span>'+
+          '<span class="ad">'+(r.ad||'isimsiz')+'</span><span class="puan">'+r.puan+'/'+r.toplam+'</span></div>').join("")
+      : '<div class="lb-bos">bugün henüz kimse oynamadı.</div>';
+    if(VF.kullanici) h += '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
+    lbIcerik.innerHTML = h;
+    const a=$("lbAdDeg"); if(a) a.onclick=()=>{ const yeni=prompt("yeni görünen adın:", VF.ad||""); if(yeni) VF.adDegistir(yeni).then(lbDoldur); };
+  }).catch(e=>{ console.error(e); lbIcerik.innerHTML='<div class="lb-bos">yüklenemedi.</div>'; });
+}
+lbBtn.onclick=()=>{ lbPerde.classList.remove("gizli"); lbDoldur(); };
+lbKapat.onclick=()=>lbPerde.classList.add("gizli");
+lbPerde.addEventListener("click", e=>{ if(e.target===lbPerde) lbPerde.classList.add("gizli"); });
 </script>
 </body>
 </html>

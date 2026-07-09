@@ -17,6 +17,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/oyun-obek.css?v=7">
+<link rel="stylesheet" href="../ortak/leaderboard.css">
 <style>
 :root{
   --kagit:#f1ebdd; --kagit-2:#e7dfcc; --kart:#faf5ea;
@@ -48,6 +49,8 @@
       <a class="ikonbtn" href="../kus/">kuş ansiklopedisi</a>
       <button class="ikonbtn" id="temaBtn" type="button">gece</button>
       <button class="ikonbtn gizli-rast" id="rastBtn" type="button" title="rastgele bulmaca" aria-label="rastgele bulmaca">🎲</button>
+      <button class="ikonbtn" id="lbBtn" type="button">🏆 leaderboard</button>
+      <button class="ikonbtn" id="girisBtn" type="button">Google ile giriş</button>
     </div>
   </div>
 
@@ -100,6 +103,17 @@
 </div>
 <div id="toast"></div>
 
+<div class="lb-perde gizli" id="lbPerde">
+  <div class="lb-kutu">
+    <div class="lb-ust"><h3>🏆 bugünün tablosu</h3><button class="lb-kapat" id="lbKapat">✕</button></div>
+    <div id="lbIcerik"><div class="lb-bos">yükleniyor…</div></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const _MP=new URLSearchParams(location.search);
@@ -135,7 +149,7 @@ let GRUPLAR = [
   {key:2,ad:"Bahçe ötücüleri",    renk:RENKLER[2],emoji:EMOJI[2], not:"Küçük, şehir ve bahçenin tanıdık öten kuşları.", uyeler:["serce","kizilgerdan","bastankara","ispinoz"]},
   {key:3,ad:"Ağaçkakanlar",       renk:RENKLER[3],emoji:EMOJI[3], not:"Boyunçeviren de bir ağaçkakandır! Kabuk kamuflajı onu ötücü sandırır — asıl tuzak buydu.", uyeler:["agackakan","yesil-agackakan","kucuk-agackakan","boyuncevirin"]},
 ];
-let BULMACALAR=null, bulmacaNo=0;
+let BULMACALAR=null, bulmacaNo=0, GUNUN_NO=null;
 const F=id=>(KUSLAR[id]?KUSLAR[id].foto:"");
 const grubu = id => GRUPLAR.find(g=>g.uyeler.includes(id));
 
@@ -161,7 +175,8 @@ function baskaBulmaca(rastgele){
 }
 Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulmacalar.json").then(r=>r.json())])
   .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp;
-    bulmacaNo = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length : Math.floor(Date.now()/864e5)%pp.length;
+    GUNUN_NO = Math.floor(Date.now()/864e5)%pp.length;
+    bulmacaNo = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length : GUNUN_NO;
     yukle(); metaBildir(); }).catch(()=>{});
 
 function ciz(){
@@ -246,6 +261,13 @@ function bitir(kazandi){
   ciz();
   $("#sonuc").classList.add("ac");
   $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
+  if(bulmacaNo===GUNUN_NO && !GOMULU){
+    const basarili = kazandi && !puansiz;
+    const puan = basarili ? (MAX_HATA-hatalar)*25 : 0;
+    const bucket = basarili ? String(hatalar) : "X";
+    if(window.VF && VF.kullanici) VF.skorYaz("dortsuru", GUNUN_NO, {puan, hatalar, puansiz, kazandi});
+    if(window.VF) VF.istatistikArttir("dortsuru", GUNUN_NO, bucket);
+  }
 }
 function pesEt(){
   GRUPLAR.forEach(g=>{ if(!cozulen.includes(g.key)) cozulen.push(g.key); });
@@ -275,6 +297,41 @@ $("#paylasBtn").onclick=paylas;
 $("#baskaBtn").onclick=()=>baskaBulmaca(false);
 $("#rastBtn").onclick=()=>baskaBulmaca(true);
 ciz();
+
+/* ===================== giriş / leaderboard ===================== */
+const girisBtn=$("#girisBtn"), lbBtn=$("#lbBtn"), lbPerde=$("#lbPerde"), lbIcerik=$("#lbIcerik"), lbKapat=$("#lbKapat");
+girisBtn.onclick=()=>{ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e=>console.error(e)); };
+if(window.VF) VF.kullaniciDinle(u=>{ girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş"; });
+
+function lbBarCiz(dagilim){
+  const anahtarlar=["0","1","2","3","X"];
+  const maxSay=Math.max(1, ...anahtarlar.map(k=>dagilim[k]||0));
+  return anahtarlar.filter(k=>(dagilim[k]||0)>0 || k!=="X").map(k=>{
+    const say=dagilim[k]||0, genislik=Math.round((say/maxSay)*140)+3;
+    return '<div class="lb-bar-satir"><span class="et">'+(k==="X"?"✕":k)+'</span>'+
+      '<span class="cubuk" style="width:'+genislik+'px"></span><span class="say">'+say+'</span></div>';
+  }).join("");
+}
+function lbDoldur(){
+  if(GUNUN_NO==null){ lbIcerik.innerHTML='<div class="lb-bos">bulmaca henüz yüklenmedi.</div>'; return; }
+  lbIcerik.innerHTML='<div class="lb-bos">yükleniyor…</div>';
+  Promise.all([ VF.leaderboardOku("dortsuru", GUNUN_NO), VF.istatistikOku("dortsuru", GUNUN_NO) ]).then(([liste, ist])=>{
+    const kazananlar = liste.filter(r=>r.kazandi && !r.puansiz).sort((a,b)=>b.puan-a.puan);
+    const benAd = VF.ad;
+    let h = '<div style="font-size:13px;color:var(--soluk);margin-bottom:8px">bugün · #'+(GUNUN_NO+1)+'</div>';
+    h += kazananlar.length
+      ? kazananlar.map((r,i)=> '<div class="lb-satir'+(r.ad===benAd?' ben':'')+'"><span class="sira">'+(i+1)+'</span>'+
+          '<span class="ad">'+(r.ad||'isimsiz')+'</span><span class="puan">'+r.hatalar+' hata</span></div>').join("")
+      : '<div class="lb-bos">bugün henüz kimse tam çözmedi.</div>';
+    h += '<div class="lb-alt">toplam '+(ist.toplamCozen||0)+' kişi oynadı<br>'+lbBarCiz(ist.dagilim||{})+'</div>';
+    if(VF.kullanici) h += '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
+    lbIcerik.innerHTML = h;
+    const a=$("#lbAdDeg"); if(a) a.onclick=()=>{ const yeni=prompt("yeni görünen adın:", VF.ad||""); if(yeni) VF.adDegistir(yeni).then(lbDoldur); };
+  }).catch(e=>{ console.error(e); lbIcerik.innerHTML='<div class="lb-bos">yüklenemedi.</div>'; });
+}
+lbBtn.onclick=()=>{ lbPerde.classList.remove("gizli"); lbDoldur(); };
+lbKapat.onclick=()=>lbPerde.classList.add("gizli");
+lbPerde.addEventListener("click", e=>{ if(e.target===lbPerde) lbPerde.classList.add("gizli"); });
 </script>
 </body>
 </html>

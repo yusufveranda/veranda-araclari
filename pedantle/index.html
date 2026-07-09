@@ -250,6 +250,7 @@ footer a{color:var(--soluk)}
 </style>
 </head>
 <body>
+<button id="girisBtn" style="position:fixed;top:58px;right:14px;z-index:50;font-family:'Libre Baskerville',serif;font-size:13px;color:var(--soluk);background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:20px;padding:7px 16px;cursor:pointer;box-shadow:2px 2px 0 var(--mat-golge)">Google ile giriş</button>
 <div id="kivilcim"></div>
 <div class="oyun">
 
@@ -701,6 +702,12 @@ function lbKacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&l
 function skTahmin(){ return S.tahminler.length + 5*S.tahminler.filter(t=>t.hint).length; }
 let skGonderildi={}, skKapsam='gun', skTimer=null;
 function skGonder(){ if(S.mod!=='gun'||!S.bitti||S.pes) return Promise.resolve(null);
+  if(window.VF && VF.kullanici){
+    const key=S.gunNo+':'+VF.kullanici.uid;
+    if(skGonderildi[key]) return Promise.resolve(skGonderildi[key]);
+    const pr=VF.skorYaz('pedantle', S.gunNo, {puan:0, cozulen:1, deneme:skTahmin()}).then(()=>({ok:true})).catch(()=>({ok:true}));
+    skGonderildi[key]=pr; return pr;
+  }
   const nick=lbNick(); if(!nick) return Promise.resolve({yokNick:true});
   const key=S.gunNo+':'+nick.toLowerCase(); if(skGonderildi[key]) return Promise.resolve(skGonderildi[key]);   // sabit gün — gece yarısını geçen bitirici eski güne yazsın
   const q=new URLSearchParams({fn:'add',oyun:'pedantle',gun:String(S.gunNo),nick,puan:'0',cozulen:'1',deneme:String(skTahmin())});
@@ -711,6 +718,18 @@ function skKapat(){ $('skPerde').hidden=true; skTimerDur(); }
 function skGoster(kapsam){ skKapsam=kapsam;
   document.querySelectorAll('#skTablar button').forEach(b=>b.classList.toggle('secili',b.dataset.k===kapsam));
   skGeriCiz(); const L=$('skListe'),Li=$('skLider'); Li.textContent=''; L.innerHTML='<div class="lb-bos">yükleniyor…</div>';
+  if(window.VF && VF.kullanici){
+    if(kapsam!=='gun'){ L.innerHTML='<div class="lb-bos">haftalık/tüm-zamanlar görünümü Google hesaplarında yakında geliyor — şimdilik "bugün" sekmesine bak.</div>'; return; }
+    VF.leaderboardOku('pedantle', S.gunNo).then(arr=>{
+      if(kapsam!==skKapsam) return;
+      arr = arr.slice().sort((a,b)=>a.deneme-b.deneme);
+      if(!arr.length){ L.innerHTML='<div class="lb-bos">henüz kimse yok — ilk sen ol</div>'; return; }
+      L.innerHTML=arr.map((r,i)=>
+        '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+'</span><span class="lb-puan">'+r.deneme+' <small>tahmin</small></span></div>'
+      ).join('');
+    }).catch(()=>{ if(kapsam===skKapsam) L.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
+    return;
+  }
   const q=new URLSearchParams({fn:'list',oyun:'pedantle',kapsam});
   if(kapsam==='gun') q.set('gun',String(S.gunNo)); if(kapsam==='hafta') q.set('hbas',String(lbHaftaBas()));
   fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{ if(kapsam!==skKapsam) return;
@@ -729,6 +748,11 @@ function skGoster(kapsam){ skKapsam=kapsam;
 function skBeniEkle(){ const not=$('skEkleNot');
   if(S.mod!=='gun'){ not.textContent='tablo yalnız günün maddesinde'; return; }
   if(!S.bitti||S.pes){ not.textContent='önce maddeyi bul'; return; }
+  if(window.VF && VF.kullanici){
+    const key=S.gunNo+':'+VF.kullanici.uid; delete skGonderildi[key]; not.textContent='ekleniyor…';
+    skGonder().then(()=>{ not.textContent='eklendi: '+VF.ad+' ✓'; skGoster(skKapsam); });
+    return;
+  }
   if(!lbNick()){ const n=prompt('adın:'); if(n&&n.trim()) localStorage.setItem('harfiyat:nick',n.trim().slice(0,16)); else { not.textContent='isim gerekli'; return; } }
   const key=S.gunNo+':'+lbNick().toLowerCase(); delete skGonderildi[key]; not.textContent='ekleniyor…';
   skGonder().then(j=>{ not.textContent=(j&&j.kilit)?('zaten ekliydin: '+lbNick()):('eklendi: '+lbNick()+' ✓'); skGoster(skKapsam); }); }
@@ -825,6 +849,20 @@ manifestYukle().then(()=>{
 (function(){ function gunKontrol(){ if(S.mod==='gun' && S.gunNo && gunNumarasi()>S.gunNo && S.bitti) location.reload(); }
   setInterval(gunKontrol,60000); document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') gunKontrol(); }); })();
 
+})();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
+<script>
+(function(){
+  var b=document.getElementById('girisBtn');
+  b.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
+  VF.kullaniciDinle(function(u){
+    b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
+    if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
+  });
 })();
 </script>
 </body>
