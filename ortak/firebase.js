@@ -21,6 +21,10 @@
 
   let kullaniciAdi = null;
 
+  /* gizli tuş/URL-parametresi yerine gerçek yetki kontrolü — sadece bu uid'e admin-only
+     özellikler (önizleme seçicisi, rastgele-gün debug modu vb.) gösterilir. */
+  const ADMIN_UID = 'YSDnv5FlXHUZhbZpT17vs6WVg3f2';
+
   /* signInWithRedirect DEĞİL: Chrome tarayıcı hesabına girişliyken üçüncü taraf depolama
      bölümlemesi redirect akışının başlamasını sessizce engelliyor (bilinen Firebase/Chrome
      sorunu, SDK sürümünden bağımsız — authDomain firebaseapp.com kaldığı sürece geçerli).
@@ -188,13 +192,15 @@
     if(!eskiNick) return;
     if(sessionStorage.getItem('vfBannerKapali')) return;
     const kutu=document.createElement('div');
-    kutu.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:9998;background:#1f1912;color:#efe3c6;'+
-      'padding:14px 18px;display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;'+
-      'font-family:Georgia,serif;font-size:14px;box-shadow:0 -6px 24px rgba(0,0,0,.3)';
+    /* ÜSTTE, bottom'da DEĞİL: harfiyat ailesinde mobil ekran klavyesi de position:fixed;bottom:0
+       kullanıyor (z-index:30) — banner altta olursa klavyenin üstüne biner, oyunu kilitler. */
+    kutu.style.cssText='position:fixed;left:0;right:0;top:0;z-index:9998;background:#1f1912;color:#efe3c6;'+
+      'padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;'+
+      'font-family:Georgia,serif;font-size:13.5px;box-shadow:0 6px 24px rgba(0,0,0,.3)';
     kutu.innerHTML =
       '<span>Merhaba '+esc(eskiNick)+' — oyun gelişiyor. Google ile giriş yaparsan çok sevinirim 🙂 yoksa istatistiklerin kaybolabilir.</span>'+
-      '<button id="vfBannerGiris" style="padding:8px 16px;border:none;border-radius:8px;background:#4fa08c;color:#fff;font-size:14px;cursor:pointer">Google ile giriş</button>'+
-      '<button id="vfBannerKapat" style="padding:8px 12px;border:1px solid #3a2f22;border-radius:8px;background:transparent;color:#a6977a;font-size:13px;cursor:pointer">kapat</button>';
+      '<button id="vfBannerGiris" style="padding:8px 16px;border:none;border-radius:8px;background:#4fa08c;color:#fff;font-size:14px;cursor:pointer;flex:none">Google ile giriş</button>'+
+      '<button id="vfBannerKapat" style="padding:8px 12px;border:1px solid #3a2f22;border-radius:8px;background:transparent;color:#a6977a;font-size:13px;cursor:pointer;flex:none">kapat</button>';
     document.body.appendChild(kutu);
     kutu.querySelector('#vfBannerGiris').onclick=()=>girisYap().catch(e=>console.error(e));
     kutu.querySelector('#vfBannerKapat').onclick=()=>{ sessionStorage.setItem('vfBannerKapali','1'); kutu.remove(); };
@@ -204,6 +210,7 @@
     girisYap, cikisYap, kullaniciDinle, adDegistir, gocKontrolEt, eskiOyuncuBanner,
     skorYaz, leaderboardOku, istatistikArttir, istatistikOku, bayrakYaz,
     get kullanici(){ return auth.currentUser; },
-    get ad(){ return kullaniciAdi; }
+    get ad(){ return kullaniciAdi; },
+    get adminMi(){ return !!(auth.currentUser && auth.currentUser.uid===ADMIN_UID); }
   };
 })();
