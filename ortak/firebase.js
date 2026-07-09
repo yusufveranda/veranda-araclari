@@ -19,6 +19,9 @@
   const db = firebase.firestore();
   const provider = new firebase.auth.GoogleAuthProvider();
 
+  /* redirect sonrası dönen kimlik bilgisini işler; hata varsa (sessizce yutulmasın diye) konsola yazar */
+  auth.getRedirectResult().catch(e=>console.error('VF redirect sonucu hata', e));
+
   let kullaniciAdi = null;
 
   /* signInWithPopup DEĞİL: barındırmanın Cross-Origin-Opener-Policy başlığı popup'ın
