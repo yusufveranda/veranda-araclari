@@ -40,4 +40,11 @@
 
 ## Doğrulama notu
 
-Bu oturumda gerçek Lighthouse/PageSpeed/Core Web Vitals ölçümü yapılmadı (deploy sonrası, canlı sitede yapılmalı). AdSense başvurusundan önce en az bir kez çalıştır.
+**Gerçek Lighthouse/PageSpeed hâlâ çalıştırılmadı — bu ortamda çalıştırılamadı, sen çalıştırman lazım.** Bu oturumda denedim: bu sandbox'ta Node.js yok (lighthouse CLI kurulamıyor), PageSpeed Insights API'si de anahtarsız günlük kotası dolu olduğu için 429 döndürdü. Onun yerine elle (curl ile) ölçebildiğim şeyleri kontrol ettim:
+
+- **`sozluk/` (Dilimin Ucunda) 33MB tek HTML dosyası, gzip'li hâlde bile ~10MB, indirmesi ~15 saniye sürüyor** — bu bilinçli bir mimari karar (memory'de belgeli, tek build çıktısı), ben dokunmadım, ama Lighthouse'ta bu sayfa performans puanı çok düşük çıkacak, sürpriz olmasın diye not ediyorum.
+- Diğer sayfalar makul: ana sayfa 30KB (gzip 8.5KB), Atlas 36KB, Karşılık/Bitki/Kuş 4-5KB (verileri ayrı fetch ediyorlar, iyi). Wordle/Çatı 80-95KB (gömülü kelime listeleri).
+- gzip sıkıştırma her sayfada aktif (GitHub Pages/Fastly otomatik), `cache-control: max-age=600` makul.
+- `<img>` etiketlerinde alt metni eksik yok (kontrol edilen sayfalarda).
+
+**Sen yapman gereken (30 saniye sürer):** [pagespeed.web.dev](https://pagespeed.web.dev) adresine git, `verandatools.com` yaz, "Analyze" bas — hem mobil hem masaüstü skorunu görürsün. AdSense başvurusundan önce en az bir kez bak, özellikle `sozluk/` gibi ağır sayfalarda kırmızı bir şey çıkarsa haber ver.
