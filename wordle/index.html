@@ -711,6 +711,8 @@ function revealBitti(){
   revealAnim=false;
   if(bekleyenMesaj){ mesaj(bekleyenMesaj); bekleyenMesaj=''; }
   if(oyunBitti){ sonucHazir=true; sonucYeni=true; lbGonder(); }
+  if(oyun==='iskelime' && sonBitenTahta>=0 && mod==='gun'){ kelimeIstatPopup(tahtalar[sonBitenTahta]); }
+  sonBitenTahta=-1;
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
   // İskelime: ZORLA otomatik geçiş YOK (hayalet ipucu kısa kelimeyi erken çözünce "ışınlanma" oluyordu).
@@ -811,21 +813,46 @@ function haftaAraligiYazi(){ const b=haftaBas(), f=g=>gunTarih(g).toLocaleDateSt
 function nickAl(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function kacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-function lbHistogramHTML(ist){
-  if(!window.VF || !VF.kullanici) return '';
-  const maks = lbOyun()==='taraca' ? 6 : 1;
-  const anahtarlar=Array.from({length:maks+1},(_,i)=>String(i));
-  const dagilim=(ist&&ist.dagilim)||{};
+/* çubuk grafiği çizen genel yardımcı — anahtarlar sırayla, "X" varsa en sonda */
+function barCubuklariHTML(dagilim, anahtarlar){
   const maxSay=Math.max(1, ...anahtarlar.map(k=>dagilim[k]||0));
-  const cubuklar=anahtarlar.map(k=>{
+  return anahtarlar.filter(k=>(dagilim[k]||0)>0 || k!=='X').map(k=>{
     const say=dagilim[k]||0, genislik=Math.round((say/maxSay)*140)+3;
     return '<div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--soluk);margin:4px 0">'+
-      '<span style="width:18px;text-align:right">'+k+'</span>'+
+      '<span style="width:18px;text-align:right">'+(k==='X'?'✕':k)+'</span>'+
       '<span style="height:14px;background:var(--kirmizi);border-radius:3px;min-width:3px;width:'+genislik+'px"></span>'+
       '<span style="width:26px">'+say+'</span></div>';
   }).join('');
+}
+/* harfiyat/avlu: tek kelime, kaçıncı denemede çözüldüğü anlamlı bir histogram.
+   taraça: 6 ayrı kelime olduğu için tek bir "toplam" histogram anlamsız —
+   onun yerine her alt-kelime bitince kelimeIstatPopup() ile ayrı ayrı gösteriliyor. */
+function lbHistogramHTML(ist){
+  if(!window.VF || !VF.kullanici || lbOyun()==='taraca') return '';
+  const anahtarlar=['1','2','3','4','5','6','X'];
+  const dagilim=(ist&&ist.dagilim)||{};
   return '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--kutu-cizgi);font-size:13px;color:var(--soluk)">'+
-    'toplam '+(ist.toplamCozen||0)+' kişi oynadı<br>'+cubuklar+'</div>';
+    'toplam '+(ist.toplamCozen||0)+' kişi oynadı<br>'+barCubuklariHTML(dagilim,anahtarlar)+'</div>';
+}
+/* Taraça'da bir alt-kelime bitince o kelimeye özel küçük bir popup: kaç kişi kaçıncı denemede çözmüş */
+function kelimeIstatPopup(b){
+  if(!window.VF || !VF.kullanici) return;
+  const statOyun='w_taraca_'+b.uz, bucket=b.kazandi?String(b.gecmis.length):'X';
+  VF.istatistikArttir(statOyun, oyunGun, bucket);
+  VF.istatistikOku(statOyun, oyunGun).then(ist=>{
+    const anahtarlar=Array.from({length:b.maxSatir},(_,i)=>String(i+1)).concat(['X']);
+    const kapak=document.createElement('div');
+    kapak.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;'+
+      'background:var(--mat,#2a2016);color:var(--mur,#efe3c6);border:1px solid var(--kutu-cizgi,#3a2e20);'+
+      'border-radius:14px;padding:18px 20px;max-width:320px;width:calc(100% - 32px);box-shadow:0 12px 40px rgba(0,0,0,.4);font-family:Georgia,serif';
+    kapak.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
+      '<b style="font-size:14.5px">'+b.uz+' harfli — bugün</b><button style="background:none;border:none;color:var(--soluk,#a6977a);font-size:16px;cursor:pointer" id="_kipKapat">✕</button></div>'+
+      '<div style="font-size:12.5px;color:var(--soluk,#a6977a);margin-bottom:6px">toplam '+(ist.toplamCozen||0)+' kişi çözdü</div>'+
+      barCubuklariHTML((ist&&ist.dagilim)||{},anahtarlar);
+    document.body.appendChild(kapak);
+    kapak.querySelector('#_kipKapat').onclick=()=>kapak.remove();
+    setTimeout(()=>{ if(kapak.parentNode) kapak.remove(); },6000);
+  }).catch(()=>{});
 }
 let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlenir)
@@ -837,7 +864,10 @@ function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlen
     if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
     const pr=VF.skorYaz(lbOyun(), oyunGun, {puan:s.puan100, cozulen:s.cozulen, deneme:s.toplamDeneme})
       .then(()=>({ok:true})).catch(()=>({ok:true}));   // create-only: ikinci yazma zaten rules'ca reddedilir, kilit sayılır
-    VF.istatistikArttir(lbOyun(), oyunGun, String(s.cozulen));
+    if(lbOyun()!=='taraca'){   // taraça'nın kendi histogramı yok, alt-kelime popup'ları yeterli
+      const bucket = s.cozulen ? String(tahtalar[0].gecmis.length) : 'X';
+      VF.istatistikArttir(lbOyun(), oyunGun, bucket);
+    }
     lbGonderildi[key]=pr; return pr;
   }
   const nick=nickAl(); if(!nick) return Promise.resolve({yokNick:true});

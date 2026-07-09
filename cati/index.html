@@ -440,7 +440,7 @@ const GUNLER=window.CATI_GUNLER.gunler, MILAT=window.CATI_GUNLER.milat;
 
 let mod='gun';
 let gunVeri=null;                  // {t,kabul,k}
-let tahtalar=[], aktif=0, oyunBitti=false;
+let tahtalar=[], aktif=0, oyunBitti=false, sonBitenTahta=-1;
 let temaTahminler=[], temaAsama=0; // temaAsama: 0 = bulunamadı, 1..5 = kaçıncı biten kelimeden sonra
 /* ——— Takımyıldız gömme kipi (karma: yıldız=temayı kaç kelimede buldun, can=3 tema hakkı) ——— */
 const _MP=new URLSearchParams(location.search);
@@ -660,7 +660,7 @@ function dene(){
   b.giris=Array(b.uz).fill(''); b.imlec=0;
   if(kelime===b.cevap){ b.bitti=true; b.kazandi=true; }
   else if(b.gecmis.length>=b.maxSatir){ b.bitti=true; }
-  if(b.bitti) _tkSon=null;   // yeni hak geldi — eski "değil" mesajı kalmasın
+  if(b.bitti){ _tkSon=null; sonBitenTahta=aktif; }   // yeni hak geldi — eski "değil" mesajı kalmasın
   if(ses) renk.forEach((rk,i)=>setTimeout(()=>sReveal(rk),(i*CEVIR_GECIKME+CEVIR_SURE*.5)*1000));
   revealAnim=true;
   durumDegerlendir();
@@ -695,6 +695,8 @@ function sonucKontrol(){   // sonuç kartı: kelimeler bitti + (tema bulundu | h
 function revealBitti(){
   revealAnim=false;
   if(bekleyenMesaj){ mesaj(bekleyenMesaj); bekleyenMesaj=''; }
+  if(sonBitenTahta>=0 && mod==='gun'){ kelimeIstatPopup(tahtalar[sonBitenTahta]); }
+  sonBitenTahta=-1;
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
   sonucKontrol();
@@ -756,20 +758,39 @@ function haftaAraligiYazi(){ const b=haftaBas(), f=g=>gunTarih(g).toLocaleDateSt
 function nickAl(){ return (localStorage.getItem('harfiyat:nick')||'').trim(); }
 function kacis(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-function lbHistogramHTML(ist){
-  if(!window.VF || !VF.kullanici) return '';
-  const anahtarlar=Array.from({length:6},(_,i)=>String(i));
-  const dagilim=(ist&&ist.dagilim)||{};
+/* çubuk grafiği çizen genel yardımcı */
+function barCubuklariHTML(dagilim, anahtarlar){
   const maxSay=Math.max(1, ...anahtarlar.map(k=>dagilim[k]||0));
-  const cubuklar=anahtarlar.map(k=>{
+  return anahtarlar.filter(k=>(dagilim[k]||0)>0 || k!=='X').map(k=>{
     const say=dagilim[k]||0, genislik=Math.round((say/maxSay)*140)+3;
     return '<div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--soluk);margin:4px 0">'+
-      '<span style="width:18px;text-align:right">'+k+'</span>'+
+      '<span style="width:18px;text-align:right">'+(k==='X'?'✕':k)+'</span>'+
       '<span style="height:14px;background:var(--kirmizi);border-radius:3px;min-width:3px;width:'+genislik+'px"></span>'+
       '<span style="width:26px">'+say+'</span></div>';
   }).join('');
-  return '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--kutu-cizgi);font-size:13px;color:var(--soluk)">'+
-    'toplam '+(ist.toplamCozen||0)+' kişi oynadı<br>'+cubuklar+'</div>';
+}
+/* Çatı'da 5 ayrı kelime olduğu için tek bir "toplam" histogram anlamsız —
+   onun yerine her kelime bitince kelimeIstatPopup() ile ayrı ayrı gösteriliyor. */
+function lbHistogramHTML(ist){ return ''; }
+/* bir kelime bitince o kelimeye özel küçük bir popup: kaç kişi kaçıncı denemede çözmüş */
+function kelimeIstatPopup(b){
+  if(!window.VF || !VF.kullanici) return;
+  const statOyun='w_cati_'+b.uz, bucket=b.kazandi?String(b.gecmis.length):'X';
+  VF.istatistikArttir(statOyun, oyunGun, bucket);
+  VF.istatistikOku(statOyun, oyunGun).then(ist=>{
+    const anahtarlar=Array.from({length:b.maxSatir},(_,i)=>String(i+1)).concat(['X']);
+    const kapak=document.createElement('div');
+    kapak.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;'+
+      'background:var(--mat,#2a2016);color:var(--mur,#efe3c6);border:1px solid var(--kutu-cizgi,#3a2e20);'+
+      'border-radius:14px;padding:18px 20px;max-width:320px;width:calc(100% - 32px);box-shadow:0 12px 40px rgba(0,0,0,.4);font-family:Georgia,serif';
+    kapak.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
+      '<b style="font-size:14.5px">'+b.uz+' harfli — bugün</b><button style="background:none;border:none;color:var(--soluk,#a6977a);font-size:16px;cursor:pointer" id="_kipKapat">✕</button></div>'+
+      '<div style="font-size:12.5px;color:var(--soluk,#a6977a);margin-bottom:6px">toplam '+(ist.toplamCozen||0)+' kişi çözdü</div>'+
+      barCubuklariHTML((ist&&ist.dagilim)||{},anahtarlar);
+    document.body.appendChild(kapak);
+    kapak.querySelector('#_kipKapat').onclick=()=>kapak.remove();
+    setTimeout(()=>{ if(kapak.parentNode) kapak.remove(); },6000);
+  }).catch(()=>{});
 }
 let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){
@@ -782,7 +803,6 @@ function lbGonder(){
     if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
     const pr=VF.skorYaz('cati', oyunGun, {puan:s.puan100, cozulen:s.cozulen, deneme:s.toplamDeneme})
       .then(()=>({ok:true})).catch(()=>({ok:true}));
-    VF.istatistikArttir('cati', oyunGun, String(s.cozulen));
     lbGonderildi[key]=pr; return pr;
   }
   const nick=nickAl(); if(!nick) return Promise.resolve({yokNick:true});
