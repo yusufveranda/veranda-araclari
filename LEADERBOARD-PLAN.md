@@ -139,14 +139,18 @@ service cloud.firestore {
     }
     match /bayraklar/{belge} {
       allow read: if true;
-      allow create: if request.auth != null && request.resource.data.sayi == 1;
-      allow update: if request.auth != null && request.resource.data.sayi == resource.data.sayi + 1;
+      allow create: if request.resource.data.sayi == 1;
+      allow update: if request.resource.data.sayi == resource.data.sayi + 1;
     }
   }
 }
 ```
 
-Mantık: herkes okuyabilir (leaderboard herkese açık), ama sadece kendi uid'in altına yazabilirsin ve skorlar create-only (üzerine yazamazsın — bir gün/bir kullanıcı kilidi). İstatistik/bayrak sayaçları sadece +1 artabilir, başka türlü değiştirilemez.
+Mantık: herkes okuyabilir (leaderboard herkese açık), ama sadece kendi uid'in altına yazabilirsin ve skorlar create-only (üzerine yazamazsın — bir gün/bir kullanıcı kilidi). İstatistik sayaçları sadece +1 artabilir, başka türlü değiştirilemez. **Bayraklar kasıtlı olarak `request.auth`'suz** (2026-07-10 güncellemesi, aşağıya bkz.) — girişli olmayanlar da bildirebilsin diye; kötüye kullanım riski düşük (sadece bir sayaç, kişisel veri yok).
+
+## Bayrak sistemi — girişten bağımsız tek depoya indirildi (2026-07-10)
+
+Kullanıcı itiraz etti: bayraklar girişli/girişsiz ayrımına göre iki ayrı yerde (Sheets + Firestore) birikiyordu, "düzenli düzeltme" için tek yer istedi. `VF.bayrakYaz` artık `auth.currentUser` kontrolü yapmıyor — VF varsa (firebase.js yüklüyse) HERKESTEN Firestore'a yazıyor, girişli olsun olmasın. **SENİN YAPMAN GEREKEN**: Firebase Console → Firestore → Rules'ta yukarıdaki `bayraklar` bloğunu güncelleyip **Publish** et (`request.auth != null &&` kısmı kaldırıldı) — bu yapılmadan girişsiz bildirimler "permission-denied" ile sessizce reddedilir.
 
 ## Sancak entegrasyonu (2026-07-09, ilk oyun)
 
