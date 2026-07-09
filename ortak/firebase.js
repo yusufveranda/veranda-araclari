@@ -174,11 +174,12 @@
       .then(s=>s.exists?s.data():{dagilim:{},toplamCozen:0});
   }
 
-  /* "bu kelime olmalı" bayrağı — girişliyse Firestore'a (bayraklar/{oyun}_{kelime}),
-     aynı oyun+kelime tekrar bildirilirse sayaç +1 (dedup, satır çoğalmaz — Sheets'teki
-     davranışın aynısı). Girişli değilse çağrılmaz, bayrak.js eski Sheets yoluna düşer. */
+  /* "bu kelime olmalı" bayrağı — Firestore'a (bayraklar/{oyun}_{kelime}) yazar,
+     GİRİŞLİ OLMASA BİLE — tek bir bayrak deposu, iki ayrı yerde (Sheets+Firestore)
+     bakmak zorunda kalınmasın. Aynı oyun+kelime tekrar bildirilirse sayaç +1
+     (dedup, satır çoğalmaz). Rules'ta bu koleksiyon girişsiz create/update'e
+     açık olmalı (bkz. LEADERBOARD-PLAN.md'deki güncellenmiş rules). */
   function bayrakYaz(oyun, kelime, gun){
-    const u = auth.currentUser; if(!u) return Promise.resolve({ok:false});
     const k = String(kelime||'').trim().toLowerCase(); if(!k) return Promise.resolve({ok:false});
     const ref = db.collection('bayraklar').doc(oyun+'_'+k);
     return db.runTransaction(async (t)=>{

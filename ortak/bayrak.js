@@ -1,8 +1,9 @@
 // bayrak.js — "bu kelime olmalı" bildirimi
 // Oyunlar bilinmeyen kelime mesajı gösterdikten sonra kelimeBayrak(kelime, oyun, gun)
-// çağırır; #mesaj kutusuna bir 🚩 düğmesi ekler. Basılınca kelime, girişliyse Firestore'a
-// (bayraklar/{oyun}_{kelime}, VF.bayrakYaz), girişli değilse eskisi gibi Google Sheets'teki
-// "bayraklar" sayfasına yazılır (leaderboard ile aynı Apps Script, fn=flag).
+// çağırır; #mesaj kutusuna bir 🚩 düğmesi ekler. Basılınca kelime — girişli olsun ya da
+// olmasın — herkesten Firestore'a yazılır (bayraklar/{oyun}_{kelime}, VF.bayrakYaz);
+// tek depo, iki ayrı yerde (Sheets+Firestore) bakılmasın diye. VF hiç yüklü değilse
+// (firebase.js bu sayfada yoksa) eski Google Sheets yoluna düşer.
 (function(){
   const URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeNH7-M9udtLovpo7Wh_vdTTz9sc31ccdZ050IJdgqt2/exec';
   const LS='vt_bayraklar';   // bu tarayıcıdan zaten bildirilenler — aynı kelimeyi tekrar gönderme
@@ -30,7 +31,7 @@
           const g=eski(); g[anah]=1; try{ localStorage.setItem(LS,JSON.stringify(g)); }catch(e){} }
         else { b.textContent='🚩 olmadı — tekrar dene'; b.disabled=false; }
       };
-      if(window.VF && VF.kullanici){
+      if(window.VF){
         VF.bayrakYaz(oyun, k, gun).then(bitti).catch(()=>bitti({ok:false}));
         return;
       }
