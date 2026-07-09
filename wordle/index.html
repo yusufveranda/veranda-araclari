@@ -496,7 +496,7 @@ body{transition:background .4s,color .4s}
     <div class="modbar">
       <div class="segment mod" id="modSeg">
         <button data-mod="gun" class="secili" data-ad="mod_gun">günün kelimesi</button>
-        <button data-mod="serbest" data-ad="mod_sonsuz">sonsuz</button>
+        <button data-mod="serbest" data-ad="mod_sonsuz" hidden>sonsuz</button>
       </div>
       <button class="yenibtn gizli" id="yeniBtn">yeni ↻</button>
     </div>
@@ -1374,6 +1374,7 @@ temaUygula(); sesUygula();
     b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
     document.getElementById('lbEkleBtn').style.display = u ? 'none' : '';   // girişliyse otomatik gönderiliyor, butona gerek yok
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
+    if(VF.adminMi){ const sb=document.querySelector('[data-mod="serbest"]'); if(sb) sb.hidden=false; }
   });
 })();
 </script>

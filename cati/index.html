@@ -55,8 +55,6 @@ body{transition:background .4s,color .4s}
 .simge svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .simge.kapali{color:var(--soluk);opacity:.7}
 .simge.yardim{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:var(--mur)}
-.simge.sonsuz-sakli{opacity:0;background:none;border-color:transparent;box-shadow:none;cursor:default}
-.simge.sonsuz-sakli:hover,.simge.sonsuz-sakli:active{transform:none;box-shadow:none}
 .gizli{display:none!important}
 
 /* ----- oyun sekmeleri: verandle oyunları arası geçiş ----- */
@@ -337,7 +335,6 @@ body.gomulu .eve-don,body.gomulu .tepe-bar,body.gomulu .gecen-hafta,body.gomulu 
       <button class="simge yardim" id="yardimBtn" title="nasıl oynanır" aria-label="nasıl oynanır">?</button>
       <button class="simge" id="sesBtn" title="ses" aria-label="ses aç/kapa"></button>
       <button class="simge" id="temaBtn" title="tema" aria-label="aydınlık/gece"></button>
-      <button class="simge sonsuz-sakli" id="sonsuzBtn" aria-hidden="true" tabindex="-1"></button>
     </div>
   </div>
 
@@ -367,8 +364,8 @@ body.gomulu .eve-don,body.gomulu .tepe-bar,body.gomulu .gecen-hafta,body.gomulu 
     <a href="../pedantle/" data-ad="pedantle">Parsel</a>
   </div>
 
-  <!-- sonsuz mod arayüzde sunulmaz; gece butonunun yanındaki görünmez düğme (sonsuzBtn) açar.
-       serbestteyken bu çubuk görünür: günlüğe dönüş + yeni tema -->
+  <!-- sonsuz mod arayüzde sunulmaz — sadece admin girişinde modBar (aşağıda) açılıp "sonsuz" sekmesinden erişilir.
+       serbestteyken bu çubuk (adminMi olmasa da) görünür: günlüğe dönüş + yeni tema -->
   <div class="modbar gizli" id="modBar">
     <div class="segment mod" id="modSeg">
       <button data-mod="gun" class="secili" data-ad="mod_gun">günün kelimesi</button>
@@ -1147,7 +1144,7 @@ function oyunlaKur(){
   clearTimeout(revealTimer); revealTimer=null; revealAnim=false;
   if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
-  document.getElementById('modBar').classList.toggle('gizli', mod!=='serbest');   // günlükte mod çubuğu hiç görünmez
+  document.getElementById('modBar').classList.toggle('gizli', mod!=='serbest' && !(window.VF && VF.adminMi));   // günlükte mod çubuğu hiç görünmez — admin hariç
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni tema':'sonsuz oyun';
   mesaj(''); ciz(); istatGoster();
   if(oyunBitti && sonucHazir) lbGonder();
@@ -1178,9 +1175,6 @@ function introKapat(){ document.getElementById('introModal').classList.add('gizl
 /* ===== bağlama ===== */
 document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>{ modSec(x.dataset.mod); x.blur(); });
 document.getElementById('yeniBtn').onclick=yeniOyun;
-document.getElementById('sonsuzBtn').onclick=function(){   // görünmez kapı: ilk basış sonsuza geçer, sonrakiler yeni tema çeker
-  this.blur(); if(mod!=='serbest') modSec('serbest'); else yeniOyun();
-};
 document.getElementById('silBtn').onclick=function(){ sil(); this.blur(); };
 document.getElementById('deneBtn').onclick=function(){ dene(); this.blur(); };
 document.getElementById('sonucKatman').onclick=function(e){ if(e.target===this) sonucKapat(); };
@@ -1254,6 +1248,7 @@ setTimeout(vecYukle, 2500);   // tema eşleşmesi için vektörleri arkadan geti
     b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
     document.getElementById('lbEkleBtn').style.display = u ? 'none' : '';
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
+    if(VF.adminMi) document.getElementById('modBar').classList.remove('gizli');
   });
 })();
 </script>

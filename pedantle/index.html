@@ -283,7 +283,7 @@ footer a{color:var(--soluk)}
 
   <div class="modlar" id="modlar">
     <button data-mod="gun" class="secili">günün maddesi</button>
-    <button data-mod="arsiv">arşiv</button>
+    <button data-mod="arsiv" hidden>arşiv</button>
   </div>
 
   <div class="dun-kart gizli" id="dunKart">
@@ -901,6 +901,7 @@ manifestYukle().then(()=>{
     b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
     document.getElementById('skEkleBtn').style.display = u ? 'none' : '';
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
+    if(VF.adminMi){ const ab=document.querySelector('[data-mod="arsiv"]'); if(ab) ab.hidden=false; }
   });
 })();
 </script>

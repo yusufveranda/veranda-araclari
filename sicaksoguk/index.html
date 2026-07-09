@@ -251,7 +251,7 @@ footer a{color:var(--soluk)}
 
   <div class="modlar" id="modlar">
     <button data-mod="gun" class="secili" data-ad="mod_gun">günün kelimesi</button>
-    <button data-mod="serbest" data-ad="mod_sonsuz">sonsuz</button>
+    <button data-mod="serbest" data-ad="mod_sonsuz" hidden>sonsuz</button>
   </div>
 
   <div class="dun-kart gizli" id="dunKart">
@@ -902,6 +902,7 @@ setTimeout(()=>{
     b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
     document.getElementById('skEkleBtn').style.display = u ? 'none' : '';
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
+    if(VF.adminMi){ const sb=document.querySelector('[data-mod="serbest"]'); if(sb) sb.hidden=false; }
   });
 })();
 </script>
