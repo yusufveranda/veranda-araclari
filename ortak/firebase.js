@@ -19,15 +19,14 @@
   const db = firebase.firestore();
   const provider = new firebase.auth.GoogleAuthProvider();
 
-  /* redirect sonrası dönen kimlik bilgisini işler; hata varsa (sessizce yutulmasın diye) konsola yazar */
-  auth.getRedirectResult().catch(e=>console.error('VF redirect sonucu hata', e));
-
   let kullaniciAdi = null;
 
-  /* signInWithPopup DEĞİL: barındırmanın Cross-Origin-Opener-Policy başlığı popup'ın
-     kapanışını izlemeyi engelliyor (popup açılır açılmaz kapanmış gibi görünüyor).
-     Redirect bu sorunu tamamen atlıyor — sayfa Google'a gidip aynı URL'ye geri döner. */
-  function girisYap(){ return auth.signInWithRedirect(provider); }
+  /* signInWithRedirect DEĞİL: Chrome tarayıcı hesabına girişliyken üçüncü taraf depolama
+     bölümlemesi redirect akışının başlamasını sessizce engelliyor (bilinen Firebase/Chrome
+     sorunu, SDK sürümünden bağımsız — authDomain firebaseapp.com kaldığı sürece geçerli).
+     Popup bu sorunu atlıyor; ilk denemedeki "hemen kapanma" asıl domain yetkisiz olduğu
+     içindi (o zaman düzeltildi), COOP uyarısı zararsız görünüyor. */
+  function girisYap(){ return auth.signInWithPopup(provider); }
   function cikisYap(){ return auth.signOut(); }
 
   const esc = s=>String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
