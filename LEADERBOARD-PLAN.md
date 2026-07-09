@@ -232,3 +232,17 @@ Kalan maddelerden "5 dosyada gerçek oturumla test edilmedi" kapatıldı. Gerçe
 - **Şömine**: bugün henüz oynanmamıştı, kelime bilinmediği için "pes et" ile cevap görüldü (gezi). Kod `S.pes` true iken `skGonder()`'ı erken `return` ile atlıyor — pes edilen oyunlar bilerek Firestore'a yazılmıyor, bu yüzden `exists:false` beklenen sonuç. **Şömine'nin gerçek "kazanma" yazma yolu bu oturumda test edilemedi** (cevap görülünce bugünkü tek şans kullanıldı) — yarın günün kelimesiyle gerçek bir kazanmayla doğrulanabilir, ama kod aynı `VF.skorYaz` deseni olduğu için risk düşük.
 
 Sonuç: 6/7 oyun (Atlas, Çatı, Harfiyat, Taraça, Avlu, Parsel) gerçek Google oturumuyla uçtan uca doğrulandı, hiçbir konsol hatası yok. Şömine'nin kazanma yolu yapısal olarak aynı, ama canlı doğrulanmadı.
+
+## Bayrak/admin-uid/panel/nav-panel (2026-07-09) — tamamlandı
+
+Yukarıdaki "diğer bekleyen fikirler" listesindeki ilk 3 madde bitti:
+
+- **Bayrak → Firestore**: `VF.bayrakYaz(oyun, kelime, gun)` eklendi (`bayraklar/{oyun}_{kelime}`, create-only+increment, rules'la uyumlu). `bayrak.js` girişliyse Firestore'a, değilse eskisi gibi Sheets'e yazıyor.
+- **Admin-only uid kontrolü**: `VF.adminMi` eklendi (sabit uid: `YSDnv5FlXHUZhbZpT17vs6WVg3f2`, Yusuf Verandle hesabı). Takımyıldız'ın `?dev=1` localStorage-kalıcı debug tuşu ve Karanlık Oda/Jenerik'in `?preview=1` önizleme seçicisi bu kontrole çevrildi.
+- **TÜM "rastgele" tuşları admin-only**: kullanıcı netleştirdi — rastgele/pratik erişimi sadece kendisi için. Kur/Aşı/Dört Sürü/Dört Demet'teki `.gizli-rast` (opacity:0 ama herkes tıklayabiliyordu, gerçek erişim kontrolü değildi) + Atlas/Sancak/Karanlık Oda/Jenerik'teki görünür 🎲 tuşları — hepsi artık varsayılan `hidden`, sadece `VF.adminMi` ile açılıyor. **Yeni bir oyun eklenirse aynı deseni uygula**: herhangi bir "rastgele/pratik/debug" özelliği varsayılan gizli olsun, sadece adminMi ile açılsın — asla herkese açık bırakma.
+- **panel/**: kullanıcı önce "kaç kişi oynadı + sen oynadın mı" gösteren bir sayfa istedi, sonra sadeleştirip sadece kendi verisini istedi (aggregate istatistik kaldırıldı).
+- **Site-içi gezinme paneli** (`ortak/nav-panel.js`): kullanıcının asıl istediği "panel" buymuş — sağdan açılan bir çekmece, tüm oyun+araçları listeliyor, oyunlarda girişliyken "bugün oynadın mı" ✓. Kara Kaplı **hariç** tutuldu (kullanıcı: "kimse görmesin, o bana özel"). **Kara Kaplı'yı hiçbir paylaşılan/site-geneli listeye ekleme** — bkz. memory `kara-kapli-plani.md`.
+
+Hepsi gerçek Google oturumuyla (Yusuf Verandle hesabı) uçtan uca test edildi, konsol hatasız.
+
+**Hâlâ karar bekleyen**: haftalık/tüm-zamanlar sıralaması — kullanıcı "gün, hafta ve ay sıralaması yeterli gibi" dedi (üç ayrı zaman penceresi: günlük zaten var, haftalık zaten vardı eski sistemde, aylık yeni eklenecek) — min-oyun-eşiği veya çoklu-tablo YOK, sadece üç granülerlik. Henüz kodlanmadı.
