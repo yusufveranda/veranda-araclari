@@ -220,3 +220,15 @@ Bu üçü konuşulacak, Firestore aggregation'ı bu karara göre kurulacak.
 - Kara Kaplı (şifreli not defteri) senkron/yedek + Takımyıldız seri senkronu — leaderboard işinden bağımsız, ayrı planlanmalı.
 
 **Bilinen, düzeltilmeyecek (şimdilik) davranış**: "Bugün çözdüm mü?" bilgisi cihaza özgü (localStorage), hesaba değil — aynı hesapla farklı cihazdan girilince o cihaz "çözülmemiş" gösterip tekrar oynatabiliyor. Veri kaybı yok (ikinci gönderim create-only kilit yüzünden sessizce reddediliyor), sadece gereksiz tekrar oynama. Düzeltmek istenirse: girişte "bugün bu hesapla zaten skor var mı" diye Firestore'a bakıp varsa sonucu göstermek gerekir (14 dosyada tekrar edilecek bir iş) — şimdilik ertelendi.
+
+## Gerçek Google oturumuyla uçtan uca doğrulama (2026-07-09) — tamamlandı
+
+Kalan maddelerden "5 dosyada gerçek oturumla test edilmedi" kapatıldı. Gerçek tarayıcıda (Yusuf Verandle hesabı, zaten girişliydi) her oyun tamamlanıp Firestore doğrudan sorgulanarak (`firebase.firestore().collection('skorlar').doc(oyun).collection(gun).doc(uid).get()`) doğrulandı:
+
+- **Atlas**: 3x3 ızgara sıfırdan oynanıp bitirildi (9/9, 417 puan). Yazılan: `{puan:46, cozulen:9, deneme:11}` — `puan` alanı `Math.round(417/9)` ile 0-100'e normalize ediliyor (kod yorumunda "backend uyumu" diye belirtilmiş, hata değil).
+- **Çatı**: bugün zaten tamamlanmıştı (57/100). Yazılan veri UI'daki sonuçla birebir eşleşti.
+- **Harfiyat / Taraça / Avlu**: üçü de bugün tamamlanmıştı (74, 66, 68 puan). Üçü de Firestore'da doğru `oyun` anahtarıyla (`harfiyat`/`taraca`/`avlu`) doğrulandı.
+- **Parsel**: bugün zaten çözülmüştü (Avustralya, 7 tahmin). Firestore'da `deneme:16` görünüyor çünkü `skTahmin()` formülü `tahminler.length + 5*ipucuSayısı` — ekrandaki "7 tahminde" ham deneme sayısı, Firestore'daki ipucu-cezalı skor; tutarlı, hata değil.
+- **Şömine**: bugün henüz oynanmamıştı, kelime bilinmediği için "pes et" ile cevap görüldü (gezi). Kod `S.pes` true iken `skGonder()`'ı erken `return` ile atlıyor — pes edilen oyunlar bilerek Firestore'a yazılmıyor, bu yüzden `exists:false` beklenen sonuç. **Şömine'nin gerçek "kazanma" yazma yolu bu oturumda test edilemedi** (cevap görülünce bugünkü tek şans kullanıldı) — yarın günün kelimesiyle gerçek bir kazanmayla doğrulanabilir, ama kod aynı `VF.skorYaz` deseni olduğu için risk düşük.
+
+Sonuç: 6/7 oyun (Atlas, Çatı, Harfiyat, Taraça, Avlu, Parsel) gerçek Google oturumuyla uçtan uca doğrulandı, hiçbir konsol hatası yok. Şömine'nin kazanma yolu yapısal olarak aynı, ama canlı doğrulanmadı.
