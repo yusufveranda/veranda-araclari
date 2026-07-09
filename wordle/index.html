@@ -828,7 +828,7 @@ function barCubuklariHTML(dagilim, anahtarlar){
    taraça: 6 ayrı kelime olduğu için tek bir "toplam" histogram anlamsız —
    onun yerine her alt-kelime bitince kelimeIstatPopup() ile ayrı ayrı gösteriliyor. */
 function lbHistogramHTML(ist){
-  if(!window.VF || !VF.kullanici || lbOyun()==='taraca') return '';
+  if(!window.VF || lbOyun()==='taraca') return '';
   const anahtarlar=['1','2','3','4','5','6','X'];
   const dagilim=(ist&&ist.dagilim)||{};
   return '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--kutu-cizgi);font-size:13px;color:var(--soluk)">'+
@@ -977,13 +977,17 @@ function lbGoster(kapsam){
     let ust = kapsam==='hafta' ? '<div class="lb-aralik">'+haftaAraligiYazi()+'</div>' : '';
     if(kapsam!=='gun' && arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'tüm zamanların')+' lideri: <b>'+kacis(arr[0].nick)+'</b> · '+arr[0]._ort.toFixed(1)+' ort';
     liderEl.innerHTML=ust;
-    if(!arr.length){ listeEl.innerHTML='<div class="lb-bos">henüz kimse yok — ilk sen ol</div>'; return; }
-    listeEl.innerHTML=arr.map((r,i)=>{
+    const liste = arr.length ? arr.map((r,i)=>{
       const benMi=String(r.nick).toLowerCase()===ben;
       const sag = kapsam==='gun' ? r.puan+' <small>puan</small>'
         : r._ort.toFixed(1)+' <small>ort · '+r._gun+' gün</small>';
       return `<div class="lb-sat${benMi?' ben':''}"><span class="lb-sira">${i+1}</span><span class="lb-nick">${kacis(r.nick)}</span><span class="lb-puan">${sag}</span></div>`;
-    }).join('');
+    }).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
+    listeEl.innerHTML = liste;
+    /* Firestore istatistiği okuma herkese açık — girişli olmasan da o günün dağılımını göster */
+    if(window.VF && kapsam==='gun' && lbOyun()!=='taraca'){
+      VF.istatistikOku(lbOyun(), oyunGun).then(ist=>{ if(kapsam===lbKapsam) listeEl.insertAdjacentHTML('beforeend', lbHistogramHTML(ist)); }).catch(()=>{});
+    }
   }).catch(()=>{ if(kapsam===lbKapsam) listeEl.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
 }
 function lbBeniEkle(){

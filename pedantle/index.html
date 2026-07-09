@@ -703,7 +703,7 @@ function skTahmin(){ return S.tahminler.length + 5*S.tahminler.filter(t=>t.hint)
 const SK_KOVA_SIRA=["1-5","6-10","11-15","16-20","21+"];
 function skBucket(n){ if(n<=5)return"1-5"; if(n<=10)return"6-10"; if(n<=15)return"11-15"; if(n<=20)return"16-20"; return"21+"; }
 function skHistogramHTML(ist){
-  if(!window.VF || !VF.kullanici) return '';
+  if(!window.VF) return '';
   const dagilim=(ist&&ist.dagilim)||{};
   const maxSay=Math.max(1, ...SK_KOVA_SIRA.map(k=>dagilim[k]||0));
   const cubuklar=SK_KOVA_SIRA.filter(k=>dagilim[k]).map(k=>{
@@ -757,10 +757,13 @@ function skGoster(kapsam){ skKapsam=kapsam;
     let ust=kapsam==='hafta'?'<div class="lb-aralik">'+lbHaftaAralik()+'</div>':'';
     if(kapsam!=='gun'&&arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'tüm zamanların')+' lideri: <b>'+lbKacis(arr[0].nick)+'</b> · '+ort(arr[0]._deg)+' ort tahmin';
     Li.innerHTML=ust;
-    if(!arr.length){ L.innerHTML='<div class="lb-bos">henüz kimse yok — ilk sen ol</div>'; return; }
-    L.innerHTML=arr.map((r,i)=>{ const benMi=String(r.nick).toLowerCase()===ben;
+    const liste = arr.length ? arr.map((r,i)=>{ const benMi=String(r.nick).toLowerCase()===ben;
       const sag=kapsam==='gun'?r.deneme+' <small>tahmin</small>':ort(r._deg)+' <small>ort · '+r._gun+' gün</small>';
-      return '<div class="lb-sat'+(benMi?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.nick)+'</span><span class="lb-puan">'+sag+'</span></div>'; }).join('');
+      return '<div class="lb-sat'+(benMi?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.nick)+'</span><span class="lb-puan">'+sag+'</span></div>'; }).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
+    L.innerHTML = liste;
+    if(window.VF && kapsam==='gun'){
+      VF.istatistikOku('pedantle', S.gunNo).then(ist=>{ if(kapsam===skKapsam) L.insertAdjacentHTML('beforeend', skHistogramHTML(ist)); }).catch(()=>{});
+    }
   }).catch(()=>{ if(kapsam===skKapsam) L.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; }); }
 function skBeniEkle(){ const not=$('skEkleNot');
   if(S.mod!=='gun'){ not.textContent='tablo yalnız günün maddesinde'; return; }
