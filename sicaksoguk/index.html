@@ -723,7 +723,7 @@ function skGoster(kapsam){
       if(arr[0]) ust+='🏆 '+(kapsam==='hafta'?'bu haftanın':'bu ayın')+' lideri: <b>'+lbKacis(arr[0].ad)+'</b> · '+ort(arr[0]._deg)+' ort tahmin';
       Li.innerHTML=ust;
       L.innerHTML = arr.length ? arr.map((r,i)=>
-        '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+'</span><span class="lb-puan">'+ort(r._deg)+' <small>ort · '+r._gun+' gün</small></span></div>'
+        '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+(r.streak>=2?' 🔥'+r.streak:'')+'</span><span class="lb-puan">'+ort(r._deg)+' <small>ort · '+r._gun+' gün</small></span></div>'
       ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
     }).catch(()=>{ if(kapsam===skKapsam) L.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
     return;

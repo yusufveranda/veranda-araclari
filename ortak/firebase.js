@@ -20,6 +20,7 @@
   const provider = new firebase.auth.GoogleAuthProvider();
 
   let kullaniciAdi = null;
+  let kullaniciStreak = 0;   // günde ≥3 farklı oyun bitirilince artan üst üste gün sayısı
   /* skorYaz, kullaniciAdi Firestore'dan yüklenmeden (ilk auth çözümü tamamlanmadan) asla
      yazmasın diye — auth.currentUser hemen (yerel önbellekten) dolarken kullaniciAdi'nin
      kendisi ayrı bir Firestore okumasıyla geliyor; sayfa yeni açılıp oyun zaten bitmiş
@@ -100,8 +101,10 @@
           const ad = await adSor();
           await ref.set({ad, olusturulma: firebase.firestore.FieldValue.serverTimestamp()});
           kullaniciAdi = ad;
+          kullaniciStreak = 0;
         } else {
           kullaniciAdi = snap.data().ad;
+          kullaniciStreak = snap.data().streak || 0;
         }
         authHazirIsaretle();
         cb({uid:u.uid, ad:kullaniciAdi});
@@ -117,14 +120,37 @@
       .then(()=>gocKontrolEt());   // adını değiştirdiyse, yeni adla da bir kez daha eski veriyi dener
   }
 
-  /* günün skorunu yaz — create-only, bir gün/bir kullanıcı tek satır (doküman ID = uid) */
+  /* günün skorunu yaz — create-only, bir gün/bir kullanıcı tek satır (doküman ID = uid).
+     streak, skorYaz anındaki bilinen değer (yazma anında) — leaderboard satırlarında ayrı
+     okuma yapmadan 🔥 rozeti göstermek için gömülü tutulur, aynı gün içindeki 3. oyunun
+     streak'i artırması bir sonraki skorYaz çağrısına yansır (bkz. streakGuncelle). */
   function skorYaz(oyun, gun, veri){
     if(!auth.currentUser) return Promise.resolve();
     return kullaniciHazir.then(()=>{
       const u = auth.currentUser; if(!u) return;   // bu arada çıkış yapıldıysa yazma
       const ref = db.collection('skorlar').doc(oyun).collection(String(gun)).doc(u.uid);
-      return ref.set(Object.assign({ad:kullaniciAdi}, veri, {zaman: firebase.firestore.FieldValue.serverTimestamp()}));
+      return ref.set(Object.assign({ad:kullaniciAdi, streak:kullaniciStreak}, veri, {zaman: firebase.firestore.FieldValue.serverTimestamp()}));
     });
+  }
+
+  /* günde ≥3 farklı oyun bitirilince çağrılır (bkz. ortak/nav-panel.js tikleriDoldur).
+     bugunGun: takvim gününü tekilleştiren herhangi bir sayı (oyundan bağımsız, aynı gün
+     hep aynı değeri üretmeli — nav-panel.js'teki g2026utc() kullanılıyor). Aynı gün
+     tekrar çağrılırsa no-op (idempotent); dünden bugüne art arda geldiyse +1, aradan
+     gün atlandıysa 1'e sıfırlanır. */
+  function streakGuncelle(bugunGun){
+    if(!auth.currentUser) return Promise.resolve();
+    const u = auth.currentUser;
+    const ref = db.collection('kullanicilar').doc(u.uid);
+    return ref.get().then(snap=>{
+      const veri = snap.exists ? snap.data() : {};
+      const oncekiGun = veri.streakGun;
+      if(oncekiGun === bugunGun) return;   // bugün zaten sayıldı
+      const oncekiStreak = veri.streak || 0;
+      const yeni = (oncekiGun === bugunGun - 1) ? oncekiStreak + 1 : 1;
+      kullaniciStreak = yeni;
+      return ref.set({streak:yeni, streakGun:bugunGun}, {merge:true});
+    }).catch(()=>{});
   }
 
   function leaderboardOku(oyun, gun){
@@ -142,10 +168,11 @@
       const kisi = {};
       gunler.forEach(gun=>gun.forEach(k=>{
         const ad = k.ad || 'isimsiz';
-        if(!kisi[ad]) kisi[ad] = {ad, puan:0, deneme:0, oyunSayisi:0};
+        if(!kisi[ad]) kisi[ad] = {ad, puan:0, deneme:0, oyunSayisi:0, streak:0};
         kisi[ad].puan += (k.puan||0);
         kisi[ad].deneme += (k.deneme||0);
         kisi[ad].oyunSayisi += 1;
+        kisi[ad].streak = Math.max(kisi[ad].streak, k.streak||0);
       }));
       return Object.values(kisi);
     });
@@ -241,8 +268,10 @@
   window.VF = {
     girisYap, cikisYap, kullaniciDinle, adDegistir, gocKontrolEt, eskiOyuncuBanner,
     skorYaz, leaderboardOku, leaderboardOkuAralik, istatistikArttir, istatistikOku, bayrakYaz,
+    streakGuncelle,
     get kullanici(){ return auth.currentUser; },
     get ad(){ return kullaniciAdi; },
+    get streak(){ return kullaniciStreak; },
     get adminMi(){ return !!(auth.currentUser && auth.currentUser.uid===ADMIN_UID); }
   };
 })();

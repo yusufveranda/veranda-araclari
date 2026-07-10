@@ -1,4 +1,4 @@
-// nav-panel.js — site içi gezinme: sağdan açılan panel, tüm araçlar + tüm oyunlar listeli.
+// nav-panel.js — site içi gezinme: soldan açılan panel, tüm araçlar + tüm oyunlar listeli.
 // Tek satır <script> ile her sayfaya eklenir, kendi CSS'ini ve DOM'unu enjekte eder.
 // Oyun sayfalarında (window.VF varsa) girişliyken her oyunun yanında "bugün oynadın mı" ✓'ü gösterir.
 (function(){
@@ -8,7 +8,7 @@
   const ARACLAR = [
     {ad:'Dilimin Ucunda', href:B+'sozluk/'},
     {ad:'Karşılık',       href:B+'karsilik/'},
-    {ad:'Harita',         href:B+'harita/'},
+    {ad:'Güverte',        href:B+'harita/'},
     {ad:'Bulmaca Yardımcısı', href:B+'bulmaca/'},
     {ad:'Siyaset Bilimi', href:B+'politika/'},
     {ad:'Bitki Bilimi',   href:B+'bitki/'},
@@ -45,15 +45,20 @@
 
   const st = document.createElement('style');
   st.textContent = `
-    #vfNavAc{position:fixed;bottom:18px;right:18px;z-index:9990;width:48px;height:48px;border-radius:50%;
+    #vfNavAc{position:fixed;top:76px;left:18px;z-index:9990;width:48px;height:48px;border-radius:50%;
       background:#1C1510;color:#F2E6CE;border:1px solid #3a2f22;font-size:20px;cursor:pointer;
       box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
     #vfNavAc:hover{background:#2b2117}
+    /* dar ekranda sayfaların kendi üst-sol başlıkları/geri linkleriyle çakışmasın diye
+       eski sağ-alt konuma döner — orada başparmakla erişim de daha rahat */
+    @media(max-width:640px){
+      #vfNavAc{top:auto;left:auto;bottom:18px;right:18px}
+    }
     #vfNavPerde{position:fixed;inset:0;background:rgba(10,8,5,.5);z-index:9991;opacity:0;pointer-events:none;transition:opacity .25s}
     #vfNavPerde.acik{opacity:1;pointer-events:auto}
-    #vfNavPanel{position:fixed;top:0;right:0;bottom:0;width:min(84vw,330px);background:#1C1510;color:#F2E6CE;
-      z-index:9992;transform:translateX(100%);transition:transform .28s cubic-bezier(.34,1,.45,1);
-      overflow-y:auto;font-family:Georgia,'Times New Roman',serif;box-shadow:-6px 0 24px rgba(0,0,0,.35)}
+    #vfNavPanel{position:fixed;top:0;left:0;bottom:0;width:min(84vw,330px);background:#1C1510;color:#F2E6CE;
+      z-index:9992;transform:translateX(-100%);transition:transform .28s cubic-bezier(.34,1,.45,1);
+      overflow-y:auto;font-family:Georgia,'Times New Roman',serif;box-shadow:6px 0 24px rgba(0,0,0,.35)}
     #vfNavPanel.acik{transform:translateX(0)}
     #vfNavPanel .vfnp-ust{display:flex;justify-content:space-between;align-items:center;padding:18px 18px 10px}
     #vfNavPanel .vfnp-ust b{font-family:'Playfair Display',serif;font-size:20px;color:#F2E6CE}
@@ -96,17 +101,25 @@
   panel.querySelector('.vfnp-kapat').onclick = kapa;
 
   /* girişliyse her oyunun yanına bugün oynadın mı ✓'ü koy — sadece bu sayfa zaten
-     firebase.js yüklediyse (window.VF) çalışır, araç sayfalarında sessizce atlanır. */
+     firebase.js yüklediyse (window.VF) çalışır, araç sayfalarında sessizce atlanır.
+     Aynı taramada bugün bitirilen oyun sayısı da toplanır: 3'e ulaşınca streak günü
+     sayılır (VF.streakGuncelle) — eşik burada kontrol ediliyor çünkü zaten her oyun
+     için "bugün oynadın mı" sorgusu bu fonksiyonda tek tek yapılıyor. */
   function tikleriDoldur(){
     if(!window.VF || !VF.kullanici) return;
     const u = VF.kullanici;
-    OYUNLAR.forEach(function(o){
-      if(!o.oyun) return;
+    const sorgular = OYUNLAR.filter(function(o){ return !!o.oyun; }).map(function(o){
       const gun = o.gun();
-      firebase.firestore().collection('skorlar').doc(o.oyun).collection(String(gun)).doc(u.uid).get().then(function(snap){
+      return firebase.firestore().collection('skorlar').doc(o.oyun).collection(String(gun)).doc(u.uid).get().then(function(snap){
         const el = panel.querySelector('.tik[data-oyun="'+o.oyun+'"]');
-        if(el && snap.exists) el.textContent = '✓';
-      }).catch(function(){});
+        const bitti = snap.exists;
+        if(el && bitti) el.textContent = '✓';
+        return bitti;
+      }).catch(function(){ return false; });
+    });
+    Promise.all(sorgular).then(function(sonuclar){
+      const bugunSayisi = sonuclar.filter(Boolean).length;
+      if(bugunSayisi >= 3) VF.streakGuncelle(g2026utc());
     });
   }
   if(window.VF) VF.kullaniciDinle(tikleriDoldur); else document.addEventListener('DOMContentLoaded', function(){ if(window.VF) VF.kullaniciDinle(tikleriDoldur); });
