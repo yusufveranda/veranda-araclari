@@ -166,6 +166,8 @@ body{transition:background .4s,color .4s}
 .lb-puan{font-family:'Playfair Display',serif;font-weight:700;color:var(--mur);white-space:nowrap}
 .lb-puan small{font-family:'Libre Baskerville',serif;font-weight:400;font-size:11px;color:var(--soluk)}
 .lb-bos{text-align:center;color:var(--soluk);font-family:'Libre Baskerville',serif;font-style:italic;padding:16px 0}
+.lb-alt{font-family:'Libre Baskerville',serif;font-size:12px;color:var(--soluk);text-align:center;margin-top:10px}
+.lb-alt a{color:var(--kirmizi);cursor:pointer;text-decoration:underline}
 .sk-nick-sar{text-align:center;margin-top:14px}
 .sk-nick{font-family:'Libre Baskerville',serif;font-size:13px;width:130px;padding:8px 10px;border:1.5px solid var(--kutu-cizgi);border-radius:9px;background:var(--kutu-bos);color:var(--mur);text-align:center}
 .sk-nick::placeholder{color:var(--soluk);font-style:italic}
@@ -704,7 +706,8 @@ function skGoster(kapsam){
         const liste = arr.length ? arr.map((r,i)=>
           '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+'</span><span class="lb-puan">'+r.deneme+' <small>tahmin</small></span></div>'
         ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
-        L.innerHTML = liste + skHistogramHTML(ist);
+        L.innerHTML = liste + skHistogramHTML(ist) + '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
+        const a=$('lbAdDeg'); if(a) a.onclick=()=>{ const yeni=prompt('yeni görünen adın:', VF.ad||''); if(yeni) VF.adDegistir(yeni).then(()=>skGoster(skKapsam)); };
       }).catch(()=>{ if(kapsam===skKapsam) L.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
       return;
     }

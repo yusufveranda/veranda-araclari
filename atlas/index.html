@@ -594,7 +594,10 @@ function liderGetir(){
         h+='</ol>';
       }
       h+=atlasHistogramHTML(ist);
+      h+='<div style="font-family:Georgia,serif;font-size:12px;color:var(--soluk);text-align:center;margin-top:10px">'+
+         '<a id="lbAdDeg" style="color:var(--kirmizi);cursor:pointer;text-decoration:underline">görünen adını değiştir</a></div>';
       $('#lider').innerHTML=h;
+      const a=$('#lbAdDeg'); if(a) a.onclick=()=>{ const yeni=prompt('yeni görünen adın:', VF.ad||''); if(yeni) VF.adDegistir(yeni).then(liderGetir); };
     }).catch(()=>{});
     return;
   }
