@@ -35,6 +35,7 @@ body.lamba-acik{--lamba-op:.95;--ampul:#FFC76B}
 body.lamba-kapali{--lamba-op:0;--ampul:#3A2E22}
 
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}   /* .kart gibi display:block veren sınıflar hidden attribute'unu ezmesin */
 body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;min-height:100vh;font-size:17px}
 .wrap{max-width:880px;margin:0 auto;padding:28px 20px 70px}
 
