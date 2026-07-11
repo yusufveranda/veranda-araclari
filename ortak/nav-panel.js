@@ -49,10 +49,10 @@
       background:#1C1510;color:#F2E6CE;border:1px solid #3a2f22;font-size:20px;cursor:pointer;
       box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
     #vfNavAc:hover{background:#2b2117}
-    /* dar ekranda sayfaların kendi üst-sol başlıkları/geri linkleriyle çakışmasın diye
-       eski sağ-alt konuma döner — orada başparmakla erişim de daha rahat */
+    /* mobilde oyunların ekran altına sabit klavyesiyle çakışıyordu — mobilde panele
+       zaten gerek yok, düğmeyi tamamen gizle */
     @media(max-width:640px){
-      #vfNavAc{top:auto;left:auto;bottom:18px;right:18px}
+      #vfNavAc{display:none}
     }
     #vfNavPerde{position:fixed;inset:0;background:rgba(10,8,5,.5);z-index:9991;opacity:0;pointer-events:none;transition:opacity .25s}
     #vfNavPerde.acik{opacity:1;pointer-events:auto}
