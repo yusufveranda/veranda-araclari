@@ -652,6 +652,8 @@ function startGame(index, random = false) {
     startGame(i, true);
   });
   $("todayBtn").addEventListener("click", () => startGame(todayIndex()));
+  // Gizli sonsuz mod: ?sinefil ile açılır (paylaşılabilir link, admin gerekmez).
+  if (_MP.has("sinefil")) $("randomBtn").hidden = false;
   const _b = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca") % window.PUZZLES.length) + window.PUZZLES.length) % window.PUZZLES.length : today;
   startGame(_b);
 })();
