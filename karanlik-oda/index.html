@@ -313,8 +313,9 @@ function lbStars(r){
 // (kısa→uzun, Banyo 2-5'te birer birer), lb.review_end = bitiş kartı için ham ilk yorum.
 const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-// Sahne Banyo 3'te gelir: B3=en obscure kare, B4=en açık, B5=ikonik (B1-2 gizli).
-const SCENE_MAP = [null, null, 0, 3, 4];
+// Sahne B1'den itibaren hep görünür: kareler kürasyonlu 5'li set,
+// 1=en obscure -> 5=ikonik (obscure sahneden bilindik sahneye).
+const SCENE_MAP = [0, 1, 2, 3, 4];
 
 // ---- yıl ipucu (yıl artık künyede açılmaz; tahminde yön verilir) ----
 function answerYear(){ const e = G.film.in.find(x => x[0] === "Yıl"); return e ? parseInt(e[1]) : null; }
