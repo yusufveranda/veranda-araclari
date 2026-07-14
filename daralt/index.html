@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<script src="../ortak/analitik.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daralt — Poster duvarında günün filmini bul</title>
+<meta name="description" content="80 poster, 1 gizli film. Her tahminin dedektif sondası: duvar gözünün önünde daralır.">
+<meta name="theme-color" content="#0c0a09">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0a09'/%3E%3Crect x='10' y='10' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='26' y='10' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='42' y='10' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='10' y='34' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='26' y='34' width='12' height='18' rx='2' fill='%23e5382e'/%3E%3Crect x='42' y='34' width='12' height='18' rx='2' fill='%232e2724'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  [hidden]{display:none!important}
+  :root{
+    --bg:#0c0a09; --bg2:#141110; --card:#1a1614; --border:#2e2724;
+    --paper:#efe9dc; --paper-dim:#c9c2b2;
+    --text:#ece7de; --muted:#94897c;
+    --red:#e5382e; --red-glow:rgba(229,56,46,0.35); --red-dim:rgba(229,56,46,0.12);
+    --ok:#7cb46b; --radius:4px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{color-scheme:dark;}
+  body{
+    background:radial-gradient(900px 500px at 50% -150px, rgba(229,56,46,0.09), transparent 70%), var(--bg);
+    color:var(--text); font-family:"Inter",-apple-system,sans-serif;
+    min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px;
+  }
+  .wrap{max-width:1600px; margin:0 auto;}
+  header{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:6px;}
+  h1{font-family:"Special Elite",cursive; font-size:30px; font-weight:400; color:var(--red);
+     text-shadow:0 0 18px var(--red-glow),0 0 40px var(--red-glow); letter-spacing:2px;}
+  .day-no{font-size:12px; color:var(--muted); letter-spacing:1px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:18px; font-style:italic;}
+  button,input{font:inherit;}
+  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px;
+            padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
+  .mini-btn:hover{border-color:var(--red); color:var(--red);}
+
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:20px; align-items:start;}
+
+  .wall-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;}
+  .remain{font-size:13px; color:var(--muted);}
+  .remain b{color:var(--red); font-size:26px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
+  .wall{display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:8px;}
+  .pcard{
+    position:relative; aspect-ratio:2/3; border-radius:3px; overflow:hidden; cursor:pointer;
+    background:var(--card); border:2px solid transparent;
+    box-shadow:0 3px 10px rgba(0,0,0,0.5);
+    transition:opacity .5s, filter .5s, transform .12s;
+  }
+  .pcard img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .pcard:hover{transform:translateY(-2px); border-color:var(--red);}
+  .pcard.out{opacity:0.13; filter:grayscale(1); pointer-events:none;}
+  .pcard.answer{border-color:var(--ok); box-shadow:0 0 18px rgba(124,180,107,0.5);}
+
+  .panel{background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:16px;
+         position:sticky; top:16px; max-height:calc(100dvh - 40px); overflow:auto;}
+  .panel h2{font-family:"Special Elite",cursive; font-weight:400; font-size:18px; color:var(--paper); margin-bottom:4px;}
+  .panel-sub{font-size:12.5px; color:var(--muted); margin-bottom:12px; line-height:1.5;}
+  .guess-box{position:relative; margin-bottom:8px;}
+  .guess-box input{
+    width:100%; background:var(--card); border:1px solid var(--border); border-radius:6px;
+    padding:11px 12px; color:var(--text); font-size:14px;
+  }
+  .guess-box input:focus{outline:none; border-color:var(--red);}
+  .ac-list{
+    position:absolute; left:0; right:0; top:100%; z-index:20; background:var(--card);
+    border:1px solid var(--border); border-radius:0 0 6px 6px; max-height:260px; overflow:auto;
+  }
+  .ac-item{padding:9px 12px; font-size:13.5px; cursor:pointer; display:flex; justify-content:space-between; gap:8px;}
+  .ac-item:hover,.ac-item.hot{background:var(--red-dim);}
+  .ac-item .yr{color:var(--muted); font-size:12px;}
+  .btn{
+    background:var(--red); color:#fff; border:none; border-radius:6px; padding:11px 22px;
+    font-size:14px; font-weight:600; cursor:pointer; letter-spacing:0.5px; width:100%;
+  }
+  .btn:disabled{background:var(--card); color:var(--muted); cursor:not-allowed;}
+
+  .probes{margin-top:14px; display:flex; flex-direction:column; gap:10px;}
+  .probe{border:1px solid var(--border); border-radius:6px; padding:10px 12px; background:var(--card);}
+  .probe-title{font-size:13.5px; font-weight:600; margin-bottom:7px;}
+  .probe-title .yr{color:var(--muted); font-weight:400;}
+  .probe-title .cut{float:right; color:var(--muted); font-weight:400; font-size:12px;}
+  .pills{display:flex; flex-wrap:wrap; gap:5px;}
+  .pill{font-size:11.5px; padding:4px 9px; border-radius:12px; border:1px solid var(--border); color:var(--muted);}
+  .pill.yes{border-color:rgba(124,180,107,0.5); color:var(--ok);}
+  .pill.dir-hint{border-color:rgba(229,184,75,0.5); color:#e5b84b;}
+
+  .result{margin-top:14px; border:1px solid var(--border); border-radius:8px; background:var(--card); padding:16px;}
+  .result h3{font-family:"Special Elite",cursive; font-weight:400; font-size:20px; color:var(--red); margin-bottom:6px;}
+  .result p{font-size:13.5px; color:var(--text); line-height:1.6;}
+  .share-row{display:flex; gap:10px; margin-top:12px; align-items:center;}
+  .share-fb{font-size:12px; color:var(--muted);}
+
+  @media(max-width:1000px){
+    .layout{grid-template-columns:1fr;}
+    .panel{position:static; max-height:none; order:-1;}
+    .wall{grid-template-columns:repeat(auto-fill,minmax(64px,1fr)); gap:5px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>DARALT</h1>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span class="day-no" id="dayNo"></span>
+      <a class="mini-btn" href="../">verandatools</a>
+    </div>
+  </header>
+  <p class="tagline">Duvarda 80 poster, içlerinden biri günün filmi. Her tahminin bir sonda: ipuçlarıyla çelişen posterler söner.</p>
+
+  <div class="layout">
+    <div>
+      <div class="wall-head">
+        <span class="remain">kalan şüpheli: <b id="remainN">80</b></span>
+        <span class="remain" id="wallTrail"></span>
+      </div>
+      <div class="wall" id="wall"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Sonda gönder</h2>
+      <p class="panel-sub">Herhangi bir film yaz (duvarda olması gerekmez). Cevapla karşılaştırılır: onyıl, tür, kadro, yönetmen. Duvara tıklayarak da seçebilirsin.</p>
+      <div class="guess-box">
+        <input id="guessInput" type="text" placeholder="film adı…" autocomplete="off" spellcheck="false">
+        <div class="ac-list" id="acList" hidden></div>
+      </div>
+      <button class="btn" id="guessBtn" disabled>Tahmin et</button>
+      <div class="probes" id="probes"></div>
+      <div class="result" id="result" hidden>
+        <h3 id="resultTitle"></h3>
+        <p id="resultBody"></p>
+        <div class="share-row">
+          <button class="mini-btn" id="shareBtn">📋 Sonucu kopyala</button>
+          <span class="share-fb" id="shareFb"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  const D = window.DARALT;
+  const EPOCH = new Date(2026, 6, 14);
+  const params = new URLSearchParams(location.search);
+  let day = Math.floor((Date.now() - EPOCH) / 864e5);
+  if (day < 0) day = 0;
+  if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
+  const idx = day % D.days.length;
+  const DAY = D.days[idx];
+  const ANS = DAY.a;
+  document.getElementById('dayNo').textContent = 'GÜN ' + (day + 1);
+  const KEY = 'daralt_v1_' + idx;
+
+  const F = D.films; // id -> [t, y, g[], c[], d, pp]
+  const T = 0, Y = 1, G = 2, C = 3, DIR = 4, PP = 5;
+  const IMG = p => 'https://image.tmdb.org/t/p/w185' + p;
+
+  // ---- ilişki vektörü ----
+  function rel(pid, xid){
+    const p = F[pid], x = F[xid];
+    const pd = Math.floor(p[Y] / 10), xd = Math.floor(x[Y] / 10);
+    const dec = pd === xd ? 0 : (xd < pd ? -1 : 1);
+    const gen = p[G].some(g => x[G].includes(g)) ? 1 : 0;
+    const cast = p[C].some(c => x[C].includes(c)) ? 1 : 0;
+    const dir = (p[DIR] && p[DIR] === x[DIR]) ? 1 : 0;
+    return dec + '|' + gen + '|' + cast + '|' + dir;
+  }
+
+  // ---- duvar ----
+  const wallEl = document.getElementById('wall');
+  const alive = new Set(DAY.w.map(String));
+  DAY.w.forEach(id => {
+    const f = F[id];
+    const d = document.createElement('div');
+    d.className = 'pcard'; d.dataset.id = id;
+    d.title = f[T] + ' (' + f[Y] + ')';
+    const img = document.createElement('img');
+    img.loading = 'lazy'; img.src = IMG(f[PP]); img.alt = f[T];
+    d.appendChild(img);
+    d.addEventListener('click', () => {
+      if (done) return;
+      input.value = f[T] + ' (' + f[Y] + ')';
+      picked = String(id);
+      guessBtn.disabled = false;
+      hideAC();
+    });
+    wallEl.appendChild(d);
+  });
+
+  // ---- otomatik tamamlama ----
+  const input = document.getElementById('guessInput');
+  const acList = document.getElementById('acList');
+  const guessBtn = document.getElementById('guessBtn');
+  let picked = null, hot = -1, done = false;
+  const norm = s => s.toLowerCase()
+    .replace(/ı/g,'i').replace(/İ/g,'i').replace(/ş/g,'s').replace(/ç/g,'c')
+    .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o')
+    .normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,'');
+  const ALL = Object.keys(F).map(id => ({id, n: norm(F[id][T]), t: F[id][T], y: F[id][Y], v: 0}));
+
+  function hideAC(){ acList.hidden = true; acList.innerHTML = ''; hot = -1; }
+  input.addEventListener('input', () => {
+    picked = null; guessBtn.disabled = true;
+    const q = norm(input.value.trim());
+    if (q.length < 2) { hideAC(); return; }
+    const starts = [], contains = [];
+    for (const f of ALL) {
+      if (f.n.startsWith(q)) starts.push(f);
+      else if (f.n.includes(q)) contains.push(f);
+      if (starts.length > 30) break;
+    }
+    const list = starts.concat(contains).slice(0, 8);
+    acList.innerHTML = ''; acList.hidden = !list.length;
+    list.forEach(f => {
+      const it = document.createElement('div');
+      it.className = 'ac-item';
+      it.innerHTML = '<span>' + f.t + '</span><span class="yr">' + f.y + '</span>';
+      it.addEventListener('mousedown', e => {
+        e.preventDefault();
+        input.value = f.t + ' (' + f.y + ')';
+        picked = f.id; guessBtn.disabled = false; hideAC();
+      });
+      acList.appendChild(it);
+    });
+  });
+  input.addEventListener('keydown', e => {
+    const items = [...acList.children];
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!items.length) return;
+      hot = e.key === 'ArrowDown' ? (hot + 1) % items.length : (hot - 1 + items.length) % items.length;
+      items.forEach((x, i) => x.classList.toggle('hot', i === hot));
+    } else if (e.key === 'Enter') {
+      if (hot >= 0 && items[hot]) items[hot].dispatchEvent(new MouseEvent('mousedown'));
+      else if (picked) doGuess();
+    } else if (e.key === 'Escape') hideAC();
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.guess-box')) hideAC(); });
+
+  // ---- tahmin ----
+  const probesEl = document.getElementById('probes');
+  const remainEl = document.getElementById('remainN');
+  const trailEl = document.getElementById('wallTrail');
+  let history = [], trail = [DAY.w.length];
+
+  guessBtn.addEventListener('click', doGuess);
+
+  function doGuess(){
+    if (!picked || done) return;
+    const pid = picked;
+    picked = null; guessBtn.disabled = true; input.value = '';
+    history.push(pid);
+    applyProbe(pid, true);
+    save();
+  }
+
+  function applyProbe(pid, animate){
+    const truth = rel(pid, ANS);
+    // duvarı ele
+    for (const id of [...alive]) {
+      if (id !== String(pid) && rel(pid, id) !== truth) alive.delete(id);
+    }
+    if (String(pid) !== String(ANS)) alive.delete(String(pid));
+    [...wallEl.children].forEach(c => {
+      c.classList.toggle('out', !alive.has(c.dataset.id));
+    });
+    remainEl.textContent = alive.size;
+    trail.push(alive.size);
+    trailEl.textContent = trail.join(' → ');
+
+    // sonda kartı
+    const [dec, gen, cast, dir] = truth.split('|');
+    const p = F[pid];
+    const card = document.createElement('div');
+    card.className = 'probe';
+    const decTxt = dec === '0' ? '✓ aynı onyıl' : (dec === '-1' ? '← cevap daha eski' : '→ cevap daha yeni');
+    card.innerHTML =
+      '<div class="probe-title">' + p[T] + ' <span class="yr">(' + p[Y] + ')</span>' +
+      '<span class="cut">' + history.length + '. sonda</span></div>' +
+      '<div class="pills">' +
+      '<span class="pill ' + (dec === '0' ? 'yes' : 'dir-hint') + '">🕰 ' + decTxt + '</span>' +
+      '<span class="pill ' + (gen === '1' ? 'yes' : '') + '">🎭 tür ' + (gen === '1' ? 'kesişiyor' : 'kesişmiyor') + '</span>' +
+      '<span class="pill ' + (cast === '1' ? 'yes' : '') + '">👥 ' + (cast === '1' ? 'ortak oyuncu var' : 'ortak oyuncu yok') + '</span>' +
+      '<span class="pill ' + (dir === '1' ? 'yes' : '') + '">🎬 ' + (dir === '1' ? 'aynı yönetmen' : 'yönetmen farklı') + '</span>' +
+      '</div>';
+    probesEl.prepend(card);
+
+    if (String(pid) === String(ANS)) win();
+  }
+
+  function win(){
+    done = true;
+    input.disabled = true; guessBtn.disabled = true;
+    const el = wallEl.querySelector('[data-id="' + ANS + '"]');
+    if (el) { el.classList.remove('out'); el.classList.add('answer'); }
+    const g = history.length;
+    const score = Math.max(15, 100 - 12 * (g - 1));
+    const a = F[ANS];
+    document.getElementById('result').hidden = false;
+    document.getElementById('resultTitle').textContent = score + ' / 100';
+    document.getElementById('resultBody').innerHTML =
+      '<b>' + a[T] + '</b> (' + a[Y] + ') — ' + g + ' sondada buldun.<br>Duvar: ' + trail.join(' → ');
+    window._share = 'Daralt #' + (day + 1) + ' — ' + score + '/100\n🧱 ' +
+      trail.join(' → ') + '\n' + g + ' sonda\nverandatools.com/daralt';
+    save();
+  }
+
+  document.getElementById('shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window._share || '').then(() => {
+      document.getElementById('shareFb').textContent = 'kopyalandı';
+      setTimeout(() => document.getElementById('shareFb').textContent = '', 1500);
+    });
+  });
+
+  // ---- kalıcılık ----
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify({history, done}));
+  }
+  (function restore(){
+    let st; try { st = JSON.parse(localStorage.getItem(KEY)); } catch(e){}
+    if (!st || !st.history) return;
+    st.history.forEach(pid => { history.push(pid); applyProbe(pid, false); });
+  })();
+})();
+</script>
+</body>
+</html>

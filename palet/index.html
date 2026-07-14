@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<script src="../ortak/analitik.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palet — Filmi renginden tanı</title>
+<meta name="description" content="Günün filminin 5 karesi renk şeritlerine indirgendi. Filmi paletinden tanıyabilir misin?">
+<meta name="theme-color" content="#0c0a09">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0a09'/%3E%3Crect x='10' y='12' width='44' height='10' rx='2' fill='%23e5b84b'/%3E%3Crect x='10' y='27' width='44' height='10' rx='2' fill='%23e5382e'/%3E%3Crect x='10' y='42' width='44' height='10' rx='2' fill='%236b9bd1'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  [hidden]{display:none!important}
+  :root{
+    --bg:#0c0a09; --bg2:#141110; --card:#1a1614; --border:#2e2724;
+    --paper:#efe9dc; --paper-dim:#c9c2b2;
+    --text:#ece7de; --muted:#94897c;
+    --red:#e5382e; --red-glow:rgba(229,56,46,0.35); --red-dim:rgba(229,56,46,0.12);
+    --ok:#7cb46b; --radius:4px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{color-scheme:dark;}
+  body{
+    background:radial-gradient(900px 500px at 50% -150px, rgba(229,56,46,0.09), transparent 70%), var(--bg);
+    color:var(--text); font-family:"Inter",-apple-system,sans-serif;
+    min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px;
+  }
+  .wrap{max-width:1500px; margin:0 auto;}
+  header{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:6px;}
+  h1{font-family:"Special Elite",cursive; font-size:30px; font-weight:400; color:var(--red);
+     text-shadow:0 0 18px var(--red-glow),0 0 40px var(--red-glow); letter-spacing:2px;}
+  .day-no{font-size:12px; color:var(--muted); letter-spacing:1px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:18px; font-style:italic;}
+  button,input{font:inherit;}
+  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px;
+            padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
+  .mini-btn:hover{border-color:var(--red); color:var(--red);}
+
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:20px; align-items:start;}
+
+  .strips{display:flex; flex-direction:column; gap:14px;}
+  .strip-row{position:relative;}
+  .strip-label{
+    font-family:"Special Elite",cursive; font-size:11px; letter-spacing:2px; color:var(--muted);
+    text-transform:uppercase; margin-bottom:5px;
+  }
+  .strip{
+    display:flex; height:96px; border-radius:var(--radius); overflow:hidden;
+    border:5px solid var(--paper); background:#000;
+    box-shadow:0 6px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.8);
+  }
+  .strip .sw{flex:1; position:relative;}
+  .strip img{width:100%; height:100%; object-fit:cover; display:block; animation:fadein 1.2s;}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+
+  .hints{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+  .hint-chip{
+    border:1px dashed var(--border); border-radius:16px; padding:7px 14px; font-size:12.5px; color:var(--muted);
+  }
+  .hint-chip.open{border-style:solid; border-color:#e5b84b; color:#e5b84b;}
+
+  .panel{background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:16px;
+         position:sticky; top:16px;}
+  .panel h2{font-family:"Special Elite",cursive; font-weight:400; font-size:18px; color:var(--paper); margin-bottom:4px;}
+  .panel-sub{font-size:12.5px; color:var(--muted); margin-bottom:12px; line-height:1.5;}
+  .guess-box{position:relative; margin-bottom:8px;}
+  .guess-box input{
+    width:100%; background:var(--card); border:1px solid var(--border); border-radius:6px;
+    padding:11px 12px; color:var(--text); font-size:14px;
+  }
+  .guess-box input:focus{outline:none; border-color:var(--red);}
+  .ac-list{
+    position:absolute; left:0; right:0; top:100%; z-index:20; background:var(--card);
+    border:1px solid var(--border); border-radius:0 0 6px 6px; max-height:260px; overflow:auto;
+  }
+  .ac-item{padding:9px 12px; font-size:13.5px; cursor:pointer; display:flex; justify-content:space-between; gap:8px;}
+  .ac-item:hover,.ac-item.hot{background:var(--red-dim);}
+  .ac-item .yr{color:var(--muted); font-size:12px;}
+  .btn{
+    background:var(--red); color:#fff; border:none; border-radius:6px; padding:11px 22px;
+    font-size:14px; font-weight:600; cursor:pointer; letter-spacing:0.5px; width:100%;
+  }
+  .btn:disabled{background:var(--card); color:var(--muted); cursor:not-allowed;}
+
+  .guesses{margin-top:14px; display:flex; flex-direction:column; gap:8px;}
+  .grow{border:1px solid var(--border); border-radius:6px; padding:9px 12px; background:var(--card);}
+  .grow.best{border-color:rgba(229,184,75,0.55);}
+  .grow-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .grow-title{font-size:13px; font-weight:600;}
+  .grow-title .yr{color:var(--muted); font-weight:400;}
+  .match{font-family:"Special Elite",cursive; font-size:17px; color:var(--paper);}
+  .match.hot{color:#e5b84b;} .match.vhot{color:var(--red);}
+  .gpal{display:flex; height:16px; border-radius:3px; overflow:hidden;}
+  .gpal span{display:block;}
+  .meter{height:4px; background:var(--bg); border-radius:2px; margin-top:6px; overflow:hidden;}
+  .meter i{display:block; height:100%; background:linear-gradient(90deg,#6b9bd1,#e5b84b,#e5382e); border-radius:2px;}
+
+  .result{margin-top:14px; border:1px solid var(--border); border-radius:8px; background:var(--card); padding:16px;}
+  .result h3{font-family:"Special Elite",cursive; font-weight:400; font-size:20px; color:var(--red); margin-bottom:6px;}
+  .result p{font-size:13.5px; color:var(--text); line-height:1.6;}
+  .share-row{display:flex; gap:10px; margin-top:12px; align-items:center;}
+  .share-fb{font-size:12px; color:var(--muted);}
+
+  @media(max-width:1000px){
+    .layout{grid-template-columns:1fr;}
+    .panel{position:static; order:-1;}
+    .strip{height:64px; border-width:3px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>PALET</h1>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span class="day-no" id="dayNo"></span>
+      <a class="mini-btn" href="../">verandatools</a>
+    </div>
+  </header>
+  <p class="tagline">Günün filminin beş karesi renklerine indirgendi. Kareyi göremezsin — paleti okuyacaksın.</p>
+
+  <div class="layout">
+    <div>
+      <div class="strips" id="strips"></div>
+      <div class="hints" id="hints"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Tahmin</h2>
+      <p class="panel-sub">Bir film yaz; onun paleti seninkiyle karşılaştırılır, renk uyumu yüzdesi ısınıp soğur. 3., 5. ve 7. tahminde ipucu açılır.</p>
+      <div class="guess-box">
+        <input id="guessInput" type="text" placeholder="film adı…" autocomplete="off" spellcheck="false">
+        <div class="ac-list" id="acList" hidden></div>
+      </div>
+      <button class="btn" id="guessBtn" disabled>Tahmin et</button>
+      <div class="guesses" id="guesses"></div>
+      <div class="result" id="result" hidden>
+        <h3 id="resultTitle"></h3>
+        <p id="resultBody"></p>
+        <div class="share-row">
+          <button class="mini-btn" id="shareBtn">📋 Sonucu kopyala</button>
+          <span class="share-fb" id="shareFb"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  const D = window.PALET;
+  const EPOCH = new Date(2026, 6, 14);
+  const params = new URLSearchParams(location.search);
+  let day = Math.floor((Date.now() - EPOCH) / 864e5);
+  if (day < 0) day = 0;
+  if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
+  const idx = day % D.days.length;
+  const DAY = D.days[idx];
+  document.getElementById('dayNo').textContent = 'GÜN ' + (day + 1);
+  const KEY = 'palet_v1_' + idx;
+
+  // ---- şeritler ----
+  const stripsEl = document.getElementById('strips');
+  DAY.strips.forEach((colors, i) => {
+    const row = document.createElement('div');
+    row.className = 'strip-row';
+    row.innerHTML = '<div class="strip-label">Kare ' + (i + 1) + '</div>';
+    const strip = document.createElement('div');
+    strip.className = 'strip'; strip.dataset.i = i;
+    colors.forEach(c => {
+      const sw = document.createElement('div');
+      sw.className = 'sw'; sw.style.background = '#' + c;
+      strip.appendChild(sw);
+    });
+    row.appendChild(strip);
+    stripsEl.appendChild(row);
+  });
+
+  // ---- ipuçları ----
+  const HINT_AT = [3, 5, 7];
+  const HINT_LABEL = ['dönem', 'tür', 'oyuncu'];
+  const hintsEl = document.getElementById('hints');
+  DAY.hints.forEach((h, i) => {
+    const c = document.createElement('span');
+    c.className = 'hint-chip'; c.id = 'hint' + i;
+    c.textContent = '🔒 ' + HINT_LABEL[i] + ' — ' + HINT_AT[i] + '. tahminde';
+    hintsEl.appendChild(c);
+  });
+  function openHints(n){
+    DAY.hints.forEach((h, i) => {
+      if (n >= HINT_AT[i]) {
+        const c = document.getElementById('hint' + i);
+        c.classList.add('open');
+        c.textContent = HINT_LABEL[i] + ': ' + h;
+      }
+    });
+  }
+
+  // ---- renk matematiği ----
+  function hex2lab(hx){
+    let r = parseInt(hx.slice(0,2),16)/255, g = parseInt(hx.slice(2,4),16)/255, b = parseInt(hx.slice(4,6),16)/255;
+    const f = u => u <= 0.04045 ? u/12.92 : Math.pow((u+0.055)/1.055, 2.4);
+    r = f(r); g = f(g); b = f(b);
+    let x = (0.4124*r+0.3576*g+0.1805*b)/0.95047, y = 0.2126*r+0.7152*g+0.0722*b, z = (0.0193*r+0.1192*g+0.9505*b)/1.08883;
+    const t = u => u > 0.008856 ? Math.cbrt(u) : 7.787*u + 16/116;
+    const fx = t(x), fy = t(y), fz = t(z);
+    return [116*fy-16, 500*(fx-fy), 200*(fy-fz)];
+  }
+  const labCache = {};
+  function sigLab(sig){ return sig.map(([h, w]) => [hex2lab(h), w]); }
+  function dist3(a, b){ return Math.hypot(a[0]-b[0], a[1]-b[1], a[2]-b[2]); }
+  function sigDist(a, b){
+    const one = (s, d) => s.reduce((acc, [l, w]) => acc + w * Math.min(...d.map(x => dist3(l, x[0]))), 0);
+    return (one(a, b) + one(b, a)) / 2;
+  }
+  function matchPct(gid){
+    const a = labCache[DAY.id] || (labCache[DAY.id] = sigLab(D.films[DAY.id][2]));
+    const b = labCache[gid] || (labCache[gid] = sigLab(D.films[gid][2]));
+    const d = sigDist(a, b);
+    const pct = Math.round(100 * (D.dHi - d) / (D.dHi - D.dLo));
+    return Math.max(1, Math.min(99, pct));
+  }
+
+  // ---- otomatik tamamlama ----
+  const input = document.getElementById('guessInput');
+  const acList = document.getElementById('acList');
+  const guessBtn = document.getElementById('guessBtn');
+  let picked = null, hot = -1, done = false;
+  const norm = s => s.toLowerCase()
+    .replace(/ı/g,'i').replace(/İ/g,'i').replace(/ş/g,'s').replace(/ç/g,'c')
+    .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o')
+    .normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,'');
+  const ALL = Object.keys(D.films).map(id => ({id, n: norm(D.films[id][0]), t: D.films[id][0], y: D.films[id][1]}));
+
+  function hideAC(){ acList.hidden = true; acList.innerHTML = ''; hot = -1; }
+  input.addEventListener('input', () => {
+    picked = null; guessBtn.disabled = true;
+    const q = norm(input.value.trim());
+    if (q.length < 2) { hideAC(); return; }
+    const starts = [], contains = [];
+    for (const f of ALL) {
+      if (f.n.startsWith(q)) starts.push(f);
+      else if (f.n.includes(q)) contains.push(f);
+      if (starts.length > 30) break;
+    }
+    const list = starts.concat(contains).slice(0, 8);
+    acList.innerHTML = ''; acList.hidden = !list.length;
+    list.forEach(f => {
+      const it = document.createElement('div');
+      it.className = 'ac-item';
+      it.innerHTML = '<span>' + f.t + '</span><span class="yr">' + f.y + '</span>';
+      it.addEventListener('mousedown', e => {
+        e.preventDefault();
+        input.value = f.t + ' (' + f.y + ')';
+        picked = f.id; guessBtn.disabled = false; hideAC();
+      });
+      acList.appendChild(it);
+    });
+  });
+  input.addEventListener('keydown', e => {
+    const items = [...acList.children];
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!items.length) return;
+      hot = e.key === 'ArrowDown' ? (hot + 1) % items.length : (hot - 1 + items.length) % items.length;
+      items.forEach((x, i) => x.classList.toggle('hot', i === hot));
+    } else if (e.key === 'Enter') {
+      if (hot >= 0 && items[hot]) items[hot].dispatchEvent(new MouseEvent('mousedown'));
+      else if (picked) doGuess();
+    } else if (e.key === 'Escape') hideAC();
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.guess-box')) hideAC(); });
+
+  // ---- tahmin ----
+  const guessesEl = document.getElementById('guesses');
+  let history = [], best = 0;
+
+  guessBtn.addEventListener('click', doGuess);
+  function doGuess(){
+    if (!picked || done) return;
+    const gid = picked;
+    picked = null; guessBtn.disabled = true; input.value = '';
+    history.push(gid);
+    render(gid);
+    save();
+  }
+
+  function render(gid){
+    const isWin = String(gid) === String(DAY.id);
+    const pct = isWin ? 100 : matchPct(gid);
+    if (pct > best) best = pct;
+    const f = D.films[gid];
+    const row = document.createElement('div');
+    row.className = 'grow' + (pct >= best && !isWin ? ' best' : '');
+    const cls = pct >= 80 ? 'vhot' : pct >= 55 ? 'hot' : '';
+    row.innerHTML =
+      '<div class="grow-top"><span class="grow-title">' + f[0] + ' <span class="yr">(' + f[1] + ')</span></span>' +
+      '<span class="match ' + cls + '">' + (isWin ? '🎯 100%' : '%' + pct) + '</span></div>' +
+      '<div class="gpal">' + f[2].map(([h, w]) =>
+        '<span style="background:#' + h + ';flex:' + Math.max(w, 0.05) + '"></span>').join('') + '</div>' +
+      '<div class="meter"><i style="width:' + pct + '%"></i></div>';
+    guessesEl.prepend(row);
+    openHints(history.length);
+    if (isWin) win();
+  }
+
+  function win(){
+    done = true;
+    input.disabled = true; guessBtn.disabled = true;
+    // şeritler gerçek karelere çözünür
+    [...document.querySelectorAll('.strip')].forEach((strip, i) => {
+      const url = DAY.sc[i];
+      if (!url) return;
+      strip.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = url; img.alt = 'sahne';
+      strip.appendChild(img);
+    });
+    const g = history.length;
+    const score = Math.max(10, 100 - 8 * (g - 1));
+    document.getElementById('result').hidden = false;
+    document.getElementById('resultTitle').textContent = score + ' / 100';
+    document.getElementById('resultBody').innerHTML =
+      '<b>' + DAY.t + '</b> (' + DAY.y + ') — ' + g + ' tahminde, paletten çıktı.';
+    const journey = history.map(id => String(id) === String(DAY.id) ? '🎯' : '%' + matchPct(id)).join(' → ');
+    window._share = 'Palet #' + (day + 1) + ' — ' + score + '/100\n🎨 ' + journey + '\nverandatools.com/palet';
+    save();
+  }
+
+  document.getElementById('shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window._share || '').then(() => {
+      document.getElementById('shareFb').textContent = 'kopyalandı';
+      setTimeout(() => document.getElementById('shareFb').textContent = '', 1500);
+    });
+  });
+
+  // ---- kalıcılık ----
+  function save(){ localStorage.setItem(KEY, JSON.stringify({history, done})); }
+  (function restore(){
+    let st; try { st = JSON.parse(localStorage.getItem(KEY)); } catch(e){}
+    if (!st || !st.history) return;
+    st.history.forEach(gid => { history.push(gid); render(gid); });
+  })();
+})();
+</script>
+</body>
+</html>

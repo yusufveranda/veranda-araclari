@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<script src="../ortak/analitik.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Montaj — Kareleri filmlerine ayır</title>
+<meta name="description" content="9 sahne karesi, 3 film. Hangi kareler aynı filmden? Günlük görsel sinema bulmacası.">
+<meta name="theme-color" content="#0c0a09">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0a09'/%3E%3Crect x='10' y='14' width='20' height='16' rx='2' fill='%23e5b84b'/%3E%3Crect x='34' y='14' width='20' height='16' rx='2' fill='%23e5382e'/%3E%3Crect x='10' y='34' width='20' height='16' rx='2' fill='%236b9bd1'/%3E%3Crect x='34' y='34' width='20' height='16' rx='2' fill='%232e2724'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  [hidden]{display:none!important}
+  :root{
+    --bg:#0c0a09; --bg2:#141110; --card:#1a1614; --border:#2e2724;
+    --paper:#efe9dc; --paper-dim:#c9c2b2;
+    --text:#ece7de; --muted:#94897c;
+    --red:#e5382e; --red-glow:rgba(229,56,46,0.35); --red-dim:rgba(229,56,46,0.12);
+    --ok:#7cb46b; --radius:4px;
+    --gA:#e5b84b; --gB:#e5382e; --gC:#6b9bd1;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{color-scheme:dark;}
+  body{
+    background:radial-gradient(900px 500px at 50% -150px, rgba(229,56,46,0.09), transparent 70%), var(--bg);
+    color:var(--text); font-family:"Inter",-apple-system,sans-serif;
+    min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px;
+  }
+  .wrap{max-width:1500px; margin:0 auto;}
+  header{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:6px;}
+  h1{font-family:"Special Elite",cursive; font-size:30px; font-weight:400; color:var(--red);
+     text-shadow:0 0 18px var(--red-glow),0 0 40px var(--red-glow); letter-spacing:2px;}
+  .day-no{font-size:12px; color:var(--muted); letter-spacing:1px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:18px; font-style:italic;}
+  .controls{display:flex; gap:8px; align-items:center;}
+  button,input{font:inherit;}
+  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px;
+            padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
+  .mini-btn:hover{border-color:var(--red); color:var(--red);}
+
+  .status{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
+  .hint{font-size:13px; color:var(--muted);}
+  .hint b{color:var(--text);}
+  .score{font-size:13px; color:var(--muted);}
+  .score b{color:var(--red); font-size:22px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
+
+  .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px;}
+  .tile{
+    position:relative; border-radius:var(--radius); overflow:hidden; cursor:pointer;
+    background:#000; border:5px solid var(--paper); aspect-ratio:16/9;
+    box-shadow:0 6px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.8);
+    transition:transform .15s, border-color .15s, opacity .2s;
+  }
+  .tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .tile:hover{transform:translateY(-3px);}
+  .tile.sel{border-color:var(--red); box-shadow:0 0 20px var(--red-glow),0 6px 24px rgba(0,0,0,0.6);}
+  .tile.locked{cursor:default;}
+  .tile.locked:hover{transform:none;}
+  .tile.lockA{border-color:var(--gA);}
+  .tile.lockB{border-color:var(--gB);}
+  .tile.lockC{border-color:var(--gC);}
+  .tile.shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .lock-chip{
+    position:absolute; bottom:8px; left:8px; z-index:3;
+    font-family:"Special Elite",cursive; font-size:11px; letter-spacing:1px;
+    background:rgba(12,10,9,0.85); padding:4px 9px; border-radius:2px; color:var(--paper-dim);
+  }
+
+  .actions{display:flex; gap:10px; margin-top:16px; align-items:center; flex-wrap:wrap;}
+  .btn{
+    background:var(--red); color:#fff; border:none; border-radius:6px; padding:11px 22px;
+    font-size:14px; font-weight:600; cursor:pointer; letter-spacing:0.5px;
+  }
+  .btn:disabled{background:var(--card); color:var(--muted); cursor:not-allowed;}
+  .feedback{font-size:14px; color:var(--muted); min-height:20px;}
+  .feedback.close{color:var(--gA);}
+  .feedback.bad{color:var(--red);}
+
+  /* adlandırma aşaması */
+  .name-phase h2{font-family:"Special Elite",cursive; font-weight:400; font-size:20px; color:var(--paper); margin:26px 0 6px;}
+  .name-sub{font-size:13px; color:var(--muted); margin-bottom:14px;}
+  .name-groups{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-bottom:18px;}
+  .ngroup{border:1px solid var(--border); border-radius:8px; padding:12px; background:var(--bg2);}
+  .ngroup.pickme{border-color:var(--red); box-shadow:0 0 14px var(--red-glow);}
+  .ngroup-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:10px;}
+  .ngroup-strip img{width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:3px; display:block;}
+  .ngroup-slot{
+    min-height:38px; border:1px dashed var(--border); border-radius:6px; display:flex;
+    align-items:center; justify-content:center; font-size:13px; color:var(--muted); cursor:pointer; padding:6px;
+    text-align:center;
+  }
+  .ngroup-slot.filled{border-style:solid; color:var(--text); background:var(--card);}
+  .ngroup-slot.right{border-color:var(--ok); color:var(--ok);}
+  .ngroup-slot.wrong{border-color:var(--red); color:var(--red); text-decoration:line-through;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    background:var(--card); border:1px solid var(--border); border-radius:20px; padding:8px 14px;
+    font-size:13px; cursor:pointer; color:var(--text);
+  }
+  .chip:hover{border-color:var(--red);}
+  .chip.used{opacity:0.25; pointer-events:none;}
+
+  /* sonuç */
+  .result{margin-top:26px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); padding:18px;}
+  .result h2{font-family:"Special Elite",cursive; font-weight:400; font-size:22px; color:var(--red); margin-bottom:8px;}
+  .result .films{font-size:14px; color:var(--text); line-height:1.9;}
+  .result .films b{color:var(--paper);}
+  .dotA,.dotB,.dotC{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:7px;}
+  .dotA{background:var(--gA);} .dotB{background:var(--gB);} .dotC{background:var(--gC);}
+  .share-row{display:flex; gap:10px; margin-top:14px; align-items:center;}
+
+  @media(max-width:900px){
+    .grid{gap:8px;} .tile{border-width:3px;}
+    .name-groups{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>MONTAJ</h1>
+    <div class="controls">
+      <span class="day-no" id="dayNo"></span>
+      <a class="mini-btn" href="../">verandatools</a>
+    </div>
+  </header>
+  <p class="tagline">Dokuz kare masaya saçıldı — üçü bir filmden, üçü başka, üçü başka. Kurgu masasında ayır.</p>
+
+  <div class="status">
+    <div class="hint" id="hintLine">Aynı filmden olduğunu düşündüğün <b>3 kareyi</b> seç, sonra <b>Birleştir</b>.</div>
+    <div class="score">deneme: <b id="tryCount">0</b></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="actions" id="groupActions">
+    <button class="btn" id="mergeBtn" disabled>Birleştir</button>
+    <span class="feedback" id="feedback"></span>
+  </div>
+
+  <div class="name-phase" id="namePhase" hidden>
+    <h2>Şimdi adlandır</h2>
+    <p class="name-sub">Üç grubu ayırdın. Bonus: her gruba filmin adını yerleştir — önce grubu, sonra aşağıdan adı seç. Emin değilsen boş bırakıp bitirebilirsin.</p>
+    <div class="name-groups" id="nameGroups"></div>
+    <div class="chips" id="titleChips"></div>
+    <div class="actions">
+      <button class="btn" id="finishBtn">Bitir</button>
+    </div>
+  </div>
+
+  <div class="result" id="result" hidden>
+    <h2 id="resultTitle"></h2>
+    <div class="films" id="resultFilms"></div>
+    <div class="share-row">
+      <button class="mini-btn" id="shareBtn">📋 Sonucu kopyala</button>
+      <span class="feedback" id="shareFb"></span>
+    </div>
+  </div>
+</div>
+
+<script src="puzzles.js"></script>
+<script>
+(function(){
+  const EPOCH = new Date(2026, 6, 14); // 14 Tem 2026
+  const params = new URLSearchParams(location.search);
+  let day = Math.floor((Date.now() - EPOCH) / 864e5);
+  if (day < 0) day = 0;
+  if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
+  const idx = day % window.MONTAJ.length;
+  const PZ = window.MONTAJ[idx];
+  document.getElementById('dayNo').textContent = 'GÜN ' + (day + 1);
+
+  const KEY = 'montaj_v1_' + idx;
+  // kareler: [filmIdx, sceneIdx]
+  let tiles = [];
+  PZ.films.forEach((f, fi) => f.sc.forEach((url, si) => tiles.push({f: fi, url})));
+  // deterministik karıştırma (gün bazlı seed)
+  let seed = idx * 9301 + 49297;
+  const rnd = () => { seed = (seed * 233280 + 49297) % 2147483647; return seed / 2147483647; };
+  for (let i = tiles.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [tiles[i], tiles[j]] = [tiles[j], tiles[i]]; }
+
+  const grid = document.getElementById('grid');
+  const mergeBtn = document.getElementById('mergeBtn');
+  const feedback = document.getElementById('feedback');
+  const tryEl = document.getElementById('tryCount');
+  const LOCKS = ['lockA', 'lockB', 'lockC'];
+  const ROMAN = ['I', 'II', 'III'];
+
+  let sel = [], lockedFilms = [], tries = 0, attempts = [], nameAnswers = [null, null, null], done = false;
+
+  tiles.forEach((t, i) => {
+    const d = document.createElement('div');
+    d.className = 'tile'; d.dataset.i = i;
+    const img = document.createElement('img');
+    img.src = t.url; img.alt = 'sahne karesi'; img.draggable = false;
+    d.appendChild(img);
+    d.addEventListener('click', () => {
+      if (done || d.classList.contains('locked')) return;
+      const p = sel.indexOf(i);
+      if (p >= 0) { sel.splice(p, 1); d.classList.remove('sel'); }
+      else if (sel.length < 3) { sel.push(i); d.classList.add('sel'); }
+      mergeBtn.disabled = sel.length !== 3;
+    });
+    grid.appendChild(d);
+  });
+
+  mergeBtn.addEventListener('click', () => {
+    if (sel.length !== 3) return;
+    tries++; tryEl.textContent = tries;
+    const films = sel.map(i => tiles[i].f);
+    const same = films[0] === films[1] && films[1] === films[2];
+    attempts.push(same ? films[0] : -1);
+    if (same) {
+      const fi = films[0];
+      const li = lockedFilms.length;
+      lockedFilms.push(fi);
+      sel.forEach(i => {
+        const el = grid.children[i];
+        el.classList.remove('sel');
+        el.classList.add('locked', LOCKS[li]);
+        const chip = document.createElement('span');
+        chip.className = 'lock-chip'; chip.textContent = 'FİLM ' + ROMAN[li];
+        el.appendChild(chip);
+      });
+      feedback.textContent = lockedFilms.length < 3 ? 'Doğru — bir film ayrıldı.' : '';
+      feedback.className = 'feedback close';
+      sel = []; mergeBtn.disabled = true;
+      if (lockedFilms.length === 2) autoLockLast();
+      if (lockedFilms.length === 3) startNaming();
+    } else {
+      const counts = {};
+      films.forEach(f => counts[f] = (counts[f] || 0) + 1);
+      const maxSame = Math.max(...Object.values(counts));
+      feedback.textContent = maxSame === 2 ? 'İkisi aynı filmden, biri değil.' : 'Üçü de ayrı filmlerden.';
+      feedback.className = 'feedback bad';
+      sel.forEach(i => {
+        const el = grid.children[i];
+        el.classList.add('shake');
+        setTimeout(() => el.classList.remove('shake'), 450);
+      });
+      setTimeout(() => {
+        sel.forEach(i => grid.children[i].classList.remove('sel'));
+        sel = []; mergeBtn.disabled = true;
+      }, 500);
+    }
+    save();
+  });
+
+  function autoLockLast(){
+    const fi = [0,1,2].find(f => !lockedFilms.includes(f));
+    const li = lockedFilms.length;
+    lockedFilms.push(fi);
+    attempts.push(fi);
+    tiles.forEach((t, i) => {
+      if (t.f === fi && !grid.children[i].classList.contains('locked')) {
+        const el = grid.children[i];
+        el.classList.add('locked', LOCKS[li]);
+        const chip = document.createElement('span');
+        chip.className = 'lock-chip'; chip.textContent = 'FİLM ' + ROMAN[li];
+        el.appendChild(chip);
+      }
+    });
+  }
+
+  // ---- adlandırma ----
+  let pickGroup = -1;
+  function startNaming(){
+    document.getElementById('groupActions').hidden = true;
+    document.getElementById('hintLine').innerHTML = 'Gruplama bitti — <b>' + tries + ' denemede</b>.';
+    const np = document.getElementById('namePhase');
+    np.hidden = false;
+    const ng = document.getElementById('nameGroups');
+    ng.innerHTML = '';
+    lockedFilms.forEach((fi, li) => {
+      const g = document.createElement('div');
+      g.className = 'ngroup'; g.dataset.li = li;
+      const strip = document.createElement('div');
+      strip.className = 'ngroup-strip';
+      PZ.films[fi].sc.forEach(u => {
+        const im = document.createElement('img'); im.src = u; strip.appendChild(im);
+      });
+      const slot = document.createElement('div');
+      slot.className = 'ngroup-slot'; slot.textContent = 'FİLM ' + ROMAN[li] + ' — ad seç';
+      slot.addEventListener('click', () => {
+        if (done) return;
+        if (nameAnswers[li]) { // geri al
+          nameAnswers[li] = null;
+          slot.textContent = 'FİLM ' + ROMAN[li] + ' — ad seç';
+          slot.classList.remove('filled');
+          refreshChips();
+          return;
+        }
+        pickGroup = li;
+        document.querySelectorAll('.ngroup').forEach(x => x.classList.toggle('pickme', +x.dataset.li === li));
+      });
+      g.appendChild(strip); g.appendChild(slot);
+      ng.appendChild(g);
+    });
+    const allTitles = PZ.films.map(f => f.t).concat(PZ.decoys || []);
+    allTitles.sort();
+    const tc = document.getElementById('titleChips');
+    tc.innerHTML = '';
+    allTitles.forEach(t => {
+      const c = document.createElement('button');
+      c.className = 'chip'; c.textContent = t;
+      c.addEventListener('click', () => {
+        if (pickGroup < 0 || done) return;
+        nameAnswers[pickGroup] = t;
+        const slot = document.querySelectorAll('.ngroup-slot')[pickGroup];
+        slot.textContent = t; slot.classList.add('filled');
+        document.querySelectorAll('.ngroup').forEach(x => x.classList.remove('pickme'));
+        pickGroup = -1;
+        refreshChips();
+      });
+      tc.appendChild(c);
+    });
+    refreshChips();
+    save();
+  }
+  function refreshChips(){
+    document.querySelectorAll('.chip').forEach(c => {
+      c.classList.toggle('used', nameAnswers.includes(c.textContent));
+    });
+  }
+
+  document.getElementById('finishBtn').addEventListener('click', finish);
+
+  function finish(){
+    if (done) return;
+    done = true;
+    let named = 0;
+    document.querySelectorAll('.ngroup-slot').forEach((slot, li) => {
+      const truth = PZ.films[lockedFilms[li]].t;
+      if (nameAnswers[li] === truth) { slot.classList.add('right'); named++; }
+      else if (nameAnswers[li]) {
+        slot.classList.add('wrong');
+        slot.textContent = nameAnswers[li] + '  →  ' + truth;
+      } else { slot.textContent = truth; slot.classList.add('filled'); }
+    });
+    document.getElementById('titleChips').style.display = 'none';
+    document.getElementById('finishBtn').style.display = 'none';
+
+    // puan: gruplama 70 + adlandırma 30. Üçüncü grup otomatik kilitlenir,
+    // kusursuz oyun 2 denemedir.
+    const wrong = tries - 2;
+    const groupPts = Math.max(20, 70 - wrong * 10);
+    const total = groupPts + named * 10;
+    const res = document.getElementById('result');
+    res.hidden = false;
+    document.getElementById('resultTitle').textContent = total + ' / 100 — ' +
+      (total >= 95 ? 'Kusursuz kurgu.' : total >= 75 ? 'Sağlam montaj.' : total >= 50 ? 'Kaba kurgu geçti.' : 'Negatifler karışmış.');
+    const dots = ['dotA', 'dotB', 'dotC'];
+    document.getElementById('resultFilms').innerHTML = lockedFilms.map((fi, li) =>
+      '<span class="' + dots[li] + '"></span><b>' + PZ.films[fi].t + '</b> (' + PZ.films[fi].y + ')'
+    ).join('<br>');
+    window._share = buildShare(total, named);
+    save();
+    res.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  }
+
+  function buildShare(total, named){
+    const sq = {0: '🟨', 1: '🟥', 2: '🟦', '-1': '⬛'};
+    const rows = attempts.map(a => (a === -1 ? '⬛⬛⬛' : sq[a].repeat(3))).join('\n');
+    return 'Montaj #' + (day + 1) + ' — ' + total + '/100\n' + rows +
+      '\n🎬 ' + named + '/3 film adlandı\nverandatools.com/montaj';
+  }
+  document.getElementById('shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window._share || '').then(() => {
+      document.getElementById('shareFb').textContent = 'kopyalandı';
+      setTimeout(() => document.getElementById('shareFb').textContent = '', 1500);
+    });
+  });
+
+  // ---- kalıcılık ----
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify({tries, attempts, lockedFilms, nameAnswers, done}));
+  }
+  function restore(){
+    let st; try { st = JSON.parse(localStorage.getItem(KEY)); } catch(e){}
+    if (!st || !st.attempts) return;
+    tries = st.tries; attempts = st.attempts; tryEl.textContent = tries;
+    (st.lockedFilms || []).forEach((fi, li) => {
+      lockedFilms.push(fi);
+      tiles.forEach((t, i) => {
+        if (t.f === fi) {
+          const el = grid.children[i];
+          el.classList.add('locked', LOCKS[li]);
+          const chip = document.createElement('span');
+          chip.className = 'lock-chip'; chip.textContent = 'FİLM ' + ROMAN[li];
+          el.appendChild(chip);
+        }
+      });
+    });
+    if (lockedFilms.length === 3) {
+      startNaming();
+      nameAnswers = st.nameAnswers || [null, null, null];
+      nameAnswers.forEach((t, li) => {
+        if (t) {
+          const slot = document.querySelectorAll('.ngroup-slot')[li];
+          slot.textContent = t; slot.classList.add('filled');
+        }
+      });
+      refreshChips();
+      if (st.done) finish();
+    }
+  }
+  restore();
+})();
+</script>
+</body>
+</html>
