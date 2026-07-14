@@ -34,7 +34,8 @@
   .day-no{font-size:12px; color:var(--muted); letter-spacing:1px;}
   .tagline{font-size:13px; color:var(--muted); margin-bottom:18px; font-style:italic;}
   .controls{display:flex; gap:8px; align-items:center;}
-  button,input{font:inherit;}
+  button,input,select{font:inherit;}
+  select{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; font-size:13px;}
   .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px;
             padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
   .mini-btn:hover{border-color:var(--red); color:var(--red);}
@@ -122,7 +123,7 @@
   <header>
     <h1>MONTAJ</h1>
     <div class="controls">
-      <span class="day-no" id="dayNo"></span>
+      <select id="daySel" title="bulmaca seç"></select>
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
@@ -170,7 +171,14 @@
   if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
   const idx = day % window.MONTAJ.length;
   const PZ = window.MONTAJ[idx];
-  document.getElementById('dayNo').textContent = 'GÜN ' + (day + 1);
+  const daySel = document.getElementById('daySel');
+  for (let i = 0; i < window.MONTAJ.length; i++) {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = 'BULMACA ' + (i + 1);
+    if (i === idx) o.selected = true;
+    daySel.appendChild(o);
+  }
+  daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value);
 
   const KEY = 'montaj_v1_' + idx;
   // kareler: [filmIdx, sceneIdx]
