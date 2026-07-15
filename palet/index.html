@@ -177,9 +177,10 @@
     row.innerHTML = '<div class="strip-label">Kare ' + (i + 1) + '</div>';
     const strip = document.createElement('div');
     strip.className = 'strip'; strip.dataset.i = i;
-    colors.forEach(c => {
+    colors.forEach((c, ci) => {
       const sw = document.createElement('div');
       sw.className = 'sw'; sw.style.background = '#' + c;
+      sw.style.flex = ci < 2 ? '1.7' : '1'; // ilk ikisi baskın renk
       strip.appendChild(sw);
     });
     row.appendChild(strip);
@@ -206,28 +207,27 @@
     });
   }
 
-  // ---- renk matematiği ----
-  function hex2lab(hx){
-    let r = parseInt(hx.slice(0,2),16)/255, g = parseInt(hx.slice(2,4),16)/255, b = parseInt(hx.slice(4,6),16)/255;
-    const f = u => u <= 0.04045 ? u/12.92 : Math.pow((u+0.055)/1.055, 2.4);
-    r = f(r); g = f(g); b = f(b);
-    let x = (0.4124*r+0.3576*g+0.1805*b)/0.95047, y = 0.2126*r+0.7152*g+0.0722*b, z = (0.0193*r+0.1192*g+0.9505*b)/1.08883;
-    const t = u => u > 0.008856 ? Math.cbrt(u) : 7.787*u + 16/116;
-    const fx = t(x), fy = t(y), fz = t(z);
-    return [116*fy-16, 500*(fx-fy), 200*(fy-fz)];
+  // ---- renk matematiği: 13 kutulu ton histogramı (12 ton + nötr) + kroma ----
+  function hueDist(gid, aid){
+    const [,, , ha, ca] = D.films[aid];
+    const [,, , hb, cb] = D.films[gid];
+    let bc = 0;
+    for (let i = 0; i < ha.length; i++) bc += Math.sqrt((ha[i]/1000) * (hb[i]/1000));
+    return 0.85 * (1 - bc) + 0.15 * Math.abs(ca - cb) / 40;
   }
-  const labCache = {};
-  function sigLab(sig){ return sig.map(([h, w]) => [hex2lab(h), w]); }
-  function dist3(a, b){ return Math.hypot(a[0]-b[0], a[1]-b[1], a[2]-b[2]); }
-  function sigDist(a, b){
-    const one = (s, d) => s.reduce((acc, [l, w]) => acc + w * Math.min(...d.map(x => dist3(l, x[0]))), 0);
-    return (one(a, b) + one(b, a)) / 2;
-  }
+  // yüzde = sıralama: tüm kataloğun yüzde kaçından daha yakınsın
+  let _allD = null;
   function matchPct(gid){
-    const a = labCache[DAY.id] || (labCache[DAY.id] = sigLab(D.films[DAY.id][2]));
-    const b = labCache[gid] || (labCache[gid] = sigLab(D.films[gid][2]));
-    const d = sigDist(a, b);
-    const pct = Math.round(100 * (D.dHi - d) / (D.dHi - D.dLo));
+    if (!_allD) {
+      _allD = [];
+      for (const id in D.films) if (id !== String(DAY.id)) _allD.push(hueDist(id, DAY.id));
+      _allD.sort((a, b) => a - b);
+    }
+    const d = hueDist(gid, DAY.id);
+    let lo = 0, hi = _allD.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (_allD[m] < d) lo = m + 1; else hi = m; }
+    const r = 1 - lo / _allD.length;      // 1 = en yakın
+    const pct = Math.round(100 * r * r * r); // eğriyi keskinleştir: orta sıralar soğuk okunsun
     return Math.max(1, Math.min(99, pct));
   }
 
