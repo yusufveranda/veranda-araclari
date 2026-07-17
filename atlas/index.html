@@ -564,10 +564,15 @@ $('#skor-gonder').onclick=()=>{
   if(!nick) return;
   localStorage.setItem('atlas:nick',nick);
   $('#skor-gonder').textContent='Gönderiliyor…';
-  fetch(LB_URL+'?fn=add&oyun=atlas&gun='+gun+'&nick='+encodeURIComponent(nick)+
-        '&puan='+puan+'&cozulen='+dogru+'&deneme='+o.deneme)
-    .then(r=>r.json()).then(()=>{ $('#skor-gonder').textContent='Gönderildi ✓'; liderGetir(); })
-    .catch(()=>{ $('#skor-gonder').textContent='Olmadı — tekrar dene'; });
+  const sheetsYaz=()=>   // yedek yol: anonim giriş (konsolda sağlayıcı) kapalıysa
+    fetch(LB_URL+'?fn=add&oyun=atlas&gun='+gun+'&nick='+encodeURIComponent(nick)+
+          '&puan='+puan+'&cozulen='+dogru+'&deneme='+o.deneme)
+      .then(r=>r.json()).then(()=>{ $('#skor-gonder').textContent='Gönderildi ✓'; liderGetir(); })
+      .catch(()=>{ $('#skor-gonder').textContent='Olmadı — tekrar dene'; });
+  /* nick'li oyuncu: kalıcı anonim Firebase oturumu aç, skor Firestore'a yazılsın
+     (tek depo) — girişten sonra tıklamayı yinele, üstteki VF yolu devralır */
+  if(window.VF) VF.anonimGiris(nick).then(()=>$('#skor-gonder').onclick()).catch(sheetsYaz);
+  else sheetsYaz();
 };
 function atlasHistogramHTML(ist){
   const anahtarlar=Array.from({length:10},(_,i)=>String(i));
@@ -584,7 +589,7 @@ function atlasHistogramHTML(ist){
 }
 function liderGetir(){
   const gun=GUN*2+(mod==='turkiye'?1:0);
-  if(window.VF && VF.kullanici){
+  if(window.VF){   // okuma girişsiz de Firestore'dan — skorlar tek depoda artık
     Promise.all([ VF.leaderboardOku('atlas', gun), VF.istatistikOku('atlas', gun) ]).then(([arr, ist])=>{
       let h='';
       if(arr.length){
@@ -594,7 +599,7 @@ function liderGetir(){
         h+='</ol>';
       }
       h+=atlasHistogramHTML(ist);
-      h+='<div style="font-family:Georgia,serif;font-size:12px;color:var(--soluk);text-align:center;margin-top:10px">'+
+      if(VF.kullanici) h+='<div style="font-family:Georgia,serif;font-size:12px;color:var(--soluk);text-align:center;margin-top:10px">'+
          '<a id="lbAdDeg" style="color:var(--kirmizi);cursor:pointer;text-decoration:underline">görünen adını değiştir</a></div>';
       $('#lider').innerHTML=h;
       const a=$('#lbAdDeg'); if(a) a.onclick=()=>{ const yeni=prompt('yeni görünen adın:', VF.ad||''); if(yeni) VF.adDegistir(yeni).then(liderGetir); };
@@ -706,9 +711,9 @@ metaBildir();
 <script>
 (function(){
   var b=document.getElementById('girisBtn');
-  b.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
+  b.onclick=function(){ if(VF.kullanici && !VF.anonimMi) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
   VF.kullaniciDinle(function(u){
-    b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
+    b.textContent = (u && !VF.anonimMi) ? (u.ad+' · çıkış') : 'Google ile giriş';
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
     if(VF.adminMi){ var rb=document.getElementById('rastgele'); if(rb) rb.hidden=false; }
   });

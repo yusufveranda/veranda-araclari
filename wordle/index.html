@@ -877,9 +877,14 @@ function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlen
   const nick=nickAl(); if(!nick) return Promise.resolve({yokNick:true});
   const key=lbOyun()+':'+oyunGun+':'+nick.toLowerCase();
   if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
-  const q=new URLSearchParams({fn:'add',oyun:lbOyun(),gun:String(oyunGun),nick,
-    puan:String(s.puan100),cozulen:String(s.cozulen),deneme:String(s.toplamDeneme)});
-  const pr=fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{lbGonderildi[key]=j;return j;}).catch(()=>null);
+  const sheetsYaz=()=>{   // yedek yol: anonim giriş (konsolda sağlayıcı) kapalıysa
+    const q=new URLSearchParams({fn:'add',oyun:lbOyun(),gun:String(oyunGun),nick,
+      puan:String(s.puan100),cozulen:String(s.cozulen),deneme:String(s.toplamDeneme)});
+    return fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{lbGonderildi[key]=j;return j;}).catch(()=>null);
+  };
+  /* nick'li oyuncu: kalıcı anonim Firebase oturumu aç, skor Firestore'a yazılsın
+     (tek depo) — girişten sonra lbGonder yeniden girip üstteki VF yolunu kullanır */
+  const pr = window.VF ? VF.anonimGiris(nick).then(()=>lbGonder()).catch(sheetsYaz) : sheetsYaz();
   lbGonderildi[key]=pr; return pr;
 }
 function lbAc(){
@@ -919,17 +924,21 @@ function ghCiz(arr){
   if(arr.length>limit){ tumBtn.classList.remove('gizli'); tumBtn.textContent = ghAcik ? 'küçült' : 'tümünü gör ('+arr.length+')'; }
   else tumBtn.classList.add('gizli');
 }
+let ghVFdeneme=0;
 function gecenHaftaGetir(){
   const panel=document.getElementById('gecenHafta');
   if(!lbDestekli()){ panel.classList.add('gizli'); return; }
   const key=lbOyun();
   if(ghCache[key]){ ghCiz(ghCache[key]); return; }
+  /* firebase.js sayfanın EN ALTINDA yüklenir; sayfa açılışındaki ilk çağrı ondan önce
+     koşabilir — VF gelene kadar bekle, yoksa panel boş sanılıp kalıcı gizlenir */
+  if(!window.VF){ if(++ghVFdeneme<40) setTimeout(gecenHaftaGetir,250); return; }
   panel.classList.remove('gizli');
   document.getElementById('ghAlt').textContent='';
   document.getElementById('ghListe').innerHTML='<div class="gh-sat" style="border:none;color:var(--soluk)">yükleniyor…</div>';
   document.getElementById('ghTum').classList.add('gizli');
   const bas=gecenHaftaBas(), gunler=[]; for(let g=bas; g<bas+7; g++) gunler.push(g);
-  (window.VF ? VF.leaderboardOkuAralik(key, gunler) : Promise.resolve([]))
+  VF.leaderboardOkuAralik(key, gunler)
   .then(fs=>{
     const arr=fs.map(r=>({nick:r.ad||'isimsiz',puan:r.puan||0})).sort((a,b)=>b.puan-a.puan);
     ghCache[key]=arr; if(key===lbOyun()) ghCiz(arr);
@@ -959,7 +968,7 @@ function lbGoster(kapsam){
   lbGeriCiz();
   const listeEl=document.getElementById('lbListe'), liderEl=document.getElementById('lbLider');
   liderEl.textContent=''; listeEl.innerHTML='<div class="lb-bos">yükleniyor…</div>';
-  if(window.VF && VF.kullanici){
+  if(window.VF){   // okuma girişsiz de Firestore'dan — skorlar tek depoda artık
     if(kapsam==='gun'){
       Promise.all([ VF.leaderboardOku(lbOyun(), oyunGun), VF.istatistikOku(lbOyun(), oyunGun) ]).then(([arr, ist])=>{
         if(kapsam!==lbKapsam) return;
@@ -967,7 +976,7 @@ function lbGoster(kapsam){
         const liste = arr.length ? arr.map((r,i)=>
           `<div class="lb-sat${(r.ad===VF.ad)?' ben':''}"><span class="lb-sira">${i+1}</span><span class="lb-nick">${kacis(r.ad||'isimsiz')}</span><span class="lb-puan">${r.puan} <small>puan</small></span></div>`
         ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
-        listeEl.innerHTML = liste + lbHistogramHTML(ist) + '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
+        listeEl.innerHTML = liste + lbHistogramHTML(ist) + (VF.kullanici?'<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>':'');
         const a=document.getElementById('lbAdDeg'); if(a) a.onclick=()=>{ const yeni=prompt('yeni görünen adın:', VF.ad||''); if(yeni) VF.adDegistir(yeni).then(()=>lbGoster(lbKapsam)); };
       }).catch(()=>{ if(kapsam===lbKapsam) listeEl.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
       return;
@@ -1377,9 +1386,9 @@ temaUygula(); sesUygula();
 <script>
 (function(){
   var b=document.getElementById('girisBtn');
-  b.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
+  b.onclick=function(){ if(VF.kullanici && !VF.anonimMi) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
   VF.kullaniciDinle(function(u){
-    b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
+    b.textContent = (u && !VF.anonimMi) ? (u.ad+' · çıkış') : 'Google ile giriş';
     document.getElementById('lbEkleBtn').style.display = u ? 'none' : '';   // girişliyse otomatik gönderiliyor, butona gerek yok
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
     if(VF.adminMi){ const sb=document.querySelector('[data-mod="serbest"]'); if(sb) sb.hidden=false; }

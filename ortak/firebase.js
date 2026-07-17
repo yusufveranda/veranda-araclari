@@ -39,8 +39,37 @@
      sorunu, SDK sürümünden bağımsız — authDomain firebaseapp.com kaldığı sürece geçerli).
      Popup bu sorunu atlıyor; ilk denemedeki "hemen kapanma" asıl domain yetkisiz olduğu
      içindi (o zaman düzeltildi), COOP uyarısı zararsız görünüyor. */
-  function girisYap(){ return auth.signInWithPopup(provider); }
+  function girisYap(){
+    const u = auth.currentUser;
+    /* anonim (nick'li) oturum Google'a BAĞLANIR, yeni hesap açılmaz — uid ve o uid'e
+       yazılmış skorlar aynen kalır. Google hesabı zaten başka bir uid'e bağlıysa link
+       reddedilir → o hesaba normal giriş yapılır (anonim skorlar eski uid'de kalır). */
+    if(u && u.isAnonymous){
+      return u.linkWithPopup(provider)
+        .then(r=>{ location.reload(); return r; })   // onAuthStateChanged link'te tetiklenmez → temiz durum için tazele
+        .catch(e=>{
+          if(e.code==='auth/credential-already-in-use') return auth.signInWithCredential(e.credential);
+          throw e;
+        });
+    }
+    return auth.signInWithPopup(provider);
+  }
   function cikisYap(){ return auth.signOut(); }
+
+  /* Girişsiz (nick'li) oyuncu skor gönderirken çağrılır: kalıcı anonim Firebase oturumu
+     açar (uid bu tarayıcıda kalıcı), görünen ad = nick. Böylece create-only günlük kilit
+     ve rules (auth != null) Google'sız da çalışır; skorlar tek depoda (Firestore) birikir.
+     Konsolda Anonymous sağlayıcısı kapalıysa auth/admin-restricted-operation ile reddeder —
+     çağıran taraf eski Sheets yoluna düşmeli. Zaten girişliyse (Google ya da anonim) no-op. */
+  let bekleyenAd = null, bekleyenAdResolve = null;
+  function anonimGiris(ad){
+    ad = (ad||'').trim().slice(0,16);
+    if(!ad) return Promise.reject(new Error('ad gerekli'));
+    if(auth.currentUser) return Promise.resolve();
+    bekleyenAd = ad;
+    const adHazir = new Promise(res=>{ bekleyenAdResolve = res; });
+    return auth.signInAnonymously().then(()=>adHazir);   // kullaniciDinle ad'ı yazınca çözülür
+  }
 
   const esc = s=>String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -98,7 +127,7 @@
         const ref = db.collection('kullanicilar').doc(u.uid);
         const snap = await ref.get();
         if(!snap.exists){
-          const ad = await adSor();
+          const ad = bekleyenAd || await adSor();   // anonimGiris nick'i verdiyse sorma
           await ref.set({ad, olusturulma: firebase.firestore.FieldValue.serverTimestamp()});
           kullaniciAdi = ad;
           kullaniciStreak = 0;
@@ -106,6 +135,7 @@
           kullaniciAdi = snap.data().ad;
           kullaniciStreak = snap.data().streak || 0;
         }
+        if(bekleyenAdResolve){ bekleyenAdResolve(); bekleyenAdResolve=null; bekleyenAd=null; }
         authHazirIsaretle();
         cb({uid:u.uid, ad:kullaniciAdi});
       }catch(e){ console.error('VF kullanici hata', e); authHazirIsaretle(); cb(null); }
@@ -266,12 +296,13 @@
   }
 
   window.VF = {
-    girisYap, cikisYap, kullaniciDinle, adDegistir, gocKontrolEt, eskiOyuncuBanner,
+    girisYap, cikisYap, anonimGiris, kullaniciDinle, adDegistir, gocKontrolEt, eskiOyuncuBanner,
     skorYaz, leaderboardOku, leaderboardOkuAralik, istatistikArttir, istatistikOku, bayrakYaz,
     streakGuncelle,
     get kullanici(){ return auth.currentUser; },
     get ad(){ return kullaniciAdi; },
     get streak(){ return kullaniciStreak; },
+    get anonimMi(){ return !!(auth.currentUser && auth.currentUser.isAnonymous); },
     get adminMi(){ return !!(auth.currentUser && auth.currentUser.uid===ADMIN_UID); }
   };
 })();

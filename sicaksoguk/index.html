@@ -685,8 +685,13 @@ function skGonder(){   // sadece günlük + bulununca (pes değil)
   const nick=lbNick(); if(!nick) return Promise.resolve({yokNick:true});
   const key=S.gunNo+':'+nick.toLowerCase();   // sabit gün — gece yarısını geçen bitirici eski güne yazsın
   if(skGonderildi[key]) return Promise.resolve(skGonderildi[key]);
-  const q=new URLSearchParams({fn:'add',oyun:'sicak',gun:String(S.gunNo),nick,puan:'0',cozulen:'1',deneme:String(skTahminSayisi())});
-  const pr=fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{skGonderildi[key]=j;return j;}).catch(()=>null);
+  const sheetsYaz=()=>{   // yedek yol: anonim giriş (konsolda sağlayıcı) kapalıysa
+    const q=new URLSearchParams({fn:'add',oyun:'sicak',gun:String(S.gunNo),nick,puan:'0',cozulen:'1',deneme:String(skTahminSayisi())});
+    return fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{skGonderildi[key]=j;return j;}).catch(()=>null);
+  };
+  /* nick'li oyuncu: kalıcı anonim Firebase oturumu aç, skor Firestore'a yazılsın
+     (tek depo) — girişten sonra skGonder yeniden girip üstteki VF yolunu kullanır */
+  const pr = window.VF ? VF.anonimGiris(nick).then(()=>skGonder()).catch(sheetsYaz) : sheetsYaz();
   skGonderildi[key]=pr; return pr;
 }
 function skAc(){
@@ -698,7 +703,7 @@ function skGoster(kapsam){
   document.querySelectorAll('#skTablar button').forEach(b=>b.classList.toggle('secili',b.dataset.k===kapsam));
   skGeriCiz();
   const L=$('skListe'), Li=$('skLider'); Li.textContent=''; L.innerHTML='<div class="lb-bos">yükleniyor…</div>';
-  if(window.VF && VF.kullanici){
+  if(window.VF){   // okuma girişsiz de Firestore'dan — skorlar tek depoda artık
     if(kapsam==='gun'){
       Promise.all([ VF.leaderboardOku('sicak', S.gunNo), VF.istatistikOku('sicak', S.gunNo) ]).then(([arr, ist])=>{
         if(kapsam!==skKapsam) return;
@@ -706,7 +711,7 @@ function skGoster(kapsam){
         const liste = arr.length ? arr.map((r,i)=>
           '<div class="lb-sat'+((r.ad===VF.ad)?' ben':'')+'"><span class="lb-sira">'+(i+1)+'</span><span class="lb-nick">'+lbKacis(r.ad||'isimsiz')+'</span><span class="lb-puan">'+r.deneme+' <small>tahmin</small></span></div>'
         ).join('') : '<div class="lb-bos">henüz kimse yok — ilk sen ol</div>';
-        L.innerHTML = liste + skHistogramHTML(ist) + '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
+        L.innerHTML = liste + skHistogramHTML(ist) + (VF.kullanici?'<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>':'');
         const a=$('lbAdDeg'); if(a) a.onclick=()=>{ const yeni=prompt('yeni görünen adın:', VF.ad||''); if(yeni) VF.adDegistir(yeni).then(()=>skGoster(skKapsam)); };
       }).catch(()=>{ if(kapsam===skKapsam) L.innerHTML='<div class="lb-bos">tablo yüklenemedi</div>'; });
       return;
@@ -901,9 +906,9 @@ setTimeout(()=>{
 <script>
 (function(){
   var b=document.getElementById('girisBtn');
-  b.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
+  b.onclick=function(){ if(VF.kullanici && !VF.anonimMi) VF.cikisYap(); else VF.girisYap().catch(function(e){console.error(e);}); };
   VF.kullaniciDinle(function(u){
-    b.textContent = u ? (u.ad+' · çıkış') : 'Google ile giriş';
+    b.textContent = (u && !VF.anonimMi) ? (u.ad+' · çıkış') : 'Google ile giriş';
     document.getElementById('skEkleBtn').style.display = u ? 'none' : '';
     if(u) VF.gocKontrolEt(); else VF.eskiOyuncuBanner();
     if(VF.adminMi){ const sb=document.querySelector('[data-mod="serbest"]'); if(sb) sb.hidden=false; }
