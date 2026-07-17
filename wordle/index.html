@@ -928,20 +928,10 @@ function gecenHaftaGetir(){
   document.getElementById('ghAlt').textContent='';
   document.getElementById('ghListe').innerHTML='<div class="gh-sat" style="border:none;color:var(--soluk)">yükleniyor…</div>';
   document.getElementById('ghTum').classList.add('gizli');
-  /* geçiş haftası: Google'a geçenler artık Sheets'e hiç yazmıyor ama o hafta çoğunluk
-     hâlâ Sheets'teydi — iki kaynağı da okuyup isimle (küçük harf) birleştiriyoruz.
-     Aynı kişi bir günde ya Sheets'e ya Firestore'a yazar, asla ikisine birden
-     (dual-write yok), o yüzden toplama çift saymaz. */
   const bas=gecenHaftaBas(), gunler=[]; for(let g=bas; g<bas+7; g++) gunler.push(g);
-  const q=new URLSearchParams({fn:'list',oyun:key,kapsam:'hafta',hbas:String(bas)});
-  Promise.all([
-    (window.VF ? VF.leaderboardOkuAralik(key, gunler) : Promise.resolve([])).catch(()=>[]),
-    fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>(j&&j.liste)||[]).catch(()=>[])
-  ]).then(([fs, sheets])=>{
-    const kisi={};
-    fs.forEach(r=>{ const k=(r.ad||'isimsiz').trim().toLowerCase(); if(!kisi[k]) kisi[k]={nick:r.ad||'isimsiz',puan:0}; kisi[k].puan+=(r.puan||0); });
-    sheets.forEach(r=>{ const k=(r.nick||'isimsiz').trim().toLowerCase(); if(!kisi[k]) kisi[k]={nick:r.nick||'isimsiz',puan:0}; kisi[k].puan+=(r.puan||0); });
-    const arr=Object.values(kisi).sort((a,b)=>b.puan-a.puan);
+  (window.VF ? VF.leaderboardOkuAralik(key, gunler) : Promise.resolve([]))
+  .then(fs=>{
+    const arr=fs.map(r=>({nick:r.ad||'isimsiz',puan:r.puan||0})).sort((a,b)=>b.puan-a.puan);
     ghCache[key]=arr; if(key===lbOyun()) ghCiz(arr);
   }).catch(()=>{ if(key===lbOyun()) panel.classList.add('gizli'); });
 }
