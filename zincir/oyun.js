@@ -1,16 +1,51 @@
-/* Zincir — günlük film zinciri.
-   Akış: günün oyuncusu → film → yan oyuncu (başrol hariç, ÇEKİLİŞLE) → film →
-   o filmin yönetmeni → film → kadrodan 3 aday, birini seç → yanına rastgele
-   partner (çekilişle) → ortak film → tekrar seçim...
-   Format: tur başına 3 deneme (biterse zincir kopar), 1 pas (kişiyi yeniden
-   çeker), 10 halkada altın bitiş. Günde 1 resmi el (localStorage) + pratik. */
+/* Zincir: günlük film zinciri.
+   Akış: günün oyuncusu > film > yan oyuncu (başrol hariç, çekilişle) > film >
+   o filmin yönetmeni > film > kadrodan 3 aday, birini seç > yanına rastgele
+   partner (çekilişle) > ortak film > tekrar seçim...
+   Format: tur başına 3 deneme (biterse zincir kopar), 1 yeniden çek hakkı
+   (kişiyi değiştirir), 10 halkada altın bitiş. Günde 1 resmi el + pratik. */
 (function(){
 "use strict";
 const IMG = "https://image.tmdb.org/t/p/w342";
+const AFIS_IMG = "https://image.tmdb.org/t/p/w185";
 const ORDER_MAX = 7, DENEME_HAK = 3, PAS_HAK = 1, TAVAN = 10, ADAY = 3;
 const EPOCH = 20654; // 2026-07-20 => Zincir #1
 const KAYIT = "zincir_v1";
+const SES_ANAHTAR = "zincir_ses";
 const AZ_HAREKET = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---- ses ---------------------------------------------------------------
+// Web Audio ile üretilen kısa efektler; dosya yok. Makara dönerken tık tık,
+// doğru/yanlış cevapta ve zincir kopunca/altın bitişte kısa bir işaret.
+const Ses = (() => {
+  let ctx = null;
+  let acik = localStorage.getItem(SES_ANAHTAR) !== "kapali";
+  const al = () => { if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); return ctx; };
+  function ton(freq, sure, tip, ses, hedefFreq){
+    if (!acik) return;
+    try{
+      const c = al(); if (c.state === "suspended") c.resume();
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = tip || "sine"; o.frequency.setValueAtTime(freq, c.currentTime);
+      if (hedefFreq) o.frequency.exponentialRampToValueAtTime(Math.max(30,hedefFreq), c.currentTime + sure);
+      g.gain.setValueAtTime(0, c.currentTime);
+      g.gain.linearRampToValueAtTime(ses || .16, c.currentTime + .008);
+      g.gain.exponentialRampToValueAtTime(.0001, c.currentTime + sure);
+      o.connect(g); g.connect(c.destination);
+      o.start(); o.stop(c.currentTime + sure + .02);
+    }catch(e){}
+  }
+  return {
+    acikMi: () => acik,
+    ac(v){ acik = v; localStorage.setItem(SES_ANAHTAR, v ? "acik" : "kapali"); },
+    tik(hiz){ ton(720 + Math.random()*260, .045, "square", .09, 500 + hiz*300); },
+    dogru(){ ton(660, .09, "sine", .15); setTimeout(()=>ton(990, .16, "sine", .15), 70); },
+    yanlis(){ ton(220, .17, "sawtooth", .13, 90); },
+    koptu(){ ton(180, .22, "sawtooth", .16, 55); setTimeout(()=>ton(120,.28,"sawtooth",.14,40), 110); },
+    altin(){ [660,880,1100].forEach((f,i)=>setTimeout(()=>ton(f, .22, "sine", .16), i*110)); },
+    bonus(){ [880,660,880,1320].forEach((f,i)=>setTimeout(()=>ton(f, .1, "triangle", .12), i*55)); },
+  };
+})();
 
 // ---- veri hazırlığı --------------------------------------------------------
 const FILMS = ZD.films;                 // id -> [t, y, votes, dirId]
@@ -33,6 +68,7 @@ for (const id of OYUNCU){
     F2A.get(f).push(id);
   }
 }
+const HAVUZ_FILM_ID = [...F2A.keys()];   // bonus tur: kümelenecek film adayları
 
 const norm = s => s.toLowerCase()
   .replace(/ı/g,"i").normalize("NFD").replace(/[̀-ͯ]/g,"")
@@ -85,6 +121,25 @@ function ortakFilmler(a, b){
   for (const [f] of P[a].cast) if (P[b].cast.has(f) && !kf.has(f)) out.push(f);
   return out;
 }
+// bonus tur: oyunun bilgi boşluğu yüzünden zincir kopacaksa çıkmaz sokak
+// yerine bunu çağır. Ortak bir filmden 5 kullanılmamış oyuncu çeker, bu
+// beşliden hangi ikisi seçilirse seçilsin en az o kaynak filmi paylaşırlar.
+// Yani oyuncunun hatası değil, oyunun veri boşluğu zinciri koparmaz.
+function bonusHavuzBul(){
+  const kk = kullanilanKisi(), kf = kullanilanFilm();
+  for (let deneme = 0; deneme < 300; deneme++){
+    const fid = HAVUZ_FILM_ID[Math.floor(Math.random()*HAVUZ_FILM_ID.length)];
+    if (kf.has(fid)) continue;
+    const uygun = (F2A.get(fid)||[]).filter(q => !kk.has(q));
+    if (uygun.length >= 5) return uygun.sort(()=>Math.random()-.5).slice(0,5);
+  }
+  for (const [fid, list] of F2A){
+    if (kf.has(fid)) continue;
+    const uygun = list.filter(q => !kk.has(q));
+    if (uygun.length >= 5) return uygun.sort(()=>Math.random()-.5).slice(0,5);
+  }
+  return null;
+}
 
 // ---- kayıt -----------------------------------------------------------------
 function kaydet(){
@@ -104,9 +159,12 @@ const $ = id => document.getElementById(id);
 const adimEl=$("adim"), kaynakEl=$("kaynak"), isimEl=$("isim"), altEl=$("alt"),
       kartEl=$("kartlar"), mesajEl=$("mesaj"), girisEl=$("giris"),
       onerEl=$("oneriler"), seritEl=$("serit"), hakEl=$("haklar"),
-      pasEl=$("pas"), modEl=$("mod");
+      pasEl=$("pas"), modEl=$("mod"), sesBtn=$("sesBtn");
 
-function kart(pid, tiklanir){
+sesBtn.textContent = Ses.acikMi() ? "🔊" : "🔇";
+sesBtn.onclick = () => { Ses.ac(!Ses.acikMi()); sesBtn.textContent = Ses.acikMi() ? "🔊" : "🔇"; };
+
+function kart(pid, tiklanir, tikHandler){
   const k = document.createElement("div");
   k.className = "kart" + (tiklanir ? " secilebilir" : "");
   if (tiklanir) k.tabIndex = 0;
@@ -115,8 +173,9 @@ function kart(pid, tiklanir){
     : `<div class="bos">?</div>`)
     + `<div class="ad">${P[pid].n}</div>`;
   if (tiklanir){
-    k.onclick = () => sec(pid);
-    k.onkeydown = e => { if (e.key === "Enter" || e.key === " ") sec(pid); };
+    const h = tikHandler || (id => sec(id));
+    k.onclick = () => h(pid, k);
+    k.onkeydown = e => { if (e.key === "Enter" || e.key === " ") h(pid, k); };
   }
   return k;
 }
@@ -160,6 +219,7 @@ function makara(pool, hedef, etiket, bitis){
   let i = 0;
   const adimAt = () => {
     katlar.forEach((el,ix)=>el.style.display = ix===i ? "" : "none");
+    Ses.tik(i / sira.length);
     i++;
     if (i < sira.length) makaraZamanlayici = setTimeout(adimAt, bekle[i] || 400);
     else makaraZamanlayici = setTimeout(devam, 340);
@@ -180,6 +240,7 @@ function sahneKisileri(){
   if (st.tip === "solo" || st.tip === "dir") return [st.pid];
   if (st.tip === "pick2") return st.adaylar;
   if (st.tip === "pair") return [st.a, st.b];
+  if (st.tip === "bonus") return st.secili.length ? st.secili : st.besli;
   return [];
 }
 function seritCiz(yeniIdx){
@@ -217,9 +278,12 @@ function seritCiz(yeniIdx){
   seritEl.innerHTML = par.join("");
 }
 function durumCiz(yeniIdx){
-  hakEl.textContent = "●".repeat(DENEME_HAK - S.deneme) + "○".repeat(S.deneme);
-  pasEl.style.display = (S.pas > 0 && !S.bitti && S.stage && S.stage.tip !== "pick2" && S.tur > 1) ? "" : "none";
-  pasEl.textContent = `pas (${S.pas})`;
+  hakEl.innerHTML = `<span class="canEtiket">can</span>` +
+    Array.from({length: DENEME_HAK}, (_, i) =>
+      `<span class="can ${i < (DENEME_HAK - S.deneme) ? "dolu" : "bos"}">♥</span>`).join("");
+  pasEl.style.display = (S.pas > 0 && !S.bitti && S.stage &&
+    S.stage.tip !== "pick2" && S.stage.tip !== "bonus" && S.tur > 1) ? "" : "none";
+  pasEl.textContent = `↻ yeniden çek (${S.pas})`;
   modEl.textContent = pratik ? "pratik" : `günün zinciri · #${gunNo}`;
   seritCiz(yeniIdx);
 }
@@ -270,7 +334,7 @@ function pick2Sahne(fid, sessiz){
   if (!adaylar.length){
     const yedek = yanOyuncular(fid);
     if (yedek.length) return soloSahne(rnd(yedek), "yan oyuncu", fid, false, yedek);
-    return bitir("koptu", "Bu koldan devam edecek kimse kalmadı.");
+    return bonusSahne(); // bu koldan devamı yok, oyunun eksiği; zincir kopmasın
   }
   let secilen;
   if (sessiz && S.stage && S.stage.tip === "pick2"){ secilen = S.stage.adaylar; }
@@ -286,7 +350,7 @@ function pick2Sahne(fid, sessiz){
   kaydet();
   baslik(`tur ${S.tur} · seçim`,
     secilen.map(q=>P[q].n).join(" · "),
-    "biriyle devam edeceksin — karta tıkla.");
+    "biriyle devam edeceksin, karta tıkla.");
   kaynakYaz(`${filmChip(fid)} kadrosundan ${secilen.length} aday`);
   kartEl.replaceChildren(...secilen.map(q => {
     const k = kart(q, true);
@@ -301,13 +365,20 @@ function sec(pid){
   S.log.push({tip:"kisi", id:pid});
   partnerSahne(pid);
 }
-function partnerSahne(pid, haricPid, sessiz){
+function partnerSahne(pid, haricPid, sessiz, zorlaEs){
   if (!S.kisi.includes(pid)) S.kisi.push(pid);
-  const adaylar = partnerler(pid, haricPid);
-  if (!adaylar.length) return bitir("koptu", `${P[pid].n} için partner kalmadı.`);
-  let es;
-  if (sessiz && S.stage && S.stage.tip === "pair"){ es = S.stage.b; }
-  else {
+  const resumePair = sessiz && S.stage && S.stage.tip === "pair";
+  let es, adaylar;
+  if (resumePair){
+    es = S.stage.b;
+  } else if (zorlaEs){
+    es = zorlaEs;
+    S.stage = {tip:"pair", a:pid, b:es, bonus:true};
+    if (!S.kisi.includes(es)) S.kisi.push(es);
+    S.log.push({tip:"kisi", id:es});
+  } else {
+    adaylar = partnerler(pid, haricPid);
+    if (!adaylar.length) return bonusSahne(); // oyunun eksiği, zincir kopmasın
     es = rnd(adaylar);
     S.stage = {tip:"pair", a:pid, b:es};
     if (!S.kisi.includes(es)) S.kisi.push(es);
@@ -315,15 +386,18 @@ function partnerSahne(pid, haricPid, sessiz){
   }
   kaydet();
   const son = () => {
-    baslik(`tur ${S.tur} · ortak film`, `${P[pid].n} + ${P[es].n}`,
+    const bonus = !!S.stage.bonus;
+    baslik(`tur ${S.tur} · ${bonus ? "bonus ortak film" : "ortak film"}`, `${P[pid].n} + ${P[es].n}`,
            "birlikte oynadıkları bir filmi söyle.");
-    kaynakYaz(`<span class="chip">${P[pid].n}</span> <span class="zar">⚄</span> yanına, birlikte oynadığı biri çekildi`);
-    const k2 = kart(es); if (!sessiz && !AZ_HAREKET) k2.classList.add("beliris");
+    kaynakYaz(bonus
+      ? `<span class="chip bonus">⚡ bonus, seçtiğin ikili</span>`
+      : `<span class="chip">${P[pid].n}</span> <span class="zar">⚄</span> yanına, birlikte oynadığı biri çekildi`);
+    const k2 = kart(es); if (!resumePair && !AZ_HAREKET) k2.classList.add("beliris");
     kartEl.replaceChildren(kart(pid), k2);
     girisGoster(true); girisEl.value = ""; girisEl.focus();
     durumCiz();
   };
-  if (!sessiz){
+  if (!resumePair && !zorlaEs){
     donuyor = true;
     durumCiz();
     kaynakYaz(`<span class="chip">${P[pid].n}</span> <span class="zar">⚄</span> yanına rastgele bir partner çekiliyor…`);
@@ -334,6 +408,56 @@ function partnerSahne(pid, haricPid, sessiz){
   } else son();
 }
 
+// ---- bonus tur: veri boşluğu yüzünden zincir kopacaksa devreye girer ------
+function bonusSahne(sessiz){
+  if (sessiz && S.stage && S.stage.tip === "bonus"){
+    // devam (resume): aynı beşliyi ve seçili işaretlerini yeniden çiz
+  } else {
+    const besli = bonusHavuzBul();
+    if (!besli) return bitir("koptu", "Zincir için havuzda uygun kimse kalmadı.");
+    S.stage = {tip:"bonus", besli, secili:[]};
+    S.tur++; turBasi();
+    if (!sessiz) Ses.bonus();
+  }
+  kaydet();
+  const st = S.stage;
+  baslik(`tur ${S.tur} · bonus tur`, "5 rastgele oyuncu",
+    `${2 - st.secili.length} kişi daha seç, ikisi de aynı filmden.`);
+  kaynakYaz(`<span class="chip bonus">⚡ bonus</span> zincir bilgi boşluğuna denk geldi, yeni beşli çekildi`);
+  girisGoster(false);
+  kartEl.replaceChildren(...st.besli.map(q => {
+    const k = kart(q, true, bonusTikla);
+    if (st.secili.includes(q)) k.classList.add("secildi");
+    if (!sessiz && !AZ_HAREKET) k.classList.add("beliris");
+    return k;
+  }));
+  durumCiz();
+}
+function bonusTikla(pid, el){
+  if (!S.stage || S.stage.tip !== "bonus" || S.bitti) return;
+  const st = S.stage;
+  const i = st.secili.indexOf(pid);
+  if (i >= 0){
+    st.secili.splice(i, 1);
+    el.classList.remove("secildi");
+    altEl.textContent = `${2 - st.secili.length} kişi daha seç, ikisi de aynı filmden.`;
+    kaydet();
+    return;
+  }
+  if (st.secili.length >= 2) return;
+  st.secili.push(pid);
+  el.classList.add("secildi");
+  if (st.secili.length < 2){
+    altEl.textContent = `${2 - st.secili.length} kişi daha seç, ikisi de aynı filmden.`;
+    kaydet();
+    return;
+  }
+  const [a, b] = st.secili;
+  S.log.push({tip:"kisi", id:a});
+  kaydet();
+  partnerSahne(a, null, false, b);
+}
+
 // ---- cevap / ilerleme ------------------------------------------------------
 function halkaEmojisi(){
   if (S.pasBuTur) return "⬜";
@@ -342,7 +466,7 @@ function halkaEmojisi(){
 function cevap(fid){
   if (S.bitti) return;
   const st = S.stage;
-  if (st.tip === "pick2") return;
+  if (st.tip === "pick2" || st.tip === "bonus") return;
   const [t] = FILMS[fid];
   if (kullanilanFilm().has(fid)) return mesaj(`${t} zincirde kullanıldı, başka bir tane.`);
   let dogru;
@@ -350,6 +474,7 @@ function cevap(fid){
   else if (st.tip === "dir") dogru = P[st.pid].dir.includes(fid);
   else dogru = P[st.a].cast.has(fid) && P[st.b].cast.has(fid);
   if (!dogru){
+    Ses.yanlis();
     S.deneme++;
     durumCiz(); kaydet();
     if (S.deneme >= DENEME_HAK) return bitir("koptu");
@@ -357,6 +482,7 @@ function cevap(fid){
       st.tip === "dir" ? `${P[st.pid].n} bu filmi çekmedi` : `${P[st.pid].n} bu filmde yok`;
     return mesaj(`${kim}. Kalan deneme: ${DENEME_HAK - S.deneme}`);
   }
+  Ses.dogru();
   const yeniIdx = S.halka;
   S.film.push(fid);
   S.emoji.push(halkaEmojisi());
@@ -396,8 +522,8 @@ pasEl.onclick = () => {
       donuyor = true;
       soloSahne(y, st.rol || "yan oyuncu", st.kaynak, true, null);
       kartEl.replaceChildren();
-      makara(adaylar, y, "pas — yeniden çekiliyor", () => soloSahne(y, st.rol || "yan oyuncu", st.kaynak, true));
-      mesaj(`pas kullanıldı — ${P[st.pid].n} gitti, kadrodan yeni biri çekiliyor.`, true);
+      makara(adaylar, y, "yeniden çekiliyor", () => soloSahne(y, st.rol || "yan oyuncu", st.kaynak, true));
+      mesaj(`yeniden çekildi, ${P[st.pid].n} gitti, kadrodan yeni biri geliyor.`, true);
       ok = true;
     }
   } else if (st.tip === "dir"){
@@ -409,8 +535,8 @@ pasEl.onclick = () => {
       donuyor = true;
       soloSahne(y, "yan oyuncu", st.kaynak, true, null);
       kartEl.replaceChildren();
-      makara(adaylar, y, "pas — kadrodan çekiliyor", () => soloSahne(y, "yan oyuncu", st.kaynak, true));
-      mesaj(`pas kullanıldı — yönetmen ${P[st.pid].n} gitti, yerine kadrodan biri geliyor.`, true);
+      makara(adaylar, y, "yeniden çekiliyor", () => soloSahne(y, "yan oyuncu", st.kaynak, true));
+      mesaj(`yeniden çekildi, yönetmen ${P[st.pid].n} gitti, yerine kadrodan biri geliyor.`, true);
       ok = true;
     }
   } else if (st.tip === "pair"){
@@ -424,19 +550,26 @@ pasEl.onclick = () => {
       S.log.push({tip:"kisi", id:es});
       kaydet();
       kartEl.replaceChildren(kart(st.a));
-      makara(adaylar, es, "pas — yeni partner çekiliyor", () => partnerSahne(st.a, null, true));
-      mesaj(`pas kullanıldı — ${P[eski].n} gitti, yeni partner çekiliyor.`, true);
+      makara(adaylar, es, "yeniden çekiliyor", () => partnerSahne(st.a, null, true));
+      mesaj(`yeniden çekildi, ${P[eski].n} gitti, yeni partner geliyor.`, true);
       ok = true;
     }
   }
-  if (!ok) mesaj("Pas işlemedi — çekilecek başka kimse yok.");
+  if (!ok) mesaj("Yeniden çekilemedi, çekilecek başka kimse yok.");
 };
 
 // ---- bitiş / paylaşım ------------------------------------------------------
+function afisHTML(fid){
+  const [t, y, , , poster] = FILMS[fid];
+  return `<div class="afis">${poster
+    ? `<img src="${AFIS_IMG}${poster}" alt="" loading="lazy">`
+    : `<div class="bos">🎬</div>`}<div class="ft">${t}<br>${y}</div></div>`;
+}
 function bitir(neden, not){
   S.bitti = neden;
   kaydet();
   clearTimeout(makaraZamanlayici); donuyor = false;
+  if (neden === "koptu") Ses.koptu(); else if (neden === "altin") Ses.altin();
   girisGoster(false); $("pes").style.display = "none"; pasEl.style.display = "none";
   onerEl.style.display = "none"; hakEl.style.display = "none";
   kartEl.replaceChildren(); baslik("", "", ""); kaynakYaz(""); mesaj("");
@@ -446,8 +579,10 @@ function bitir(neden, not){
     neden === "pes" ? "bıraktın" : "zincir koptu";
   $("sonSayi").textContent = `${S.halka} halka`;
   $("sonEmoji").textContent = paylasimSatiri();
-  let ek = not || "";
-  if (neden !== "altin" && S.stage && S.stage.tip !== "pick2" && !not){
+  let baslikYazi = not || "";
+  let afisler = [];
+  const gosterilebilir = st => st && (st.tip === "solo" || st.tip === "dir" || st.tip === "pair");
+  if (neden !== "altin" && gosterilebilir(S.stage) && !not){
     let cevaplar = [];
     const st = S.stage;
     if (st.tip === "solo") cevaplar = oynanabilirF(st.pid);
@@ -456,10 +591,11 @@ function bitir(neden, not){
     cevaplar.sort((a,b)=>FILMS[b][2]-FILMS[a][2]);
     const kimdi = st.tip === "pair" ? `${P[st.a].n} + ${P[st.b].n}` :
       st.tip === "dir" ? `yönetmen ${P[st.pid].n}` : P[st.pid].n;
-    ek = `${kimdi} — olabilirdi: ` +
-      cevaplar.slice(0,4).map(f=>`${FILMS[f][0]} (${FILMS[f][1]})`).join(" · ");
+    baslikYazi = `${kimdi} için olabilirdi:`;
+    afisler = cevaplar.slice(0,4);
   }
-  $("cevaplar").textContent = ek;
+  $("cevapBaslik").textContent = baslikYazi;
+  $("cevapAfisler").innerHTML = afisler.map(afisHTML).join("");
   $("paylas").style.display = pratik ? "none" : "";
   seritCiz();
 }
@@ -522,6 +658,7 @@ function sahneyiKur(){
   else if (st.tip === "dir") yonetmenSahne(st.pid, st.kaynak, true);
   else if (st.tip === "pick2") pick2Sahne(st.kaynak, true);
   else if (st.tip === "pair") partnerSahne(st.a, null, true);
+  else if (st.tip === "bonus") bonusSahne(true);
 }
 function basla(zorla){
   girisEl.disabled = false; $("pes").style.display = ""; hakEl.style.display = "";
