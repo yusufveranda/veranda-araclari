@@ -82,13 +82,13 @@ const $ = id => document.getElementById(id);
 const adimEl=$("adim"), soruEl=$("soru"), kartEl=$("kartlar"), mesajEl=$("mesaj"),
       girisEl=$("giris"), onerEl=$("oneriler"), zincirEl=$("zincir");
 
-function kart(pid, rol, tiklanir){
+function kart(pid, tiklanir){
   const k = document.createElement("div");
   k.className = "kart" + (tiklanir ? " secilebilir" : "");
   k.innerHTML = (P[pid].p
     ? `<img src="${IMG}${P[pid].p}" alt="">`
     : `<div class="bos">?</div>`)
-    + `<div class="ad">${P[pid].n}</div><div class="rol">${rol||""}</div>`;
+    + `<div class="ad">${P[pid].n}</div>`;
   if (tiklanir) k.onclick = () => sec(pid);
   return k;
 }
@@ -109,8 +109,9 @@ function soloSahne(pid, rolEtiket){
   kullanilanKisi.add(pid);
   tur++;
   adimEl.textContent = `tur ${tur} · ${rolEtiket}`;
-  soruEl.textContent = `${P[pid].n} — bir filmini söyle.`;
-  kartEl.replaceChildren(kart(pid, rolEtiket));
+  const bas = rolEtiket.charAt(0).toUpperCase() + rolEtiket.slice(1);
+  soruEl.textContent = `${bas} ${P[pid].n} — bir filmini söyle.`;
+  kartEl.replaceChildren(kart(pid));
   kisiHalka(pid, rolEtiket);
   girisEl.value = ""; girisEl.focus();
 }
@@ -120,7 +121,7 @@ function yonetmenSahne(pid){
   tur++;
   adimEl.textContent = `tur ${tur} · yönetmen`;
   soruEl.textContent = `Yönetmen ${P[pid].n} — başka bir filmini söyle.`;
-  kartEl.replaceChildren(kart(pid, "yönetmen"));
+  kartEl.replaceChildren(kart(pid));
   kisiHalka(pid, "yönetmen");
   girisEl.value = ""; girisEl.focus();
 }
@@ -137,8 +138,8 @@ function pick2Sahne(fid){
   stage = {tip:"pick2"};
   tur++;
   adimEl.textContent = `tur ${tur} · seçim`;
-  soruEl.textContent = "Bu filmden iki kişi çıktı. Hangisiyle devam?";
-  kartEl.replaceChildren(kart(a, "seç", true), kart(b, "seç", true));
+  soruEl.textContent = `Bu filmden iki kişi çıktı: ${P[a].n} ya da ${P[b].n}. Hangisiyle devam?`;
+  kartEl.replaceChildren(kart(a, true), kart(b, true));
   girisEl.value = "";
   mesaj("");
 }
@@ -155,8 +156,8 @@ function partnerSahne(pid){
   kullanilanKisi.add(pid); kullanilanKisi.add(es);
   stage = {tip:"pair", a:pid, b:es};
   adimEl.textContent = `tur ${tur} · ortak film`;
-  soruEl.textContent = `${P[pid].n} + ${P[es].n} — birlikte oynadıkları bir film söyle.`;
-  kartEl.replaceChildren(kart(pid, ""), kart(es, "partner"));
+  soruEl.textContent = `Ortak film: ${P[pid].n} + ${P[es].n} — birlikte oynadıkları bir filmi söyle.`;
+  kartEl.replaceChildren(kart(pid), kart(es));
   kisiHalka(es, "partner");
   girisEl.value = ""; girisEl.focus();
 }
