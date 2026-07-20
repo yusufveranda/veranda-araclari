@@ -377,7 +377,8 @@ function trLower(s){ return s.replace(/[İIŞĞÜÖÇÂÎÛ]/g,c=>TRMAP[c]||c).t
 const HARFLER = "abcçdefgğhıijklmnoöprsştuüvyzâîû0123456789";   // rakamlar da say → sayı kutusu doğru genişlik
 function harfSay(s){ let n=0; for(const c of trLower(s)) if(HARFLER.indexOf(c)>=0) n++; return n; }
 function escHTML(s){ return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
-function baseForm(w){ return trLower(w).replace(/[^a-zçğıöşüâîû0-9']/g,'').split("'")[0]; }  // rakamları koru → sayı tahmini
+const FOLD={'á':'a','à':'a','ä':'a','ã':'a','å':'a','é':'e','è':'e','ê':'e','ë':'e','í':'i','ì':'i','ï':'i','ó':'o','ò':'o','ô':'o','õ':'o','ø':'o','ú':'u','ù':'u','ñ':'n','ý':'y','ž':'z','š':'s','č':'c','ć':'c','ß':'ss','æ':'e','ð':'d','đ':'d','ł':'l','ř':'r','ū':'u'};
+function baseForm(w){ return trLower(w).replace(/[^\x00-\x7fçğıöşüâîû]/g,c=>FOLD[c]||'').replace(/[^a-zçğıöşüâîû0-9']/g,'').split("'")[0]; }  // rakamları koru → sayı tahmini; yabancı aksanı sadeleştir (josé→jose)
 
 // ---- Türkçe ek eşleştirme (açma için; istemcide tek otorite) ----
 const SUFFIX = new Set([
@@ -410,9 +411,27 @@ function sonHarfDenk(a,b){
   const x=a[a.length-1], y=b[b.length-1];
   return DENK.some(gr=>gr.includes(x)&&gr.includes(y));
 }
+function duzForm(s){ return s.replace(/ı/g,'i').replace(/â/g,'a').replace(/î/g,'i').replace(/û/g,'u'); }
+// romen rakamı ↔ normal rakam: "ıı"(II)="2", "xıv"(XIV)="14"; 1..39
+function canonNum(b){ if(!b) return null;
+  if(/^[0-9]+$/.test(b)) return String(parseInt(b,10));
+  const r=b.replace(/i/g,'ı'); if(!/^x{0,3}(ıx|ıv|v?ı{0,3})$/.test(r)) return null;
+  const V={'ı':1,'v':5,'x':10}; let v=0;
+  for(let i=0;i<r.length;i++){ const a=V[r[i]], sonra=V[r[i+1]]||0; v+=(a<sonra?-a:a); }
+  return (v>=1&&v<=39)?String(v):null; }
+// sınırlı edit mesafesi (bulanık yazım): true ⇔ mesafe<=max
+function lev(a,b,max){ const n=a.length,m=b.length; if(Math.abs(n-m)>max) return false;
+  let prev=[]; for(let j=0;j<=m;j++) prev[j]=j;
+  for(let i=1;i<=n;i++){ const cur=[i]; let best=i;
+    for(let j=1;j<=m;j++){ cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1)); if(cur[j]<best) best=cur[j]; }
+    if(best>max) return false; prev=cur; }
+  return prev[m]<=max; }
 function acmaEslesir(g,k){ if(!g||!k) return false; if(g===k) return true;
+  const cg=canonNum(g), ck=canonNum(k); if(cg&&ck) return cg===ck;      // romen = normal rakam
   if(g.length<3||k.length<3) return g===k;
-  return extend(g,k)||extend(k,g)||sonHarfDenk(g,k); }
+  if(extend(g,k)||extend(k,g)||sonHarfDenk(g,k)) return true;
+  const g2=duzForm(g), k2=duzForm(k);                                    // ı/i + â î û hoşgörüsü (Isaac, Fârâbî)
+  return (g2!==g||k2!==k) && (g2===k2||extend(g2,k2)||extend(k2,g2)||sonHarfDenk(g2,k2)); }
 
 // ---- vektör motoru (pedantle-vec) ----
 const VEC = window.PEDANTLE_VEC;
@@ -464,7 +483,27 @@ function gunId(g){
 function rastId(){ const it=MANIFEST.items; return it[Math.floor(Math.random()*it.length)].id; }
 function shardYukle(id){ return fetch('data/'+id+'.json',{cache:'no-cache'}).then(r=>r.json()); }
 
-function tokDurum(toks){ return toks.map(t=>({rev:!!t.o, best:-2, bw:'', base:baseForm(t.s), len:harfSay(t.s)})); }
+function tokDurum(toks){ return toks.map(t=>({rev:!!(t.o||t.p), best:-2, bw:'', base:baseForm(t.s), len:harfSay(t.s)})); }  // p: parçacık/tek harf, baştan açık
+
+// kazanma: gerekli başlık kelimeleri açık mı? (z=yabancı-serbest ve p=önden açık sayılmaz)
+function basTamam(){
+  const T=S.art.b.toks; let acik=0, gerekli=0, gerekliAcik=0, sayiDisiAcik=0;
+  for(let i=0;i<T.length;i++){ const t=T[i]; if(t.p||t.o) continue;
+    const rev=S.bSt[i].rev; if(rev){ acik++; if(!canonNum(S.bSt[i].base)) sayiDisiAcik++; }
+    if(!t.z){ gerekli++; if(rev) gerekliAcik++; } }
+  if(!gerekli) return acik>0;                       // hepsi yabancıysa (Che Guevara) herhangi biri yeter
+  if(gerekliAcik<gerekli) return false;
+  // gerekliler yalnız sayıysa (II. Elizabeth → "2") ayrıca sayı-dışı bir başlık kelimesi iste (varsa)
+  const sayiDisiVar=T.some((t,i)=>!t.p&&!t.o&&!canonNum(S.bSt[i].base));
+  const gerekliHepSayi=T.every((t,i)=>t.p||t.o||t.z||canonNum(S.bSt[i].base));
+  if(gerekliHepSayi && sayiDisiVar && !sayiDisiAcik) return false;
+  return true;
+}
+function basligiTamamla(){ // kazanınca serbest (z) kalanları kendiliğinden aç
+  S.bSt.forEach((s,i)=>{ if(!s.rev){ s.rev=true; s._yeni=true;
+    for(let m=0;m<S.art.g.toks.length;m++){ const s2=S.gSt[m]; if(!s2.rev&&acmaEslesir(s.base,s2.base)) s2.rev=true; } } });
+}
+window.__pd={baseForm,acmaEslesir,canonNum,lev,duzForm,basTamam,S,uygula:(g,d)=>uygula(g,d)};  // test kancası
 
 // ---- açma + ısıtma (her tahmin İKİSİNİ de yapar; Pedantle gibi) ----
 function uygula(gBase, gDisp){
@@ -473,6 +512,24 @@ function uygula(gBase, gDisp){
   function tara(toks,st,tag){ for(let i=0;i<toks.length;i++){ const s=st[i]; if(s.rev) continue;
     if(acmaEslesir(gBase, s.base)){ s.rev=true; acilan++; acIdx[tag].push(i); } } }
   tara(S.art.b.toks,S.bSt,'b'); tara(S.art.g.toks,S.gSt,'g');
+  // hoşgörülü başlık eşleşmesi: yabancı adlarda bulanık yazım (desaouza) + bitişik yazım (bengurion, alexdesouza)
+  if(gBase.length>=4){
+    const T=S.art.b.toks, n=T.length, hg=[];
+    for(let i=0;i<n;i++){ const t=T[i], s=S.bSt[i];
+      if(s.rev||!t.z||s.base.length<5) continue;
+      const tol=s.base.length>=9?2:1;
+      if(gBase[0]===s.base[0] && lev(duzForm(gBase),duzForm(s.base),tol)) hg.push(i); }
+    if(!hg.length && gBase.length>=5){
+      dis: for(let i=0;i<n;i++){ let cat='';
+        for(let j=i;j<n&&j<i+4;j++){ cat+=S.bSt[j].base;
+          if(j>i&&cat.length>=5){
+            const yeni=[]; for(let k=i;k<=j;k++) if(!S.bSt[k].rev) yeni.push(k);
+            if(!yeni.length) continue;
+            const tol=T.slice(i,j+1).some(t=>t.z)?(cat.length>=9?2:1):0;
+            if(gBase===cat||(tol&&gBase[0]===cat[0]&&lev(duzForm(gBase),duzForm(cat),tol))){ hg.push(...yeni); break dis; } } } } }
+    for(const i of hg){ if(S.bSt[i].rev) continue; S.bSt[i].rev=true; acilan++; acIdx.b.push(i);
+      for(let m=0;m<S.art.g.toks.length;m++){ const s2=S.gSt[m]; if(!s2.rev&&acmaEslesir(S.bSt[i].base,s2.base)){ s2.rev=true; acilan++; acIdx.g.push(m); } } }
+  }
   S.sonAcan = acilan ? [{tag:'b',ix:acIdx.b},{tag:'g',ix:acIdx.g}] : [];
   // 2) ısıtma: kalan açılmamış, vektörlü tokenları ısıt + en yakını izle
   S.sonOdak=null;
@@ -559,8 +616,8 @@ function tahminYap(ham, hint){
   if(S.sonOdak){ (S.sonOdak.tag==='b'?S.bSt:S.gSt)[S.sonOdak.ix]._odak=true; }
   S.tahminler.push({w:gDisp, base:gBase, no:S.tahminler.length+1, ac:r.acilan, sim:(r.sim===1?null:r.sim), hint:!!hint});
   ozetCiz(gDisp, r.acilan, r.isi);
-  // kazanma: başlık tamamen açık mı?
-  if(!S.bitti && S.bSt.every(s=>s.rev)){ S.bitti=true; }
+  // kazanma: gerekli başlık kelimeleri açık mı?
+  if(!S.bitti && basTamam()){ S.bitti=true; basligiTamamla(); }
   kaydet(); ciz();
   if(S.bitti){ setTimeout(()=>{ if(!S.pes){ kutla(); fiyasko(); if(S.mod==='gun') setTimeout(()=>{ if($('skPerde').hidden) skAc(); },700); } }, 420); }
 }
@@ -588,7 +645,7 @@ function ipucuAl(){
   S.tahminler.push({w:'💡 '+t.s, base:'__ip'+hi, no:S.tahminler.length+1, ac:ac, sim:null, hint:true});
   ozetCiz('💡 '+t.s, ac, 0);
   mesajVer('ipucu 💡 — sıralamada +5 sayılır');
-  if(S.bSt.every(s=>s.rev)) S.bitti=true;
+  if(basTamam()){ S.bitti=true; basligiTamamla(); }
   kaydet(); ciz();
   if(S.bitti) setTimeout(()=>{ if(!S.pes){ kutla(); fiyasko(); } },420);
 }
@@ -832,7 +889,7 @@ function oyunKur(id){
       S.tahminler=kayit.tahminler.map(t=>({w:t.w,base:t.base,no:t.no,ac:t.ac,sim:t.sim,hint:t.hint}));
       S.bitti=!!kayit.bitti; S.pes=!!kayit.pes;
       if(S.pes){ S.bSt.forEach(s=>s.rev=true); S.gSt.forEach(s=>s.rev=true); }
-      else tekrarUygula();
+      else { tekrarUygula(); if(S.bitti) basligiTamamla(); }
     }
     $('oyunAlan').hidden=false; $('yukleniyor').style.display='none';
     ciz();
