@@ -313,7 +313,7 @@ kayit({ id:'asi', ad:'Aşı', aile:'eslestirme', mod:'sayac', esik:[3,5,8], len:
 kayit({ id:'dortdemet', ad:'Dört Demet', aile:'obek', mod:'sayac', esik:[2,3,4], len:400,
   alt:'16 bitki, 4 gizli öbek', src:function(i){ return '../dort-demet/?meta=1&bulmaca='+i; } });
 kayit({ id:'jenerik', ad:'Jenerik', aile:'film', mod:'sayac', len:359,
-  esik:function(m){ return [Math.max(1,Math.round(m*0.3)), Math.max(2,Math.round(m*0.55)), Math.max(3,Math.min(m,Math.round(m*0.8)))]; },
+  esik:function(m){ var b=Math.min(m,12); return [Math.max(1,Math.round(b*0.3)), Math.max(2,Math.round(b*0.55)), Math.max(3,Math.min(m,Math.round(b*0.8)))]; },
   alt:'bu oyuncunun kaç filmini bilirsin?', src:function(i){ return '../karanlik-oda/jenerik.html?meta=1&bulmaca='+i; } });
 kayit({ id:'atlas', ad:'Atlas', aile:'cografya', mod:'sayac', esik:[3,6,9], len:160,
   alt:'3×3 ızgara — satır × sütun ölçütü', src:function(i){ return '../atlas/?meta=1&bulmaca='+i; } });
