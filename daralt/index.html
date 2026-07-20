@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Daralt — Poster duvarında günün filmini bul</title>
-<meta name="description" content="80 poster, 1 gizli film. Soruları sen sor, duvarı sen daralt, tek atışla vur.">
+<title>Daralt — Dokuz posterden günün filmini bul</title>
+<meta name="description" content="9 poster, 1 gizli film, bir deste zekice soru. Doğru soruları seç, duvarı daralt, tek atışla vur.">
 <meta name="theme-color" content="#0c0a09">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0a09'/%3E%3Crect x='10' y='10' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='26' y='10' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='42' y='10' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='10' y='34' width='12' height='18' rx='2' fill='%232e2724'/%3E%3Crect x='26' y='34' width='12' height='18' rx='2' fill='%23e5382e'/%3E%3Crect x='42' y='34' width='12' height='18' rx='2' fill='%232e2724'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,57 +37,56 @@
             padding:8px 12px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:5px;}
   .mini-btn:hover{border-color:var(--red); color:var(--red);}
 
-  .layout{display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:20px; align-items:start;}
+  .layout{display:grid; grid-template-columns:minmax(0,1fr) minmax(360px,480px); gap:22px; align-items:start;}
 
-  .wall-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; flex-wrap:wrap; gap:8px;}
+  .wall-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;}
   .remain{font-size:13px; color:var(--muted);}
   .remain b{color:var(--red); font-size:26px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
-  .wall{display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:8px;}
+  .wall{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;}
   .pcard{
-    position:relative; aspect-ratio:2/3; border-radius:3px; overflow:hidden; cursor:pointer;
-    background:var(--card); border:2px solid transparent;
-    box-shadow:0 3px 10px rgba(0,0,0,0.5);
-    transition:opacity .5s, filter .5s, transform .12s;
+    position:relative; aspect-ratio:2/3; border-radius:var(--radius); overflow:hidden; cursor:pointer;
+    background:var(--card); border:5px solid var(--paper);
+    box-shadow:0 6px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.8);
+    transition:opacity .5s, filter .5s, transform .12s, border-color .15s;
   }
   .pcard img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
-  .pcard:hover{transform:translateY(-2px); border-color:var(--amber);}
-  .pcard.out{opacity:0.13; filter:grayscale(1); pointer-events:none;}
-  .pcard.aim{border-color:var(--red); box-shadow:0 0 18px var(--red-glow);}
-  .pcard.answer{border-color:var(--ok); box-shadow:0 0 18px rgba(124,180,107,0.5);}
-  .pcard.missed{border-color:var(--red);}
+  .pcard .cap{
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    background:linear-gradient(transparent, rgba(12,10,9,0.92) 55%);
+    padding:26px 10px 8px; font-size:12.5px; font-weight:600; text-align:center;
+  }
+  .pcard .cap span{color:var(--muted); font-weight:400;}
+  .pcard:hover{transform:translateY(-3px); border-color:var(--amber);}
+  .pcard.out{opacity:0.15; filter:grayscale(1); pointer-events:none;}
+  .pcard.aim{border-color:var(--red); box-shadow:0 0 22px var(--red-glow);}
+  .pcard.answer{border-color:var(--ok); box-shadow:0 0 22px rgba(124,180,107,0.5);}
 
   .panel{background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:16px;
          position:sticky; top:16px; max-height:calc(100dvh - 40px); overflow:auto;}
-  .panel h2{font-family:"Special Elite",cursive; font-weight:400; font-size:18px; color:var(--paper); margin-bottom:4px;}
-  .panel-sub{font-size:12.5px; color:var(--muted); margin-bottom:12px; line-height:1.5;}
-  .score-line{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;}
+  .score-line{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;}
   .score-line b{color:var(--red); font-size:26px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
   .score-line span{font-size:12px; color:var(--muted);}
+  .panel h2{font-family:"Special Elite",cursive; font-weight:400; font-size:18px; color:var(--paper); margin-bottom:4px;}
+  .panel-sub{font-size:12.5px; color:var(--muted); margin-bottom:12px; line-height:1.5;}
 
-  .qrow{display:flex; gap:6px; margin-bottom:8px; align-items:stretch;}
-  .qrow select{flex:1; min-width:0;}
-  .qrow .ask{
-    background:var(--red); color:#fff; border:none; border-radius:6px; padding:0 14px;
-    font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;
+  .cards{display:flex; flex-direction:column; gap:6px;}
+  .qcard{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    background:var(--card); border:1px solid var(--border); border-radius:6px;
+    padding:9px 12px; cursor:pointer; text-align:left; color:var(--text); font-size:13.5px;
+    transition:border-color .12s;
   }
-  .qrow .ask:disabled{background:var(--card); color:var(--muted); cursor:not-allowed;}
-  .qlabel{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin:10px 0 5px;}
-  .guess-box{position:relative; flex:1; min-width:0;}
-  .guess-box input{
-    width:100%; height:100%; background:var(--card); border:1px solid var(--border); border-radius:6px;
-    padding:9px 12px; color:var(--text); font-size:13.5px;
-  }
-  .guess-box input:focus{outline:none; border-color:var(--red);}
-  .ac-list{
-    position:absolute; left:0; right:0; top:100%; z-index:20; background:var(--card);
-    border:1px solid var(--border); border-radius:0 0 6px 6px; max-height:240px; overflow:auto;
-  }
-  .ac-item{padding:8px 12px; font-size:13px; cursor:pointer;}
-  .ac-item:hover,.ac-item.hot{background:var(--red-dim);}
+  .qcard:hover{border-color:var(--red);}
+  .qcard .cost{color:var(--muted); font-size:11.5px; white-space:nowrap;}
+  .qcard.asked{cursor:default; border-color:var(--border); background:var(--bg);}
+  .qcard.asked:hover{border-color:var(--border);}
+  .qcard .ans{font-family:"Special Elite",cursive; letter-spacing:1px; white-space:nowrap;}
+  .qcard .ans.yes{color:var(--ok);}
+  .qcard .ans.no{color:var(--red);}
 
   .aim-bar{
     border:1px solid var(--red); border-radius:6px; background:var(--red-dim);
-    padding:10px 12px; margin-top:10px; font-size:13px;
+    padding:10px 12px; margin:10px 0; font-size:13px;
   }
   .aim-bar .t{font-weight:600; margin-bottom:8px;}
   .aim-bar .row{display:flex; gap:8px;}
@@ -95,18 +94,9 @@
   .aim-fire{background:var(--red); color:#fff;}
   .aim-cancel{background:var(--card); color:var(--muted);}
 
-  .probes{margin-top:14px; display:flex; flex-direction:column; gap:7px;}
-  .probe{
-    border:1px solid var(--border); border-radius:6px; padding:8px 12px; background:var(--card);
-    display:flex; justify-content:space-between; gap:10px; align-items:baseline; font-size:13px;
-  }
-  .probe .q{color:var(--text);}
-  .probe .a{font-family:"Special Elite",cursive; letter-spacing:1px; white-space:nowrap;}
-  .probe .a.yes{color:var(--ok);}
-  .probe .a.no{color:var(--red);}
-  .probe .cut{color:var(--muted); font-size:11.5px; white-space:nowrap;}
+  .miss-note{font-size:12.5px; color:var(--red); margin:8px 0;}
 
-  .result{margin-top:14px; border:1px solid var(--border); border-radius:8px; background:var(--card); padding:16px;}
+  .result{margin-top:12px; border:1px solid var(--border); border-radius:8px; background:var(--card); padding:16px;}
   .result h3{font-family:"Special Elite",cursive; font-weight:400; font-size:20px; color:var(--red); margin-bottom:6px;}
   .result p{font-size:13.5px; color:var(--text); line-height:1.6;}
   .share-row{display:flex; gap:10px; margin-top:12px; align-items:center;}
@@ -114,8 +104,10 @@
 
   @media(max-width:1000px){
     .layout{grid-template-columns:1fr;}
-    .panel{position:static; max-height:none; order:-1;}
-    .wall{grid-template-columns:repeat(auto-fill,minmax(64px,1fr)); gap:5px;}
+    .panel{position:static; max-height:none;}
+    .wall{gap:8px;}
+    .pcard{border-width:3px;}
+    .pcard .cap{font-size:11px; padding:18px 6px 5px;}
   }
 </style>
 </head>
@@ -128,43 +120,21 @@
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
-  <p class="tagline">Duvarda 80 poster, biri günün filmi. Soruyu sen sor, duvarı sen daralt — sonra tek atışla vur.</p>
+  <p class="tagline">Dokuz şüpheli, bir gizli film, bir deste soru. Doğru soruları seç, duvarı daralt — sonra tek atışla vur.</p>
 
   <div class="layout">
     <div>
       <div class="wall-head">
-        <span class="remain">kalan şüpheli: <b id="remainN">80</b></span>
+        <span class="remain">kalan şüpheli: <b id="remainN">9</b></span>
         <span class="remain" id="wallTrail"></span>
       </div>
       <div class="wall" id="wall"></div>
     </div>
 
     <div class="panel">
-      <div class="score-line"><b id="scoreN">100</b><span>soru −10 · yanlış atış −20</span></div>
-      <h2>Soru sor</h2>
-      <p class="panel-sub">Cevap EVET/HAYIR gelir; çelişen posterler söner. Vurmaya hazırsan duvardaki postere tıkla.</p>
-
-      <div class="qlabel">Dönem</div>
-      <div class="qrow">
-        <select id="decSel"></select>
-        <button class="ask" id="decAsk">Sor</button>
-      </div>
-
-      <div class="qlabel">Tür</div>
-      <div class="qrow">
-        <select id="genSel"></select>
-        <button class="ask" id="genAsk">Sor</button>
-      </div>
-
-      <div class="qlabel">Kişi (oyuncu/yönetmen)</div>
-      <div class="qrow">
-        <div class="guess-box">
-          <input id="perInput" type="text" placeholder="isim yaz…" autocomplete="off" spellcheck="false">
-          <div class="ac-list" id="acList" hidden></div>
-        </div>
-        <button class="ask" id="perAsk" disabled>Sor</button>
-      </div>
-
+      <div class="score-line"><b id="scoreN">100</b><span>soru −10 · ıska −25</span></div>
+      <h2>Soru destesi</h2>
+      <p class="panel-sub">Bir karta tıkla; cevap gizli filme göre EVET/HAYIR gelir ve çelişen posterler söner. Az soruyla bul, yüksek puan al. Vurmak için postere tıkla.</p>
       <div class="aim-bar" id="aimBar" hidden>
         <div class="t" id="aimTitle"></div>
         <div class="row">
@@ -172,8 +142,8 @@
           <button class="aim-cancel" id="aimCancel">Vazgeç</button>
         </div>
       </div>
-
-      <div class="probes" id="probes"></div>
+      <div class="miss-note" id="missNote" hidden></div>
+      <div class="cards" id="cards"></div>
 
       <div class="result" id="result" hidden>
         <h3 id="resultTitle"></h3>
@@ -198,8 +168,8 @@
   if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
   const idx = day % D.days.length;
   const DAY = D.days[idx];
-  const ANS = String(DAY.a);
-  const KEY = 'daralt_v2_' + idx;
+  const KEY = 'daralt_v3_' + idx;
+  const ANS_I = DAY.w.indexOf(DAY.a);
 
   const daySel = document.getElementById('daySel');
   for (let i = 0; i < D.days.length; i++) {
@@ -210,204 +180,124 @@
   }
   daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value);
 
-  const F = D.films; // id -> [t, y, g[], c[], d, pp]
-  const T = 0, Y = 1, G = 2, C = 3, DIR = 4, PP = 5;
-  const IMG = p => 'https://image.tmdb.org/t/p/w185' + p;
-  const dec = id => Math.floor(F[id][Y] / 10) * 10;
+  const F = D.films; // id -> [t, y, pp]
+  const IMG = p => 'https://image.tmdb.org/t/p/w342' + p;
+
+  // ---- durum ----
+  let asked = [], shots = [], score = 100, done = false, aimI = null;
+  const trail = [9];
+  const alive = () => {
+    const out = [];
+    for (let i = 0; i < 9; i++) {
+      if (shots.includes(i) && i !== ANS_I) continue;
+      let ok = true;
+      for (const qi of asked) {
+        const b = DAY.q[qi].b;
+        if (b[i] !== b[ANS_I]) { ok = false; break; }
+      }
+      if (ok) out.push(i);
+    }
+    return out;
+  };
 
   // ---- duvar ----
   const wallEl = document.getElementById('wall');
-  const alive = new Set(DAY.w.map(String));
-  let aimId = null, done = false;
-  DAY.w.forEach(id => {
+  DAY.w.forEach((id, i) => {
     const f = F[id];
     const d = document.createElement('div');
-    d.className = 'pcard'; d.dataset.id = id;
-    d.title = f[T] + ' (' + f[Y] + ')';
+    d.className = 'pcard'; d.dataset.i = i;
+    d.title = f[0] + ' (' + f[1] + ')';
     const img = document.createElement('img');
-    img.loading = 'lazy'; img.src = IMG(f[PP]); img.alt = f[T];
-    d.appendChild(img);
-    d.addEventListener('click', () => { if (!done) aim(String(id)); });
+    img.src = IMG(f[2]); img.alt = f[0];
+    const cap = document.createElement('div');
+    cap.className = 'cap';
+    cap.innerHTML = f[0] + ' <span>(' + f[1] + ')</span>';
+    d.appendChild(img); d.appendChild(cap);
+    d.addEventListener('click', () => { if (!done) aim(i); });
     wallEl.appendChild(d);
   });
 
-  // ---- soru menüleri ----
-  const decSel = document.getElementById('decSel');
-  const decades = [...new Set(DAY.w.map(id => dec(String(id))))].sort();
-  decades.forEach(v => {
-    const o = document.createElement('option');
-    o.value = v; o.textContent = v + "'lerden mi?";
-    decSel.appendChild(o);
-  });
-  const genSel = document.getElementById('genSel');
-  const wallGenres = [...new Set(DAY.w.flatMap(id => F[String(id)][G]))].sort((a, b) => D.genres[a].localeCompare(D.genres[b]));
-  wallGenres.forEach(gi => {
-    const o = document.createElement('option');
-    o.value = gi; o.textContent = D.genres[gi] + ' içeriyor mu?';
-    genSel.appendChild(o);
-  });
-
-  // kişi autocomplete
-  const perInput = document.getElementById('perInput');
-  const acList = document.getElementById('acList');
-  const perAsk = document.getElementById('perAsk');
-  let perPicked = null, hot = -1;
-  const norm = s => s.toLowerCase()
-    .replace(/ı/g,'i').replace(/İ/g,'i').replace(/ş/g,'s').replace(/ç/g,'c')
-    .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o')
-    .normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,'');
-  const PEOPLE = Object.entries(D.people).map(([id, n]) => ({id, n, q: norm(n)}));
-  function hideAC(){ acList.hidden = true; acList.innerHTML = ''; hot = -1; }
-  perInput.addEventListener('input', () => {
-    perPicked = null; perAsk.disabled = true;
-    const q = norm(perInput.value.trim());
-    if (q.length < 2) { hideAC(); return; }
-    const starts = [], contains = [];
-    for (const p of PEOPLE) {
-      if (p.q.startsWith(q)) starts.push(p);
-      else if (p.q.includes(q)) contains.push(p);
-      if (starts.length > 30) break;
-    }
-    const list = starts.concat(contains).slice(0, 8);
-    acList.innerHTML = ''; acList.hidden = !list.length;
-    list.forEach(p => {
-      const it = document.createElement('div');
-      it.className = 'ac-item'; it.textContent = p.n;
-      it.addEventListener('mousedown', e => {
-        e.preventDefault();
-        perInput.value = p.n; perPicked = p.id; perAsk.disabled = false; hideAC();
-      });
-      acList.appendChild(it);
+  // ---- kartlar ----
+  const cardsEl = document.getElementById('cards');
+  DAY.q.forEach((q, qi) => {
+    const c = document.createElement('button');
+    c.className = 'qcard'; c.dataset.qi = qi;
+    c.innerHTML = '<span>' + q.t + '</span><span class="cost">−10</span>';
+    c.addEventListener('click', () => {
+      if (done || asked.includes(qi)) return;
+      ask(qi, true);
     });
+    cardsEl.appendChild(c);
   });
-  perInput.addEventListener('keydown', e => {
-    const items = [...acList.children];
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (!items.length) return;
-      hot = e.key === 'ArrowDown' ? (hot + 1) % items.length : (hot - 1 + items.length) % items.length;
-      items.forEach((x, i) => x.classList.toggle('hot', i === hot));
-    } else if (e.key === 'Enter') {
-      if (hot >= 0 && items[hot]) items[hot].dispatchEvent(new MouseEvent('mousedown'));
-      else if (perPicked) askPerson();
-    } else if (e.key === 'Escape') hideAC();
-  });
-  document.addEventListener('click', e => { if (!e.target.closest('.guess-box')) hideAC(); });
 
-  // ---- oyun durumu ----
-  const remainEl = document.getElementById('remainN');
-  const trailEl = document.getElementById('wallTrail');
-  const scoreEl = document.getElementById('scoreN');
-  const probesEl = document.getElementById('probes');
-  let history = [], score = 100, trail = [DAY.w.length];
-
-  function setScore(v){ score = Math.max(10, v); scoreEl.textContent = score; }
-
-  // soru uygulayıcı: test(id) → bu film için cevap ne olurdu
-  function applyQuestion(qtext, test, saveRec){
-    const yes = test(ANS);
-    for (const id of [...alive]) {
-      if (test(id) !== yes) alive.delete(id);
-    }
+  function ask(qi, saveIt){
+    asked.push(qi);
+    setScore(score - 10);
+    const yes = DAY.q[qi].b[ANS_I] === 1;
+    const c = cardsEl.querySelector('[data-qi="' + qi + '"]');
+    c.classList.add('asked');
+    c.querySelector('.cost').outerHTML = '<span class="ans ' + (yes ? 'yes' : 'no') + '">' + (yes ? 'EVET' : 'HAYIR') + '</span>';
+    cardsEl.prepend(c);
     refreshWall();
-    const card = document.createElement('div');
-    card.className = 'probe';
-    card.innerHTML = '<span class="q">' + qtext + '</span>' +
-      '<span class="a ' + (yes ? 'yes' : 'no') + '">' + (yes ? 'EVET' : 'HAYIR') + '</span>' +
-      '<span class="cut">−10</span>';
-    probesEl.prepend(card);
-    if (saveRec) { history.push(saveRec); setScore(score - 10); save(); }
-    else setScore(score - 10);
+    if (saveIt) save();
   }
 
   function refreshWall(){
-    [...wallEl.children].forEach(c => c.classList.toggle('out', !alive.has(c.dataset.id)));
-    remainEl.textContent = alive.size;
-    trail.push(alive.size);
-    trailEl.textContent = trail.filter((v, i) => i === 0 || v !== trail[i-1]).join(' → ');
+    const al = alive();
+    [...wallEl.children].forEach((c, i) => c.classList.toggle('out', !al.includes(i)));
+    document.getElementById('remainN').textContent = al.length;
+    if (trail[trail.length - 1] !== al.length) trail.push(al.length);
+    document.getElementById('wallTrail').textContent = trail.join(' → ');
   }
-
-  const QDEF = {
-    dec: v => [v + "'lerden mi?", id => dec(id) === v],
-    gen: v => [D.genres[v] + ' içeriyor mu?', id => F[id][G].includes(v)],
-    per: v => [(D.people[v] || '?') + ' var mı?', id => F[id][C].includes(+v) || F[id][DIR] === +v],
-  };
-
-  document.getElementById('decAsk').addEventListener('click', () => {
-    if (done) return;
-    const v = parseInt(decSel.value, 10);
-    const [q, t] = QDEF.dec(v);
-    applyQuestion(q, t, {k: 'dec', v});
-  });
-  document.getElementById('genAsk').addEventListener('click', () => {
-    if (done) return;
-    const v = parseInt(genSel.value, 10);
-    const [q, t] = QDEF.gen(v);
-    applyQuestion(q, t, {k: 'gen', v});
-  });
-  function askPerson(){
-    if (done || !perPicked) return;
-    const v = perPicked;
-    perPicked = null; perAsk.disabled = true; perInput.value = '';
-    const [q, t] = QDEF.per(v);
-    applyQuestion(q, t, {k: 'per', v});
-  }
-  perAsk.addEventListener('click', askPerson);
 
   // ---- atış ----
   const aimBar = document.getElementById('aimBar');
-  function aim(id){
-    aimId = id;
-    [...wallEl.children].forEach(c => c.classList.toggle('aim', c.dataset.id === id));
-    document.getElementById('aimTitle').textContent = '🎯 Tek atış: ' + F[id][T] + ' (' + F[id][Y] + ')';
+  function aim(i){
+    aimI = i;
+    [...wallEl.children].forEach((c, j) => c.classList.toggle('aim', j === i));
+    const f = F[DAY.w[i]];
+    document.getElementById('aimTitle').textContent = '🎯 Tek atış: ' + f[0] + ' (' + f[1] + ')';
     aimBar.hidden = false;
   }
   document.getElementById('aimCancel').addEventListener('click', () => {
-    aimId = null; aimBar.hidden = true;
+    aimI = null; aimBar.hidden = true;
     [...wallEl.children].forEach(c => c.classList.remove('aim'));
   });
   document.getElementById('aimFire').addEventListener('click', () => {
-    if (!aimId || done) return;
-    const id = aimId;
-    aimId = null; aimBar.hidden = true;
+    if (aimI === null || done) return;
+    const i = aimI;
+    aimI = null; aimBar.hidden = true;
     [...wallEl.children].forEach(c => c.classList.remove('aim'));
-    fire(id, true);
+    fire(i, true);
   });
 
-  function fire(id, saveIt){
-    if (id === ANS) {
-      if (saveIt) { history.push({k: 'shot', v: id}); save(); }
-      win();
-      return;
-    }
-    alive.delete(id);
-    const el = wallEl.querySelector('[data-id="' + id + '"]');
-    if (el) el.classList.add('missed', 'out');
+  function fire(i, saveIt){
+    shots.push(i);
+    if (saveIt) save();
+    if (i === ANS_I) { win(); return; }
+    setScore(score - 25);
+    const note = document.getElementById('missNote');
+    note.hidden = false;
+    note.textContent = '💨 Iska: ' + F[DAY.w[i]][0] + ' değildi (−25).';
     refreshWall();
-    const card = document.createElement('div');
-    card.className = 'probe';
-    card.innerHTML = '<span class="q">🎯 ' + F[id][T] + '</span>' +
-      '<span class="a no">ISKA</span><span class="cut">−20</span>';
-    probesEl.prepend(card);
-    setScore(score - 20);
-    if (saveIt) { history.push({k: 'shot', v: id}); save(); }
   }
+
+  function setScore(v){ score = Math.max(10, v); document.getElementById('scoreN').textContent = score; }
 
   function win(){
     done = true;
-    const el = wallEl.querySelector('[data-id="' + ANS + '"]');
-    if (el) { el.classList.remove('out'); el.classList.add('answer'); }
-    const a = F[ANS];
-    const qN = history.filter(h => h.k !== 'shot').length;
-    const missN = history.filter(h => h.k === 'shot').length - 1;
+    const el = wallEl.children[ANS_I];
+    el.classList.remove('out'); el.classList.add('answer');
+    document.getElementById('missNote').hidden = true;
+    const a = F[DAY.a];
+    const missN = shots.length - 1;
     document.getElementById('result').hidden = false;
     document.getElementById('resultTitle').textContent = score + ' / 100';
     document.getElementById('resultBody').innerHTML =
-      '<b>' + a[T] + '</b> (' + a[Y] + ') — ' + qN + ' soru, ' + (missN > 0 ? missN + ' ıska, ' : '') + 'vuruldu.<br>Duvar: ' +
-      trail.filter((v, i) => i === 0 || v !== trail[i-1]).join(' → ');
-    window._share = 'Daralt #' + (day + 1) + ' — ' + score + '/100\n🧱 ' +
-      trail.filter((v, i) => i === 0 || v !== trail[i-1]).join(' → ') + '\n' +
-      qN + ' soru' + (missN > 0 ? ' · ' + missN + ' ıska' : '') + '\nverandatools.com/daralt';
+      '<b>' + a[0] + '</b> (' + a[1] + ') — ' + asked.length + ' soru' +
+      (missN > 0 ? ', ' + missN + ' ıska' : '') + '.<br>Duvar: ' + trail.join(' → ');
+    window._share = 'Daralt #' + (day + 1) + ' — ' + score + '/100\n🧱 ' + trail.join(' → ') +
+      '\n' + asked.length + ' soru' + (missN > 0 ? ' · ' + missN + ' ıska' : '') + '\nverandatools.com/daralt';
     save();
   }
 
@@ -419,15 +309,12 @@
   });
 
   // ---- kalıcılık ----
-  function save(){ localStorage.setItem(KEY, JSON.stringify({history})); }
+  function save(){ localStorage.setItem(KEY, JSON.stringify({asked, shots})); }
   (function restore(){
     let st; try { st = JSON.parse(localStorage.getItem(KEY)); } catch(e){}
-    if (!st || !st.history) return;
-    st.history.forEach(h => {
-      history.push(h);
-      if (h.k === 'shot') fire(h.v, false);
-      else { const [q, t] = QDEF[h.k](h.v); applyQuestion(q, t, null); }
-    });
+    if (!st) return;
+    (st.asked || []).forEach(qi => ask(qi, false));
+    (st.shots || []).forEach(i => fire(i, false));
   })();
 })();
 </script>
