@@ -8,7 +8,7 @@
 "use strict";
 const IMG = "https://image.tmdb.org/t/p/w342";
 const AFIS_IMG = "https://image.tmdb.org/t/p/w185";
-const ORDER_MAX = 7, DENEME_HAK = 3, PAS_HAK = 1, TAVAN = 10, ADAY = 3;
+const ORDER_MAX = 15, DENEME_HAK = 3, PAS_HAK = 1, TAVAN = 10, ADAY = 3;
 const EPOCH = 20654; // 2026-07-20 => Zincir #1
 const KAYIT = "zincir_v1";
 const SES_ANAHTAR = "zincir_ses";
