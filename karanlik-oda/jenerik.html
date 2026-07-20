@@ -99,13 +99,11 @@
   .feedback.bad{background:var(--red-dim); border:1px solid rgba(229,56,46,0.4);}
   .feedback.good{background:var(--ok-dim); border:1px solid rgba(124,180,107,0.4);}
   .feedback.dup{background:var(--card); border:1px solid var(--border); color:var(--muted);}
-  .feedback.yan{background:rgba(217,161,61,0.12); border:1px solid rgba(217,161,61,0.45);}
   .feedback:empty{display:none;}
 
   /* yanlış tahmin izi */
   .misses{max-width:760px; margin:12px auto 0; display:flex; gap:6px; flex-wrap:wrap;}
   .misses .m{font-size:12px; color:var(--muted); background:var(--card); border:1px solid var(--border); border-radius:2px; padding:4px 9px; text-decoration:line-through;}
-  .misses .m.yan{color:#d9a13d; border-color:rgba(217,161,61,0.45); text-decoration:none;}
 
   /* ---- bulunan filmler: kâğıt karolar ---- */
   .grid-label{max-width:1080px; margin:26px auto 10px; font-family:"Special Elite",cursive; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);}
@@ -259,7 +257,7 @@ function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }ca
 function persist(){
   if (G.random) return;
   const s = loadSave();
-  s[G.index] = { found:[...G.foundSet], missed:G.missed, yan:G.yan, over:G.over };
+  s[G.index] = { found:[...G.foundSet], missed:G.missed, over:G.over };
   try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
 }
 
@@ -322,9 +320,7 @@ function renderGrid(){
   $("grid").innerHTML = html;
 }
 function renderMisses(){
-  $("misses").innerHTML =
-    G.yan.map(t => `<span class="m yan" title="yan rol — sayılmaz, kalp götürmez">🎬 ${esc(t)}</span>`).join("")
-    + G.missed.map(t => `<span class="m">${esc(t)}</span>`).join("");
+  $("misses").innerHTML = G.missed.map(t => `<span class="m">${esc(t)}</span>`).join("");
 }
 
 // ---- otomatik tamamlama (TÜM filmler; bulunmuşlar elenir) ----
@@ -409,10 +405,6 @@ function submit(){
       : `<b>${esc(f.t)}</b> ✓ bu oyuncunun filmi!`);
     updateMeter(); renderGrid(); persist(); metaBildir();
     if (G.foundSet.size === G.total){ resetInput(); finish(true); return; }
-  } else if (G.yanSet.has(f.i)){
-    // oyuncu filmde var ama başrolde değil: sayılmaz ama kalp de götürmez
-    if (!G.yan.includes(f.t)){ G.yan.push(f.t); renderMisses(); persist(); }
-    flash("yan", `<b>${esc(f.t)}</b> — evet, oynadı ama <b>yan rolde</b>. Sayılmaz, kalbin de gitmez.`);
   } else {
     if (!G.missed.includes(f.t)){ G.missed.push(f.t); renderMisses(); persist(); }
     updateMeter();
@@ -479,16 +471,14 @@ function startGame(index, random=false){
   const actor = ACTORS[index];
   G = { actor, index, random,
         filmIds:new Set(actor.f), total:actor.f.length,
-        yanSet:new Set(actor.e || []),
         esik:esikler(actor.f.length),
-        foundSet:new Set(), found:[], missed:[], yan:[], sel:null, over:false };
+        foundSet:new Set(), found:[], missed:[], sel:null, over:false };
   // günün oyuncusuysa kayıt yükle
   if (!random){
     const s = loadSave()[index];
     if (s){
       s.found.forEach(id => { if (G.filmIds.has(id) && !G.foundSet.has(id)){ G.foundSet.add(id); G.found.push(id); } });
       G.missed = s.missed || [];
-      G.yan = s.yan || [];
       G.over = !!s.over;
       // kalp sistemi öncesi kayıtlarda 3+ yanlış olabilir: oyunu geriye dönük
       // bitirmeyiz, kalp 0 görünür ve bir sonraki yanlışta biter.
