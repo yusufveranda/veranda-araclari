@@ -61,11 +61,15 @@ main{
 #oneriler div:hover .yil{color:#d9d3b8}
 #mesaj{min-height:1.6em; font-size:1rem; color:var(--kirmizi); text-align:center}
 #mesaj.iyi{color:#9fae6f}
-#pes{
+.dugmeler{display:flex; gap:12px; justify-content:center; margin-top:6px}
+.dugmeler button{
   background:none; border:1px solid var(--cizgi); color:var(--soluk);
   padding:8px 22px; font-family:inherit; font-size:.9rem; cursor:pointer; border-radius:4px;
 }
 #pes:hover{border-color:var(--kirmizi); color:var(--kirmizi)}
+#pas:hover, #paylas:hover, #pratikBtn:hover{border-color:var(--turuncu); color:var(--turuncu)}
+header .sag{margin-left:auto; color:var(--turuncu); letter-spacing:.3em; font-size:1rem}
+#sonEmoji{font-size:1.5rem; margin:10px 0; letter-spacing:.1em}
 #zincirPanel{
   border-left:1px solid var(--cizgi); padding:24px 22px;
   background:linear-gradient(180deg, rgba(240,154,54,.03), transparent 40%);
@@ -87,7 +91,8 @@ main{
 <body>
 <header>
   <h1>ZİNCİR</h1>
-  <span class="not">deneme iskeleti — puan yok, his var</span>
+  <span class="not" id="mod"></span>
+  <span class="sag" id="haklar"></span>
 </header>
 <main>
   <section id="sahne">
@@ -99,11 +104,19 @@ main{
       <div id="oneriler"></div>
     </div>
     <div id="mesaj"></div>
-    <button id="pes">pes</button>
+    <div class="dugmeler">
+      <button id="pas" style="display:none">pas</button>
+      <button id="pes">pes</button>
+    </div>
     <div id="sonEkran">
-      <div>zincir koptu</div>
+      <div id="sonBaslik">zincir koptu</div>
       <div class="buyuk" id="sonSayi"></div>
+      <div id="sonEmoji"></div>
       <div id="cevaplar"></div>
+      <div class="dugmeler">
+        <button id="paylas">paylaş</button>
+        <button id="pratikBtn">pratik modu</button>
+      </div>
     </div>
   </section>
   <aside id="zincirPanel">
