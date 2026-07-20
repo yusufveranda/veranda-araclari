@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zincir — deneme</title>
+<style>
+:root{
+  --bg:#1C1510; --kagit:#241c15; --kagit2:#2d231a; --metin:#ECCF92;
+  --soluk:#a08c62; --turuncu:#F09A36; --kirmizi:#D7261D; --yesil:#5F6B37;
+  --cizgi:#3a2e21;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+body{
+  background:var(--bg); color:var(--metin);
+  font-family:Georgia, 'Times New Roman', serif;
+  min-height:100vh; display:flex; flex-direction:column;
+}
+header{
+  padding:14px 28px; border-bottom:1px solid var(--cizgi);
+  display:flex; align-items:baseline; gap:16px;
+}
+header h1{font-size:1.5rem; letter-spacing:.12em}
+header .not{color:var(--soluk); font-size:.85rem}
+main{
+  flex:1; display:grid; grid-template-columns: 1fr 340px;
+  gap:0; width:100%;
+}
+@media (max-width:900px){ main{grid-template-columns:1fr} }
+#sahne{
+  padding:32px 40px; display:flex; flex-direction:column; align-items:center;
+  justify-content:flex-start; gap:22px;
+}
+#adim{color:var(--turuncu); font-size:.95rem; letter-spacing:.2em; text-transform:uppercase}
+#soru{font-size:1.35rem; text-align:center; max-width:720px; line-height:1.5}
+#kartlar{display:flex; gap:26px; flex-wrap:wrap; justify-content:center}
+.kart{
+  width:190px; background:var(--kagit); border:1px solid var(--cizgi);
+  border-radius:6px; overflow:hidden; text-align:center;
+}
+.kart img{width:100%; height:250px; object-fit:cover; display:block; filter:saturate(.75) contrast(.95)}
+.kart .bos{width:100%; height:250px; display:flex; align-items:center; justify-content:center; font-size:3rem; color:var(--soluk)}
+.kart .ad{padding:10px 8px; font-size:1.02rem}
+.kart .rol{padding:0 8px 10px; color:var(--soluk); font-size:.8rem}
+.kart.secilebilir{cursor:pointer; transition:transform .15s, border-color .15s}
+.kart.secilebilir:hover{transform:translateY(-4px); border-color:var(--turuncu)}
+#girisKutu{position:relative; width:min(560px, 90%)}
+#giris{
+  width:100%; padding:14px 16px; font-size:1.1rem; font-family:inherit;
+  background:var(--kagit2); color:var(--metin);
+  border:1px solid var(--cizgi); border-radius:4px; outline:none;
+}
+#giris:focus{border-color:var(--turuncu)}
+#oneriler{
+  position:absolute; left:0; right:0; top:100%; z-index:5;
+  background:var(--kagit2); border:1px solid var(--cizgi); border-top:none;
+  max-height:280px; overflow-y:auto; display:none;
+}
+#oneriler div{padding:10px 14px; cursor:pointer; font-size:1rem}
+#oneriler div:hover, #oneriler div.aktif{background:var(--yesil); color:#f5ead0}
+#oneriler .yil{color:var(--soluk); font-size:.85rem}
+#oneriler div:hover .yil{color:#d9d3b8}
+#mesaj{min-height:1.6em; font-size:1rem; color:var(--kirmizi); text-align:center}
+#mesaj.iyi{color:#9fae6f}
+#pes{
+  background:none; border:1px solid var(--cizgi); color:var(--soluk);
+  padding:8px 22px; font-family:inherit; font-size:.9rem; cursor:pointer; border-radius:4px;
+}
+#pes:hover{border-color:var(--kirmizi); color:var(--kirmizi)}
+#zincirPanel{
+  border-left:1px solid var(--cizgi); padding:24px 22px;
+  background:linear-gradient(180deg, rgba(240,154,54,.03), transparent 40%);
+}
+@media (max-width:900px){ #zincirPanel{border-left:none; border-top:1px solid var(--cizgi)} }
+#zincirPanel h2{font-size:.9rem; letter-spacing:.25em; color:var(--soluk); text-transform:uppercase; margin-bottom:16px}
+.halka{display:flex; align-items:center; gap:12px; padding:7px 0; font-size:.95rem}
+.halka img{width:34px; height:44px; object-fit:cover; border-radius:3px; filter:saturate(.7)}
+.halka .mini{width:34px; height:44px; background:var(--kagit2); border-radius:3px;
+  display:flex; align-items:center; justify-content:center; color:var(--soluk)}
+.halka.film{color:var(--turuncu); padding-left:46px; font-style:italic}
+.halka .kim{color:var(--metin)}
+.halka .etiket{color:var(--soluk); font-size:.75rem; display:block}
+#sonEkran{display:none; text-align:center; padding-top:30px}
+#sonEkran .buyuk{font-size:2.2rem; color:var(--turuncu); margin:12px 0}
+#cevaplar{color:var(--soluk); line-height:1.9; margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>ZİNCİR</h1>
+  <span class="not">deneme iskeleti — puan yok, his var</span>
+</header>
+<main>
+  <section id="sahne">
+    <div id="adim"></div>
+    <div id="soru"></div>
+    <div id="kartlar"></div>
+    <div id="girisKutu">
+      <input id="giris" placeholder="film adı yaz..." autocomplete="off" spellcheck="false">
+      <div id="oneriler"></div>
+    </div>
+    <div id="mesaj"></div>
+    <button id="pes">pes</button>
+    <div id="sonEkran">
+      <div>zincir koptu</div>
+      <div class="buyuk" id="sonSayi"></div>
+      <div id="cevaplar"></div>
+    </div>
+  </section>
+  <aside id="zincirPanel">
+    <h2>Zincir</h2>
+    <div id="zincir"></div>
+  </aside>
+</main>
+<script src="veri.js"></script>
+<script src="oyun.js"></script>
+</body>
+</html>
