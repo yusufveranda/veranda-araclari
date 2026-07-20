@@ -183,9 +183,22 @@
     }).catch(()=>{});
   }
 
+  /* aynı GÜN içinde aynı görünen ada sahip birden çok uid (ör. bir kişinin Google +
+     anonim/ikinci-cihaz hesabı) tek satıra iner — en iyi skor kalır (yüksek puan;
+     eşitse az deneme). Eski nick sisteminin "bir gün/bir isim" kilidinin uid
+     dünyasındaki karşılığı; haftalık toplamdaki çift sayımı da önler. */
+  function gunTekille(arr){
+    const k={};
+    arr.forEach(r=>{
+      const ad=(r.ad||'isimsiz').trim();
+      const e=k[ad];
+      if(!e || (r.puan||0)>(e.puan||0) || ((r.puan||0)===(e.puan||0) && (r.deneme||0)<(e.deneme||0))) k[ad]=r;
+    });
+    return Object.values(k);
+  }
   function leaderboardOku(oyun, gun){
     return db.collection('skorlar').doc(oyun).collection(String(gun)).get()
-      .then(qs=>{ const arr=[]; qs.forEach(d=>arr.push(d.data())); return arr; });
+      .then(qs=>{ const arr=[]; qs.forEach(d=>arr.push(d.data())); return gunTekille(arr); });
   }
 
   /* haftalık/aylık leaderboard — Firestore günleri listeleyemediği için verilen gün
