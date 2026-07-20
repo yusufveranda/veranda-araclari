@@ -70,8 +70,12 @@
   .meter{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
   .meter .score{font-size:13px; color:var(--muted);}
   .meter .score b{color:var(--ok); font-size:26px; font-family:"Special Elite",cursive; text-shadow:0 0 12px rgba(124,180,107,0.35);}
-  .bar{flex:1; min-width:140px; height:10px; background:var(--bg2); border:1px solid var(--border); border-radius:20px; overflow:hidden;}
+  .bar-wrap{flex:1; min-width:140px; position:relative; padding-top:10px;}
+  .bar{height:10px; background:var(--bg2); border:1px solid var(--border); border-radius:20px; overflow:hidden;}
   .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--red),var(--ok)); transition:width .4s ease;}
+  .star-mark{position:absolute; top:-4px; transform:translateX(-50%); font-size:14px; filter:grayscale(1); opacity:.45; transition:filter .3s,opacity .3s; line-height:1;}
+  .star-mark.won{filter:none; opacity:1; text-shadow:0 0 10px rgba(240,154,54,0.6);}
+  .hearts{font-size:15px; letter-spacing:2px; white-space:nowrap;}
   @media(max-width:560px){ .prompt{grid-template-columns:1fr; justify-items:center; text-align:center;} .prompt-body{text-align:center;} }
 
   /* ---- tahmin kutusu (ana oyunla aynı) ---- */
@@ -95,11 +99,13 @@
   .feedback.bad{background:var(--red-dim); border:1px solid rgba(229,56,46,0.4);}
   .feedback.good{background:var(--ok-dim); border:1px solid rgba(124,180,107,0.4);}
   .feedback.dup{background:var(--card); border:1px solid var(--border); color:var(--muted);}
+  .feedback.yan{background:rgba(217,161,61,0.12); border:1px solid rgba(217,161,61,0.45);}
   .feedback:empty{display:none;}
 
   /* yanlış tahmin izi */
   .misses{max-width:760px; margin:12px auto 0; display:flex; gap:6px; flex-wrap:wrap;}
   .misses .m{font-size:12px; color:var(--muted); background:var(--card); border:1px solid var(--border); border-radius:2px; padding:4px 9px; text-decoration:line-through;}
+  .misses .m.yan{color:#d9a13d; border-color:rgba(217,161,61,0.45); text-decoration:none;}
 
   /* ---- bulunan filmler: kâğıt karolar ---- */
   .grid-label{max-width:1080px; margin:26px auto 10px; font-family:"Special Elite",cursive; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);}
@@ -159,7 +165,7 @@
       <select id="actorSelect" aria-label="Önizleme: oyuncu seç"></select>
     </div>
   </header>
-  <p class="tagline">Bir oyuncu veriyoruz. Bu oyundaki filmlerinden oynadıklarını sırayla yaz — kaç film çıkarırsan o kadar puan. <span class="day-no" id="dayNo"></span></p>
+  <p class="tagline">Bir oyuncu veriyoruz. Filmlerini yaz, yıldız çıtalarını geç — <b>hepsini bilmen gerekmiyor</b>. Yanlış film bir kalp götürür; üç kalbin var. <span class="day-no" id="dayNo"></span></p>
 
   <div id="loading" class="loading">Kadro çağrılıyor…</div>
 
@@ -169,10 +175,11 @@
       <div class="prompt-body">
         <div class="p-label">Oyuncu</div>
         <div class="p-name" id="actorName"></div>
-        <div class="p-ask">Bu oyuncunun <b id="totalN">0</b> filmi bu oyunda. Kaçını hatırlıyorsun?</div>
+        <div class="p-ask" id="askLine">Bu oyuncunun <b id="totalN">0</b> filmi bu oyunda.</div>
         <div class="meter">
-          <div class="score"><b id="foundN">0</b> puan</div>
-          <div class="bar"><i id="barFill"></i></div>
+          <div class="score"><b id="foundN">0</b> film</div>
+          <div class="bar-wrap"><div class="bar"><i id="barFill"></i></div><span id="starMarks"></span></div>
+          <div class="hearts" id="hearts"></div>
         </div>
       </div>
     </div>
@@ -215,7 +222,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="../ortak/firebase.js"></script>
-<script src="jenerik.js?v=20260720"></script>
+<script src="jenerik.js?v=20260720b"></script>
 <script>
 const IMG = "https://image.tmdb.org/t/p/";
 const EPOCH = new Date("2026-07-06T00:00:00");   // 1. gün
@@ -252,9 +259,20 @@ function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }ca
 function persist(){
   if (G.random) return;
   const s = loadSave();
-  s[G.index] = { found:[...G.foundSet], missed:G.missed, over:G.over };
+  s[G.index] = { found:[...G.foundSet], missed:G.missed, yan:G.yan, over:G.over };
   try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
 }
+
+// ---- yıldız çıtaları + kalpler ----------------------------------------------
+// Eşikler Takımyıldız motoruyla AYNI formül (12 film tavanı): hepsini bilmek
+// gerekmez, hedef altın çıta; tam kadro meraklıya bonus.
+const CAN_MAX = 3;
+function esikler(m){
+  const b = Math.min(m, 12);
+  return [Math.max(1, Math.round(b*0.3)), Math.max(2, Math.round(b*0.55)), Math.max(3, Math.min(m, Math.round(b*0.8)))];
+}
+function canKalan(){ return Math.max(0, CAN_MAX - G.missed.length); }
+function yildizSay(){ const n = G.foundSet.size; return G.esik.filter(t => n >= t).length; }
 
 // ---- render ----
 function renderPrompt(){
@@ -264,13 +282,20 @@ function renderPrompt(){
     : `<div class="no">?</div>`;
   $("actorName").textContent = a.n;
   $("totalN").textContent = G.total;
+  const [t1,t2,t3] = G.esik;
+  $("askLine").innerHTML = `Bu oyuncunun <b>${G.total}</b> filmi bu oyunda — hepsini bilmen gerekmiyor: `
+    + `⭐ ${t1} · ⭐⭐ ${t2} · ⭐⭐⭐ <b>${t3} film</b>. Tamamını bulan efsane.`;
   $("dayNo").textContent = G.random ? "Rastgele oyuncu" : `Gün #${G.index + 1}`;
   updateMeter();
 }
 function updateMeter(){
-  const n = G.foundSet.size;
+  const n = G.foundSet.size, hedef = G.esik[2];
   $("foundN").textContent = n;
-  $("barFill").style.width = (100 * n / G.total) + "%";
+  $("barFill").style.width = Math.min(100, 100 * n / hedef) + "%";
+  $("starMarks").innerHTML = G.esik.map(t =>
+    `<span class="star-mark${n >= t ? " won" : ""}" style="left:${Math.min(100, 100*t/hedef)}%">⭐</span>`).join("");
+  const can = canKalan();
+  $("hearts").innerHTML = Array.from({length:CAN_MAX}, (_,i) => i < can ? "❤️" : "🖤").join("");
 }
 function filmCard(f, missed){
   const poster = f.p
@@ -280,10 +305,10 @@ function filmCard(f, missed){
     + `<div class="cap">${esc(f.t)}<span class="yr">${f.y?` · ${f.y}`:""}</span></div></div>`;
 }
 function renderGrid(){
-  const total = G.total, n = G.foundSet.size;
+  const total = G.total, n = G.foundSet.size, hedef = G.esik[2];
   $("gridLabel").textContent = G.over
     ? `${n}/${total} film — kadro açıldı`
-    : `Bulunanlar · ${n}/${total}`;
+    : `Bulunanlar · ${n}/${total} · hedef ${hedef}`;
   let html = "";
   // bulunanlar (bulma sırasına göre)
   G.found.forEach(id => html += filmCard(FILM_BY_ID[id], false));
@@ -291,13 +316,15 @@ function renderGrid(){
     // kaçırılanlar açığa çıkar
     G.actor.f.forEach(id => { if (!G.foundSet.has(id)) html += filmCard(FILM_BY_ID[id], true); });
   } else {
-    // kalan boş slotlar
-    for (let i = n; i < total; i++) html += `<div class="fcard slot"><div class="q">?</div></div>`;
+    // boş slotlar yalnız altın çıtaya kadar — "hepsini bil" baskısı yok
+    for (let i = n; i < hedef; i++) html += `<div class="fcard slot"><div class="q">?</div></div>`;
   }
   $("grid").innerHTML = html;
 }
 function renderMisses(){
-  $("misses").innerHTML = G.missed.map(t => `<span class="m">${esc(t)}</span>`).join("");
+  $("misses").innerHTML =
+    G.yan.map(t => `<span class="m yan" title="yan rol — sayılmaz, kalp götürmez">🎬 ${esc(t)}</span>`).join("")
+    + G.missed.map(t => `<span class="m">${esc(t)}</span>`).join("");
 }
 
 // ---- otomatik tamamlama (TÜM filmler; bulunmuşlar elenir) ----
@@ -374,14 +401,27 @@ function submit(){
   if (!f) return;
   if (G.foundSet.has(f.i)){ flash("dup", `<b>${esc(f.t)}</b> — zaten listende.`); resetInput(); return; }
   if (G.filmIds.has(f.i)){
+    const onceYildiz = yildizSay();
     G.foundSet.add(f.i); G.found.push(f.i);
-    flash("good", `<b>${esc(f.t)}</b> ✓ bu oyuncunun filmi!`);
+    const yeniYildiz = yildizSay();
+    flash("good", yeniYildiz > onceYildiz
+      ? `<b>${esc(f.t)}</b> ✓ — ${"⭐".repeat(yeniYildiz)} çıtayı geçtin!`
+      : `<b>${esc(f.t)}</b> ✓ bu oyuncunun filmi!`);
     updateMeter(); renderGrid(); persist(); metaBildir();
     if (G.foundSet.size === G.total){ resetInput(); finish(true); return; }
+  } else if (G.yanSet.has(f.i)){
+    // oyuncu filmde var ama başrolde değil: sayılmaz ama kalp de götürmez
+    if (!G.yan.includes(f.t)){ G.yan.push(f.t); renderMisses(); persist(); }
+    flash("yan", `<b>${esc(f.t)}</b> — evet, oynadı ama <b>yan rolde</b>. Sayılmaz, kalbin de gitmez.`);
   } else {
     if (!G.missed.includes(f.t)){ G.missed.push(f.t); renderMisses(); persist(); }
-    flash("bad", `<b>${esc(f.t)}</b> — bu oyuncu bu filmde yok.`);
+    updateMeter();
     metaBildir();
+    if (canKalan() <= 0){
+      flash("bad", `<b>${esc(f.t)}</b> — bu oyuncu bu filmde yok. 💔 Kalpler bitti.`);
+      resetInput(); finish(false); return;
+    }
+    flash("bad", `<b>${esc(f.t)}</b> — bu oyuncu bu filmde yok. 💔 ${canKalan()} kalp kaldı.`);
   }
   resetInput();
 }
@@ -392,36 +432,44 @@ function resetInput(){
 
 // ---- paylaşım ----
 function shareText(){
-  const n = G.foundSet.size, total = G.total;
+  const n = G.foundSet.size, total = G.total, hedef = G.esik[2], y = yildizSay();
   const etiket = G.random ? "🎲" : "#" + (G.index + 1);
+  // kısa pist: altın çıtaya kadar kareler, eşiklerin ardına yıldız işareti
   let sq = "";
-  for (let i = 0; i < total; i++) sq += (i < n ? "🟩" : "⬛");
-  // uzun satırları böl (10'arlı)
-  sq = sq.match(/.{1,10}/gu).join("\n");
-  return `Jenerik ${etiket} · 🎭 ${G.actor.n}\n${sq}\n${n}/${total} film`;
+  for (let i = 1; i <= hedef; i++){
+    sq += (i <= n ? "🟩" : "⬛");
+    if (G.esik.includes(i)) sq += (n >= i ? "⭐" : "▫️");
+  }
+  const kalp = Array.from({length:CAN_MAX}, (_,i) => i < canKalan() ? "❤️" : "🖤").join("");
+  const tam = n === total ? "\n🎬 TAM KADRO!" : "";
+  return `Jenerik ${etiket} · 🎭 ${G.actor.n}\n${sq}\n${"⭐".repeat(y) || "—"} · ${kalp} · ${n}/${total} film${tam}`;
 }
 
 function finish(won, redisplay){
   if (G.over) return;
   G.over = true;
-  const n = G.foundSet.size, total = G.total;
+  const n = G.foundSet.size, total = G.total, y = yildizSay(), kalpBitti = canKalan() <= 0;
   $("guessInput").disabled = true; $("guessBtn").disabled = true; $("finishBtn").disabled = true;
   hideAc();
   const res = $("result");
   res.classList.add("show");
-  res.style.background = won ? "var(--ok-dim)" : "var(--card)";
-  res.style.borderColor = won ? "rgba(124,180,107,0.4)" : "var(--border)";
+  const iyi = won || y > 0;
+  res.style.background = iyi ? "var(--ok-dim)" : "var(--card)";
+  res.style.borderColor = iyi ? "rgba(124,180,107,0.4)" : "var(--border)";
   $("resultTitle").textContent = won
-    ? "Tam kadro! 🎬"
-    : `${n}/${total} film`;
-  const pct = Math.round(100 * n / total);
+    ? "Tam kadro! 🎬 Efsanesin."
+    : kalpBitti
+      ? `💔 Kalpler bitti — ${"⭐".repeat(y) || "yıldızsız"}`
+      : `${"⭐".repeat(y) || "Yıldızsız"} · ${n}/${total} film`;
   $("resultBody").innerHTML = won
-    ? `<b>${esc(G.actor.n)}</b> — bu oyundaki bütün filmlerini çıkardın: ${n} film, ${n} puan.`
-    : `<b>${esc(G.actor.n)}</b> — ${n}/${total} film yazdın (${pct}%). Kalan ${total - n} film aşağıda gri açıldı.`;
+    ? `<b>${esc(G.actor.n)}</b> — bu oyundaki bütün filmlerini çıkardın: ${n} film. Bunu çok az kişi yapar.`
+    : `<b>${esc(G.actor.n)}</b> — ${n} film yazdın${y ? `, ${y} yıldız aldın` : ""}. `
+      + (y >= 3 ? `Altın çıtayı geçtin; kalan ${total - n} film aşağıda gri açıldı — bak bakalım kaçı "haa bu da vardı" dedirtecek.`
+                : `Kalan ${total - n} film aşağıda gri açıldı.`);
   renderGrid();
   persist(); metaBildir();
   if (!G.random && !redisplay) {
-    if (window.VF && VF.kullanici) VF.skorYaz("jenerik", G.index, { puan:n, toplam:total, kazandi:won });
+    if (window.VF && VF.kullanici) VF.skorYaz("jenerik", G.index, { puan:n, toplam:total, kazandi:won || y > 0 });
     if (window.VF) VF.istatistikArttir("jenerik", G.index, String(n));
   }
 }
@@ -431,14 +479,19 @@ function startGame(index, random=false){
   const actor = ACTORS[index];
   G = { actor, index, random,
         filmIds:new Set(actor.f), total:actor.f.length,
-        foundSet:new Set(), found:[], missed:[], sel:null, over:false };
+        yanSet:new Set(actor.e || []),
+        esik:esikler(actor.f.length),
+        foundSet:new Set(), found:[], missed:[], yan:[], sel:null, over:false };
   // günün oyuncusuysa kayıt yükle
   if (!random){
     const s = loadSave()[index];
     if (s){
       s.found.forEach(id => { if (G.filmIds.has(id) && !G.foundSet.has(id)){ G.foundSet.add(id); G.found.push(id); } });
       G.missed = s.missed || [];
+      G.yan = s.yan || [];
       G.over = !!s.over;
+      // kalp sistemi öncesi kayıtlarda 3+ yanlış olabilir: oyunu geriye dönük
+      // bitirmeyiz, kalp 0 görünür ve bir sonraki yanlışta biter.
     }
   }
   $("loading").style.display = "none";

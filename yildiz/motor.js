@@ -19,7 +19,7 @@ var KURALLAR = {
   asi:'Bir bitki + bir ad seç; <b>doğru eşleşme</b> yıldızı doldurur (<span class="ik">3·5·8</span> eş). <b>Yanlış eşleşme</b> bir kalp götürür.',
   dortsuru:'<b>Her doğru öbek</b> yıldızı doldurur (<span class="ik">2·3·4</span> öbek). <b>Yanlış öbek</b> bir kalp götürür.',
   dortdemet:'<b>Her doğru öbek</b> yıldızı doldurur (<span class="ik">2·3·4</span> öbek). <b>Yanlış öbek</b> bir kalp götürür.',
-  jenerik:'Oyuncunun filmlerini say — <b>ne kadar çok bulursan</b> o kadar yıldız. <b>Yanlış film</b> bir kalp götürür.',
+  jenerik:'Oyuncunun filmlerini say — hepsini bilmek gerekmez: yıldızlar <span class="ik">4·7·10</span> filmde dolar. <b>Yanlış film</b> bir kalp götürür; <b>yan rol</b> sayılmaz ama kalp de götürmez.',
   atlas:'<b>Her doğru hücre</b> yıldızı doldurur (<span class="ik">3·6·9</span> hücre). <b>Yanlış tahmin</b> bir kalp götürür.',
   sancak:'⏳ <b>Erken</b> bil, çok yıldız al: 1. tahminde <b>3★</b> · 2-3. → <b>2★</b> · 4-5. → <b>1★</b>. <b>Kalp yok</b> — geciktikçe yıldız düşer, acele et.',
   karanlikoda:'⏳ <b>Erken</b> bil, çok yıldız al: 1. karede <b>3★</b> · 2-3. → <b>2★</b> · 4-5. → <b>1★</b>. <b>Kalp yok</b> — her pas/yanlışta yıldız düşer.',
