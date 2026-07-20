@@ -502,6 +502,8 @@ function pickRandom(){
     sel.appendChild(o);
   });
   sel.addEventListener("change", () => startGame(+sel.value));
+  // Gizli sonsuz mod: ?sinefil ile açılır (paylaşılabilir link, admin gerekmez) — ana oyunla aynı.
+  if (_MP.has("sinefil")) $("randomBtn").hidden = false;
   const _bulmaca = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%ACTORS.length)+ACTORS.length)%ACTORS.length : today;
   startGame(_bulmaca);
 })();
