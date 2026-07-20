@@ -18,7 +18,7 @@
     --text:#ece7de; --muted:#94897c;
     --red:#e5382e; --red-glow:rgba(229,56,46,0.35); --red-dim:rgba(229,56,46,0.12);
     --ok:#7cb46b; --radius:4px;
-    --gA:#e5b84b; --gB:#e5382e; --gC:#6b9bd1;
+    --gA:#e5b84b; --gB:#e5382e; --gC:#6b9bd1; --gD:#7cb46b;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{color-scheme:dark;}
@@ -46,7 +46,12 @@
   .score{font-size:13px; color:var(--muted);}
   .score b{color:var(--red); font-size:22px; font-family:"Special Elite",cursive; text-shadow:0 0 12px var(--red-glow);}
 
-  .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px;}
+  .grid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px;}
+  .diff{
+    font-family:"Special Elite",cursive; font-size:13px; letter-spacing:1.5px;
+    padding:6px 12px; border-radius:4px; border:1px solid var(--border); color:var(--paper-dim);
+  }
+  .diff b{color:var(--amber, #e5b84b);}
   .tile{
     position:relative; border-radius:var(--radius); overflow:hidden; cursor:pointer;
     background:#000; border:5px solid var(--paper); aspect-ratio:16/9;
@@ -61,6 +66,7 @@
   .tile.lockA{border-color:var(--gA);}
   .tile.lockB{border-color:var(--gB);}
   .tile.lockC{border-color:var(--gC);}
+  .tile.lockD{border-color:var(--gD);}
   .tile.shake{animation:shake .4s;}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
   .lock-chip{
@@ -82,7 +88,7 @@
   /* adlandırma aşaması */
   .name-phase h2{font-family:"Special Elite",cursive; font-weight:400; font-size:20px; color:var(--paper); margin:26px 0 6px;}
   .name-sub{font-size:13px; color:var(--muted); margin-bottom:14px;}
-  .name-groups{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-bottom:18px;}
+  .name-groups{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:18px;}
   .ngroup{border:1px solid var(--border); border-radius:8px; padding:12px; background:var(--bg2);}
   .ngroup.pickme{border-color:var(--red); box-shadow:0 0 14px var(--red-glow);}
   .ngroup-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:10px;}
@@ -108,12 +114,12 @@
   .result h2{font-family:"Special Elite",cursive; font-weight:400; font-size:22px; color:var(--red); margin-bottom:8px;}
   .result .films{font-size:14px; color:var(--text); line-height:1.9;}
   .result .films b{color:var(--paper);}
-  .dotA,.dotB,.dotC{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:7px;}
-  .dotA{background:var(--gA);} .dotB{background:var(--gB);} .dotC{background:var(--gC);}
+  .dotA,.dotB,.dotC,.dotD{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:7px;}
+  .dotA{background:var(--gA);} .dotB{background:var(--gB);} .dotC{background:var(--gC);} .dotD{background:var(--gD);}
   .share-row{display:flex; gap:10px; margin-top:14px; align-items:center;}
 
   @media(max-width:900px){
-    .grid{gap:8px;} .tile{border-width:3px;}
+    .grid{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px;} .tile{border-width:3px;}
     .name-groups{grid-template-columns:1fr;}
   }
 </style>
@@ -123,11 +129,12 @@
   <header>
     <h1>MONTAJ</h1>
     <div class="controls">
+      <span class="diff" id="diffBadge"></span>
       <select id="daySel" title="bulmaca seç"></select>
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
-  <p class="tagline">Dokuz kare masaya saçıldı — üçü bir filmden, üçü başka, üçü başka. Kurgu masasında ayır.</p>
+  <p class="tagline">On iki kare masaya saçıldı — dört filmden üçer kare. Kurgu masasında ayır.</p>
 
   <div class="status">
     <div class="hint" id="hintLine">Aynı filmden olduğunu düşündüğün <b>3 kareyi</b> seç, sonra <b>Birleştir</b>.</div>
@@ -174,13 +181,14 @@
   const daySel = document.getElementById('daySel');
   for (let i = 0; i < window.MONTAJ.length; i++) {
     const o = document.createElement('option');
-    o.value = i; o.textContent = 'BULMACA ' + (i + 1);
+    o.value = i; o.textContent = 'BULMACA ' + (i + 1) + ' · zorluk ' + window.MONTAJ[i].level;
     if (i === idx) o.selected = true;
     daySel.appendChild(o);
   }
   daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value);
+  document.getElementById('diffBadge').innerHTML = 'ZORLUK <b>' + PZ.level + '/10</b>';
 
-  const KEY = 'montaj_v1_' + idx;
+  const KEY = 'montaj_v2_' + idx;
   // kareler: [filmIdx, sceneIdx]
   let tiles = [];
   PZ.films.forEach((f, fi) => f.sc.forEach((url, si) => tiles.push({f: fi, url})));
@@ -193,10 +201,11 @@
   const mergeBtn = document.getElementById('mergeBtn');
   const feedback = document.getElementById('feedback');
   const tryEl = document.getElementById('tryCount');
-  const LOCKS = ['lockA', 'lockB', 'lockC'];
-  const ROMAN = ['I', 'II', 'III'];
+  const LOCKS = ['lockA', 'lockB', 'lockC', 'lockD'];
+  const ROMAN = ['I', 'II', 'III', 'IV'];
+  const NFILM = PZ.films.length; // 4
 
-  let sel = [], lockedFilms = [], tries = 0, attempts = [], nameAnswers = [null, null, null], done = false;
+  let sel = [], lockedFilms = [], tries = 0, attempts = [], nameAnswers = [null, null, null, null], done = false;
 
   tiles.forEach((t, i) => {
     const d = document.createElement('div');
@@ -232,11 +241,11 @@
         chip.className = 'lock-chip'; chip.textContent = 'FİLM ' + ROMAN[li];
         el.appendChild(chip);
       });
-      feedback.textContent = lockedFilms.length < 3 ? 'Doğru — bir film ayrıldı.' : '';
+      feedback.textContent = lockedFilms.length < NFILM ? 'Doğru — bir film ayrıldı.' : '';
       feedback.className = 'feedback close';
       sel = []; mergeBtn.disabled = true;
-      if (lockedFilms.length === 2) autoLockLast();
-      if (lockedFilms.length === 3) startNaming();
+      if (lockedFilms.length === NFILM - 1) autoLockLast();
+      if (lockedFilms.length === NFILM) startNaming();
     } else {
       const counts = {};
       films.forEach(f => counts[f] = (counts[f] || 0) + 1);
@@ -257,7 +266,7 @@
   });
 
   function autoLockLast(){
-    const fi = [0,1,2].find(f => !lockedFilms.includes(f));
+    const fi = PZ.films.map((_, i) => i).find(f => !lockedFilms.includes(f));
     const li = lockedFilms.length;
     lockedFilms.push(fi);
     attempts.push(fi);
@@ -350,16 +359,16 @@
     document.getElementById('titleChips').style.display = 'none';
     document.getElementById('finishBtn').style.display = 'none';
 
-    // puan: gruplama 70 + adlandırma 30. Üçüncü grup otomatik kilitlenir,
-    // kusursuz oyun 2 denemedir.
-    const wrong = tries - 2;
-    const groupPts = Math.max(20, 70 - wrong * 10);
+    // puan: gruplama 60 + adlandırma 40. Son grup otomatik kilitlenir,
+    // kusursuz oyun 3 denemedir.
+    const wrong = tries - (NFILM - 1);
+    const groupPts = Math.max(16, 60 - wrong * 8);
     const total = groupPts + named * 10;
     const res = document.getElementById('result');
     res.hidden = false;
     document.getElementById('resultTitle').textContent = total + ' / 100 — ' +
       (total >= 95 ? 'Kusursuz kurgu.' : total >= 75 ? 'Sağlam montaj.' : total >= 50 ? 'Kaba kurgu geçti.' : 'Negatifler karışmış.');
-    const dots = ['dotA', 'dotB', 'dotC'];
+    const dots = ['dotA', 'dotB', 'dotC', 'dotD'];
     document.getElementById('resultFilms').innerHTML = lockedFilms.map((fi, li) =>
       '<span class="' + dots[li] + '"></span><b>' + PZ.films[fi].t + '</b> (' + PZ.films[fi].y + ')'
     ).join('<br>');
@@ -369,10 +378,10 @@
   }
 
   function buildShare(total, named){
-    const sq = {0: '🟨', 1: '🟥', 2: '🟦', '-1': '⬛'};
+    const sq = {0: '🟨', 1: '🟥', 2: '🟦', 3: '🟩', '-1': '⬛'};
     const rows = attempts.map(a => (a === -1 ? '⬛⬛⬛' : sq[a].repeat(3))).join('\n');
-    return 'Montaj #' + (day + 1) + ' — ' + total + '/100\n' + rows +
-      '\n🎬 ' + named + '/3 film adlandı\nverandatools.com/montaj';
+    return 'Montaj #' + (day + 1) + ' (zorluk ' + PZ.level + '/10) — ' + total + '/100\n' + rows +
+      '\n🎬 ' + named + '/' + NFILM + ' film adlandı\nverandatools.com/montaj';
   }
   document.getElementById('shareBtn').addEventListener('click', () => {
     navigator.clipboard.writeText(window._share || '').then(() => {
@@ -401,9 +410,9 @@
         }
       });
     });
-    if (lockedFilms.length === 3) {
+    if (lockedFilms.length === NFILM) {
       startNaming();
-      nameAnswers = st.nameAnswers || [null, null, null];
+      nameAnswers = st.nameAnswers || [null, null, null, null];
       nameAnswers.forEach((t, li) => {
         if (t) {
           const slot = document.querySelectorAll('.ngroup-slot')[li];
