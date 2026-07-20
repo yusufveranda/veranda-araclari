@@ -3,128 +3,268 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zincir — deneme</title>
+<title>Zincir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Oswald:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#1C1510; --kagit:#241c15; --kagit2:#2d231a; --metin:#ECCF92;
-  --soluk:#a08c62; --turuncu:#F09A36; --kirmizi:#D7261D; --yesil:#5F6B37;
-  --cizgi:#3a2e21;
+  --bg:#1C1510; --sahne:#221a12; --kagit:#2b2117; --metin:#ECCF92;
+  --soluk:#9d8a63; --sessiz:#6f6047; --turuncu:#F09A36; --kirmizi:#D7261D;
+  --zeytin:#5F6B37; --cizgi:#3a2e21; --cizgi2:#4a3b2a;
 }
 *{box-sizing:border-box; margin:0; padding:0}
+html,body{height:100%}
 body{
   background:var(--bg); color:var(--metin);
-  font-family:Georgia, 'Times New Roman', serif;
-  min-height:100vh; display:flex; flex-direction:column;
+  font-family:'Cormorant Garamond', Georgia, serif;
+  display:flex; flex-direction:column; min-height:100vh;
+  overflow-x:hidden;
 }
+/* film greni */
+body::after{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:50;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:.045; mix-blend-mode:screen;
+}
+.oswald{font-family:'Oswald', 'Arial Narrow', sans-serif}
+
+/* ---- üst şerit ---- */
 header{
-  padding:14px 28px; border-bottom:1px solid var(--cizgi);
-  display:flex; align-items:baseline; gap:16px;
+  display:flex; align-items:center; gap:26px;
+  padding:16px 34px; border-bottom:1px solid var(--cizgi);
 }
-header h1{font-size:1.5rem; letter-spacing:.12em}
-header .not{color:var(--soluk); font-size:.85rem}
-main{
-  flex:1; display:grid; grid-template-columns: 1fr 340px;
-  gap:0; width:100%;
+header h1{
+  font-family:'Oswald', sans-serif; font-weight:500; font-size:1.25rem;
+  letter-spacing:.55em; padding-left:.55em;
 }
-@media (max-width:900px){ main{grid-template-columns:1fr} }
+header h1 a{color:var(--metin); text-decoration:none}
+#mod{
+  font-family:'Oswald', sans-serif; font-weight:300; font-size:.8rem;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--soluk);
+}
+header .bosluk{flex:1}
+#haklar{
+  font-size:.9rem; letter-spacing:.35em; color:var(--turuncu);
+  font-family:'Oswald', sans-serif;
+}
+.dugme{
+  background:none; border:1px solid var(--cizgi2); color:var(--soluk);
+  font-family:'Oswald', sans-serif; font-weight:300; font-size:.78rem;
+  letter-spacing:.24em; text-transform:uppercase;
+  padding:7px 18px 6px; cursor:pointer; border-radius:2px;
+  transition:color .15s, border-color .15s;
+}
+.dugme:hover, .dugme:focus-visible{border-color:var(--turuncu); color:var(--turuncu); outline:none}
+#pes:hover, #pes:focus-visible{border-color:var(--kirmizi); color:var(--kirmizi)}
+
+/* ---- sahne ---- */
 #sahne{
-  padding:32px 40px; display:flex; flex-direction:column; align-items:center;
-  justify-content:flex-start; gap:22px;
+  flex:1; position:relative; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:26px;
+  padding:44px 5vw 56px; text-align:center;
+  background:
+    radial-gradient(ellipse 68% 90% at 50% 8%, rgba(236,207,146,.075), transparent 62%),
+    var(--sahne);
 }
-#adim{color:var(--turuncu); font-size:.95rem; letter-spacing:.2em; text-transform:uppercase}
-#soru{font-size:1.35rem; text-align:center; max-width:720px; line-height:1.5}
-#kartlar{display:flex; gap:26px; flex-wrap:wrap; justify-content:center}
+#adim{
+  font-family:'Oswald', sans-serif; font-weight:500; font-size:.85rem;
+  letter-spacing:.5em; padding-left:.5em; text-transform:uppercase;
+  color:var(--turuncu);
+}
+#kaynak{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;
+  font-family:'Oswald', sans-serif; font-weight:300; font-size:.8rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--soluk);
+  min-height:1.8em;
+}
+#kaynak .chip{
+  border:1px solid var(--cizgi2); padding:5px 12px 4px; border-radius:2px;
+  color:var(--metin); background:rgba(236,207,146,.04);
+}
+#kaynak .chip.yonetmen{border-color:rgba(95,107,55,.9); color:#b9c48a}
+#kaynak .zar{color:var(--turuncu)}
+#isim{
+  font-size:clamp(2rem, 4.2vw, 3.4rem); font-weight:600; line-height:1.12;
+  max-width:26ch;
+}
+#alt{font-size:1.25rem; font-style:italic; color:var(--soluk)}
+#kartlar{display:flex; gap:34px; flex-wrap:wrap; justify-content:center}
 .kart{
-  width:190px; background:var(--kagit); border:1px solid var(--cizgi);
-  border-radius:6px; overflow:hidden; text-align:center;
+  width:216px; background:var(--kagit); border:1px solid var(--cizgi2);
+  padding:10px 10px 0; box-shadow:0 18px 40px -18px rgba(0,0,0,.75);
+  transition:transform .18s ease, border-color .18s ease;
 }
-.kart img{width:100%; height:250px; object-fit:cover; display:block; filter:saturate(.75) contrast(.95)}
-.kart .bos{width:100%; height:250px; display:flex; align-items:center; justify-content:center; font-size:3rem; color:var(--soluk)}
-.kart .ad{padding:12px 8px; font-size:1.02rem}
-.kart.secilebilir{cursor:pointer; transition:transform .15s, border-color .15s}
-.kart.secilebilir:hover{transform:translateY(-4px); border-color:var(--turuncu)}
-#girisKutu{position:relative; width:min(560px, 90%)}
+.kart img, .kart .bos{
+  width:100%; aspect-ratio:2/2.6; object-fit:cover; display:block;
+  filter:saturate(.68) sepia(.14) contrast(.96);
+}
+.kart .bos{display:flex; align-items:center; justify-content:center;
+  font-size:3rem; color:var(--sessiz); background:var(--sahne)}
+.kart .ad{
+  font-family:'Oswald', sans-serif; font-weight:300; font-size:.82rem;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--soluk);
+  padding:12px 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.kart:only-child .ad{display:none}
+.kart:only-child{padding-bottom:10px}
+.kart.secilebilir{cursor:pointer}
+.kart.secilebilir:hover, .kart.secilebilir:focus-visible{
+  transform:translateY(-7px); border-color:var(--turuncu); outline:none}
+.kart.secilebilir .ad{color:var(--metin)}
+/* çekiliş makarası */
+.kart.makara{border-color:var(--turuncu)}
+.makaraKat .kat img, .makaraKat .kat .bos{background:var(--sahne)}
+.kart.makara img{filter:saturate(.55) sepia(.2) contrast(.9) brightness(.92)}
+.kart.makara .ad{color:var(--turuncu)}
+@keyframes belirme{
+  from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}
+}
+.kart.beliris{animation:belirme .5s ease-out}
+@keyframes titrek{
+  0%{opacity:.4} 15%{opacity:1} 25%{opacity:.6} 40%{opacity:1} 100%{opacity:1}
+}
+.kart.makara img{animation:titrek .18s linear infinite}
+
+/* ---- giriş ---- */
+#girisKutu{position:relative; width:min(600px, 92%)}
 #giris{
-  width:100%; padding:14px 16px; font-size:1.1rem; font-family:inherit;
-  background:var(--kagit2); color:var(--metin);
-  border:1px solid var(--cizgi); border-radius:4px; outline:none;
+  width:100%; padding:12px 6px; font-size:1.45rem; text-align:center;
+  font-family:'Cormorant Garamond', Georgia, serif;
+  background:transparent; color:var(--metin);
+  border:none; border-bottom:1px solid var(--cizgi2); outline:none;
+  transition:border-color .2s;
 }
-#giris:focus{border-color:var(--turuncu)}
+#giris:focus{border-bottom-color:var(--turuncu)}
+#giris::placeholder{color:var(--sessiz); font-style:italic}
 #oneriler{
-  position:absolute; left:0; right:0; top:100%; z-index:5;
-  background:var(--kagit2); border:1px solid var(--cizgi); border-top:none;
-  max-height:280px; overflow-y:auto; display:none;
+  position:absolute; left:0; right:0; top:100%; z-index:20;
+  background:var(--kagit); border:1px solid var(--cizgi2);
+  max-height:284px; overflow-y:auto; display:none; text-align:left;
+  box-shadow:0 24px 48px -12px rgba(0,0,0,.8);
 }
-#oneriler div{padding:10px 14px; cursor:pointer; font-size:1rem}
-#oneriler div:hover, #oneriler div.aktif{background:var(--yesil); color:#f5ead0}
-#oneriler .yil{color:var(--soluk); font-size:.85rem}
-#oneriler div:hover .yil{color:#d9d3b8}
-#mesaj{min-height:1.6em; font-size:1rem; color:var(--kirmizi); text-align:center}
-#mesaj.iyi{color:#9fae6f}
-.dugmeler{display:flex; gap:12px; justify-content:center; margin-top:6px}
-.dugmeler button{
-  background:none; border:1px solid var(--cizgi); color:var(--soluk);
-  padding:8px 22px; font-family:inherit; font-size:.9rem; cursor:pointer; border-radius:4px;
+#oneriler div{padding:10px 16px; cursor:pointer; font-size:1.15rem}
+#oneriler div:hover, #oneriler div.aktif{background:var(--zeytin); color:#f2e8cd}
+#oneriler .yil{color:var(--soluk); font-size:.9rem}
+#oneriler div:hover .yil, #oneriler div.aktif .yil{color:#d6d2b4}
+#mesaj{min-height:1.5em; font-size:1.15rem; font-style:italic; color:var(--kirmizi)}
+#mesaj.iyi{color:#a9b878}
+
+/* ---- son perde ---- */
+#sonEkran{display:none}
+#sonEkran #sonBaslik{
+  font-family:'Oswald', sans-serif; font-weight:500; font-size:.9rem;
+  letter-spacing:.5em; padding-left:.5em; text-transform:uppercase; color:var(--turuncu);
 }
-#pes:hover{border-color:var(--kirmizi); color:var(--kirmizi)}
-#pas:hover, #paylas:hover, #pratikBtn:hover{border-color:var(--turuncu); color:var(--turuncu)}
-header .sag{margin-left:auto; color:var(--turuncu); letter-spacing:.3em; font-size:1rem}
-#sonEmoji{font-size:1.5rem; margin:10px 0; letter-spacing:.1em}
-#zincirPanel{
-  border-left:1px solid var(--cizgi); padding:24px 22px;
-  background:linear-gradient(180deg, rgba(240,154,54,.03), transparent 40%);
+#sonEkran .buyuk{font-size:clamp(2.6rem,5vw,4rem); font-weight:600; margin:14px 0 4px}
+#sonEmoji{font-size:1.6rem; letter-spacing:.12em; margin:8px 0 14px}
+#cevaplar{color:var(--soluk); font-style:italic; font-size:1.1rem; line-height:1.8; max-width:60ch}
+#sonEkran .dugmeler{display:flex; gap:14px; justify-content:center; margin-top:26px}
+
+/* ---- zincir ---- */
+#seritKutu{
+  border-top:1px solid var(--cizgi);
+  background:#171009;
+  padding:20px 34px 22px;
+  overflow-x:auto;
 }
-@media (max-width:900px){ #zincirPanel{border-left:none; border-top:1px solid var(--cizgi)} }
-#zincirPanel h2{font-size:.9rem; letter-spacing:.25em; color:var(--soluk); text-transform:uppercase; margin-bottom:16px}
-.halka{display:flex; align-items:center; gap:12px; padding:7px 0; font-size:.95rem}
-.halka img{width:34px; height:44px; object-fit:cover; border-radius:3px; filter:saturate(.7)}
-.halka .mini{width:34px; height:44px; background:var(--kagit2); border-radius:3px;
-  display:flex; align-items:center; justify-content:center; color:var(--soluk)}
-.halka.film{color:var(--turuncu); padding-left:46px; font-style:italic}
-.halka .kim{color:var(--metin)}
-.halka .etiket{color:var(--soluk); font-size:.75rem; display:block}
-#sonEkran{display:none; text-align:center; padding-top:30px}
-#sonEkran .buyuk{font-size:2.2rem; color:var(--turuncu); margin:12px 0}
-#cevaplar{color:var(--soluk); line-height:1.9; margin-top:10px}
+#serit{
+  display:flex; align-items:center;
+  width:max-content; margin:0 auto; min-height:78px;
+}
+.medalGrup{display:flex; flex:none; align-items:center}
+.medal{
+  width:54px; height:54px; border-radius:50%; object-fit:cover; flex:none;
+  border:2px solid var(--cizgi2); background:var(--kagit);
+  filter:saturate(.62) sepia(.16);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--sessiz); font-size:1.1rem;
+}
+.medalGrup .medal + .medal{margin-left:-18px}
+.medal.aktifM{border-color:var(--turuncu); animation:nabiz 1.6s ease-in-out infinite}
+@keyframes nabiz{
+  0%,100%{box-shadow:0 0 0 0 rgba(240,154,54,.35)}
+  50%{box-shadow:0 0 0 7px rgba(240,154,54,0)}
+}
+.plaka{
+  flex:none; background:var(--kagit); border:1px solid var(--cizgi2);
+  padding:9px 16px 8px; text-align:center; max-width:172px; min-width:112px;
+}
+.plaka .ft{
+  font-size:1rem; font-weight:600; line-height:1.12; color:var(--metin);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.plaka .fy{
+  font-family:'Oswald', sans-serif; font-weight:300; font-size:.66rem;
+  letter-spacing:.26em; color:var(--soluk); margin-top:2px;
+}
+.plaka.d0{border-bottom:2px solid rgba(95,107,55,.9)}
+.plaka.d1{border-bottom:2px solid rgba(240,154,54,.65)}
+.plaka.dp{border-bottom:2px solid rgba(157,138,99,.65)}
+.plaka.ghost{
+  border:1px dashed var(--cizgi); background:transparent; color:var(--sessiz);
+  font-family:'Oswald', sans-serif; font-weight:300; font-size:.72rem;
+  letter-spacing:.22em; padding:14px 12px; min-width:64px;
+}
+@keyframes projeksiyon{
+  0%{opacity:0} 12%{opacity:.9} 22%{opacity:.35} 34%{opacity:1}
+  46%{opacity:.7} 60%{opacity:1}
+}
+.plaka.yeni{animation:projeksiyon .55s ease-out}
+.bag{flex:none; width:34px; height:16px; position:relative; margin:0 3px}
+.bag::before, .bag::after{
+  content:""; position:absolute; top:50%; transform:translateY(-50%);
+  width:19px; height:11px; border:2px solid var(--sessiz); border-radius:50%;
+}
+.bag::before{left:0} .bag::after{right:0}
+.bag.soluk::before, .bag.soluk::after{border-color:var(--cizgi)}
+
+@media (max-width:900px){
+  header{padding:12px 16px; gap:14px; flex-wrap:wrap}
+  header h1{letter-spacing:.35em}
+  #sahne{padding:30px 4vw 40px}
+  .kart{width:158px}
+  #seritKutu{padding:0 10px}
+}
+@media (prefers-reduced-motion:reduce){
+  .plaka.yeni, .kart.beliris, .kart.makara img, .medal.aktifM{animation:none}
+  .kart, .dugme{transition:none}
+}
 </style>
 </head>
 <body>
 <header>
-  <h1>ZİNCİR</h1>
-  <span class="not" id="mod"></span>
-  <span class="sag" id="haklar"></span>
+  <h1><a href="./">ZİNCİR</a></h1>
+  <span id="mod"></span>
+  <span class="bosluk"></span>
+  <span id="haklar"></span>
+  <button class="dugme" id="pas" style="display:none">pas</button>
+  <button class="dugme" id="pes">pes</button>
 </header>
-<main>
-  <section id="sahne">
-    <div id="adim"></div>
-    <div id="soru"></div>
-    <div id="kartlar"></div>
-    <div id="girisKutu">
-      <input id="giris" placeholder="film adı yaz..." autocomplete="off" spellcheck="false">
-      <div id="oneriler"></div>
-    </div>
-    <div id="mesaj"></div>
+<main id="sahne">
+  <div id="adim"></div>
+  <div id="kaynak"></div>
+  <div id="kartlar"></div>
+  <div id="isim"></div>
+  <div id="alt"></div>
+  <div id="girisKutu">
+    <input id="giris" placeholder="film adı yaz" autocomplete="off" spellcheck="false">
+    <div id="oneriler"></div>
+  </div>
+  <div id="mesaj"></div>
+  <div id="sonEkran">
+    <div id="sonBaslik"></div>
+    <div class="buyuk" id="sonSayi"></div>
+    <div id="sonEmoji"></div>
+    <div id="cevaplar"></div>
     <div class="dugmeler">
-      <button id="pas" style="display:none">pas</button>
-      <button id="pes">pes</button>
+      <button class="dugme" id="paylas">paylaş</button>
+      <button class="dugme" id="pratikBtn">pratik modu</button>
     </div>
-    <div id="sonEkran">
-      <div id="sonBaslik">zincir koptu</div>
-      <div class="buyuk" id="sonSayi"></div>
-      <div id="sonEmoji"></div>
-      <div id="cevaplar"></div>
-      <div class="dugmeler">
-        <button id="paylas">paylaş</button>
-        <button id="pratikBtn">pratik modu</button>
-      </div>
-    </div>
-  </section>
-  <aside id="zincirPanel">
-    <h2>Zincir</h2>
-    <div id="zincir"></div>
-  </aside>
+  </div>
 </main>
-<script src="veri.js"></script>
-<script src="oyun.js"></script>
+<div id="seritKutu"><div id="serit"></div></div>
+<script src="veri.js?v=t2"></script>
+<script src="oyun.js?v=t4"></script>
 </body>
 </html>
