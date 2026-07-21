@@ -122,7 +122,7 @@ function ressamGonder(){
 }
 
 const IPUCU_KATEGORILERI = [
-  { id: 'donem', etiket: 'dönem', metin: r => r.dogum_olum.split('-')[0].slice(0, 2) + '. yüzyıl civarı' },
+  { id: 'donem', etiket: 'dönem', metin: r => (Math.floor(parseInt(r.dogum_olum.split('-')[0], 10) / 100) + 1) + '. yüzyıl civarı' },
   { id: 'ulke', etiket: 'ülke', metin: r => r.ulke },
   { id: 'akim', etiket: 'sanat akımı', metin: r => r.akim },
   { id: 'tablo', etiket: 'tablo adı + baş harf', metin: (r, t) => t.tablo_adi + ' (' + t.tablo_yili + ') - ' + r.isim[0] + '.' }
