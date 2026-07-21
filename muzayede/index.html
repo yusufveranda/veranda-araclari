@@ -46,7 +46,50 @@
 <script src="../ortak/nav-panel.js"></script>
 <script src="./gunler.js"></script>
 <script>
-// Task 4-8 doldurur
+(function(){
+  const q = new URLSearchParams(location.search);
+  const GOMULU = q.has('gomulu');
+  const _METAB = q.has('meta') && q.has('bulmaca') ? parseInt(q.get('bulmaca'), 10) : null;
+
+  function gunNo(){
+    const ep = Date.parse(MUZAYEDE_GUNLER.epoch + 'T00:00:00');
+    const now = new Date();
+    const bugun = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.floor((bugun - ep) / 86400000);
+  }
+  const GUN = gunNo();
+
+  function bugunTabloId(){
+    const sira = MUZAYEDE_GUNLER.sira;
+    const key = (_METAB !== null) ? _METAB : GUN;
+    return sira[((key % sira.length) + sira.length) % sira.length];
+  }
+
+  let RESSAMLAR = [], TABLOLAR = [];
+
+  function veriYukle(){
+    return Promise.all([
+      fetch('./data/ressamlar.json').then(r => r.json()),
+      fetch('./data/tablolar.json').then(r => r.json())
+    ]).then(([ressamlar, tablolar]) => {
+      RESSAMLAR = ressamlar;
+      TABLOLAR = tablolar;
+      window.MUZ = { GUN, _METAB, RESSAMLAR, TABLOLAR, bugunTabloId };
+      baslat();
+    });
+  }
+
+  function baslat(){
+    const tabloId = bugunTabloId();
+    const tablo = TABLOLAR.find(t => t.id === tabloId);
+    document.getElementById('tabloGorsel').src = tablo.gorsel;
+    document.getElementById('tabloGorsel').alt = 'günün tablosu';
+    window.MUZ.tablo = tablo;
+    window.MUZ.ressam = RESSAMLAR.find(r => r.id === tablo.ressam_id);
+  }
+
+  veriYukle();
+})();
 </script>
 </body>
 </html>
