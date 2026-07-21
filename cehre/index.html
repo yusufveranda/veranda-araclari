@@ -100,7 +100,25 @@ let aktifSekme = "burun";
 const PUAN = [100, 80, 60, 40, 25, 15];
 const TUM_ISIMLER = Object.entries(KISILER).map(([qid, k]) => ({qid, isim: k.isim}));
 
-let state = {burun: bosDurum(), gozler: bosDurum(), agiz: bosDurum()};
+const LS = "cehre_v1";
+function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){ return {}; } }
+function persist(){
+  const save = loadSave();
+  for (const s of ["burun", "gozler", "agiz"]) {
+    save[s] = save[s] || {};
+    save[s][gunIndex(s)] = state[s];
+  }
+  try{ localStorage.setItem(LS, JSON.stringify(save)); }catch(e){}
+}
+function state_yukle(){
+  const save = loadSave();
+  const out = {};
+  for (const s of ["burun", "gozler", "agiz"]) {
+    out[s] = (save[s] && save[s][gunIndex(s)]) || bosDurum();
+  }
+  return out;
+}
+let state = state_yukle();
 function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
 
 function acikOrganSayisi(wrong){
@@ -180,6 +198,7 @@ function submit(){
   secilen = null;
   $("guessInput").value = "";
   $("guessBtn").disabled = true;
+  persist();
   renderPortre();
   if (s.solved){
     $("durum").textContent = `Doğru! ${kisi.isim}. ${s.score} puan.`;
