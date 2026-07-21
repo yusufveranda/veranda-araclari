@@ -97,22 +97,111 @@ function gununKisisi(sekmeAdi){
 
 let aktifSekme = "burun";
 
+const PUAN = [100, 80, 60, 40, 25, 15];
+const TUM_ISIMLER = Object.entries(KISILER).map(([qid, k]) => ({qid, isim: k.isim}));
+
+let state = {burun: bosDurum(), gozler: bosDurum(), agiz: bosDurum()};
+function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
+
+function acikOrganSayisi(wrong){
+  if (wrong >= 5) return 3;
+  if (wrong >= 3) return 2;
+  return 1;
+}
+
 function renderPortre(){
   const kisi = gununKisisi(aktifSekme);
   const sira = SIRA[aktifSekme];
-  const acikSayisi = 1;   // Task 5'te wrongCount'a göre güncellenecek
+  const s = state[aktifSekme];
+  const acikSayisi = s.over ? 3 : acikOrganSayisi(s.wrong);
   $("portreAlan").innerHTML = sira.map((organ, i) =>
     i < acikSayisi
       ? `<div class="kesit"><img src="${kisi.g[organ]}" alt="yüz kesiti"></div>`
       : `<div class="kesit kilitli">?</div>`
   ).join("");
+  $("guessInput").disabled = s.over;
+  $("guessBtn").disabled = true;
+  $("puanAlan").textContent = s.solved ? `Bu sekmede puanın: ${s.score}` : "";
+  $("durum").textContent = "";
+  $("durum").className = "durum";
+  if (s.over && !s.solved) {
+    $("durum").textContent = `Hakların bitti. Cevap: ${kisi.isim}`;
+    $("durum").className = "durum kotu";
+  }
 }
+
+const fold = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+let acResults = [], acIdx = -1;
+
+function showAc(){
+  const q = fold($("guessInput").value.trim());
+  $("guessBtn").disabled = true;
+  if (q.length < 2){ hideAc(); return; }
+  const starts = [], contains = [];
+  for (const p of TUM_ISIMLER){
+    const t = fold(p.isim);
+    if (t.startsWith(q)) starts.push(p);
+    else if (t.includes(q)) contains.push(p);
+    if (starts.length >= 8) break;
+  }
+  acResults = [...starts, ...contains].slice(0, 8);
+  acIdx = -1;
+  if (!acResults.length){ hideAc(); return; }
+  $("acList").innerHTML = acResults.map((r,i) => `<div class="ac-item" data-i="${i}">${esc(r.isim)}</div>`).join("");
+  $("acList").style.display = "block";
+  $("acList").querySelectorAll(".ac-item").forEach(el =>
+    el.addEventListener("click", () => choose(acResults[+el.dataset.i])));
+}
+function hideAc(){ $("acList").style.display = "none"; acResults = []; acIdx = -1; }
+let secilen = null;
+function choose(p){
+  secilen = p;
+  $("guessInput").value = p.isim;
+  $("guessBtn").disabled = false;
+  hideAc();
+}
+
+function submit(){
+  const s = state[aktifSekme];
+  if (s.over || !secilen) return;
+  const kisi = gununKisisi(aktifSekme);
+  const secIsim = secilen.isim;
+  let yanlisMesaj = null;
+  if (secilen.qid === kisi.qid){
+    s.solved = true; s.over = true; s.score = PUAN[s.wrong];
+  } else {
+    s.wrong++;
+    if (s.wrong >= PUAN.length){
+      s.over = true;
+    } else {
+      yanlisMesaj = `${secIsim} değil.`;
+    }
+  }
+  secilen = null;
+  $("guessInput").value = "";
+  $("guessBtn").disabled = true;
+  renderPortre();
+  if (s.solved){
+    $("durum").textContent = `Doğru! ${kisi.isim}. ${s.score} puan.`;
+    $("durum").className = "durum iyi";
+  } else if (yanlisMesaj){
+    $("durum").textContent = yanlisMesaj;
+    $("durum").className = "durum kotu";
+  }
+}
+
+$("guessInput").addEventListener("input", showAc);
+$("guessBtn").addEventListener("click", submit);
+$("guessInput").addEventListener("keydown", e => {
+  if (e.key === "Enter" && !$("guessBtn").disabled) submit();
+});
 
 document.querySelectorAll(".sekme-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".sekme-btn").forEach(b => b.classList.remove("aktif"));
     btn.classList.add("aktif");
     aktifSekme = btn.dataset.sekme;
+    hideAc();
     renderPortre();
   });
 });
