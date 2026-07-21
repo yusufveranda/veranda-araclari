@@ -178,6 +178,7 @@ footer{
   <div class="ust">
     <a class="eve-don" href="../">veranda</a>
     <div class="ust-sag">
+      <button class="ikonbtn" id="girisDug" type="button">Google ile giriş</button>
       <button class="ikonbtn" id="temaBtn" type="button" aria-label="gündüz / gece">gece</button>
     </div>
   </div>
@@ -201,7 +202,7 @@ footer{
       <p class="plaka">günün tablosu</p>
     </div>
 
-    <select id="adminSecici" style="display:none"></select>
+    <select id="adminSecici" style="display:none" aria-label="bulmaca seç (admin)"></select>
 
     <div id="ressamAsama">
       <div class="giris-satiri">
@@ -299,8 +300,28 @@ footer{
     document.getElementById('pesEtBtn').addEventListener('click', pesEt);
 
     ipucularinCiz();
+    adminSeciciDoldur();
 
     if(geriYuklendi) durumuUygula();
+  }
+
+  function adminSeciciDoldur(){
+    const sec = document.getElementById('adminSecici');
+    const sira = MUZAYEDE_GUNLER.sira;
+    sec.innerHTML = '<option value="">— sonsuz mod: bulmaca seç —</option>' +
+      sira.map((id, i) => {
+        const t = TABLOLAR.find(x => x.id === id);
+        const r = RESSAMLAR.find(x => x.id === t.ressam_id);
+        return '<option value="' + i + '">' + (i + 1) + '. ' + r.isim + ' — ' + t.tablo_adi + '</option>';
+      }).join('');
+    sec.value = (_METAB !== null) ? String(_METAB) : '';
+    sec.addEventListener('change', () => {
+      if(sec.value === '') return;
+      const q2 = new URLSearchParams(location.search);
+      q2.set('meta', '1');
+      q2.set('bulmaca', sec.value);
+      location.search = q2.toString();
+    });
   }
 
   veriYukle();
@@ -470,6 +491,15 @@ function durumuUygula(){
 document.getElementById('fiyatGonderBtn').addEventListener('click', fiyatGonder);
 document.getElementById('fiyatGiris').addEventListener('keydown', e => {
   if(e.key === 'Enter') fiyatGonder();
+});
+
+const girisDug = document.getElementById('girisDug');
+girisDug.onclick = () => { if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e => console.error(e)); };
+if(window.VF) VF.kullaniciDinle(u => {
+  girisDug.textContent = u ? (u.ad + ' · çıkış') : 'Google ile giriş';
+  if(VF.adminMi){
+    document.getElementById('adminSecici').style.display = '';
+  }
 });
 </script>
 </body>
