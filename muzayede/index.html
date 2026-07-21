@@ -168,8 +168,8 @@ button{ font:inherit; cursor:pointer; }
   min-height:1.3em; margin:12px 0 0; font-size:12.5px; color:var(--soluk); font-style:italic;
 }
 
-#ressamMesaj, #fiyatMesaj{ min-height:1.4em; margin-top:10px; font-size:14.5px; }
-#ressamMesaj.dogru, #fiyatMesaj.dogru{ color:var(--dogru); font-weight:700; }
+#ressamMesaj{ min-height:1.4em; margin-top:10px; font-size:14.5px; }
+#ressamMesaj.dogru{ color:var(--dogru); font-weight:700; }
 #ressamMesaj.yanlis{ animation:sars .35s; }
 @keyframes sars{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
 @media(prefers-reduced-motion:reduce){ #ressamMesaj.yanlis{ animation:none; } }
@@ -192,39 +192,40 @@ button{ font:inherit; cursor:pointer; }
   color:var(--murekkep); background:var(--kagit); border:1px solid var(--cizgi); border-radius:4px; padding:3px 0;
 }
 
-#sonucKutu{
+#sonucKutu, #fiyatMesaj.acik{
   display:none; margin-top:20px; background:var(--kart); border:1px solid var(--cizgi);
   border-left:4px solid var(--altin); border-radius:0 12px 12px 0;
   padding:18px 20px; animation:bel .3s ease;
 }
-@media(prefers-reduced-motion:reduce){ #sonucKutu{ animation:none; } }
+#fiyatMesaj.acik{ display:block; }
+@media(prefers-reduced-motion:reduce){ #sonucKutu, #fiyatMesaj.acik{ animation:none; } }
 @keyframes bel{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 @keyframes patla{ 0%{transform:scale(.7); opacity:0} 60%{transform:scale(1.08); opacity:1} 100%{transform:scale(1)} }
-@media(prefers-reduced-motion:reduce){ #sonucKutu .seviye{ animation:none !important; } }
-#sonucKutu .tablo-adi-etiket{
+@media(prefers-reduced-motion:reduce){ .seviye{ animation:none !important; } }
+.tablo-adi-etiket{
   font-family:'Libre Baskerville',serif; font-style:italic; font-size:13.5px; color:var(--soluk); margin-bottom:6px;
 }
-#sonucKutu .seviye{
+.seviye{
   font-family:'Playfair Display',serif; font-weight:800; font-size:24px; letter-spacing:.02em;
   animation:patla .5s ease;
 }
-#sonucKutu .seviye.yuksek{ color:var(--dogru); }
-#sonucKutu .seviye.orta{ color:var(--turuncu); }
-#sonucKutu .seviye.dusuk{ color:var(--yanlis); }
-#sonucKutu .fiyat-etiket{
+.seviye.yuksek{ color:var(--dogru); }
+.seviye.orta{ color:var(--turuncu); }
+.seviye.dusuk{ color:var(--yanlis); }
+.fiyat-etiket{
   font-family:'Playfair Display',serif; font-weight:700; font-size:22px; color:var(--murekkep); margin-top:4px;
 }
-#sonucKutu .kaynak-satiri{ font-size:13px; color:var(--soluk); margin-top:4px; }
-#sonucKutu .kaynak-satiri a{ color:var(--altin); }
-#sonucKutu .puan-satiri{
+.kaynak-satiri{ font-size:13px; color:var(--soluk); margin-top:4px; }
+.kaynak-satiri a{ color:var(--altin); }
+.puan-satiri{
   margin-top:14px; padding-top:12px; border-top:1px dashed var(--cizgi);
   font-family:'Libre Baskerville',serif; font-size:14px; color:var(--murekkep); display:flex; gap:16px; flex-wrap:wrap;
 }
-#sonucKutu .puan-satiri b{ font-family:'Playfair Display',serif; font-size:17px; color:var(--altin); }
-#sonucKutu .toplam-satiri{
+.puan-satiri b{ font-family:'Playfair Display',serif; font-size:17px; color:var(--altin); }
+.toplam-satiri{
   font-family:'Playfair Display',serif; font-weight:800; font-size:20px; color:var(--murekkep); margin-top:6px;
 }
-#sonucKutu .toplam-satiri b{ color:var(--altin); font-size:26px; }
+.toplam-satiri b{ color:var(--altin); font-size:26px; }
 
 footer{
   margin-top:60px; color:var(--soluk); font-size:12.5px; border-top:1px solid var(--cizgi);
@@ -273,7 +274,7 @@ footer{
       <div class="fiyat-gosterim" id="fiyatGosterim">$0</div>
       <div class="fiyat-cark" id="fiyatCarki"></div>
       <button class="btn-ana" id="fiyatGonderBtn" type="button">tahmin et</button>
-      <p id="fiyatMesaj"></p>
+      <div id="fiyatMesaj"></div>
     </div>
 
     <div id="ressamAsama" style="display:none">
@@ -483,17 +484,33 @@ function fiyatGonder(){
 
   document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
   document.getElementById('fiyatGonderBtn').disabled = true;
-  const msg = document.getElementById('fiyatMesaj');
-  msg.className = st.fiyatPuan >= 60 ? 'dogru' : '';
+  fiyatMesajCiz(st.fiyatPuan, gercekFiyat, window.MUZ.tablo.gercek);
 
   if(window.MUZ.tablo.gercek){
-    msg.textContent = 'gerçek fiyat: $' + gercekFiyat.toLocaleString('en-US') + ' (fiyat puanı: ' + st.fiyatPuan + '). şimdi ressamını tahmin et.';
     ressamAsamasiniAc();
     kaydet();
   } else {
-    msg.textContent = 'gerçek fiyat: $' + gercekFiyat.toLocaleString('en-US') + ' (fiyat puanı: ' + st.fiyatPuan + ').';
     turuSonlandirCakma();
   }
+}
+
+function fiyatTepkisi(puan){
+  if(puan >= 90) return { sinif: 'yuksek', metin: 'TAM İSABET' };
+  if(puan >= 70) return { sinif: 'yuksek', metin: 'ÇOK YAKIN' };
+  if(puan >= 40) return { sinif: 'orta', metin: 'FENA DEĞİL' };
+  return { sinif: 'dusuk', metin: 'TAM ISKALADIN' };
+}
+
+function fiyatMesajCiz(fiyatPuan, gercekFiyat, gercekMi){
+  const msg = document.getElementById('fiyatMesaj');
+  const tepki = fiyatTepkisi(fiyatPuan);
+  msg.className = 'acik';
+  msg.innerHTML =
+    '<div class="seviye ' + tepki.sinif + '">' + tepki.metin + '</div>' +
+    '<div class="fiyat-etiket">gerçek fiyat: $' + gercekFiyat.toLocaleString('en-US') + '</div>' +
+    '<div class="toplam-satiri">fiyat puanı <b id="sayacFiyat">0</b> / 100</div>' +
+    (gercekMi ? '<div class="kaynak-satiri">şimdi ressamını tahmin et.</div>' : '');
+  sayacAnimasyonu(document.getElementById('sayacFiyat'), fiyatPuan);
 }
 
 function ressamAsamasiniAc(){
@@ -741,14 +758,8 @@ function durumuUygula(){
 
   document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
   document.getElementById('fiyatGonderBtn').disabled = true;
-  const msg = document.getElementById('fiyatMesaj');
-  msg.className = st.fiyatPuan >= 60 ? 'dogru' : '';
   const gercekFiyat = window.MUZ.tablo.fiyat_usd;
-  if(window.MUZ.tablo.gercek){
-    msg.textContent = 'gerçek fiyat: $' + gercekFiyat.toLocaleString('en-US') + ' (fiyat puanı: ' + st.fiyatPuan + '). şimdi ressamını tahmin et.';
-  } else {
-    msg.textContent = 'gerçek fiyat: $' + gercekFiyat.toLocaleString('en-US') + ' (fiyat puanı: ' + st.fiyatPuan + ').';
-  }
+  fiyatMesajCiz(st.fiyatPuan, gercekFiyat, window.MUZ.tablo.gercek);
 
   if(!window.MUZ.tablo.gercek){
     turuSonlandirCakma();
