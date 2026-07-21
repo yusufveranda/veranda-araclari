@@ -7,8 +7,11 @@
 # risk_seviyesi notu: public_domain = ressam olumunun uzerinden 2026'da
 # 70+ yil gecmis (ABD/AB kurali). dikkat = henuz kamu malı olmamis veya
 # miras hakki sahipleri aktif olarak telif/imaj hakkini koruyor; bu
-# durumda gorsel_url dusuk cozunurluklu bir Wikipedia kucuk resmine
-# (thumbnail) isaret eder, yuksek cozunurluklu Commons dosyasina degil.
+# durumda gorsel_url Wikipedia'nin kendi adil kullanim (fair use)
+# yuklemesine isaret eder (Commons'taki serbest dosyalara degil).
+# Wikipedia bu dosyalari zaten dusuk cozunurlukte barindirir (kendi
+# adil kullanim politikasi geregi), o yuzden mumkun olan en genis
+# thumb genisligi istenir; sonuc yine de kaynaktan daha buyuk olmaz.
 
 DATA = [
     ("leonardo-da-vinci", "Leonardo da Vinci", "1452-1519", "İtalya",
@@ -21,8 +24,9 @@ DATA = [
     ("pablo-picasso", "Pablo Picasso", "1881-1973", "İspanya",
      "Kübizm", "dikkat",
      "Les Femmes d'Alger (Version O)", "1955",
-     # gecici görsel, Faz 3'te lisans dogrulamasiyla degisecek
-     "https://upload.wikimedia.org/wikipedia/en/thumb/b/b5/Les_femmes_d%E2%80%99Alger%2C_Picasso%2C_version_O.jpg/330px-Les_femmes_d%E2%80%99Alger%2C_Picasso%2C_version_O.jpg",
+     # Christie's basin gorseli (HENI arsivi uzerinden), Wikipedia'nin kendi
+     # adil kullanim kopyasindan (400x249) cok daha buyuk ve net
+     "https://resources.heni.com/e28e372d-efb3-4ce6-9f91-f4400b966ab1.jpg?width=1024",
      179400000, 2015, "Christie's",
      "https://en.wikipedia.org/wiki/Les_Femmes_d%27Alger"),
 
@@ -50,27 +54,31 @@ DATA = [
     ("jean-michel-basquiat", "Jean-Michel Basquiat", "1960-1988", "ABD",
      "Neo-Ekspresyonizm", "dikkat",
      "Untitled", "1982",
-     # gecici görsel, Faz 3'te lisans dogrulamasiyla degisecek
-     "https://upload.wikimedia.org/wikipedia/en/thumb/f/f6/Untitled1982Basquiat.jpg/330px-Untitled1982Basquiat.jpg",
+     # Hyperallergic'in basin gorseli, Wikipedia'nin kendi adil kullanim
+     # kopyasindan cok daha buyuk ve net
+     "https://storage.ghost.io/c/51/f8/51f871d8-b6be-4a73-b958-0ca4fff0110a/content/images/hyperallergic-newspack-s3-amazonaws-com/uploads/2017/05/9761-lot-24.jpg",
      110500000, 2017, "Sotheby's",
      "https://en.wikipedia.org/wiki/Untitled_(1982_Basquiat_skull_painting)"),
 
     ("andy-warhol", "Andy Warhol", "1928-1987", "ABD",
      "Pop Art", "dikkat",
      "Shot Sage Blue Marilyn", "1964",
-     # gecici görsel, Faz 3'te lisans dogrulamasiyla degisecek
-     "https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Andy_Warhol_Shot_Marilyns_1964.jpg/330px-Andy_Warhol_Shot_Marilyns_1964.jpg",
+     # Hyperallergic'in basin gorseli (Christie's kaynakli), Wikipedia'nin
+     # kendi adil kullanim kopyasindan cok daha buyuk ve net
+     "https://storage.ghost.io/c/51/f8/51f871d8-b6be-4a73-b958-0ca4fff0110a/content/images/hyperallergic-newspack-s3-amazonaws-com/uploads/2022/05/warhol-marilyn-1.jpg",
      195000000, 2022, "Christie's",
      "https://en.wikipedia.org/wiki/Shot_Marilyns"),
 
     ("frida-kahlo", "Frida Kahlo", "1907-1954", "Meksika",
      "Sürrealizm", "dikkat",
-     "Diego y yo", "1949",
-     # gecici görsel, Faz 3'te lisans dogrulamasiyla degisecek
+     "El sueño (La cama)", "1940",
+     # 2025'te yeni rekor sattigi icin Diego y yo yerine bu tablo
+     # kullaniliyor (34.9M -> 54.7M, kadin ressamlar arasinda rekor).
+     # Hyperallergic'in basin gorseli (Sotheby's kaynakli).
      # not: Meksika telif suresi olum+100 yil (ABD/AB'deki olum+70
      # degil) ve Frida Kahlo Corporation imaj hakkini aktif koruyor,
      # bu yuzden olum+70 kuralina ragmen public_domain degil dikkat.
-     "https://upload.wikimedia.org/wikipedia/en/thumb/f/fc/Diego_And_I.jpg/250px-Diego_And_I.jpg",
-     34900000, 2021, "Sotheby's",
-     "https://en.wikipedia.org/wiki/Diego_y_yo"),
+     "https://storage.ghost.io/c/51/f8/51f871d8-b6be-4a73-b958-0ca4fff0110a/content/images/size/w1200/hyperallergic-newspack-s3-amazonaws-com/uploads/2025/11/frida-kahlo-el-sueno-la-cama-est--40000000-60000000-1.jpg",
+     54700000, 2025, "Sotheby's",
+     "https://hyperallergic.com/frida-kahlo-becomes-most-expensive-woman-artist-at-auction/"),
 ]

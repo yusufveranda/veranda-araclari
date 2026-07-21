@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Muzayede — ressamı ve fiyatı bil</title>
+<title>Muzayede: ressamı ve fiyatı bil</title>
 <meta name="description" content="Bir tablo gör, ressamını ve gerçek müzayede satış fiyatını tahmin et.">
 <meta property="og:image" content="https://verandatools.com/gorsel/doku.jpg">
 <meta name="theme-color" content="#1C1510">
@@ -84,11 +84,16 @@ body::before{
   position:relative; transform:rotate(-.4deg);
 }
 .cerceve{
-  position:relative; aspect-ratio:4/3; overflow:hidden; border-radius:2px;
+  position:relative; overflow:hidden; border-radius:2px;
   background:var(--kagit); border:7px solid var(--altin);
   box-shadow:inset 0 0 0 2px var(--kart), inset 0 0 14px var(--golge-sert);
+  display:flex; align-items:center; justify-content:center;
+  min-height:220px;
 }
-.cerceve img{ width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .5s; }
+.cerceve img{
+  display:block; max-width:100%; max-height:min(75vh,620px); width:auto; height:auto;
+  opacity:0; transition:opacity .5s;
+}
 .cerceve img[src]:not([src=""]){ opacity:1; }
 .plaka{
   font-family:'Libre Baskerville',serif; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
@@ -135,10 +140,24 @@ button{ font:inherit; cursor:pointer; }
   background:var(--kart); border:1px solid var(--cizgi); border-radius:20px;
   padding:6px 13px; transition:border-color .15s,transform .1s;
 }
-.ipucu-btn:hover{ border-color:var(--turuncu); transform:translateY(-1px); }
+.ipucu-btn:hover:not(:disabled){ border-color:var(--turuncu); transform:translateY(-1px); }
+.ipucu-btn:disabled{ color:var(--cok-soluk); opacity:.55; cursor:default; }
 .ipucu-btn[data-acik="1"]{
   opacity:1; pointer-events:none; color:var(--murekkep); background:var(--kagit);
   border-color:var(--cizgi); border-style:dashed;
+}
+#ipucuAlanlari[data-kredi="1"] .ipucu-btn:not(:disabled):not([data-acik="1"]){
+  border-color:var(--turuncu); animation:nabiz 1.3s ease-in-out infinite;
+}
+@keyframes nabiz{
+  0%,100%{ box-shadow:0 0 0 0 rgba(201,116,24,0); }
+  50%{ box-shadow:0 0 0 3px rgba(201,116,24,.28); }
+}
+@media(prefers-reduced-motion:reduce){
+  #ipucuAlanlari[data-kredi="1"] .ipucu-btn:not(:disabled):not([data-acik="1"]){ animation:none; }
+}
+#ipucuDurum{
+  min-height:1.3em; margin:12px 0 0; font-size:12.5px; color:var(--soluk); font-style:italic;
 }
 
 #ressamMesaj, #fiyatMesaj{ min-height:1.4em; margin-top:10px; font-size:14.5px; }
@@ -154,6 +173,9 @@ button{ font:inherit; cursor:pointer; }
 }
 @media(prefers-reduced-motion:reduce){ #sonucKutu{ animation:none; } }
 @keyframes bel{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+#sonucKutu .tablo-adi-etiket{
+  font-family:'Libre Baskerville',serif; font-style:italic; font-size:13.5px; color:var(--soluk); margin-bottom:2px;
+}
 #sonucKutu .fiyat-etiket{
   font-family:'Playfair Display',serif; font-weight:700; font-size:22px; color:var(--murekkep);
 }
@@ -206,17 +228,19 @@ footer{
 
     <div id="ressamAsama">
       <div class="giris-satiri">
-        <input id="ressamGiris" type="text" placeholder="ressam adı" autocomplete="off">
+        <input id="ressamGiris" type="text" placeholder="ressam adı" list="ressamListesi">
+        <datalist id="ressamListesi"></datalist>
         <button class="btn-ana" id="ressamGonderBtn">tahmin et</button>
         <button class="btn-ikincil" id="pesEtBtn">pes et</button>
       </div>
+      <p id="ipucuDurum"></p>
       <div id="ipucuAlanlari"></div>
       <p id="ressamMesaj"></p>
     </div>
 
     <div id="fiyatAsama" style="display:none">
       <div class="giris-satiri">
-        <input id="fiyatGiris" type="number" placeholder="tahmini satış fiyatı (USD)">
+        <input id="fiyatGiris" type="text" inputmode="decimal" placeholder="örn. 45 milyon ya da 45000000">
         <button class="btn-ana" id="fiyatGonderBtn">tahmin et</button>
       </div>
       <p id="fiyatMesaj"></p>
@@ -290,8 +314,12 @@ footer{
 
     const geriYuklendi = yukle();
     if(!geriYuklendi){
-      window.MUZ.state = { ressamBulundu: false, pesEdildi: false, hintCount: 0, hintsAcik: {} };
+      window.MUZ.state = { ressamBulundu: false, pesEdildi: false, hintCount: 0, hintsAcik: {}, ipucuKredi: 0, denenenler: [] };
     }
+
+    document.getElementById('ressamListesi').innerHTML =
+      RESSAMLAR.slice().sort((a, b) => a.isim.localeCompare(b.isim, 'tr'))
+        .map(r => '<option value="' + r.isim + '"></option>').join('');
 
     document.getElementById('ressamGonderBtn').addEventListener('click', ressamGonder);
     document.getElementById('ressamGiris').addEventListener('keydown', e => {
@@ -300,6 +328,7 @@ footer{
     document.getElementById('pesEtBtn').addEventListener('click', pesEt);
 
     ipucularinCiz();
+    ipucuButonlariniGuncelle();
     adminSeciciDoldur();
 
     if(geriYuklendi) durumuUygula();
@@ -308,11 +337,11 @@ footer{
   function adminSeciciDoldur(){
     const sec = document.getElementById('adminSecici');
     const sira = MUZAYEDE_GUNLER.sira;
-    sec.innerHTML = '<option value="">— sonsuz mod: bulmaca seç —</option>' +
+    sec.innerHTML = '<option value="">sonsuz mod: bulmaca seç</option>' +
       sira.map((id, i) => {
         const t = TABLOLAR.find(x => x.id === id);
         const r = RESSAMLAR.find(x => x.id === t.ressam_id);
-        return '<option value="' + i + '">' + (i + 1) + '. ' + r.isim + ' — ' + t.tablo_adi + '</option>';
+        return '<option value="' + i + '">' + (i + 1) + '. ' + r.isim + ' - ' + t.tablo_adi + '</option>';
       }).join('');
     sec.value = (_METAB !== null) ? String(_METAB) : '';
     sec.addEventListener('change', () => {
@@ -334,31 +363,70 @@ function isimNormallestir(s){
 }
 
 function ressamGonder(){
-  if(window.MUZ.state.ressamBulundu) return;
-  const giris = document.getElementById('ressamGiris').value;
+  const st = window.MUZ.state;
+  if(st.ressamBulundu || st.pesEdildi) return;
+  pesOnayiSifirla();
+  const girisEl = document.getElementById('ressamGiris');
+  const giris = girisEl.value;
   const dogru = window.MUZ.ressam.isim;
   const msg = document.getElementById('ressamMesaj');
+  if(!giris.trim()){
+    msg.textContent = 'önce bir isim yaz';
+    msg.className = '';
+    return;
+  }
   if(isimNormallestir(giris) === isimNormallestir(dogru)){
-    window.MUZ.state.ressamBulundu = true;
+    st.ressamBulundu = true;
     msg.textContent = 'doğru: ' + dogru;
     msg.className = 'dogru';
     document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
+    ipucuButonlariniGuncelle();
     fiyatAsamasiniAc();
     kaydet();
   } else {
-    msg.textContent = 'yanlış, bir ipucu seç';
+    const n = isimNormallestir(giris);
+    if(!st.denenenler) st.denenenler = [];
+    if(st.denenenler.indexOf(n) !== -1){
+      msg.textContent = 'bunu zaten denedin';
+    } else {
+      st.denenenler.push(n);
+      if(st.hintCount + st.ipucuKredi < IPUCU_KATEGORILERI.length){
+        st.ipucuKredi++;
+        msg.textContent = 'yanlış, bir ipucu hakkı kazandın';
+      } else {
+        msg.textContent = 'yanlış, tekrar dene';
+      }
+      ipucuButonlariniGuncelle();
+      kaydet();
+    }
     msg.className = 'yanlis';
     msg.classList.remove('yanlis'); void msg.offsetWidth; msg.classList.add('yanlis');
+    girisEl.select();
   }
 }
 
+let pesOnay = false;
+function pesOnayiSifirla(){
+  pesOnay = false;
+  const b = document.getElementById('pesEtBtn');
+  if(b) b.textContent = 'pes et';
+}
+
 function pesEt(){
-  if(window.MUZ.state.ressamBulundu) return;
-  window.MUZ.state.pesEdildi = true;
+  const st = window.MUZ.state;
+  if(st.ressamBulundu || st.pesEdildi) return;
+  if(!pesOnay){
+    pesOnay = true;
+    document.getElementById('pesEtBtn').textContent = 'emin misin?';
+    return;
+  }
+  pesOnayiSifirla();
+  st.pesEdildi = true;
   const msg = document.getElementById('ressamMesaj');
   msg.textContent = 'doğru: ' + window.MUZ.ressam.isim;
   msg.className = '';
   document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
+  ipucuButonlariniGuncelle();
   fiyatAsamasiniAc();
   kaydet();
 }
@@ -384,12 +452,43 @@ function ipucularinCiz(){
 }
 
 function ipucuAc(kategoriId){
-  if(window.MUZ.state.ressamBulundu) return;
-  if(window.MUZ.state.hintsAcik[kategoriId]) return;
-  window.MUZ.state.hintsAcik[kategoriId] = true;
-  window.MUZ.state.hintCount++;
+  const st = window.MUZ.state;
+  if(st.ressamBulundu || st.pesEdildi) return;
+  if(st.hintsAcik[kategoriId]) return;
+  if(st.ipucuKredi <= 0) return;
+  st.ipucuKredi--;
+  st.hintsAcik[kategoriId] = true;
+  st.hintCount++;
   ipucuGoster(kategoriId);
+  ipucuButonlariniGuncelle();
   kaydet();
+}
+
+function ipucuButonlariniGuncelle(){
+  const st = window.MUZ.state;
+  const bitti = st.ressamBulundu || st.pesEdildi;
+  const alan = document.getElementById('ipucuAlanlari');
+  alan.dataset.kredi = (!bitti && st.ipucuKredi > 0) ? '1' : '0';
+  document.querySelectorAll('.ipucu-btn').forEach(b => {
+    if(b.dataset.acik === '1') return;
+    const kilitli = bitti || st.ipucuKredi <= 0;
+    b.disabled = kilitli;
+    b.title = (kilitli && !bitti) ? 'kilitli, bir yanlış tahmin gerek' : '';
+  });
+  const durum = document.getElementById('ipucuDurum');
+  if(bitti){
+    durum.textContent = '';
+  } else if(st.ipucuKredi > 0){
+    durum.textContent = st.ipucuKredi === 1
+      ? 'bir ipucu hakkın var, birini seç'
+      : st.ipucuKredi + ' ipucu hakkın var, seç';
+  } else if(st.hintCount === 0){
+    durum.textContent = 'ipuçları kilitli, her yanlış tahmin bir ipucu hakkı verir';
+  } else if(st.hintCount >= IPUCU_KATEGORILERI.length){
+    durum.textContent = 'tüm ipuçları açık';
+  } else {
+    durum.textContent = 'yeni ipucu için bir tahmin daha gerek';
+  }
 }
 
 function ipucuGoster(kategoriId){
@@ -404,6 +503,21 @@ function ressamPuanHesapla(){
   return Math.max(0, 100 - 25 * window.MUZ.state.hintCount);
 }
 
+function fiyatParseEt(giris){
+  if(!giris) return NaN;
+  let s = giris.toLocaleLowerCase('tr').trim()
+    .replace(/\$/g, '').replace(/usd|dolar/g, '')
+    .replace(/\./g, '').replace(/,/g, '.').trim();
+  let carpan = 1;
+  if(/milyar/.test(s)){ carpan = 1e9; s = s.replace(/milyar/g, ''); }
+  else if(/milyon/.test(s)){ carpan = 1e6; s = s.replace(/milyon/g, ''); }
+  else if(/\bbin\b/.test(s)){ carpan = 1e3; s = s.replace(/bin/g, ''); }
+  s = s.trim();
+  const sayi = parseFloat(s);
+  if(!isFinite(sayi)) return NaN;
+  return Math.round(sayi * carpan);
+}
+
 function fiyatPuanHesapla(tahmin, gercek){
   if(tahmin <= 0 || gercek <= 0) return 0;
   const fark = Math.abs(Math.log10(tahmin) - Math.log10(gercek));
@@ -416,9 +530,9 @@ function fiyatAsamasiniAc(){
 }
 
 function fiyatGonder(){
-  const tahmin = parseFloat(document.getElementById('fiyatGiris').value);
+  const tahmin = fiyatParseEt(document.getElementById('fiyatGiris').value);
   if(!(tahmin > 0)){
-    document.getElementById('fiyatMesaj').textContent = 'geçerli bir sayı gir';
+    document.getElementById('fiyatMesaj').textContent = 'geçerli bir tutar gir, örn. 45 milyon ya da 45000000';
     return;
   }
   const gercek = window.MUZ.tablo.fiyat_usd;
@@ -439,6 +553,7 @@ function sonucGoster(ressamPuan, fiyatPuan, toplam){
   const sonuc = document.getElementById('sonucKutu');
   sonuc.style.display = 'block';
   sonuc.innerHTML =
+    '<div class="tablo-adi-etiket">' + tablo.tablo_adi + ' (' + tablo.tablo_yili + ')</div>' +
     '<div class="fiyat-etiket">$' + tablo.fiyat_usd.toLocaleString('en-US') + '</div>' +
     '<div class="kaynak-satiri">' + tablo.muzayede_evi + ', ' + tablo.satis_yili +
     ' · <a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
@@ -464,6 +579,8 @@ function yukle(){
     const v = JSON.parse(localStorage.getItem('muzayede:gun'));
     if(!v || v.gun !== window.MUZ.GUN || v.tabloId !== window.MUZ.tablo.id) return false;
     window.MUZ.state = v.state;
+    if(window.MUZ.state.ipucuKredi === undefined) window.MUZ.state.ipucuKredi = 0;
+    if(!window.MUZ.state.denenenler) window.MUZ.state.denenenler = [];
     return true;
   }catch(e){ return false; }
 }
@@ -473,6 +590,7 @@ function durumuUygula(){
   Object.keys(st.hintsAcik).forEach(kategoriId => {
     if(st.hintsAcik[kategoriId]) ipucuGoster(kategoriId);
   });
+  ipucuButonlariniGuncelle();
   if(st.ressamBulundu || st.pesEdildi){
     const msg = document.getElementById('ressamMesaj');
     msg.textContent = 'doğru: ' + window.MUZ.ressam.isim;
