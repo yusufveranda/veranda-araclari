@@ -193,8 +193,9 @@ function kaynakYaz(html){ kaynakEl.innerHTML = html || ""; }
 // hedef baştan belli (adillik/resume için); makara sadece görsel açığa çıkarma.
 // Otomatik dönmez: makine "hazır" görünür, oyuncu kolu çekince (ya da tuşa
 // basınca) döner ve hedefte durur; bittiğinde devam() çağrılır. Kabin görseli
-// üretilmiş (gorsel/zincir-makine.jpg); pencere/kol konumları o görselin
-// ölçülmüş oranlarına göre CSS'te (.pencere/.kolBirim) yüzde ile sabit.
+// üretilmiş (gorsel/zincir-makine-yatay.jpg + ayrı gorsel/zincir-kol.jpg); pencere konumu o görselin
+// ölçülmüş oranlarına göre CSS'te (.pencere) yüzde ile sabit; kol artık ayrı
+// bir görsel (gorsel/zincir-kol.jpg), .kolWrap tıklanabilir/klavyeyle erişilebilir sarmalayıcı.
 let makaraZamanlayici = null;
 let donuyor = false; // çekiliş sürerken zincir ucunda hedefi gösterme
 function kareHTML(pid){
@@ -217,18 +218,22 @@ function makara(pool, hedef, etiket, bitis){
   const k = document.createElement("div");
   k.className = "slotMakine";
   k.innerHTML =
-    `<div class="kabin">
-      <div class="pencere">
-        <div class="hedefCizgi"></div>
-        <div class="makaraSerit">${sira.map(q => `<div class="kare">${kareHTML(q)}</div>`).join("")}</div>
+    `<div class="makineSira">
+      <div class="kabin">
+        <div class="pencere">
+          <div class="hedefCizgi"></div>
+          <div class="makaraSerit">${sira.map(q => `<div class="kare">${kareHTML(q)}</div>`).join("")}</div>
+        </div>
       </div>
-      <div class="kolBirim" tabindex="0" role="button" aria-label="kolu çek, makarayı döndür"></div>
+      <div class="kolWrap" tabindex="0" role="button" aria-label="kolu çek, makarayı döndür">
+        <div class="kolGorsel"></div>
+      </div>
     </div>
     <div class="durumSlot hazir">hazır — kolu çek</div>`;
   kartEl.appendChild(k); // solo çekilişte çağıran kartları temizler; partner'da soldaki durur
   const pencereEl = k.querySelector(".pencere");
   const seritEl2 = k.querySelector(".makaraSerit");
-  const kol = k.querySelector(".kolBirim");
+  const kol = k.querySelector(".kolWrap");
   const durumEl = k.querySelector(".durumSlot");
   // pencere yüzde ile ölçülendiği için gerçek piksel yüksekliği ancak
   // yerleştikten sonra ölçülebilir; her kare o yüksekliğe eşitlenir.
