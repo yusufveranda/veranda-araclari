@@ -32,7 +32,8 @@
     {ad:'Kur',          href:B+'kur/',                  oyun:'kur',      gun:function(){ return Math.floor(Date.now()/864e5)%400; }},
     {ad:'Dört Demet',   href:B+'dort-demet/',           oyun:'dortdemet',gun:function(){ return Math.floor(Date.now()/864e5)%400; }},
     {ad:'Aşı',          href:B+'asi/',                  oyun:'asi',      gun:function(){ return Math.floor(Date.now()/864e5)%400; }},
-    {ad:'Takımyıldız',  href:B+'yildiz/',               oyun:'yildiz',   gun:function(){ const n=new Date(); return Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(2026,6,6))/86400000); }}
+    {ad:'Takımyıldız',  href:B+'yildiz/',               oyun:'yildiz',   gun:function(){ const n=new Date(); return Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(2026,6,6))/86400000); }},
+    {ad:'Muzayede',     href:B+'muzayede/',             oyun:'muzayede', gun:function(){ const n=new Date(); return Math.floor((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(2026,6,21))/86400000); }}
   ];
 
   function g2026(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000); }
