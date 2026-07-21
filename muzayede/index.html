@@ -74,7 +74,7 @@
     ]).then(([ressamlar, tablolar]) => {
       RESSAMLAR = ressamlar;
       TABLOLAR = tablolar;
-      window.MUZ = { GUN, _METAB, RESSAMLAR, TABLOLAR, bugunTabloId };
+      window.MUZ = { GUN, _METAB, GOMULU, RESSAMLAR, TABLOLAR, bugunTabloId };
       baslat();
     });
   }
@@ -87,7 +87,10 @@
     window.MUZ.tablo = tablo;
     window.MUZ.ressam = RESSAMLAR.find(r => r.id === tablo.ressam_id);
 
-    window.MUZ.state = { ressamBulundu: false, hintCount: 0, hintsAcik: {} };
+    const geriYuklendi = yukle();
+    if(!geriYuklendi){
+      window.MUZ.state = { ressamBulundu: false, hintCount: 0, hintsAcik: {} };
+    }
 
     document.getElementById('ressamGonderBtn').addEventListener('click', ressamGonder);
     document.getElementById('ressamGiris').addEventListener('keydown', e => {
@@ -95,6 +98,8 @@
     });
 
     ipucularinCiz();
+
+    if(geriYuklendi) durumuUygula();
   }
 
   veriYukle();
@@ -116,6 +121,7 @@ function ressamGonder(){
     msg.textContent = 'doğru: ' + dogru;
     document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
     fiyatAsamasiniAc();
+    kaydet();
   } else {
     msg.textContent = 'yanlış, bir ipucu seç';
   }
@@ -144,9 +150,14 @@ function ipucularinCiz(){
 function ipucuAc(kategoriId){
   if(window.MUZ.state.ressamBulundu) return;
   if(window.MUZ.state.hintsAcik[kategoriId]) return;
-  const k = IPUCU_KATEGORILERI.find(x => x.id === kategoriId);
   window.MUZ.state.hintsAcik[kategoriId] = true;
   window.MUZ.state.hintCount++;
+  ipucuGoster(kategoriId);
+  kaydet();
+}
+
+function ipucuGoster(kategoriId){
+  const k = IPUCU_KATEGORILERI.find(x => x.id === kategoriId);
   const btn = document.querySelector('.ipucu-btn[data-kategori="' + kategoriId + '"]');
   btn.dataset.acik = '1';
   btn.textContent = k.etiket + ': ' + k.metin(window.MUZ.ressam, window.MUZ.tablo);
@@ -181,15 +192,60 @@ function fiyatGonder(){
 
   document.getElementById('fiyatAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
 
-  const sonuc = document.getElementById('sonucKutu');
-  sonuc.style.display = '';
-  sonuc.innerHTML =
-    '<p>gerçek fiyat: $' + gercek.toLocaleString('en-US') + ' - ' +
-    window.MUZ.tablo.muzayede_evi + ', ' + window.MUZ.tablo.satis_yili + '</p>' +
-    '<p><a href="' + window.MUZ.tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></p>' +
-    '<p>ressam puanı: ' + ressamPuan + ' / fiyat puanı: ' + fiyatPuan + ' / toplam: ' + toplam + '</p>';
+  sonucGoster(ressamPuan, fiyatPuan, toplam);
 
   window.MUZ.state.toplamPuan = toplam;
+  kaydet();
+}
+
+function sonucGoster(ressamPuan, fiyatPuan, toplam){
+  const tablo = window.MUZ.tablo;
+  const sonuc = document.getElementById('sonucKutu');
+  sonuc.style.display = 'block';
+  sonuc.innerHTML =
+    '<p>gerçek fiyat: $' + tablo.fiyat_usd.toLocaleString('en-US') + ' - ' +
+    tablo.muzayede_evi + ', ' + tablo.satis_yili + '</p>' +
+    '<p><a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></p>' +
+    '<p>ressam puanı: ' + ressamPuan + ' / fiyat puanı: ' + fiyatPuan + ' / toplam: ' + toplam + '</p>';
+}
+
+function kaydet(){
+  if(window.MUZ.GOMULU) return;
+  if(window.MUZ._METAB !== null) return;
+  try{
+    localStorage.setItem('muzayede:gun', JSON.stringify({
+      gun: window.MUZ.GUN, tabloId: window.MUZ.tablo.id, state: window.MUZ.state
+    }));
+  }catch(e){}
+}
+
+function yukle(){
+  if(window.MUZ.GOMULU) return false;
+  if(window.MUZ._METAB !== null) return false;
+  try{
+    const v = JSON.parse(localStorage.getItem('muzayede:gun'));
+    if(!v || v.gun !== window.MUZ.GUN || v.tabloId !== window.MUZ.tablo.id) return false;
+    window.MUZ.state = v.state;
+    return true;
+  }catch(e){ return false; }
+}
+
+function durumuUygula(){
+  const st = window.MUZ.state;
+  Object.keys(st.hintsAcik).forEach(kategoriId => {
+    if(st.hintsAcik[kategoriId]) ipucuGoster(kategoriId);
+  });
+  if(st.ressamBulundu){
+    document.getElementById('ressamMesaj').textContent = 'doğru: ' + window.MUZ.ressam.isim;
+    document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
+    fiyatAsamasiniAc();
+  }
+  if(st.toplamPuan !== undefined){
+    const ressamPuan = ressamPuanHesapla();
+    const fiyatPuan = st.toplamPuan - ressamPuan;
+    document.getElementById('fiyatAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
+    sonucGoster(ressamPuan, fiyatPuan, st.toplamPuan);
+  }
 }
 
 document.getElementById('fiyatGonderBtn').addEventListener('click', fiyatGonder);
