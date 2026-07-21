@@ -115,7 +115,7 @@
   <header>
     <h1>PALET</h1>
     <div style="display:flex;gap:8px;align-items:center;">
-      <select id="daySel" title="bulmaca seç"></select>
+      <button id="randomBtn" class="mini-btn" hidden>🎲 rastgele</button>
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
@@ -159,15 +159,19 @@
   if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
   const idx = day % D.days.length;
   const DAY = D.days[idx];
-  const daySel = document.getElementById('daySel');
-  for (let i = 0; i < D.days.length; i++) {
-    const o = document.createElement('option');
-    o.value = i; o.textContent = 'BULMACA ' + (i + 1);
-    if (i === idx) o.selected = true;
-    daySel.appendChild(o);
-  }
-  daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value);
   const KEY = 'palet_v1_' + idx;
+
+  // Gizli sonsuz mod: ?sinefil ile açılır (paylaşılabilir link, admin gerekmez).
+  const randomBtn = document.getElementById('randomBtn');
+  if (params.has('sinefil')) {
+    randomBtn.hidden = false;
+    randomBtn.addEventListener('click', () => {
+      let i;
+      do { i = Math.floor(Math.random() * D.days.length); }
+      while (D.days.length > 1 && i === idx);
+      location.search = '?gun=' + i + '&sinefil';
+    });
+  }
 
   // ---- şeritler ----
   const stripsEl = document.getElementById('strips');

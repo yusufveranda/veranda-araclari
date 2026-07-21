@@ -158,7 +158,7 @@
     </div>
     <div class="controls">
       <span class="diff" id="diffBadge"></span>
-      <select id="daySel" title="bulmaca seç"></select>
+      <button id="randomBtn" class="mini-btn" hidden>🎲 rastgele</button>
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
@@ -206,15 +206,19 @@
   if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
   const idx = day % window.MONTAJ.length;
   const PZ = window.MONTAJ[idx];
-  const daySel = document.getElementById('daySel');
-  for (let i = 0; i < window.MONTAJ.length; i++) {
-    const o = document.createElement('option');
-    o.value = i; o.textContent = 'BULMACA ' + (i + 1) + ' · zorluk ' + window.MONTAJ[i].level;
-    if (i === idx) o.selected = true;
-    daySel.appendChild(o);
-  }
-  daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value);
   document.getElementById('diffBadge').innerHTML = 'ZORLUK <b>' + PZ.level + '/10</b>';
+
+  // Gizli sonsuz mod: ?sinefil ile açılır (paylaşılabilir link, admin gerekmez).
+  const randomBtn = document.getElementById('randomBtn');
+  if (params.has('sinefil')) {
+    randomBtn.hidden = false;
+    randomBtn.addEventListener('click', () => {
+      let i;
+      do { i = Math.floor(Math.random() * window.MONTAJ.length); }
+      while (window.MONTAJ.length > 1 && i === idx);
+      location.search = '?gun=' + i + '&sinefil';
+    });
+  }
 
   const KEY = 'montaj_v2_' + idx;
   // kareler: [filmIdx, sceneIdx]

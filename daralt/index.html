@@ -116,7 +116,7 @@
   <header>
     <h1>DARALT</h1>
     <div style="display:flex;gap:8px;align-items:center;">
-      <select id="daySel" title="bulmaca seç"></select>
+      <button id="randomBtn" class="mini-btn" hidden>🎲 rastgele</button>
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
@@ -171,14 +171,17 @@
   const KEY = 'daralt_v3_' + idx;
   const ANS_I = DAY.w.indexOf(DAY.a);
 
-  const daySel = document.getElementById('daySel');
-  for (let i = 0; i < D.days.length; i++) {
-    const o = document.createElement('option');
-    o.value = i; o.textContent = 'BULMACA ' + (i + 1);
-    if (i === idx) o.selected = true;
-    daySel.appendChild(o);
+  // Gizli sonsuz mod: ?sinefil ile açılır (paylaşılabilir link, admin gerekmez).
+  const randomBtn = document.getElementById('randomBtn');
+  if (params.has('sinefil')) {
+    randomBtn.hidden = false;
+    randomBtn.addEventListener('click', () => {
+      let i;
+      do { i = Math.floor(Math.random() * D.days.length); }
+      while (D.days.length > 1 && i === idx);
+      location.search = '?gun=' + i + '&sinefil';
+    });
   }
-  daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value);
 
   const F = D.films; // id -> [t, y, pp]
   const IMG = p => 'https://image.tmdb.org/t/p/w342' + p;
