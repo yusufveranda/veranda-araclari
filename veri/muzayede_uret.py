@@ -7,13 +7,14 @@ from pathlib import Path
 KOK = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from muzayede_ornek import DATA, CAKMA_DATA
+from muzayede_faz3_data import FAZ3_DATA
 
 SITE = KOK / "muzayede"
 RISK_GECERLI = {"public_domain", "dogrulanmis_serbest", "dikkat"}
 
 def dogrula():
     hata = []
-    tumu = DATA + CAKMA_DATA
+    tumu = DATA + FAZ3_DATA + CAKMA_DATA
     idler = [d[0] for d in tumu]
     if len(idler) != len(set(idler)):
         hata.append("tekrar eden ressam_id var")
@@ -33,7 +34,7 @@ def dogrula():
 def uret():
     ressamlar = []
     tablolar = []
-    for gercek, veri in ((True, DATA), (False, CAKMA_DATA)):
+    for gercek, veri in ((True, DATA), (True, FAZ3_DATA), (False, CAKMA_DATA)):
         for d in veri:
             (rid, isim, dogum_olum, ulke, akim, risk, tablo_adi, tablo_yili,
              gorsel, fiyat, satis_yili, ev, kaynak) = d
@@ -61,7 +62,9 @@ def main():
     (veri_dir / "tablolar.json").write_text(
         json.dumps(tablolar, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    sira = [d[0] for d in DATA + CAKMA_DATA]
+    # DATA+CAKMA_DATA sirasi korunuyor (mevcut gunlerin bulmacasi degismesin diye),
+    # FAZ3_DATA yeni gunler olarak sona ekleniyor.
+    sira = [d[0] for d in DATA + CAKMA_DATA + FAZ3_DATA]
     gunler = {"epoch": "2026-07-21", "sira": sira}
     js = "// Muzayede gün sırası. Üretim: veri/muzayede_uret.py. Elle düzenleme: doğrulamayı çalıştır.\n"
     js += "window.MUZAYEDE_GUNLER=" + json.dumps(gunler, ensure_ascii=False, separators=(",", ":")) + ";\n"
