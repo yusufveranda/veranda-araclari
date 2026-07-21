@@ -74,6 +74,7 @@
   </div>
   <div class="durum" id="durum"></div>
   <div class="puan" id="puanAlan"></div>
+  <button id="shareBtn" style="margin-top:10px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:10px 16px; cursor:pointer; display:none;">Paylaş</button>
 </div>
 <script src="puzzles.js"></script>
 <script>
@@ -146,6 +147,7 @@ function renderPortre(){
     $("durum").textContent = `Hakların bitti. Cevap: ${kisi.isim}`;
     $("durum").className = "durum kotu";
   }
+  shareGoster();
 }
 
 const fold = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
@@ -179,6 +181,34 @@ function choose(p){
   hideAc();
 }
 
+const SEKME_EMOJI = {burun:"👃", gozler:"👀", agiz:"👄"};
+function organSayisiEmoji(n){
+  return ["🟥","🟨","🟩"].slice(0, n).join("") + "⬛".repeat(3 - n);
+}
+function shareText(){
+  let satirlar = [`Çehre — Gün #${gunIndex("burun") + 1}`];
+  let toplamPuan = 0;
+  for (const s of ["burun", "gozler", "agiz"]) {
+    const st = state[s];
+    const acik = st.solved ? acikOrganSayisi(st.wrong) : 3;
+    const puan = st.solved ? st.score : 0;
+    toplamPuan += puan;
+    satirlar.push(`${SEKME_EMOJI[s]} ${organSayisiEmoji(acik)} ${st.solved ? puan : "✗"}`);
+  }
+  satirlar.push(`Toplam: ${toplamPuan} puan`);
+  return satirlar.join("\n");
+}
+function tumuBitti(){
+  return ["burun","gozler","agiz"].every(s => state[s].over);
+}
+function shareGoster(){
+  $("shareBtn").style.display = tumuBitti() ? "inline-block" : "none";
+}
+$("shareBtn").addEventListener("click", async () => {
+  try{ await navigator.clipboard.writeText(shareText()); $("shareBtn").textContent = "Kopyalandı ✓"; }
+  catch(e){}
+});
+
 function submit(){
   const s = state[aktifSekme];
   if (s.over || !secilen) return;
@@ -199,6 +229,7 @@ function submit(){
   $("guessInput").value = "";
   $("guessBtn").disabled = true;
   persist();
+  shareGoster();
   renderPortre();
   if (s.solved){
     $("durum").textContent = `Doğru! ${kisi.isim}. ${s.score} puan.`;
