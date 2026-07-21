@@ -93,6 +93,8 @@
     document.getElementById('ressamGiris').addEventListener('keydown', e => {
       if(e.key === 'Enter') ressamGonder();
     });
+
+    ipucularinCiz();
   }
 
   veriYukle();
@@ -117,6 +119,37 @@ function ressamGonder(){
   } else {
     msg.textContent = 'yanlış, bir ipucu seç';
   }
+}
+
+const IPUCU_KATEGORILERI = [
+  { id: 'donem', etiket: 'dönem', metin: r => r.dogum_olum.split('-')[0].slice(0, 2) + '. yüzyıl civarı' },
+  { id: 'ulke', etiket: 'ülke', metin: r => r.ulke },
+  { id: 'akim', etiket: 'sanat akımı', metin: r => r.akim },
+  { id: 'tablo', etiket: 'tablo adı + baş harf', metin: (r, t) => t.tablo_adi + ' (' + t.tablo_yili + ') - ' + r.isim[0] + '.' }
+];
+
+function ipucularinCiz(){
+  const alan = document.getElementById('ipucuAlanlari');
+  alan.innerHTML = '';
+  IPUCU_KATEGORILERI.forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'ipucu-btn';
+    b.textContent = 'ipucu: ' + k.etiket;
+    b.dataset.kategori = k.id;
+    b.addEventListener('click', () => ipucuAc(k.id));
+    alan.appendChild(b);
+  });
+}
+
+function ipucuAc(kategoriId){
+  if(window.MUZ.state.ressamBulundu) return;
+  if(window.MUZ.state.hintsAcik[kategoriId]) return;
+  const k = IPUCU_KATEGORILERI.find(x => x.id === kategoriId);
+  window.MUZ.state.hintsAcik[kategoriId] = true;
+  window.MUZ.state.hintCount++;
+  const btn = document.querySelector('.ipucu-btn[data-kategori="' + kategoriId + '"]');
+  btn.dataset.acik = '1';
+  btn.textContent = k.etiket + ': ' + k.metin(window.MUZ.ressam, window.MUZ.tablo);
 }
 </script>
 </body>
