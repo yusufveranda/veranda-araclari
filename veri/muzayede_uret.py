@@ -61,7 +61,7 @@ def main():
 
     sira = [d[0] for d in DATA]
     gunler = {"epoch": "2026-07-21", "sira": sira}
-    js = "// Muzayede gün sırası — üretim: veri/muzayede_uret.py. Elle düzenleme: doğrulamayı çalıştır.\n"
+    js = "// Muzayede gün sırası. Üretim: veri/muzayede_uret.py. Elle düzenleme: doğrulamayı çalıştır.\n"
     js += "window.MUZAYEDE_GUNLER=" + json.dumps(gunler, ensure_ascii=False, separators=(",", ":")) + ";\n"
     (SITE / "gunler.js").write_text(js, encoding="utf-8")
 
