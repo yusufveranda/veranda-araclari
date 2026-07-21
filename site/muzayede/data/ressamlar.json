@@ -1,0 +1,66 @@
+[
+ {
+  "id": "leonardo-da-vinci",
+  "isim": "Leonardo da Vinci",
+  "dogum_olum": "1452-1519",
+  "ulke": "İtalya",
+  "akim": "Rönesans",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "pablo-picasso",
+  "isim": "Pablo Picasso",
+  "dogum_olum": "1881-1973",
+  "ulke": "İspanya",
+  "akim": "Kübizm",
+  "risk_seviyesi": "dikkat"
+ },
+ {
+  "id": "vincent-van-gogh",
+  "isim": "Vincent van Gogh",
+  "dogum_olum": "1853-1890",
+  "ulke": "Hollanda",
+  "akim": "Post-Empresyonizm",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "claude-monet",
+  "isim": "Claude Monet",
+  "dogum_olum": "1840-1926",
+  "ulke": "Fransa",
+  "akim": "Empresyonizm",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "gustav-klimt",
+  "isim": "Gustav Klimt",
+  "dogum_olum": "1862-1918",
+  "ulke": "Avusturya",
+  "akim": "Sembolizm",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "jean-michel-basquiat",
+  "isim": "Jean-Michel Basquiat",
+  "dogum_olum": "1960-1988",
+  "ulke": "ABD",
+  "akim": "Neo-Ekspresyonizm",
+  "risk_seviyesi": "dikkat"
+ },
+ {
+  "id": "andy-warhol",
+  "isim": "Andy Warhol",
+  "dogum_olum": "1928-1987",
+  "ulke": "ABD",
+  "akim": "Pop Art",
+  "risk_seviyesi": "dikkat"
+ },
+ {
+  "id": "frida-kahlo",
+  "isim": "Frida Kahlo",
+  "dogum_olum": "1907-1954",
+  "ulke": "Meksika",
+  "akim": "Sürrealizm",
+  "risk_seviyesi": "dikkat"
+ }
+]
