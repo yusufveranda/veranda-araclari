@@ -86,10 +86,38 @@
     document.getElementById('tabloGorsel').alt = 'günün tablosu';
     window.MUZ.tablo = tablo;
     window.MUZ.ressam = RESSAMLAR.find(r => r.id === tablo.ressam_id);
+
+    window.MUZ.state = { ressamBulundu: false, hintCount: 0, hintsAcik: {} };
+
+    document.getElementById('ressamGonderBtn').addEventListener('click', ressamGonder);
+    document.getElementById('ressamGiris').addEventListener('keydown', e => {
+      if(e.key === 'Enter') ressamGonder();
+    });
   }
 
   veriYukle();
 })();
+
+function isimNormallestir(s){
+  return s.toLocaleLowerCase('tr').trim()
+    .replace(/[̇]/g, '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function ressamGonder(){
+  if(window.MUZ.state.ressamBulundu) return;
+  const giris = document.getElementById('ressamGiris').value;
+  const dogru = window.MUZ.ressam.isim;
+  const msg = document.getElementById('ressamMesaj');
+  if(isimNormallestir(giris) === isimNormallestir(dogru)){
+    window.MUZ.state.ressamBulundu = true;
+    msg.textContent = 'doğru: ' + dogru;
+    document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
+    fiyatAsamasiniAc();
+  } else {
+    msg.textContent = 'yanlış, bir ipucu seç';
+  }
+}
 </script>
 </body>
 </html>
