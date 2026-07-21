@@ -84,7 +84,11 @@ header .bosluk{flex:1}
 /* ---- sahne ---- */
 #sahne{
   flex:1; min-width:0; position:relative; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:22px;
+  align-items:center; gap:22px;
+  /* içerik (özellikle büyük kabin) konteynerden uzun olabilir; düz "center" o
+     durumda üstü scroll'la bile erişilemez kesiyor. flex-start güvenli taban,
+     "safe center" anlayan tarayıcılarda kısa içerikte gerçek dikey ortalamaya döner. */
+  justify-content:flex-start; justify-content:safe center;
   padding:36px 5vw 40px; text-align:center;
   overflow-y:auto;
   background:
@@ -153,13 +157,13 @@ header .bosluk{flex:1}
 /* ---- slot makinesi (çekiliş): üretilmiş kabin görseli + üzerine bindirilen işlevsel katmanlar ---- */
 .slotMakine{display:flex; flex-direction:column; align-items:center; gap:12px}
 .kabin{
-  position:relative; width:min(420px, 82vw); aspect-ratio:1024/1135;
-  background-image:url("../gorsel/zincir-makine.jpg?v=1");
+  position:relative; width:min(640px, 76vw); aspect-ratio:699/1080;
+  background-image:url("../gorsel/zincir-makine.jpg?v=2");
   background-size:100% 100%; background-repeat:no-repeat;
   filter:drop-shadow(0 24px 44px rgba(0,0,0,.6));
 }
 .pencere{
-  position:absolute; left:29.1%; top:12.6%; width:43.9%; height:39.6%;
+  position:absolute; left:19.3%; top:13.2%; width:64.4%; height:41.6%;
   overflow:hidden; border-radius:1px;
 }
 .makaraSerit{position:absolute; left:0; right:0; top:0; will-change:transform}
@@ -167,10 +171,10 @@ header .bosluk{flex:1}
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4%;
   padding:4%;
 }
-.makaraSerit img{width:46%; aspect-ratio:1; border-radius:50%; object-fit:cover;
+.makaraSerit img{width:64%; aspect-ratio:1; border-radius:50%; object-fit:cover;
   filter:saturate(.7) sepia(.15) contrast(.95); border:2px solid rgba(74,59,42,.8)}
-.makaraSerit .bos{width:46%; aspect-ratio:1; border-radius:50%; display:flex; align-items:center;
-  justify-content:center; background:var(--sahne); color:var(--sessiz); font-size:1.3rem;
+.makaraSerit .bos{width:64%; aspect-ratio:1; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; background:var(--sahne); color:var(--sessiz); font-size:1.8rem;
   border:2px solid rgba(74,59,42,.8)}
 .makaraSerit .ad{font-family:'Oswald', sans-serif; font-size:.62rem; letter-spacing:.08em;
   text-transform:uppercase; color:var(--soluk); max-width:94%; white-space:nowrap;
@@ -187,7 +191,7 @@ header .bosluk{flex:1}
 /* kolun bindiği alan görselde çizili; burada sadece görünmez tıklanabilir sıcak nokta +
    nabız halkasıyla "buraya bas" davetini veriyoruz */
 .kolBirim{
-  position:absolute; left:63.5%; top:53%; width:15%; height:17%;
+  position:absolute; left:70.8%; top:52.4%; width:16%; height:18%;
   cursor:pointer; border-radius:50%; transition:transform .12s;
 }
 .kolBirim::before{
@@ -337,7 +341,7 @@ header .bosluk{flex:1}
   header{padding:12px 16px; gap:14px; flex-wrap:wrap}
   header h1{letter-spacing:.35em}
   .kart{width:150px}
-  .kabin{width:min(340px, 84vw)}
+  .kabin{width:min(300px, 82vw)}
   #seritKutu{
     width:auto; border-left:none; border-top:1px solid var(--cizgi);
     overflow-x:auto; overflow-y:hidden;
