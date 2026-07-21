@@ -39,8 +39,11 @@
   @media(max-width:760px){ .oyun-alan{grid-template-columns:1fr;} }
 
   .kesit-buyuk{width:100%; aspect-ratio:1/1; max-height:72vh; border:5px solid var(--paper); border-radius:6px;
-    overflow:hidden; background:#000; box-shadow:0 10px 34px rgba(0,0,0,.5);}
-  .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block;}
+    overflow:hidden; background:#000; box-shadow:0 10px 34px rgba(0,0,0,.5); position:relative;}
+  .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block; position:absolute; inset:0;}
+  .sansur{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    box-shadow:0 0 0 9999px rgba(6,4,3,0.98); border:2px solid var(--accent); border-radius:3px;
+    transition:width .35s ease, height .35s ease;}
 
   .bilgi-panel{display:flex; flex-direction:column; gap:16px; padding-top:6px;}
   .zoom-label{font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;}
@@ -97,6 +100,7 @@
       <div class="guess-row">
         <input type="text" id="guessInput" placeholder="İsim yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
         <button id="guessBtn" disabled>Tahmin</button>
+        <button id="pesBtn" class="mini-btn" style="align-self:flex-start;">Pes et</button>
         <div class="ac-list" id="acList"></div>
       </div>
       <div class="durum" id="durum"></div>
@@ -190,11 +194,25 @@ function zoomSeviyesi(wrong){
   return 1;
 }
 
+// organ->[seviye1 "genişlik% yükseklik%", seviye2 "..."], seviye 3'te maske tamamen kalkıyor.
+// burun DİKEY (dar-yüksek), gözler/ağız YATAY (geniş-alçak).
+const SANSUR_PENCERE = {
+  burun:  ["26% 42%", "42% 62%"],
+  gozler: ["46% 20%", "68% 34%"],
+  agiz:   ["34% 20%", "55% 34%"],
+};
+
 function renderPortre(){
   const kisi = aktifKisi(aktifSekme);
   const s = aktifDurum(aktifSekme);
   const seviye = s.over ? 3 : zoomSeviyesi(s.wrong);
-  $("kesitBuyuk").innerHTML = `<img src="${kisi.g[String(seviye)]}" alt="yüz kesiti">`;
+  const temelGorsel = kisi.g["3"];   // taban her zaman en geniş/bağlamsal kare
+  let pencereHtml = "";
+  if (seviye < 3) {
+    const [pw, ph] = SANSUR_PENCERE[aktifSekme][seviye - 1].split(" ");
+    pencereHtml = `<div class="sansur" style="width:${pw}; height:${ph};"></div>`;
+  }
+  $("kesitBuyuk").innerHTML = `<img src="${temelGorsel}" alt="yüz kesiti">` + pencereHtml;
   $("zoomEtiket").textContent = `Kesit ${seviye}/3`;
   $("zoomDots").innerHTML = [1,2,3].map(i => `<i class="${i <= seviye ? "acik" : ""}"></i>`).join("");
   const kalanHak = PUAN.length - s.wrong;
@@ -209,6 +227,7 @@ function renderPortre(){
     $("durum").textContent = `Hakların bitti. Cevap: ${kisi.isim}`;
     $("durum").className = "durum kotu";
   }
+  $("pesBtn").style.display = s.over ? "none" : "inline-block";
   shareGoster();
 }
 
@@ -319,6 +338,16 @@ document.querySelectorAll(".sekme-btn").forEach(btn => {
 });
 document.querySelector('.sekme-btn[data-sekme="burun"]').classList.add("aktif");
 renderPortre();
+
+function pesEt(){
+  const s = aktifDurum(aktifSekme);
+  if (s.over) return;
+  s.over = true;
+  persist();
+  shareGoster();
+  renderPortre();
+}
+$("pesBtn").addEventListener("click", pesEt);
 
 $("randomBtn").addEventListener("click", pickRandom);
 
