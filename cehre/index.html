@@ -186,7 +186,7 @@ function organSayisiEmoji(n){
   return ["🟥","🟨","🟩"].slice(0, n).join("") + "⬛".repeat(3 - n);
 }
 function shareText(){
-  let satirlar = [`Çehre — Gün #${gunIndex("burun") + 1}`];
+  let satirlar = [`Çehre: Gün #${gunIndex("burun") + 1}`];
   let toplamPuan = 0;
   for (const s of ["burun", "gozler", "agiz"]) {
     const st = state[s];
