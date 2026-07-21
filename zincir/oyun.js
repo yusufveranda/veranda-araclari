@@ -192,8 +192,9 @@ function kaynakYaz(html){ kaynakEl.innerHTML = html || ""; }
 // ---- çekiliş: slot makinesi -------------------------------------------------
 // hedef baştan belli (adillik/resume için); makara sadece görsel açığa çıkarma.
 // Otomatik dönmez: makine "hazır" görünür, oyuncu kolu çekince (ya da tuşa
-// basınca) döner ve hedefte durur; bittiğinde devam() çağrılır.
-const KARE_H = 118; // .pencere / .makaraSerit .kare yüksekliğiyle birebir eşleşmeli
+// basınca) döner ve hedefte durur; bittiğinde devam() çağrılır. Kabin görseli
+// üretilmiş (gorsel/zincir-makine.jpg); pencere/kol konumları o görselin
+// ölçülmüş oranlarına göre CSS'te (.pencere/.kolBirim) yüzde ile sabit.
 let makaraZamanlayici = null;
 let donuyor = false; // çekiliş sürerken zincir ucunda hedefi gösterme
 function kareHTML(pid){
@@ -217,33 +218,31 @@ function makara(pool, hedef, etiket, bitis){
   k.className = "slotMakine";
   k.innerHTML =
     `<div class="kabin">
-      <div class="marki">${etiket}</div>
-      <div class="ampuller">${"<i></i>".repeat(7)}</div>
       <div class="pencere">
         <div class="hedefCizgi"></div>
         <div class="makaraSerit">${sira.map(q => `<div class="kare">${kareHTML(q)}</div>`).join("")}</div>
       </div>
-      <div class="kolBirim" tabindex="0" role="button" aria-label="kolu çek, makarayı döndür">
-        <div class="kolTop"></div><div class="kolTaban"></div>
-      </div>
+      <div class="kolBirim" tabindex="0" role="button" aria-label="kolu çek, makarayı döndür"></div>
     </div>
-    <button class="dugme cekBtn">🎰 kolu çek</button>
-    <div class="durumSlot hazir">hazır, kolu çek</div>`;
+    <div class="durumSlot hazir">hazır — kolu çek</div>`;
   kartEl.appendChild(k); // solo çekilişte çağıran kartları temizler; partner'da soldaki durur
+  const pencereEl = k.querySelector(".pencere");
   const seritEl2 = k.querySelector(".makaraSerit");
   const kol = k.querySelector(".kolBirim");
-  const btn = k.querySelector(".cekBtn");
   const durumEl = k.querySelector(".durumSlot");
+  // pencere yüzde ile ölçülendiği için gerçek piksel yüksekliği ancak
+  // yerleştikten sonra ölçülebilir; her kare o yüksekliğe eşitlenir.
+  const kareH = pencereEl.getBoundingClientRect().height;
+  seritEl2.querySelectorAll(".kare").forEach(el => el.style.height = kareH + "px");
   let cekildi = false;
   const tikZaman = [90,180,290,420,580,780,1040,1370,1790,2330];
   function cek(){
     if (cekildi) return;
     cekildi = true;
     kol.classList.add("cekildi");
-    btn.disabled = true;
-    durumEl.textContent = "dönüyor…";
+    durumEl.textContent = etiket;
     durumEl.classList.remove("hazir");
-    const toplam = (sira.length - 1) * KARE_H;
+    const toplam = (sira.length - 1) * kareH;
     requestAnimationFrame(() => {
       seritEl2.style.transition = "transform 2.33s cubic-bezier(.13,.85,.1,1)";
       seritEl2.style.transform = `translateY(-${toplam}px)`;
@@ -253,7 +252,6 @@ function makara(pool, hedef, etiket, bitis){
   }
   kol.onclick = cek;
   kol.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); cek(); } };
-  btn.onclick = cek;
 }
 
 // ---- zincir çizimi ---------------------------------------------------------
