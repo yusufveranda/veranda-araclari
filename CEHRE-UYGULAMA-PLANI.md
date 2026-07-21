@@ -1031,7 +1031,449 @@ cd "../site" && git add cehre/puzzles.js cehre/gorseller && git commit -m "Çehr
 
 ---
 
-## Ek görevler (2026-07-21, kullanıcı geri bildirimi sonrası)
+## Ek görevler — ikinci tur (2026-07-21, ikinci kullanıcı geri bildirimi)
+
+Kullanıcı v1.1'i oynadı ve şunları bildirdi: (1) hâlâ tanımadığı isimler geliyor, ünlülük filtresi yetersiz; (2) kesitler kare gösteriliyor ama burun dikey, gözler/ağız yatay dikdörtgen OLMALI; (3) "zoom" yerine sansür şeridi gibi bir maske küçülerek yüzü açmalı (aynı fotoğraf sabit kalıp üzerindeki kara şerit küçülmeli); (4) "pes et" tuşu ile cevabı hemen görebilmeli. Lisans kuralı (yalnız CC0/CC-BY/CC-BY-SA/kamu malı) kullanıcıyla teyit edildi ve KESİN KORUNACAK (reklam geliri + Getty-tarzı ajans talebi riski açıkça konuşuldu, kullanıcı "Getty'den alma, başka yerden al" dedi) — bunun yerine ünlülük eşiği yükseltiliyor VE her kişi için tek fotoğraf yerine birden fazla aday fotoğraf taranıyor (P18 + kendi Commons kategorisi), böylece hem havuz büyür hem tanınır kare bulma şansı artar.
+
+### Task 14: Ünlülük eşiğini yükselt + kişi başına çoklu aday fotoğraf tarama
+
+**Files:**
+- Modify: `cehre-mutfak/wikidata_harvest.py`
+
+**Interfaces:**
+- Consumes: değişmedi (ilk adım).
+- Produces: `cehre-mutfak/havuz-ham.json` — ŞEMA DEĞİŞTİ: her kişi artık `{"qid","isim","adaylar":[{"resim_url","lisans","kaynak_sayfa"}, ...]}` (1-4 aday fotoğraf, hepsi lisans-güvenli). Task 15 (yuz_kesit.py) bu yeni şemayı okuyacak — her adayı sırayla deneyecek.
+
+- [ ] **Step 1: `wikidata_harvest.py`'yi tamamen şu içerikle DEĞİŞTİR**
+
+```python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+wikidata_harvest.py - Çehre oyunu için Wikidata'dan ünlü + fotoğraf hasadı.
+
+Wikidata SPARQL'dan meslek listesindeki (oyuncu/müzisyen/sporcu/politikacı/
+yönetmen/sunucu) ve P18 (fotoğraf) alanı dolu kişileri çeker. Her kişi için
+BİRDEN FAZLA aday fotoğraf toplanır (P18 + kendi Commons kategorisinden),
+her adayın Wikimedia Commons lisansı TİCARİ-GÜVENLİ (CC0/CC-BY/CC-BY-SA/
+kamu malı) olup olmadığına göre süzülür - CC-BY-NC/telifli/ajans fotoğrafı
+ASLA kabul edilmez (reklam gelirli bir site için hukuki risk - Getty-tarzı
+ajanslar izinsiz kullanım için ihtar/ücret talep edebiliyor). Birden fazla
+aday tutmanın amacı: tek bir P18 fotoğrafı yüz-tespiti/kalite filtresinden
+geçemezse (yuz_kesit.py'de) başka bir aday denenebilsin.
+
+Kullanım:
+  python3 wikidata_harvest.py                 # tam hasat (varsayılan 2000 kişi)
+  python3 wikidata_harvest.py --limit 200      # deneme
+  python3 wikidata_harvest.py --self-test      # tek bilinen kişiyle (Q76) doğrulama
+"""
+
+import json, re, sys, time, argparse, urllib.parse, urllib.request
+from pathlib import Path
+
+KOK = Path(__file__).resolve().parent
+CIKTI = KOK / "havuz-ham.json"
+UA = "VerandaCehre/1.0 (https://verandatools.com; yuz-tanima oyunu)"
+
+SPARQL_URL = "https://query.wikidata.org/sparql"
+COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+
+MESLEKLER = ["wd:Q33999", "wd:Q639669", "wd:Q177220", "wd:Q2066131",
+             "wd:Q82955", "wd:Q2526255", "wd:Q10800557"]
+
+MIN_SITELINKS = 80   # 40'tan yükseltildi - kullanıcı "tanımadığım kişiler geliyor" dedi
+AZAMI_ADAY = 4        # kişi başına en fazla kaç aday fotoğraf tutulsun
+
+GUVENLI_KOD = re.compile(r"^(cc0|cc-pd|pd|pdm|cc-by(-sa)?(-\d(\.\d)?)?(-[a-z]{2})?|no restrictions)", re.I)
+YASAK = re.compile(r"(nc|fair use|all rights|non-?free|gfdl)", re.I)
+JUNK_DOSYA = re.compile(r"\.(svg|tif|tiff|pdf|ogg|ogv|webm|mp3|wav|gif)$", re.I)
+JUNK_ISIM = re.compile(
+    r"(signature|autograph|grave|tomb|logo|hollywood walk of fame|coat of arms|"
+    r"medal|stamp|banknote|\bmap\b|poster|award|trophy|statue|bust of|plaque)", re.I)
+
+
+def http_json(url, headers=None, deneme=3):
+    son = None
+    for i in range(deneme):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except Exception as e:
+            son = e
+            time.sleep(1.5 * (i + 1))
+    print(f"  ! istek hatası: {son}")
+    return None
+
+
+def temiz(s):
+    if not s:
+        return ""
+    s = re.sub(r"<[^>]+>", "", s)
+    s = re.sub(r"&#?\w+;", " ", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def sparql_sorgula(limit):
+    """Meslek başına ayrı sorgular çalıştır, sonuçları birleştir (zaman aşımı önlemek için).
+    Her kişi için varsa Commons kategorisi (P373) de çekilir - ek aday fotoğraf
+    taramasında kullanılır.
+    """
+    per_meslek_limit = max(1, limit // len(MESLEKLER) + 1)
+    out_dict = {}  # qid → {"qid", "isim", "commons_url", "commons_cat"}
+
+    for meslek in MESLEKLER:
+        sorgu = f"""
+        SELECT DISTINCT ?person ?personLabel ?image ?commonsCat WHERE {{
+          ?person wdt:P31 wd:Q5;
+                  wdt:P106 {meslek};
+                  wdt:P18 ?image;
+                  wikibase:sitelinks ?sitelinks.
+          FILTER(?sitelinks >= {MIN_SITELINKS})
+          OPTIONAL {{ ?person wdt:P373 ?commonsCat. }}
+          SERVICE wikibase:label {{ bd:serviceParam wikibase:language "tr,en". }}
+        }}
+        ORDER BY DESC(?sitelinks)
+        LIMIT {per_meslek_limit}
+        """
+        url = SPARQL_URL + "?query=" + urllib.parse.quote(sorgu) + "&format=json"
+        d = http_json(url, headers={"Accept": "application/sparql-results+json"})
+        if not d:
+            continue
+        for b in d.get("results", {}).get("bindings", []):
+            qid = b["person"]["value"].rsplit("/", 1)[-1]
+            isim = temiz(b.get("personLabel", {}).get("value", ""))
+            img_url = b["image"]["value"]
+            cat = b.get("commonsCat", {}).get("value")
+            if not isim or isim.startswith("Q"):
+                continue
+            if qid not in out_dict:
+                out_dict[qid] = {"qid": qid, "isim": isim, "commons_url": img_url, "commons_cat": cat}
+        time.sleep(0.1)
+
+    out = list(out_dict.values())[:limit]
+    return out
+
+
+def dosya_lisans(dosya_adi):
+    """Bir Commons dosya adı için lisans + thumb url + kaynak sayfa döner (güvensizse None)."""
+    url = (COMMONS_API + "?action=query&format=json&prop=imageinfo"
+           "&iiprop=url|extmetadata&iiurlwidth=1200&titles="
+           + urllib.parse.quote("File:" + dosya_adi))
+    d = http_json(url)
+    if not d:
+        return None
+    pages = d.get("query", {}).get("pages", {}) or {}
+    for p in pages.values():
+        ii = (p.get("imageinfo") or [{}])[0]
+        if not ii:
+            continue
+        em = ii.get("extmetadata", {}) or {}
+        kod = (em.get("License", {}) or {}).get("value", "")
+        kisa = temiz((em.get("LicenseShortName", {}) or {}).get("value", ""))
+        if YASAK.search(kod) or YASAK.search(kisa):
+            continue
+        if not (GUVENLI_KOD.search(kod) or GUVENLI_KOD.search(kisa.replace(" ", "-"))
+                or "public domain" in kisa.lower() or kisa.lower().startswith("cc")):
+            continue
+        thumb = ii.get("thumburl") or ii.get("url")
+        w = ii.get("thumbwidth") or ii.get("width") or 0
+        if not thumb or w < 300:
+            continue
+        sayfa = "https://commons.wikimedia.org/wiki/" + urllib.parse.quote(dosya_adi.replace(" ", "_"))
+        return {"resim_url": thumb, "lisans": kisa or kod or "CC", "kaynak_sayfa": sayfa}
+    return None
+
+
+def commons_lisans(commons_url):
+    """Special:FilePath URL'inden dosya adını çıkar, dosya_lisans'ı çağır (self_test için)."""
+    dosya = urllib.parse.unquote(commons_url.rsplit("/", 1)[-1])
+    return dosya_lisans(dosya)
+
+
+def kategori_dosya_adaylari(commons_cat, azami=8):
+    """Bir Commons kategorisindeki (P373) dosya adlarını döner (lisans kontrolü çağıran tarafta)."""
+    url = (COMMONS_API + "?action=query&format=json&generator=categorymembers"
+           "&gcmtype=file&gcmlimit=" + str(azami)
+           + "&gcmtitle=" + urllib.parse.quote("Category:" + commons_cat))
+    d = http_json(url)
+    if not d:
+        return []
+    pages = d.get("query", {}).get("pages", {}) or {}
+    out = []
+    for p in pages.values():
+        title = p.get("title", "")
+        dosya_adi = title.split(":", 1)[-1]
+        if JUNK_DOSYA.search(dosya_adi) or JUNK_ISIM.search(dosya_adi):
+            continue
+        out.append(dosya_adi)
+    return out
+
+
+def kisi_adaylari(a, azami=AZAMI_ADAY):
+    """Bir kişi için lisans-güvenli aday fotoğraf listesi (P18 + kategori taraması)."""
+    adaylar, gorulen = [], set()
+
+    ilk = commons_lisans(a["commons_url"])
+    if ilk:
+        adaylar.append(ilk)
+        gorulen.add(ilk["resim_url"])
+
+    if a.get("commons_cat") and len(adaylar) < azami:
+        for dosya_adi in kategori_dosya_adaylari(a["commons_cat"]):
+            if len(adaylar) >= azami:
+                break
+            lis = dosya_lisans(dosya_adi)
+            time.sleep(0.15)
+            if lis and lis["resim_url"] not in gorulen:
+                adaylar.append(lis)
+                gorulen.add(lis["resim_url"])
+
+    return adaylar
+
+
+def hasat(limit):
+    adaylar = sparql_sorgula(limit)
+    print(f"{len(adaylar)} aday Wikidata'dan geldi, foto/lisans taranıyor...")
+    sonuc, gorulen = [], set()
+    for i, a in enumerate(adaylar):
+        if a["qid"] in gorulen:
+            continue
+        aday_fotolar = kisi_adaylari(a)
+        time.sleep(0.2)
+        if not aday_fotolar:
+            continue
+        gorulen.add(a["qid"])
+        sonuc.append({"qid": a["qid"], "isim": a["isim"], "adaylar": aday_fotolar})
+        if (i + 1) % 50 == 0:
+            print(f"  ... {i+1}/{len(adaylar)} tarandı, {len(sonuc)} geçerli")
+    return sonuc
+
+
+def self_test():
+    """Bilinen tek kişiyle (Q76, Barack Obama) uçtan uca doğrulama."""
+    lisans = commons_lisans("http://commons.wikimedia.org/wiki/Special:FilePath/President%20Barack%20Obama.jpg")
+    assert lisans is not None, "Q76 fotoğrafı için lisans bulunamadı (Commons API değişmiş olabilir)"
+    assert lisans["resim_url"].startswith("http"), "resim_url geçerli bir URL değil"
+    print("self-test OK:", lisans)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--limit", type=int, default=2000)
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args()
+
+    if a.self_test:
+        self_test()
+        return
+
+    sonuc = hasat(a.limit)
+    CIKTI.write_text(json.dumps(sonuc, ensure_ascii=False, indent=1), encoding="utf-8")
+    toplam_foto = sum(len(k["adaylar"]) for k in sonuc)
+    print(f"\nBitti. {len(sonuc)} kişi ({toplam_foto} toplam aday fotoğraf) yazıldı: {CIKTI}")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+- [ ] **Step 2: Self-test'i çalıştır**
+
+Run: `cd cehre-mutfak && python3 wikidata_harvest.py --self-test`
+Expected: `self-test OK: {...}` (değişmedi).
+
+- [ ] **Step 3: Küçük ölçekte dene**
+
+Run: `python3 wikidata_harvest.py --limit 200`
+Expected: konsolda ilerleme + `Bitti. N kişi (M toplam aday fotoğraf) yazıldı`. `havuz-ham.json`'daki isimleri yazdır (`python3 -c "import json; [print(x['isim'], len(x['adaylar'])) for x in json.load(open('havuz-ham.json'))]"`), isimlerin gerçekten tanınır olduğunu VE çoğu kişinin 1'den fazla aday fotoğrafa sahip olduğunu gözle doğrula.
+
+- [ ] **Step 4: Not — commit yok, tam ölçekli hasat Task 16'nın doğrulama adımında**
+
+---
+
+### Task 15: `yuz_kesit.py`'yi çoklu-aday şemasına uyarla (her adayı sırayla dene)
+
+**Files:**
+- Modify: `cehre-mutfak/yuz_kesit.py`
+
+**Interfaces:**
+- Consumes: `havuz-ham.json` (Task 14'ün yeni şeması — `adaylar` listesi).
+- Produces: `havuz.json` — şema DEĞİŞMEDİ (hâlâ `{"qid","isim","kesit":{organ:{seviye:yol}}}`), yalnız üretim mantığı artık ilk başarısız adayda durmuyor, listede sırayla dener.
+
+- [ ] **Step 1: `isle_kisi`'yi DEĞİŞTİR**
+
+```python
+def isle_kisi(det, kisi, dizin):
+    dizin.mkdir(parents=True, exist_ok=True)
+    ham = dizin / "ham.jpg"
+    try:
+        for aday in kisi.get("adaylar", []):
+            ham.unlink(missing_ok=True)
+            if not indir(aday["resim_url"], ham):
+                continue
+            img = cv2.imread(str(ham))
+            if img is None:
+                continue
+            yuz = en_iyi_yuz(det, img)
+            if yuz is None:
+                continue
+            kesitler = kesitleri_uret(img, yuz)
+            if kesitler is None:
+                continue
+            for organ, seviyeler in kesitler.items():
+                for seviye, kesit in seviyeler.items():
+                    rgb = cv2.cvtColor(kesit, cv2.COLOR_BGR2RGB)
+                    Image.fromarray(rgb).save(dizin / f"{organ}_{seviye}.webp", "WEBP", quality=85)
+            return True
+        return False
+    finally:
+        ham.unlink(missing_ok=True)
+```
+
+`main()`'de `gecerli.append(...)` bloğu DEĞİŞMİYOR (hâlâ `kisi['qid']`/`kisi['isim']` kullanıyor, `adaylar`'a referans vermiyor).
+
+- [ ] **Step 2: Self-test'i çalıştır**
+
+Run: `cd cehre-mutfak && python3 yuz_kesit.py --self-test`
+Expected: değişmedi.
+
+- [ ] **Step 3: Eski çıktıyı temizleyip Task 14'ün küçük-ölçek verisiyle dene**
+
+```bash
+rm -rf kesitler havuz.json
+python3 yuz_kesit.py --limit 50
+```
+Expected: `Bitti. N/50 kişi geçerli kesitle yazıldı`. N'in eskisinden (tek-aday zamanındaki oran) daha YÜKSEK bir oranda olması beklenir çünkü artık bir aday başarısız olursa bir sonraki deneniyor — bunu gözle doğrula, eğer oran artmadıysa (`adaylar` listeleri gerçekten 1'den fazla mı diye) `havuz-ham.json`'ı kontrol et.
+
+- [ ] **Step 4: Not — commit yok**
+
+---
+
+### Task 16: Sansür-şeridi (maske) açılış mekaniği + "pes et" tuşu
+
+**Files:**
+- Modify: `site/cehre/index.html`
+
+**Interfaces:**
+- Consumes: mevcut `puzzles.js` şeması DEĞİŞMİYOR (`g:{"1","2","3"}`) — bu görev SADECE ön yüzü değiştiriyor, veri şeması aynı kalıyor (seviye-3 kesiti artık her zaman TABAN görsel olarak kullanılıyor, seviye-1/2 dosyaları artık front-end'de KULLANILMIYOR ama üretim hattından kaldırılmıyor, zararsız).
+- Produces: `zoomSeviyesi` mantığı aynı kalıyor (3/5/6 eşiği), ama `renderPortre` artık organ-özel dikdörtgen ORANINDA bir "sansür penceresi" (kara şerit dışarıda, pencere içeride) çiziyor; pencere yanlış tahminlerle büyüyor. Yeni `pesEt()` fonksiyonu + `#pesBtn` düğmesi.
+
+**ÖNEMLİ:** burun penceresi DİKEY (dar-yüksek), gözler VE ağız pencereleri YATAY (geniş-alçak) olacak — kullanıcının net talebi.
+
+- [ ] **Step 1: CSS'i güncelle**
+
+`.kesit-buyuk` kuralını bul, `position:relative` ekle (yoksa) ve altına yeni `.sansur` kuralını ekle:
+
+```css
+  .kesit-buyuk{width:100%; aspect-ratio:1/1; max-height:72vh; border:5px solid var(--paper); border-radius:6px;
+    overflow:hidden; background:#000; box-shadow:0 10px 34px rgba(0,0,0,.5); position:relative;}
+  .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block; position:absolute; inset:0;}
+  .sansur{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    box-shadow:0 0 0 9999px rgba(6,4,3,0.98); border:2px solid var(--accent); border-radius:3px;
+    transition:width .35s ease, height .35s ease;}
+```
+
+- [ ] **Step 2: "Pes et" butonunu HTML'e ekle**
+
+`<button id="guessBtn" disabled>Tahmin</button>` satırının hemen altına ekle:
+```html
+        <button id="pesBtn" class="mini-btn" style="align-self:flex-start;">Pes et</button>
+```
+
+- [ ] **Step 3: JS'i güncelle**
+
+`zoomSeviyesi` fonksiyonunun altına yeni sabiti ekle:
+
+```javascript
+// organ→[seviye1 "genişlik% yükseklik%", seviye2 "..."] — seviye 3'te maske tamamen kalkıyor.
+// burun DİKEY (dar-yüksek), gözler/ağız YATAY (geniş-alçak).
+const SANSUR_PENCERE = {
+  burun:  ["26% 42%", "42% 62%"],
+  gozler: ["46% 20%", "68% 34%"],
+  agiz:   ["34% 20%", "55% 34%"],
+};
+```
+
+`renderPortre()` fonksiyonundaki şu satırı:
+```javascript
+  $("kesitBuyuk").innerHTML = `<img src="${kisi.g[String(seviye)]}" alt="yüz kesiti">`;
+```
+şununla DEĞİŞTİR:
+```javascript
+  const temelGorsel = kisi.g["3"];   // taban her zaman en geniş/bağlamsal kare
+  let pencereHtml = "";
+  if (seviye < 3) {
+    const [pw, ph] = SANSUR_PENCERE[aktifSekme][seviye - 1].split(" ");
+    pencereHtml = `<div class="sansur" style="width:${pw}; height:${ph};"></div>`;
+  }
+  $("kesitBuyuk").innerHTML = `<img src="${temelGorsel}" alt="yüz kesiti">` + pencereHtml;
+```
+
+`renderPortre()`'nin sonunda (`shareGoster();` satırından hemen önce) ekle:
+```javascript
+  $("pesBtn").style.display = s.over ? "none" : "inline-block";
+```
+
+Script'in sonuna (`$("randomBtn").addEventListener(...)` satırından önce) ekle:
+```javascript
+function pesEt(){
+  const s = aktifDurum(aktifSekme);
+  if (s.over) return;
+  s.over = true;
+  persist();
+  shareGoster();
+  renderPortre();
+}
+$("pesBtn").addEventListener("click", pesEt);
+```
+
+- [ ] **Step 4: Tarayıcıda doğrula**
+
+`http://localhost:8642/cehre/` adresinde:
+- Burun sekmesinde açılan pencerenin GENİŞLİKTEN ÇOK DAHA UZUN (dikey) olduğunu gözle doğrula.
+- Gözler ve Ağız sekmelerinde pencerenin YÜKSEKLİKTEN ÇOK DAHA GENİŞ (yatay) olduğunu doğrula.
+- 3 yanlış tahminle pencerenin büyüdüğünü (aynı fotoğraf üzerinde, farklı bir kareye SIÇRAMADAN) doğrula.
+- "Pes et" tuşuna basınca cevabın anında göründüğünü, tuşun kaybolduğunu doğrula.
+- Konsol hatası yok, em dash yok.
+
+- [ ] **Step 5: Commit'le**
+
+```bash
+cd "site" && git add cehre/index.html && git commit -m "Çehre: sansür-şeridi açılış mekaniği (organ-özel dikdörtgen), pes et tuşu" && git push
+```
+
+---
+
+### Task 17: Tam ölçekli yeniden hasat (yükseltilmiş ünlülük eşiği + çoklu aday)
+
+**Files:** yok (yalnız doğrulama).
+
+- [ ] **Step 1: Tam zinciri çalıştır**
+
+```bash
+cd cehre-mutfak
+rm -rf havuz-ham.json havuz.json kesitler
+python3 wikidata_harvest.py --limit 6000
+python3 yuz_kesit.py
+python3 cehre_uret.py
+```
+
+Expected: MIN_SITELINKS=80 + çoklu-aday taraması nedeniyle bu çalıştırma öncekinden YAVAŞ olabilir (kişi başına ek Commons kategori API çağrıları) — sabırlı ol, arka planda çalıştır. Havuz büyüklüğü öncekinden küçük olabilir (80 eşiği daha seçici) ama isimler gözle bariz daha tanınır olmalı.
+
+- [ ] **Step 2: Tarayıcıda örnekleme yap**
+
+`javascript_tool` ile birkaç kez `gununKisisi('burun').isim` / `pickRandom()` çağırıp çıkan isimlerin gerçekten tanınır olduğunu gözle doğrula (en az 10 örnek).
+
+- [ ] **Step 3: site/ dosyalarını commit'le**
+
+```bash
+cd "../site" && git add cehre/puzzles.js cehre/gorseller && git commit -m "Çehre: yükseltilmiş ünlülük eşiği + çoklu aday fotoğraf ile yeniden hasat" && git push
+```
+
+---
+
+## Ek görevler — ilk tur (2026-07-21, kullanıcı geri bildirimi sonrası)
 
 Yayına girdikten sonra kullanıcı üç sorun bildirdi: (1) kesitler o kadar geniş çıkıyordu ki pratikte tüm yüzü gösteriyordu, (2) ünlü havuzunda obscure/niş figürler çok, (3) "farklı organ açılıyor" yerine "aynı organ kademeli büyüyerek açılsın" istendi (zoom-out). Ayrıca [[tam-ekran-genisligi]] kuralı yine ihlal edildi (sayfanın büyük kısmı boş). Aşağıdaki 4 görev, Task 1-9'un ÜZERİNE inşa edilir (aynı dosyaları değiştirir/yeniden çalıştırır), Task 1-9 iptal olmuyor.
 
