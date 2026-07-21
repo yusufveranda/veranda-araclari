@@ -107,7 +107,7 @@ function persist(){
   const save = loadSave();
   for (const s of ["burun", "gozler", "agiz"]) {
     save[s] = save[s] || {};
-    save[s][gunIndex(s)] = state[s];
+    save[s][gunIndex(s)] = {...state[s], qid: gununKisisi(s).qid};
   }
   try{ localStorage.setItem(LS, JSON.stringify(save)); }catch(e){}
 }
@@ -115,7 +115,13 @@ function state_yukle(){
   const save = loadSave();
   const out = {};
   for (const s of ["burun", "gozler", "agiz"]) {
-    out[s] = (save[s] && save[s][gunIndex(s)]) || bosDurum();
+    const kayit = save[s] && save[s][gunIndex(s)];
+    if (kayit && kayit.qid === gununKisisi(s).qid){
+      const {qid, ...durum} = kayit;
+      out[s] = durum;
+    } else {
+      out[s] = bosDurum();
+    }
   }
   return out;
 }
