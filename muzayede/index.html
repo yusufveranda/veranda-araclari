@@ -1,45 +1,231 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-tema="gunduz">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Muzayede - ressamı ve fiyatı bil</title>
+<title>Muzayede — ressamı ve fiyatı bil</title>
 <meta name="description" content="Bir tablo gör, ressamını ve gerçek müzayede satış fiyatını tahmin et.">
+<meta property="og:image" content="https://verandatools.com/gorsel/doku.jpg">
+<meta name="theme-color" content="#1C1510">
+<meta property="og:title" content="Muzayede">
+<meta property="og:description" content="Bir tablo gör, ressamını ve gerçek satış fiyatını tahmin et.">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖼️</text></svg>">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231C1510'/%3E%3Crect x='16' y='12' width='32' height='26' rx='2' fill='none' stroke='%23ECCF92' stroke-width='3'/%3E%3Ccircle cx='32' cy='25' r='5' fill='%23D7261D'/%3E%3Cpath d='M16 46 H48' stroke='%23ECCF92' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="gorsel/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="../ortak/stil.css">
 <style>
-  .tablo-kutu{max-width:640px;margin:0 auto}
-  .tablo-kutu img{width:100%;height:auto;border-radius:8px;display:block}
-  #ipucuAlanlari{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0}
-  .ipucu-btn[data-acik="1"]{opacity:.55;pointer-events:none}
-  #sonucKutu{display:none;margin-top:1rem}
+:root{
+  --kagit:#F3E7CC; --kart:#FBF3DE; --cizgi:#D8C39A;
+  --murekkep:#221A14; --soluk:#7C6A4C; --cok-soluk:#A99873;
+  --altin:#B8863A; --kirmizi:#D7261D; --turuncu:#C97418; --zeytin:#5F6B37;
+  --golge:rgba(28,21,16,.20); --golge-sert:rgba(28,21,16,.30);
+  --dogru:#5F6B37; --dogru-bg:rgba(95,107,55,.14);
+  --yanlis:#D7261D; --yanlis-bg:rgba(215,38,29,.11);
+}
+[data-tema="gece"]{
+  --kagit:#1C1510; --kart:#241C15; --cizgi:#3A2E1F;
+  --murekkep:#EFE0C0; --soluk:#9C8A6C; --cok-soluk:#6B5C42;
+  --altin:#D9B257; --kirmizi:#E8472E; --turuncu:#F0A94E; --zeytin:#8AA05C;
+  --golge:rgba(0,0,0,.5); --golge-sert:rgba(0,0,0,.62);
+  --dogru:#8AA05C; --dogru-bg:rgba(138,160,92,.16);
+  --yanlis:#E8472E; --yanlis-bg:rgba(232,71,46,.16);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--kagit); color:var(--murekkep);
+  font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.55;
+  min-height:100vh; position:relative;
+  transition:background .4s,color .4s;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:url(../gorsel/doku.jpg) center/cover; opacity:.10; mix-blend-mode:soft-light;
+}
+[data-tema="gece"] body::before{ opacity:.16; }
+
+.sarmal{ width:min(720px,94vw); margin:0 auto; padding:18px 0 70px; }
+
+.ust{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.ust-sag{ margin-left:auto; display:flex; gap:8px; }
+.eve-don{
+  display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+  background:var(--kirmizi); color:#F7ECD6; font-size:14px; font-family:'Libre Baskerville',serif;
+  padding:7px 15px 7px 12px; border-radius:20px; box-shadow:2px 3px 0 var(--golge);
+  transition:transform .12s,box-shadow .12s;
+}
+.eve-don:hover{ transform:translateY(-1px); box-shadow:2px 4px 0 var(--golge); }
+.ikonbtn{
+  background:var(--kart); border:1px solid var(--cizgi); border-radius:18px;
+  padding:6px 14px; font-size:13.5px; color:var(--soluk); font-family:'Libre Baskerville',serif;
+  cursor:pointer; transition:border-color .15s,color .15s;
+}
+.ikonbtn:hover{ border-color:var(--altin); color:var(--murekkep); }
+
+.marka{ margin:22px 0 20px; display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; }
+.amblem{ width:44px; height:44px; flex:none; }
+.marka h1{
+  font-family:'Playfair Display',Georgia,serif; font-weight:700; font-size:clamp(28px,4.4vw,40px);
+  line-height:1; letter-spacing:-.5px; color:var(--murekkep); margin:0;
+}
+.marka .tag{
+  color:var(--soluk); font-style:italic; font-family:'Libre Baskerville',Georgia,serif;
+  font-size:14.5px; padding-bottom:4px;
+}
+
+/* çerçeveli tablo levhası */
+.levha{
+  background:var(--kart); padding:16px 16px 0; border-radius:5px;
+  box-shadow:6px 8px 0 var(--golge-sert); border:1px solid var(--cizgi);
+  position:relative; transform:rotate(-.4deg);
+}
+.cerceve{
+  position:relative; aspect-ratio:4/3; overflow:hidden; border-radius:2px;
+  background:var(--kagit); border:7px solid var(--altin);
+  box-shadow:inset 0 0 0 2px var(--kart), inset 0 0 14px var(--golge-sert);
+}
+.cerceve img{ width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity .5s; }
+.cerceve img[src]:not([src=""]){ opacity:1; }
+.plaka{
+  font-family:'Libre Baskerville',serif; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--soluk); text-align:center; padding:11px 4px 13px;
+}
+
+#adminSecici{
+  display:block; margin:10px auto 0; font-family:'Libre Baskerville',serif; font-size:13px;
+  color:var(--murekkep); background:var(--kart); border:1px solid var(--cizgi); border-radius:8px; padding:6px 10px;
+}
+
+#ressamAsama, #fiyatAsama{ margin-top:22px; }
+
+.giris-satiri{ display:flex; gap:8px; flex-wrap:wrap; }
+.giris-satiri input{
+  flex:1; min-width:160px; font-family:'Libre Baskerville',serif; font-size:15px;
+  padding:11px 14px; border:1.5px solid var(--cizgi); border-radius:9px;
+  background:var(--kart); color:var(--murekkep);
+}
+.giris-satiri input::placeholder{ color:var(--cok-soluk); font-style:italic; }
+.giris-satiri input:focus{ outline:none; border-color:var(--altin); }
+.giris-satiri input:disabled{ opacity:.5; }
+
+button{ font:inherit; cursor:pointer; }
+.btn-ana{
+  font-family:'Playfair Display',serif; font-weight:700; font-size:14.5px; color:#fff;
+  background:var(--kirmizi); border:none; border-radius:9px; padding:11px 20px;
+  box-shadow:2px 3px 0 var(--golge); transition:transform .12s,box-shadow .12s; white-space:nowrap;
+}
+.btn-ana:hover:not(:disabled){ transform:translateY(-1px); box-shadow:2px 4px 0 var(--golge); }
+.btn-ana:active:not(:disabled){ transform:translate(1px,2px); box-shadow:1px 1px 0 var(--golge); }
+.btn-ana:disabled{ opacity:.45; cursor:default; box-shadow:none; transform:none; }
+
+.btn-ikincil{
+  font-family:'Libre Baskerville',serif; font-size:13px; color:var(--soluk);
+  background:none; border:1px solid var(--cizgi); border-radius:8px; padding:10px 15px;
+}
+.btn-ikincil:hover:not(:disabled){ border-color:var(--kirmizi); color:var(--kirmizi); }
+.btn-ikincil:disabled{ opacity:.45; cursor:default; }
+
+#ipucuAlanlari{ display:flex; flex-wrap:wrap; gap:7px; margin:12px 0 4px; }
+.ipucu-btn{
+  font-family:'Libre Baskerville',serif; font-size:12.5px; color:var(--turuncu);
+  background:var(--kart); border:1px solid var(--cizgi); border-radius:20px;
+  padding:6px 13px; transition:border-color .15s,transform .1s;
+}
+.ipucu-btn:hover{ border-color:var(--turuncu); transform:translateY(-1px); }
+.ipucu-btn[data-acik="1"]{
+  opacity:1; pointer-events:none; color:var(--murekkep); background:var(--kagit);
+  border-color:var(--cizgi); border-style:dashed;
+}
+
+#ressamMesaj, #fiyatMesaj{ min-height:1.4em; margin-top:10px; font-size:14.5px; }
+#ressamMesaj.dogru{ color:var(--dogru); font-weight:700; }
+#ressamMesaj.yanlis{ animation:sars .35s; }
+@keyframes sars{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+@media(prefers-reduced-motion:reduce){ #ressamMesaj.yanlis{ animation:none; } }
+
+#sonucKutu{
+  display:none; margin-top:20px; background:var(--kart); border:1px solid var(--cizgi);
+  border-left:4px solid var(--altin); border-radius:0 12px 12px 0;
+  padding:16px 18px; animation:bel .3s ease;
+}
+@media(prefers-reduced-motion:reduce){ #sonucKutu{ animation:none; } }
+@keyframes bel{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+#sonucKutu .fiyat-etiket{
+  font-family:'Playfair Display',serif; font-weight:700; font-size:22px; color:var(--murekkep);
+}
+#sonucKutu .kaynak-satiri{ font-size:13px; color:var(--soluk); margin-top:4px; }
+#sonucKutu .kaynak-satiri a{ color:var(--altin); }
+#sonucKutu .puan-satiri{
+  margin-top:12px; padding-top:12px; border-top:1px dashed var(--cizgi);
+  font-family:'Libre Baskerville',serif; font-size:14px; color:var(--murekkep); display:flex; gap:16px; flex-wrap:wrap;
+}
+#sonucKutu .puan-satiri b{ font-family:'Playfair Display',serif; color:var(--altin); }
+
+footer{
+  margin-top:60px; color:var(--soluk); font-size:12.5px; border-top:1px solid var(--cizgi);
+  padding-top:14px; text-align:center; line-height:1.7;
+}
 </style>
 </head>
 <body>
 <div id="navYer"></div>
-<main class="tablo-kutu">
-  <h1>Muzayede</h1>
-  <img id="tabloGorsel" alt="günün tablosu" src="">
-  <select id="adminSecici" style="display:none"></select>
+<div class="sarmal">
 
-  <div id="ressamAsama">
-    <input id="ressamGiris" type="text" placeholder="ressam adı" autocomplete="off">
-    <button id="ressamGonderBtn">tahmin et</button>
-    <button id="pesEtBtn">pes et</button>
-    <div id="ipucuAlanlari"></div>
-    <p id="ressamMesaj"></p>
+  <div class="ust">
+    <a class="eve-don" href="../">veranda</a>
+    <div class="ust-sag">
+      <button class="ikonbtn" id="temaBtn" type="button" aria-label="gündüz / gece">gece</button>
+    </div>
   </div>
 
-  <div id="fiyatAsama" style="display:none">
-    <input id="fiyatGiris" type="number" placeholder="tahmini satış fiyatı (USD)">
-    <button id="fiyatGonderBtn">tahmin et</button>
-    <p id="fiyatMesaj"></p>
-  </div>
+  <header class="marka">
+    <svg class="amblem" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="14" y="10" width="36" height="28" rx="2" fill="none" stroke="var(--altin)" stroke-width="3"/>
+      <circle cx="32" cy="24" r="6" fill="var(--kirmizi)"/>
+      <path d="M14 46 H50" stroke="var(--altin)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M22 46 L22 52 M42 46 L42 52" stroke="var(--altin)" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <h1>Muzayede</h1>
+    <div class="tag">tabloyu tanı, fiyatı tahmin et</div>
+  </header>
 
-  <div id="sonucKutu"></div>
-</main>
+  <main>
+    <div class="levha">
+      <div class="cerceve">
+        <img id="tabloGorsel" alt="günün tablosu" src="">
+      </div>
+      <p class="plaka">günün tablosu</p>
+    </div>
+
+    <select id="adminSecici" style="display:none"></select>
+
+    <div id="ressamAsama">
+      <div class="giris-satiri">
+        <input id="ressamGiris" type="text" placeholder="ressam adı" autocomplete="off">
+        <button class="btn-ana" id="ressamGonderBtn">tahmin et</button>
+        <button class="btn-ikincil" id="pesEtBtn">pes et</button>
+      </div>
+      <div id="ipucuAlanlari"></div>
+      <p id="ressamMesaj"></p>
+    </div>
+
+    <div id="fiyatAsama" style="display:none">
+      <div class="giris-satiri">
+        <input id="fiyatGiris" type="number" placeholder="tahmini satış fiyatı (USD)">
+        <button class="btn-ana" id="fiyatGonderBtn">tahmin et</button>
+      </div>
+      <p id="fiyatMesaj"></p>
+    </div>
+
+    <div id="sonucKutu"></div>
+  </main>
+
+  <footer>Muzayede · veranda</footer>
+</div>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -47,6 +233,19 @@
 <script src="../ortak/nav-panel.js"></script>
 <script src="./gunler.js"></script>
 <script>
+(function(){
+  function temaKur(t){
+    document.documentElement.setAttribute('data-tema', t);
+    document.getElementById('temaBtn').textContent = t === 'gece' ? 'gündüz' : 'gece';
+    try{ localStorage.setItem('muzayede:tema', t); }catch(e){}
+  }
+  let baslangicTema;
+  try{ baslangicTema = localStorage.getItem('muzayede:tema'); }catch(e){}
+  temaKur(baslangicTema === 'gece' ? 'gece' : 'gunduz');
+  document.getElementById('temaBtn').addEventListener('click', () =>
+    temaKur(document.documentElement.getAttribute('data-tema') === 'gece' ? 'gunduz' : 'gece'));
+})();
+
 (function(){
   const q = new URLSearchParams(location.search);
   const GOMULU = q.has('gomulu');
@@ -121,11 +320,14 @@ function ressamGonder(){
   if(isimNormallestir(giris) === isimNormallestir(dogru)){
     window.MUZ.state.ressamBulundu = true;
     msg.textContent = 'doğru: ' + dogru;
+    msg.className = 'dogru';
     document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
     fiyatAsamasiniAc();
     kaydet();
   } else {
     msg.textContent = 'yanlış, bir ipucu seç';
+    msg.className = 'yanlis';
+    msg.classList.remove('yanlis'); void msg.offsetWidth; msg.classList.add('yanlis');
   }
 }
 
@@ -134,6 +336,7 @@ function pesEt(){
   window.MUZ.state.pesEdildi = true;
   const msg = document.getElementById('ressamMesaj');
   msg.textContent = 'doğru: ' + window.MUZ.ressam.isim;
+  msg.className = '';
   document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
   fiyatAsamasiniAc();
   kaydet();
@@ -215,10 +418,12 @@ function sonucGoster(ressamPuan, fiyatPuan, toplam){
   const sonuc = document.getElementById('sonucKutu');
   sonuc.style.display = 'block';
   sonuc.innerHTML =
-    '<p>gerçek fiyat: $' + tablo.fiyat_usd.toLocaleString('en-US') + ' - ' +
-    tablo.muzayede_evi + ', ' + tablo.satis_yili + '</p>' +
-    '<p><a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></p>' +
-    '<p>ressam puanı: ' + ressamPuan + ' / fiyat puanı: ' + fiyatPuan + ' / toplam: ' + toplam + '</p>';
+    '<div class="fiyat-etiket">$' + tablo.fiyat_usd.toLocaleString('en-US') + '</div>' +
+    '<div class="kaynak-satiri">' + tablo.muzayede_evi + ', ' + tablo.satis_yili +
+    ' · <a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
+    '<div class="puan-satiri"><span>ressam <b>' + ressamPuan + '</b></span>' +
+    '<span>fiyat <b>' + fiyatPuan + '</b></span>' +
+    '<span>toplam <b>' + toplam + '</b></span></div>';
 }
 
 function kaydet(){
@@ -248,7 +453,9 @@ function durumuUygula(){
     if(st.hintsAcik[kategoriId]) ipucuGoster(kategoriId);
   });
   if(st.ressamBulundu || st.pesEdildi){
-    document.getElementById('ressamMesaj').textContent = 'doğru: ' + window.MUZ.ressam.isim;
+    const msg = document.getElementById('ressamMesaj');
+    msg.textContent = 'doğru: ' + window.MUZ.ressam.isim;
+    msg.className = st.ressamBulundu ? 'dogru' : '';
     document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
     fiyatAsamasiniAc();
   }
