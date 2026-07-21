@@ -109,7 +109,7 @@ header .bosluk{flex:1}
   max-width:26ch;
 }
 #alt{font-size:1.25rem; font-style:italic; color:var(--soluk)}
-#kartlar{display:flex; gap:34px; flex-wrap:wrap; justify-content:center}
+#kartlar{display:flex; gap:34px; flex-wrap:wrap; justify-content:center; align-items:flex-start}
 .kart{
   width:216px; background:var(--kagit); border:1px solid var(--cizgi2);
   padding:10px 10px 0; box-shadow:0 18px 40px -18px rgba(0,0,0,.75);
@@ -140,19 +140,72 @@ header .bosluk{flex:1}
   width:26px; height:26px; border-radius:50%; background:var(--turuncu); color:#1C1510;
   display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:700;
 }
-/* çekiliş makarası */
-.kart.makara{border-color:var(--turuncu)}
-.makaraKat .kat img, .makaraKat .kat .bos{background:var(--sahne)}
-.kart.makara img{filter:saturate(.55) sepia(.2) contrast(.9) brightness(.92)}
-.kart.makara .ad{color:var(--turuncu)}
 @keyframes belirme{
   from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}
 }
 .kart.beliris{animation:belirme .5s ease-out}
-@keyframes titrek{
-  0%{opacity:.4} 15%{opacity:1} 25%{opacity:.6} 40%{opacity:1} 100%{opacity:1}
+
+/* ---- slot makinesi (çekiliş) ---- */
+.slotMakine{display:flex; flex-direction:column; align-items:center; gap:12px}
+.kabin{
+  position:relative; width:236px; padding:18px 18px 22px;
+  background:
+    radial-gradient(120% 60% at 50% -10%, #3a2c19, transparent 60%),
+    linear-gradient(180deg, #2c2115, #1a140d);
+  border:1px solid var(--cizgi2); border-radius:14px 14px 8px 8px;
+  box-shadow:0 22px 46px -18px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.04);
 }
-.kart.makara img{animation:titrek .18s linear infinite}
+.marki{
+  text-align:center; font-family:'Oswald', sans-serif; font-weight:500; font-size:.72rem;
+  letter-spacing:.4em; padding-left:.4em; color:var(--turuncu); margin-bottom:12px;
+  text-shadow:0 0 12px rgba(240,154,54,.5);
+}
+.ampuller{display:flex; justify-content:space-between; margin-bottom:10px; padding:0 3px}
+.ampuller i{width:4px; height:4px; border-radius:50%; background:var(--turuncu);
+  box-shadow:0 0 6px var(--turuncu); opacity:.85; animation:parla 1.8s ease-in-out infinite; display:block}
+.ampuller i:nth-child(odd){animation-delay:.9s}
+@keyframes parla{0%,100%{opacity:.28} 50%{opacity:1}}
+.pencere{
+  position:relative; height:118px; border-radius:6px; overflow:hidden;
+  background:#0d0a06; border:3px solid #14100a;
+  box-shadow:inset 0 10px 16px rgba(0,0,0,.7), inset 0 -10px 16px rgba(0,0,0,.7);
+}
+.makaraSerit{position:absolute; left:0; right:0; top:0; will-change:transform}
+.makaraSerit .kare{
+  height:118px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+}
+.makaraSerit img{width:64px; height:64px; border-radius:50%; object-fit:cover;
+  filter:saturate(.7) sepia(.15) contrast(.95); border:2px solid var(--cizgi2)}
+.makaraSerit .bos{width:64px; height:64px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; background:var(--sahne); color:var(--sessiz); font-size:1.4rem;
+  border:2px solid var(--cizgi2)}
+.makaraSerit .ad{font-family:'Oswald', sans-serif; font-size:.66rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--soluk); max-width:90%; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis}
+.pencere::before, .pencere::after{
+  content:""; position:absolute; left:0; right:0; height:30px; z-index:3; pointer-events:none;
+}
+.pencere::before{top:0; background:linear-gradient(#0d0a06, transparent)}
+.pencere::after{bottom:0; background:linear-gradient(transparent, #0d0a06)}
+.hedefCizgi{
+  position:absolute; left:6px; right:6px; top:50%; height:1px; transform:translateY(-50%);
+  background:rgba(240,154,54,.35); z-index:2;
+}
+.kolBirim{position:absolute; right:-26px; top:20px; display:flex; flex-direction:column;
+  align-items:center; cursor:pointer; user-select:none}
+.kolBirim:focus-visible{outline:1px solid var(--turuncu)}
+.kolTaban{width:12px; height:60px; background:linear-gradient(180deg,#4a3c26,#2a2013);
+  border-radius:6px; box-shadow:inset -2px 0 3px rgba(0,0,0,.4)}
+.kolTop{width:22px; height:22px; border-radius:50%;
+  background:radial-gradient(circle at 32% 28%, #e5382e, #7a1a12 78%);
+  box-shadow:0 3px 7px rgba(0,0,0,.5), inset 0 2px 3px rgba(255,255,255,.25);
+  margin-bottom:-3px; transition:transform .12s}
+.kolBirim:active .kolTop{transform:scale(.94)}
+.kolBirim.cekildi .kolTaban{animation:kolCek .5s ease}
+@keyframes kolCek{0%{transform:translateY(0)} 35%{transform:translateY(22px)} 100%{transform:translateY(0)}}
+.cekBtn{align-self:center}
+.durumSlot{font-size:1rem; font-style:italic; color:var(--soluk); text-align:center; min-height:1.4em}
+.durumSlot.hazir{color:var(--turuncu); font-style:normal}
 
 /* ---- giriş ---- */
 #girisKutu{position:relative; width:min(600px, 92%)}
@@ -200,73 +253,101 @@ header .bosluk{flex:1}
 .afis .ft{font-size:.82rem; margin-top:6px; line-height:1.25; color:var(--soluk)}
 #sonEkran .dugmeler{display:flex; gap:14px; justify-content:center; margin-top:26px}
 
-/* ---- zincir ---- */
+/* ---- film şeridi (ilerleme) ---- */
 #seritKutu{
+  position:relative;
   border-top:1px solid var(--cizgi);
-  background:#171009;
-  padding:20px 34px 22px;
-  overflow-x:auto;
+  background:#100c07;
+  padding:0;
 }
-#serit{
-  display:flex; align-items:center;
-  width:max-content; margin:0 auto; min-height:78px;
+#seritScroll{
+  overflow-x:auto; overflow-y:hidden; padding:16px 34px 18px;
+  scrollbar-width:thin; scrollbar-color:var(--cizgi2) transparent;
 }
-.medalGrup{display:flex; flex:none; align-items:center}
+#seritScroll::-webkit-scrollbar{height:7px}
+#seritScroll::-webkit-scrollbar-track{background:transparent}
+#seritScroll::-webkit-scrollbar-thumb{background:var(--cizgi2); border-radius:4px}
+#seritScroll::-webkit-scrollbar-thumb:hover{background:var(--soluk)}
+/* sağ kenarda daha fazla halka olduğunu belli eden solma */
+#seritKutu::after{
+  content:""; position:absolute; right:0; top:0; bottom:0; width:44px; z-index:4;
+  background:linear-gradient(90deg, transparent, #100c07 88%); pointer-events:none;
+}
+#serit{display:flex; align-items:stretch; width:max-content; margin:0 auto; gap:0}
+.sprocketBand{
+  height:9px; flex:none; align-self:stretch;
+  background-image:repeating-linear-gradient(90deg, var(--cizgi2) 0 6px, transparent 6px 22px);
+  background-position:8px center;
+}
+.seritIc{display:flex; flex-direction:column; gap:8px; width:max-content}
+
+.kareFilm{position:relative; flex:none; width:104px; margin:0 2px}
+.filmGovde{
+  position:relative; aspect-ratio:2/3; border-radius:2px; overflow:hidden; background:#000;
+  box-shadow:0 8px 18px -9px rgba(0,0,0,.8);
+  border-bottom:3px solid var(--cizgi2);
+}
+.filmGovde.d0{border-bottom-color:rgba(95,107,55,.9)}
+.filmGovde.d1{border-bottom-color:rgba(240,154,54,.65)}
+.filmGovde.dp{border-bottom-color:rgba(157,138,99,.65)}
+.filmGovde img.poster{width:100%; height:100%; object-fit:cover; display:block;
+  filter:saturate(.7) sepia(.13) contrast(.97)}
+.filmGovde .posterBos{width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+  background:var(--kagit); color:var(--sessiz); font-size:1.5rem}
+.filmGovde .slate{
+  position:absolute; left:0; right:0; bottom:0; padding:16px 5px 5px;
+  background:linear-gradient(transparent, rgba(10,8,5,.94) 55%);
+  font-family:'Oswald', sans-serif; font-size:.6rem; font-weight:500; color:var(--metin);
+  text-align:center; line-height:1.2; letter-spacing:.02em;
+}
+.filmGovde .slate span{display:block; font-weight:300; font-size:.56rem; color:var(--soluk); margin-top:1px}
+.rozetKume{position:absolute; top:6px; left:6px; z-index:2; display:flex}
 .medal{
-  width:54px; height:54px; border-radius:50%; object-fit:cover; flex:none;
+  width:28px; height:28px; border-radius:50%; object-fit:cover; flex:none;
   border:2px solid var(--cizgi2); background:var(--kagit);
   filter:saturate(.62) sepia(.16);
   display:flex; align-items:center; justify-content:center;
-  color:var(--sessiz); font-size:1.1rem;
+  color:var(--sessiz); font-size:.7rem; box-shadow:0 2px 6px rgba(0,0,0,.5);
 }
-.medalGrup .medal + .medal{margin-left:-18px}
+.rozetKume .medal + .medal{margin-left:-10px}
 .medal.aktifM{border-color:var(--turuncu); animation:nabiz 1.6s ease-in-out infinite}
 @keyframes nabiz{
   0%,100%{box-shadow:0 0 0 0 rgba(240,154,54,.35)}
-  50%{box-shadow:0 0 0 7px rgba(240,154,54,0)}
+  50%{box-shadow:0 0 0 6px rgba(240,154,54,0)}
 }
-.plaka{
-  flex:none; background:var(--kagit); border:1px solid var(--cizgi2);
-  padding:9px 16px 8px; text-align:center; max-width:172px; min-width:112px;
+.filmGovde.bekleyen{background:repeating-linear-gradient(135deg, #171009 0 7px, #14100b 7px 14px);
+  display:flex; align-items:flex-end; justify-content:center; border-bottom-color:var(--turuncu)}
+.filmGovde.bekleyen .posterBos{background:transparent}
+.bosluKare{
+  aspect-ratio:2/3; border-radius:2px; border:1px dashed var(--cizgi);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Oswald', sans-serif; font-size:.62rem; letter-spacing:.16em; color:var(--sessiz);
+  background:repeating-linear-gradient(135deg, #14100a 0 7px, #110d08 7px 14px);
 }
-.plaka .ft{
-  font-size:1rem; font-weight:600; line-height:1.12; color:var(--metin);
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-}
-.plaka .fy{
-  font-family:'Oswald', sans-serif; font-weight:300; font-size:.66rem;
-  letter-spacing:.26em; color:var(--soluk); margin-top:2px;
-}
-.plaka.d0{border-bottom:2px solid rgba(95,107,55,.9)}
-.plaka.d1{border-bottom:2px solid rgba(240,154,54,.65)}
-.plaka.dp{border-bottom:2px solid rgba(157,138,99,.65)}
-.plaka.ghost{
-  border:1px dashed var(--cizgi); background:transparent; color:var(--sessiz);
-  font-family:'Oswald', sans-serif; font-weight:300; font-size:.72rem;
-  letter-spacing:.22em; padding:14px 12px; min-width:64px;
-}
-@keyframes projeksiyon{
-  0%{opacity:0} 12%{opacity:.9} 22%{opacity:.35} 34%{opacity:1}
-  46%{opacity:.7} 60%{opacity:1}
-}
-.plaka.yeni{animation:projeksiyon .55s ease-out}
-.bag{flex:none; width:34px; height:16px; position:relative; margin:0 3px}
-.bag::before, .bag::after{
-  content:""; position:absolute; top:50%; transform:translateY(-50%);
-  width:19px; height:11px; border:2px solid var(--sessiz); border-radius:50%;
-}
-.bag::before{left:0} .bag::after{right:0}
-.bag.soluk::before, .bag.soluk::after{border-color:var(--cizgi)}
+.makasIkon{position:absolute; left:-13px; top:50%; transform:translateY(-50%); z-index:5;
+  width:22px; height:22px; pointer-events:none}
+.makasIkon svg{width:100%; height:100%; filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.bladeUst{transform-origin:18px 11px}
+.bladeAlt{transform-origin:18px 11px}
+.yeniKare .bladeUst{animation:kesUst .5s ease-out .1s 1 both}
+.yeniKare .bladeAlt{animation:kesAlt .5s ease-out .1s 1 both}
+.yeniKare .makasIkon{animation:makasSonme .35s ease-in .55s 1 forwards}
+@keyframes kesUst{0%{transform:rotate(-18deg)} 100%{transform:rotate(3deg)}}
+@keyframes kesAlt{0%{transform:rotate(18deg)} 100%{transform:rotate(-3deg)}}
+@keyframes makasSonme{to{opacity:0}}
+@keyframes cerceveGir{from{opacity:0; transform:translateX(-12px) scale(.94)} to{opacity:1; transform:none}}
+.yeniKare{animation:cerceveGir .45s ease-out .55s both}
 
 @media (max-width:900px){
   header{padding:12px 16px; gap:14px; flex-wrap:wrap}
   header h1{letter-spacing:.35em}
   #sahne{padding:30px 4vw 40px}
   .kart{width:158px}
-  #seritKutu{padding:0 10px}
+  #seritScroll{padding:14px 16px 16px}
+  .kareFilm{width:86px}
 }
 @media (prefers-reduced-motion:reduce){
-  .plaka.yeni, .kart.beliris, .kart.makara img, .medal.aktifM{animation:none}
+  .yeniKare, .kart.beliris, .medal.aktifM, .ampuller i, .kolBirim.cekildi .kolTaban{animation:none}
   .kart, .dugme{transition:none}
 }
 </style>
@@ -306,8 +387,12 @@ header .bosluk{flex:1}
     </div>
   </div>
 </main>
-<div id="seritKutu"><div id="serit"></div></div>
+<div id="seritKutu"><div id="seritScroll"><div class="seritIc">
+  <div class="sprocketBand" id="sprocketUst"></div>
+  <div id="serit"></div>
+  <div class="sprocketBand" id="sprocketAlt"></div>
+</div></div></div>
 <script src="veri.js?v=t4"></script>
-<script src="oyun.js?v=t7"></script>
+<script src="oyun.js?v=t8"></script>
 </body>
 </html>

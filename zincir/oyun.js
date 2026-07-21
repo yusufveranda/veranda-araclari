@@ -189,10 +189,17 @@ function filmChip(fid, sinif){
 }
 function kaynakYaz(html){ kaynakEl.innerHTML = html || ""; }
 
-// ---- çekiliş makarası ------------------------------------------------------
-// pool içindeki yüzler hızla değişir, hedefte durur; bittiğinde devam() çağrılır
+// ---- çekiliş: slot makinesi -------------------------------------------------
+// hedef baştan belli (adillik/resume için); makara sadece görsel açığa çıkarma.
+// Otomatik dönmez: makine "hazır" görünür, oyuncu kolu çekince (ya da tuşa
+// basınca) döner ve hedefte durur; bittiğinde devam() çağrılır.
+const KARE_H = 118; // .pencere / .makaraSerit .kare yüksekliğiyle birebir eşleşmeli
 let makaraZamanlayici = null;
 let donuyor = false; // çekiliş sürerken zincir ucunda hedefi gösterme
+function kareHTML(pid){
+  return (P[pid].p ? `<img src="${IMG}${P[pid].p}" alt="">` : `<div class="bos">?</div>`)
+    + `<div class="ad">${P[pid].n}</div>`;
+}
 function makara(pool, hedef, etiket, bitis){
   clearTimeout(makaraZamanlayici);
   const devam = () => { donuyor = false; bitis(); };
@@ -203,28 +210,50 @@ function makara(pool, hedef, etiket, bitis){
   for (let i = 0; i < 9 && adaylar.length; i++)
     sira.push(adaylar[Math.floor(Math.random()*adaylar.length)]);
   sira.push(hedef);
-  const bekle = [90,90,110,130,160,200,260,330,420,540];
   girisGoster(false);
   isimEl.textContent = "…";
-  altEl.textContent = etiket;
+  altEl.textContent = "";
   const k = document.createElement("div");
-  k.className = "kart makara";
-  // tüm kareler baştan DOM'da (fotoğraflar paralel yüklensin), tek tek gösterilir
-  k.innerHTML = `<div class="makaraKat">` + sira.map((q,ix) =>
-    `<div class="kat" data-i="${ix}">` +
-    (P[q].p ? `<img src="${IMG}${P[q].p}" alt="">` : `<div class="bos">?</div>`) +
-    `<div class="ad">${P[q].n}</div></div>`).join("") + `</div>`;
+  k.className = "slotMakine";
+  k.innerHTML =
+    `<div class="kabin">
+      <div class="marki">${etiket}</div>
+      <div class="ampuller">${"<i></i>".repeat(7)}</div>
+      <div class="pencere">
+        <div class="hedefCizgi"></div>
+        <div class="makaraSerit">${sira.map(q => `<div class="kare">${kareHTML(q)}</div>`).join("")}</div>
+      </div>
+      <div class="kolBirim" tabindex="0" role="button" aria-label="kolu çek, makarayı döndür">
+        <div class="kolTop"></div><div class="kolTaban"></div>
+      </div>
+    </div>
+    <button class="dugme cekBtn">🎰 kolu çek</button>
+    <div class="durumSlot hazir">hazır, kolu çek</div>`;
   kartEl.appendChild(k); // solo çekilişte çağıran kartları temizler; partner'da soldaki durur
-  const katlar = k.querySelectorAll(".kat");
-  let i = 0;
-  const adimAt = () => {
-    katlar.forEach((el,ix)=>el.style.display = ix===i ? "" : "none");
-    Ses.tik(i / sira.length);
-    i++;
-    if (i < sira.length) makaraZamanlayici = setTimeout(adimAt, bekle[i] || 400);
-    else makaraZamanlayici = setTimeout(devam, 340);
-  };
-  adimAt();
+  const seritEl2 = k.querySelector(".makaraSerit");
+  const kol = k.querySelector(".kolBirim");
+  const btn = k.querySelector(".cekBtn");
+  const durumEl = k.querySelector(".durumSlot");
+  let cekildi = false;
+  const tikZaman = [90,180,290,420,580,780,1040,1370,1790,2330];
+  function cek(){
+    if (cekildi) return;
+    cekildi = true;
+    kol.classList.add("cekildi");
+    btn.disabled = true;
+    durumEl.textContent = "dönüyor…";
+    durumEl.classList.remove("hazir");
+    const toplam = (sira.length - 1) * KARE_H;
+    requestAnimationFrame(() => {
+      seritEl2.style.transition = "transform 2.33s cubic-bezier(.13,.85,.1,1)";
+      seritEl2.style.transform = `translateY(-${toplam}px)`;
+    });
+    tikZaman.forEach((t, i) => makaraZamanlayici = setTimeout(() => Ses.tik(i / tikZaman.length), t));
+    makaraZamanlayici = setTimeout(devam, 2380);
+  }
+  kol.onclick = cek;
+  kol.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); cek(); } };
+  btn.onclick = cek;
 }
 
 // ---- zincir çizimi ---------------------------------------------------------
@@ -243,6 +272,11 @@ function sahneKisileri(){
   if (st.tip === "bonus") return st.secili.length ? st.secili : st.besli;
   return [];
 }
+const MAKAS_SVG =
+  `<div class="makasIkon"><svg viewBox="0 0 36 22" xmlns="http://www.w3.org/2000/svg">
+    <g class="bladeUst" fill="#c9c2b2"><rect x="16" y="9.3" width="18" height="2.8" rx="1.3"/><circle cx="5" cy="5" r="4.4" fill="none" stroke="#c9c2b2" stroke-width="2.2"/></g>
+    <g class="bladeAlt" fill="#c9c2b2"><rect x="16" y="9.3" width="18" height="2.8" rx="1.3"/><circle cx="5" cy="17" r="4.4" fill="none" stroke="#c9c2b2" stroke-width="2.2"/></g>
+  </svg></div>`;
 function seritCiz(yeniIdx){
   // log'u [kişiler]→film bölümlerine ayır
   const bolum = [];
@@ -255,25 +289,32 @@ function seritCiz(yeniIdx){
   const par = [];
   for (let i = 0; i < bolum.length; i++){
     const b = bolum[i];
-    if (b.kisiler.length){
-      par.push(`<div class="medalGrup">${b.kisiler.slice(-2).map(q=>medalHTML(q)).join("")}</div>`);
-      par.push(`<div class="bag"></div>`);
-    }
-    const [t, y] = FILMS[b.fid];
-    par.push(`<div class="plaka ${emojiSinif(S.emoji[i]||"")}${i===yeniIdx?" yeni":""}" title="${t} (${y})">
-      <div class="ft">${t}</div><div class="fy">${y}</div></div>`);
-    if (i < bolum.length - 1) par.push(`<div class="bag"></div>`);
+    const [t, y, , , poster] = FILMS[b.fid];
+    const yeni = i === yeniIdx;
+    par.push(`<div class="kareFilm${yeni ? " yeniKare" : ""}" title="${t} (${y})">
+      ${yeni ? MAKAS_SVG : ""}
+      <div class="filmGovde ${emojiSinif(S.emoji[i]||"")}">
+        <div class="rozetKume">${b.kisiler.slice(-2).map(q=>medalHTML(q)).join("")}</div>
+        ${poster ? `<img class="poster" src="${AFIS_IMG}${poster}" alt="">` : `<div class="posterBos">🎬</div>`}
+        <div class="slate">${t}<span>${y}</span></div>
+      </div>
+    </div>`);
   }
-  // aktif uç: sahnedeki kişiler nabız halkasıyla
+  // aktif uç: henüz filmi yazılmamış, sahnedeki kişi(ler)
   const aktif = sahneKisileri();
+  let dolu = bolum.length;
   if (aktif.length){
-    if (bolum.length) par.push(`<div class="bag"></div>`);
-    par.push(`<div class="medalGrup">${aktif.slice(0,3).map(q=>medalHTML(q, true)).join("")}</div>`);
+    dolu++;
+    par.push(`<div class="kareFilm">
+      <div class="filmGovde bekleyen">
+        <div class="rozetKume">${aktif.slice(0,2).map(q=>medalHTML(q, true)).join("")}</div>
+        <div class="posterBos">?</div>
+      </div>
+    </div>`);
   }
-  // kalan halkalar: hayalet plakalar
-  for (let i = bolum.length; i < TAVAN; i++){
-    par.push(`<div class="bag soluk"></div>`);
-    par.push(`<div class="plaka ghost">${String(i+1).padStart(2,"0")}</div>`);
+  // kalan halkalar: pozlanmamış kareler
+  for (let i = dolu; i < TAVAN; i++){
+    par.push(`<div class="kareFilm"><div class="bosluKare">${String(i+1).padStart(2,"0")}</div></div>`);
   }
   seritEl.innerHTML = par.join("");
 }
