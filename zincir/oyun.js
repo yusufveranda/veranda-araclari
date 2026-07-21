@@ -61,6 +61,29 @@ for (const id in ZD.people){
 const OYUNCU = new Set();
 for (const id in P) if (P[id].cast.size) OYUNCU.add(+id);
 
+// ---- rastgele çekilişte güncellik ağırlığı ---------------------------------
+// kullanıcı isteği (2026-07-21): "yaşlı oyuncular daha az gelsin" — sadece
+// başlangıç havuzu değil, oyun içi yan oyuncu/partner çekilişleri de.
+// Bir kişinin en yeni (havuzdaki) filminin yılına göre ağırlık: son ~12 yıl
+// tam ağırlık, sonrası üstel azalış (tamamen elenmiyor, sadece seyrekleşiyor).
+const GUNCEL_YIL = 2026;
+const AGIRLIK = {};
+for (const id in P){
+  let enYeni = 0;
+  for (const fid of P[id].cast.keys()){ const f = FILMS[fid]; if (f && +f[1] > enYeni) enYeni = +f[1]; }
+  for (const fid of (P[id].dir || [])){ const f = FILMS[fid]; if (f && +f[1] > enYeni) enYeni = +f[1]; }
+  const fark = enYeni ? GUNCEL_YIL - enYeni : 40;
+  AGIRLIK[id] = fark <= 12 ? 1 : Math.max(0.06, Math.pow(0.9, fark - 12));
+}
+function rndAgirlikli(arr){
+  if (arr.length <= 1) return arr[0];
+  let toplam = 0;
+  const agirliklar = arr.map(id => { const a = AGIRLIK[id] || 0.1; toplam += a; return a; });
+  let r = Math.random() * toplam;
+  for (let i = 0; i < arr.length; i++){ r -= agirliklar[i]; if (r <= 0) return arr[i]; }
+  return arr[arr.length - 1];
+}
+
 const F2A = new Map();                  // film -> ilk-8 usable oyuncular
 for (const id of OYUNCU){
   for (const [f, o] of P[id].cast) if (o <= ORDER_MAX){
@@ -380,7 +403,7 @@ function pick2Sahne(fid, sessiz){
   const adaylar = (F2A.get(fid) || []).filter(q => !kk.has(q) && partnerler(q).length);
   if (!adaylar.length){
     const yedek = yanOyuncular(fid);
-    if (yedek.length) return soloSahne(rnd(yedek), "yan oyuncu", fid, false, yedek);
+    if (yedek.length) return soloSahne(rndAgirlikli(yedek), "yan oyuncu", fid, false, yedek);
     return bonusSahne(); // bu koldan devamı yok, oyunun eksiği; zincir kopmasın
   }
   let secilen;
@@ -426,7 +449,7 @@ function partnerSahne(pid, haricPid, sessiz, zorlaEs, zorlaHavuz){
   } else {
     adaylar = zorlaHavuz || partnerler(pid, haricPid);
     if (!adaylar.length) return bonusSahne(); // oyunun eksiği, zincir kopmasın
-    es = rnd(adaylar);
+    es = rndAgirlikli(adaylar);
     S.stage = {tip:"pair", a:pid, b:es, bonus: !!zorlaHavuz, havuz: zorlaHavuz || null};
     if (!S.kisi.includes(es)) S.kisi.push(es);
     S.log.push({tip:"kisi", id:es});
@@ -524,13 +547,13 @@ function cevap(fid){
   if (st.tip === "solo" && S.tur === 1){
     const adaylar = yanOyuncular(fid);
     if (!adaylar.length) return pick2Sahne(fid);
-    soloSahne(rnd(adaylar), "yan oyuncu", fid, false, adaylar);
+    soloSahne(rndAgirlikli(adaylar), "yan oyuncu", fid, false, adaylar);
   } else if (st.tip === "solo" && S.tur === 2){
     const d = FILMS[fid][3];
     if (P[d] && yonetilebilirF(d).length && !kullanilanKisi().has(d)) yonetmenSahne(d, fid);
     else {
       const adaylar = yanOyuncular(fid);
-      if (adaylar.length) soloSahne(rnd(adaylar), "yan oyuncu", fid, false, adaylar);
+      if (adaylar.length) soloSahne(rndAgirlikli(adaylar), "yan oyuncu", fid, false, adaylar);
       else pick2Sahne(fid);
     }
   } else {
@@ -547,7 +570,7 @@ pasEl.onclick = () => {
   if (st.tip === "solo" && st.kaynak){
     const adaylar = yanOyuncular(st.kaynak, st.pid);
     if (adaylar.length){
-      const y = rnd(adaylar);
+      const y = rndAgirlikli(adaylar);
       S.pas--; S.pasBuTur = true;
       S.log.push({tip:"kisi", id:y});
       donuyor = true;
@@ -560,7 +583,7 @@ pasEl.onclick = () => {
   } else if (st.tip === "dir"){
     const adaylar = yanOyuncular(st.kaynak);
     if (adaylar.length){
-      const y = rnd(adaylar);
+      const y = rndAgirlikli(adaylar);
       S.pas--; S.pasBuTur = true;
       S.log.push({tip:"kisi", id:y});
       donuyor = true;
@@ -577,7 +600,7 @@ pasEl.onclick = () => {
     const adaylar = (st.bonus && st.havuz) ? st.havuz.filter(q => q !== st.b) : partnerler(st.a, st.b);
     if (adaylar.length){
       const eski = st.b;
-      const es = rnd(adaylar);
+      const es = rndAgirlikli(adaylar);
       S.pas--; S.pasBuTur = true;
       S.stage = {tip:"pair", a:st.a, b:es, bonus:st.bonus, havuz:st.havuz};
       if (!S.kisi.includes(es)) S.kisi.push(es);
