@@ -24,6 +24,11 @@
   .wrap{max-width:min(96vw, 1900px); margin:0 auto;}
   h1{font-family:"Special Elite",cursive; font-size:30px; color:var(--accent); margin-bottom:4px;}
   .tagline{font-size:13px; color:var(--muted); margin-bottom:22px;}
+  .ust{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;}
+  .ust-dugmeler{display:flex; gap:8px;}
+  .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px;
+    padding:8px 12px; font-size:13px; cursor:pointer;}
+  .mini-btn:hover{border-color:var(--accent); color:var(--accent);}
 
   .sekmeler{display:flex; gap:8px; margin-bottom:22px; max-width:600px;}
   .sekme-btn{flex:1; background:var(--card); border:1px solid var(--border); color:var(--muted);
@@ -64,9 +69,15 @@
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Çehre</h1>
-    <p class="tagline">Yüz kesitinden günün ünlüsünü çıkar.</p>
+  <header class="ust">
+    <div>
+      <h1>Çehre</h1>
+      <p class="tagline">Yüz kesitinden günün ünlüsünü çıkar.</p>
+    </div>
+    <div class="ust-dugmeler">
+      <button id="randomBtn" class="mini-btn" hidden>🎲 Rastgele</button>
+      <button id="girisDug" class="mini-btn">Google ile giriş</button>
+    </div>
   </header>
 
   <div class="sekmeler">
@@ -94,6 +105,10 @@
     </div>
   </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
 <script src="puzzles.js"></script>
 <script>
 const $ = id => document.getElementById(id);
@@ -113,6 +128,29 @@ function gununKisisi(sekmeAdi){
   return {qid, ...KISILER[qid]};
 }
 
+// Admine özel sonsuz mod: bir sekme için rastgele bir kişi seçilince o sekme
+// günün gerçek bulmacasının yerine geçici olarak bunu gösterir (kalıcı değil,
+// sayfa yenilenince günün gerçek bulmacasına döner, localStorage'a yazılmaz).
+let rastgele = {burun: null, gozler: null, agiz: null};
+function aktifKisi(sekmeAdi){
+  return rastgele[sekmeAdi] ? {qid: rastgele[sekmeAdi].qid, ...KISILER[rastgele[sekmeAdi].qid]} : gununKisisi(sekmeAdi);
+}
+function aktifDurum(sekmeAdi){
+  return rastgele[sekmeAdi] ? rastgele[sekmeAdi].durum : state[sekmeAdi];
+}
+function pickRandom(){
+  const havuz = SEKME[aktifSekme];
+  if (!havuz.length) return;
+  const simdiki = aktifKisi(aktifSekme).qid;
+  let qid;
+  do { qid = havuz[Math.floor(Math.random() * havuz.length)]; }
+  while (havuz.length > 1 && qid === simdiki);
+  rastgele[aktifSekme] = {qid, durum: bosDurum()};
+  secilen = null;
+  hideAc();
+  renderPortre();
+}
+
 let aktifSekme = "burun";
 
 const PUAN = [100, 80, 60, 40, 25, 15];
@@ -123,6 +161,7 @@ function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }ca
 function persist(){
   const save = loadSave();
   for (const s of ["burun", "gozler", "agiz"]) {
+    if (rastgele[s]) continue;   // rastgele moddaki tahminler kalıcı olmaz
     save[s] = save[s] || {};
     save[s][gunIndex(s)] = {...state[s], qid: gununKisisi(s).qid};
   }
@@ -152,8 +191,8 @@ function zoomSeviyesi(wrong){
 }
 
 function renderPortre(){
-  const kisi = gununKisisi(aktifSekme);
-  const s = state[aktifSekme];
+  const kisi = aktifKisi(aktifSekme);
+  const s = aktifDurum(aktifSekme);
   const seviye = s.over ? 3 : zoomSeviyesi(s.wrong);
   $("kesitBuyuk").innerHTML = `<img src="${kisi.g[String(seviye)]}" alt="yüz kesiti">`;
   $("zoomEtiket").textContent = `Kesit ${seviye}/3`;
@@ -233,9 +272,9 @@ $("shareBtn").addEventListener("click", async () => {
 });
 
 function submit(){
-  const s = state[aktifSekme];
+  const s = aktifDurum(aktifSekme);
   if (s.over || !secilen) return;
-  const kisi = gununKisisi(aktifSekme);
+  const kisi = aktifKisi(aktifSekme);
   const secIsim = secilen.isim;
   let yanlisMesaj = null;
   if (secilen.qid === kisi.qid){
@@ -280,6 +319,16 @@ document.querySelectorAll(".sekme-btn").forEach(btn => {
 });
 document.querySelector('.sekme-btn[data-sekme="burun"]').classList.add("aktif");
 renderPortre();
+
+$("randomBtn").addEventListener("click", pickRandom);
+
+/* ===================== admine özel: giriş + sonsuz mod ===================== */
+const girisDug = $("girisDug");
+girisDug.onclick = () => { if (window.VF && VF.kullanici) VF.cikisYap(); else if (window.VF) VF.girisYap().catch(e => console.error(e)); };
+if (window.VF) VF.kullaniciDinle(u => {
+  girisDug.textContent = u ? (u.ad + " · çıkış") : "Google ile giriş";
+  if (VF.adminMi) $("randomBtn").hidden = false;
+});
 </script>
 <script src="../ortak/nav-panel.js"></script>
 </body>
