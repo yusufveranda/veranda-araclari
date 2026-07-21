@@ -100,8 +100,11 @@ body::before{
   color:var(--soluk); text-align:center; padding:11px 4px 13px;
 }
 
+#adminKutu{
+  display:flex; justify-content:center; gap:8px; margin-top:10px;
+}
 #adminSecici{
-  display:block; margin:10px auto 0; font-family:'Libre Baskerville',serif; font-size:13px;
+  font-family:'Libre Baskerville',serif; font-size:13px;
   color:var(--murekkep); background:var(--kart); border:1px solid var(--cizgi); border-radius:8px; padding:6px 10px;
 }
 
@@ -262,7 +265,10 @@ footer{
       <p class="plaka">günün tablosu</p>
     </div>
 
-    <select id="adminSecici" style="display:none" aria-label="bulmaca seç (admin)"></select>
+    <div id="adminKutu" style="display:none">
+      <select id="adminSecici" aria-label="bulmaca seç (admin)"></select>
+      <button class="ikonbtn" id="adminRastgeleBtn" type="button">rastgele</button>
+    </div>
 
     <div id="gercekAsama">
       <p class="soru">bu, gerçek ve tanınmış bir eser mi; yoksa değersiz ya da çakma bir tablo mu?</p>
@@ -375,6 +381,7 @@ footer{
       if(e.key === 'Enter') ressamGonder();
     });
     document.getElementById('pesEtBtn').addEventListener('click', pesEt);
+    document.getElementById('fiyatGonderBtn').addEventListener('click', fiyatGonder);
 
     fiyatCarkiCiz();
     ipucularinCiz();
@@ -384,22 +391,30 @@ footer{
     if(geriYuklendi) durumuUygula();
   }
 
+  function bulmacayaGit(i){
+    const q2 = new URLSearchParams(location.search);
+    q2.set('meta', '1');
+    q2.set('bulmaca', String(i));
+    location.search = q2.toString();
+  }
+
   function adminSeciciDoldur(){
     const sec = document.getElementById('adminSecici');
     const sira = MUZAYEDE_GUNLER.sira;
+    // cevabı ele vermemek için seçenekler sadece sıra numarası gösterir,
+    // ressam/tablo adı yazmaz
     sec.innerHTML = '<option value="">sonsuz mod: bulmaca seç</option>' +
-      sira.map((id, i) => {
-        const t = TABLOLAR.find(x => x.id === id);
-        const r = RESSAMLAR.find(x => x.id === t.ressam_id);
-        return '<option value="' + i + '">' + (i + 1) + '. ' + r.isim + ' - ' + t.tablo_adi + '</option>';
-      }).join('');
+      sira.map((id, i) => '<option value="' + i + '">bulmaca ' + (i + 1) + '</option>').join('');
     sec.value = (_METAB !== null) ? String(_METAB) : '';
     sec.addEventListener('change', () => {
       if(sec.value === '') return;
-      const q2 = new URLSearchParams(location.search);
-      q2.set('meta', '1');
-      q2.set('bulmaca', sec.value);
-      location.search = q2.toString();
+      bulmacayaGit(parseInt(sec.value, 10));
+    });
+    document.getElementById('adminRastgeleBtn').addEventListener('click', () => {
+      const sira2 = MUZAYEDE_GUNLER.sira;
+      let i;
+      do{ i = Math.floor(Math.random() * sira2.length); }while(i === GUN % sira2.length && sira2.length > 1);
+      bulmacayaGit(i);
     });
   }
 
@@ -453,7 +468,7 @@ function fiyatCarkiCiz(){
   for(let i = 0; i < n; i++){
     const hane = document.createElement('div');
     hane.className = 'hane';
-    if(i > 0 && (n - i) % 3 === 0) hane.classList.add('virgul-sonrasi');
+    if(i < n - 1 && (i + 1) % 3 === 0) hane.classList.add('virgul-sonrasi');
     hane.innerHTML =
       '<button type="button" class="hane-yukari" data-i="' + i + '" aria-label="basamağı artır">&#9650;</button>' +
       '<span class="hane-basamak" data-i="' + i + '">' + window.MUZ.state.fiyatBasamaklari[i] + '</span>' +
@@ -806,7 +821,7 @@ girisDug.onclick = () => { if(VF.kullanici) VF.cikisYap(); else VF.girisYap().ca
 if(window.VF) VF.kullaniciDinle(u => {
   girisDug.textContent = u ? (u.ad + ' · çıkış') : 'Google ile giriş';
   if(VF.adminMi){
-    document.getElementById('adminSecici').style.display = '';
+    document.getElementById('adminKutu').style.display = '';
   }
 });
 </script>
