@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Muzayede veri üretici: veri/muzayede_ornek.py -> site/muzayede/{data/*.json, gunler.js}
+# Muzayede veri üretici: veri/muzayede_ornek.py -> muzayede/{data/*.json, gunler.js}
 # Doğrulama başarısızsa hiçbir dosya yazılmaz (exit 1).
 import json, sys
 from pathlib import Path
@@ -8,7 +8,7 @@ KOK = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from muzayede_ornek import DATA
 
-SITE = KOK / "site" / "muzayede"
+SITE = KOK / "muzayede"
 RISK_GECERLI = {"public_domain", "dogrulanmis_serbest", "dikkat"}
 
 def dogrula():
@@ -65,7 +65,7 @@ def main():
     js += "window.MUZAYEDE_GUNLER=" + json.dumps(gunler, ensure_ascii=False, separators=(",", ":")) + ";\n"
     (SITE / "gunler.js").write_text(js, encoding="utf-8")
 
-    print(f"yazıldı: {len(ressamlar)} ressam, {len(tablolar)} tablo -> site/muzayede/")
+    print(f"yazıldı: {len(ressamlar)} ressam, {len(tablolar)} tablo -> muzayede/")
 
 if __name__ == "__main__":
     main()
