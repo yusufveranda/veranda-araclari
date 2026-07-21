@@ -151,6 +151,51 @@ function ipucuAc(kategoriId){
   btn.dataset.acik = '1';
   btn.textContent = k.etiket + ': ' + k.metin(window.MUZ.ressam, window.MUZ.tablo);
 }
+
+function ressamPuanHesapla(){
+  if(!window.MUZ.state.ressamBulundu) return 0;
+  return Math.max(0, 100 - 25 * window.MUZ.state.hintCount);
+}
+
+function fiyatPuanHesapla(tahmin, gercek){
+  if(tahmin <= 0 || gercek <= 0) return 0;
+  const fark = Math.abs(Math.log10(tahmin) - Math.log10(gercek));
+  return Math.max(0, Math.round(100 * (1 - fark)));
+}
+
+function fiyatAsamasiniAc(){
+  document.getElementById('fiyatAsama').style.display = '';
+  document.getElementById('fiyatGiris').focus();
+}
+
+function fiyatGonder(){
+  const tahmin = parseFloat(document.getElementById('fiyatGiris').value);
+  if(!(tahmin > 0)){
+    document.getElementById('fiyatMesaj').textContent = 'geçerli bir sayı gir';
+    return;
+  }
+  const gercek = window.MUZ.tablo.fiyat_usd;
+  const fiyatPuan = fiyatPuanHesapla(tahmin, gercek);
+  const ressamPuan = ressamPuanHesapla();
+  const toplam = fiyatPuan + ressamPuan;
+
+  document.getElementById('fiyatAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
+
+  const sonuc = document.getElementById('sonucKutu');
+  sonuc.style.display = '';
+  sonuc.innerHTML =
+    '<p>gerçek fiyat: $' + gercek.toLocaleString('en-US') + ' - ' +
+    window.MUZ.tablo.muzayede_evi + ', ' + window.MUZ.tablo.satis_yili + '</p>' +
+    '<p><a href="' + window.MUZ.tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></p>' +
+    '<p>ressam puanı: ' + ressamPuan + ' / fiyat puanı: ' + fiyatPuan + ' / toplam: ' + toplam + '</p>';
+
+  window.MUZ.state.toplamPuan = toplam;
+}
+
+document.getElementById('fiyatGonderBtn').addEventListener('click', fiyatGonder);
+document.getElementById('fiyatGiris').addEventListener('keydown', e => {
+  if(e.key === 'Enter') fiyatGonder();
+});
 </script>
 </body>
 </html>
