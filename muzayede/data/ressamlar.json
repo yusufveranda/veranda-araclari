@@ -62,5 +62,13 @@
   "ulke": "Meksika",
   "akim": "Sürrealizm",
   "risk_seviyesi": "dikkat"
+ },
+ {
+  "id": "stil-abraham-pether",
+  "isim": "Bilinmiyor (Abraham Pether tarzında)",
+  "dogum_olum": "1752-1812",
+  "ulke": "İngiltere",
+  "akim": "Taklit/atfedilen",
+  "risk_seviyesi": "public_domain"
  }
 ]

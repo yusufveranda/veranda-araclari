@@ -8,7 +8,8 @@
   "fiyat_usd": 450300000,
   "satis_yili": 2017,
   "muzayede_evi": "Christie's",
-  "kaynak_url": "https://en.wikipedia.org/wiki/Salvator_Mundi_(Leonardo)"
+  "kaynak_url": "https://en.wikipedia.org/wiki/Salvator_Mundi_(Leonardo)",
+  "gercek": true
  },
  {
   "id": "pablo-picasso",
@@ -19,7 +20,8 @@
   "fiyat_usd": 179400000,
   "satis_yili": 2015,
   "muzayede_evi": "Christie's",
-  "kaynak_url": "https://en.wikipedia.org/wiki/Les_Femmes_d%27Alger"
+  "kaynak_url": "https://en.wikipedia.org/wiki/Les_Femmes_d%27Alger",
+  "gercek": true
  },
  {
   "id": "vincent-van-gogh",
@@ -30,7 +32,8 @@
   "fiyat_usd": 82500000,
   "satis_yili": 1990,
   "muzayede_evi": "Christie's",
-  "kaynak_url": "https://en.wikipedia.org/wiki/Portrait_of_Dr._Gachet"
+  "kaynak_url": "https://en.wikipedia.org/wiki/Portrait_of_Dr._Gachet",
+  "gercek": true
  },
  {
   "id": "claude-monet",
@@ -41,7 +44,8 @@
   "fiyat_usd": 110700000,
   "satis_yili": 2019,
   "muzayede_evi": "Sotheby's",
-  "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings"
+  "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
+  "gercek": true
  },
  {
   "id": "gustav-klimt",
@@ -52,7 +56,8 @@
   "fiyat_usd": 108400000,
   "satis_yili": 2023,
   "muzayede_evi": "Sotheby's",
-  "kaynak_url": "https://en.wikipedia.org/wiki/Lady_with_a_Fan_(Klimt)"
+  "kaynak_url": "https://en.wikipedia.org/wiki/Lady_with_a_Fan_(Klimt)",
+  "gercek": true
  },
  {
   "id": "jean-michel-basquiat",
@@ -63,7 +68,8 @@
   "fiyat_usd": 110500000,
   "satis_yili": 2017,
   "muzayede_evi": "Sotheby's",
-  "kaynak_url": "https://en.wikipedia.org/wiki/Untitled_(1982_Basquiat_skull_painting)"
+  "kaynak_url": "https://en.wikipedia.org/wiki/Untitled_(1982_Basquiat_skull_painting)",
+  "gercek": true
  },
  {
   "id": "andy-warhol",
@@ -74,7 +80,8 @@
   "fiyat_usd": 195000000,
   "satis_yili": 2022,
   "muzayede_evi": "Christie's",
-  "kaynak_url": "https://en.wikipedia.org/wiki/Shot_Marilyns"
+  "kaynak_url": "https://en.wikipedia.org/wiki/Shot_Marilyns",
+  "gercek": true
  },
  {
   "id": "frida-kahlo",
@@ -85,6 +92,19 @@
   "fiyat_usd": 54700000,
   "satis_yili": 2025,
   "muzayede_evi": "Sotheby's",
-  "kaynak_url": "https://hyperallergic.com/frida-kahlo-becomes-most-expensive-woman-artist-at-auction/"
+  "kaynak_url": "https://hyperallergic.com/frida-kahlo-becomes-most-expensive-woman-artist-at-auction/",
+  "gercek": true
+ },
+ {
+  "id": "stil-abraham-pether",
+  "ressam_id": "stil-abraham-pether",
+  "tablo_adi": "Moonlit Landscape with Lake and Ruined Abbey",
+  "tablo_yili": "19. yüzyıl",
+  "gorsel": "https://upload.wikimedia.org/wikipedia/commons/1/10/Abraham_Pether_%281756-1812%29_%28style_of%29_-_Moonlit_Landscape_with_Lake_and_Ruined_Abbey_-_YORAG_%2C_599_-_York_Art_Gallery.jpg",
+  "fiyat_usd": 425,
+  "satis_yili": 2023,
+  "muzayede_evi": "Bonhams",
+  "kaynak_url": "https://en.wikipedia.org/wiki/Abraham_Pether",
+  "gercek": false
  }
 ]

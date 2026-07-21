@@ -82,3 +82,20 @@ DATA = [
      54700000, 2025, "Sotheby's",
      "https://hyperallergic.com/frida-kahlo-becomes-most-expensive-woman-artist-at-auction/"),
 ]
+
+# CAKMA: gercek=False isaretlenen, degersiz/taninmayan tablolar. "gercek mi
+# cakma mi" sorusunun cakma tarafini besler. Ayni alan sirasini kullanir,
+# ama fiyat_usd burada gercekten dusuk (yuzlerce/binlerce dolar). Ressam
+# gercek ve isimli olsa da (Wikimedia Commons uzerinden), tur bu asamada
+# ressam tahminine gecmiyor, o yuzden risk_seviyesi/dogum_olum gibi alanlar
+# sadece kayit tutarliligi icin dolduruluyor, oyunda kullanilmiyor.
+CAKMA_DATA = [
+    ("stil-abraham-pether", "Bilinmiyor (Abraham Pether tarzında)", "1752-1812", "İngiltere",
+     "Taklit/atfedilen", "public_domain",
+     "Moonlit Landscape with Lake and Ruined Abbey", "19. yüzyıl",
+     # York Art Gallery koleksiyonundaki "style of" (Abraham Pether'in
+     # kendisi degil, taklit) eser, Wikimedia Commons'tan kamu malı.
+     "https://upload.wikimedia.org/wikipedia/commons/1/10/Abraham_Pether_%281756-1812%29_%28style_of%29_-_Moonlit_Landscape_with_Lake_and_Ruined_Abbey_-_YORAG_%2C_599_-_York_Art_Gallery.jpg",
+     425, 2023, "Bonhams",
+     "https://en.wikipedia.org/wiki/Abraham_Pether"),
+]

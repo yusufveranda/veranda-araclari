@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Muzayede: ressamı ve fiyatı bil</title>
-<meta name="description" content="Bir tablo gör, ressamını ve gerçek müzayede satış fiyatını tahmin et.">
+<meta name="description" content="Bir tablo gör, gerçek mi çakma mı anla, fiyatını ve ressamını tahmin et.">
 <meta property="og:image" content="https://verandatools.com/gorsel/doku.jpg">
 <meta name="theme-color" content="#1C1510">
 <meta property="og:title" content="Muzayede">
-<meta property="og:description" content="Bir tablo gör, ressamını ve gerçek satış fiyatını tahmin et.">
+<meta property="og:description" content="Bir tablo gör, gerçek mi çakma mı anla, fiyatını ve ressamını tahmin et.">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231C1510'/%3E%3Crect x='16' y='12' width='32' height='26' rx='2' fill='none' stroke='%23ECCF92' stroke-width='3'/%3E%3Ccircle cx='32' cy='25' r='5' fill='%23D7261D'/%3E%3Cpath d='M16 46 H48' stroke='%23ECCF92' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="gorsel/favicon-180.png">
@@ -105,7 +105,14 @@ body::before{
   color:var(--murekkep); background:var(--kart); border:1px solid var(--cizgi); border-radius:8px; padding:6px 10px;
 }
 
-#ressamAsama, #fiyatAsama{ margin-top:22px; }
+#gercekAsama, #fiyatAsama, #ressamAsama{ margin-top:22px; }
+
+.soru{
+  font-family:'Playfair Display',serif; font-weight:700; font-size:16.5px; color:var(--murekkep);
+  margin-bottom:10px;
+}
+
+.gercek-secim{ display:flex; gap:10px; flex-wrap:wrap; }
 
 .giris-satiri{ display:flex; gap:8px; flex-wrap:wrap; }
 .giris-satiri input{
@@ -160,32 +167,63 @@ button{ font:inherit; cursor:pointer; }
   min-height:1.3em; margin:12px 0 0; font-size:12.5px; color:var(--soluk); font-style:italic;
 }
 
-#ressamMesaj, #fiyatMesaj{ min-height:1.4em; margin-top:10px; font-size:14.5px; }
-#ressamMesaj.dogru{ color:var(--dogru); font-weight:700; }
+#ressamMesaj, #fiyatMesaj, #gercekMesaj{ min-height:1.4em; margin-top:10px; font-size:14.5px; }
+#ressamMesaj.dogru, #fiyatMesaj.dogru, #gercekMesaj.dogru{ color:var(--dogru); font-weight:700; }
 #ressamMesaj.yanlis{ animation:sars .35s; }
 @keyframes sars{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
 @media(prefers-reduced-motion:reduce){ #ressamMesaj.yanlis{ animation:none; } }
 
+/* fiyat çarkı: her hane ayrı ayrı yukarı/aşağı ile ayarlanır */
+.fiyat-gosterim{
+  font-family:'Playfair Display',serif; font-weight:800; font-size:30px; color:var(--altin);
+  text-align:center; margin-bottom:14px;
+}
+.fiyat-cark{ display:flex; justify-content:center; gap:2px; flex-wrap:wrap; margin-bottom:16px; }
+.hane{ display:flex; flex-direction:column; align-items:center; gap:2px; }
+.hane.virgul-sonrasi{ margin-right:8px; }
+.hane-yukari, .hane-asagi{
+  width:26px; height:18px; border:1px solid var(--cizgi); background:var(--kart); color:var(--soluk);
+  border-radius:4px; font-size:9px; line-height:1; cursor:pointer; padding:0;
+}
+.hane-yukari:hover, .hane-asagi:hover{ border-color:var(--altin); color:var(--murekkep); }
+.hane-basamak{
+  width:26px; text-align:center; font-family:'Playfair Display',serif; font-weight:700; font-size:17px;
+  color:var(--murekkep); background:var(--kagit); border:1px solid var(--cizgi); border-radius:4px; padding:3px 0;
+}
+
 #sonucKutu{
   display:none; margin-top:20px; background:var(--kart); border:1px solid var(--cizgi);
   border-left:4px solid var(--altin); border-radius:0 12px 12px 0;
-  padding:16px 18px; animation:bel .3s ease;
+  padding:18px 20px; animation:bel .3s ease;
 }
 @media(prefers-reduced-motion:reduce){ #sonucKutu{ animation:none; } }
 @keyframes bel{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+@keyframes patla{ 0%{transform:scale(.7); opacity:0} 60%{transform:scale(1.08); opacity:1} 100%{transform:scale(1)} }
+@media(prefers-reduced-motion:reduce){ #sonucKutu .seviye{ animation:none !important; } }
 #sonucKutu .tablo-adi-etiket{
-  font-family:'Libre Baskerville',serif; font-style:italic; font-size:13.5px; color:var(--soluk); margin-bottom:2px;
+  font-family:'Libre Baskerville',serif; font-style:italic; font-size:13.5px; color:var(--soluk); margin-bottom:6px;
 }
+#sonucKutu .seviye{
+  font-family:'Playfair Display',serif; font-weight:800; font-size:24px; letter-spacing:.02em;
+  animation:patla .5s ease;
+}
+#sonucKutu .seviye.yuksek{ color:var(--dogru); }
+#sonucKutu .seviye.orta{ color:var(--turuncu); }
+#sonucKutu .seviye.dusuk{ color:var(--yanlis); }
 #sonucKutu .fiyat-etiket{
-  font-family:'Playfair Display',serif; font-weight:700; font-size:22px; color:var(--murekkep);
+  font-family:'Playfair Display',serif; font-weight:700; font-size:22px; color:var(--murekkep); margin-top:4px;
 }
 #sonucKutu .kaynak-satiri{ font-size:13px; color:var(--soluk); margin-top:4px; }
 #sonucKutu .kaynak-satiri a{ color:var(--altin); }
 #sonucKutu .puan-satiri{
-  margin-top:12px; padding-top:12px; border-top:1px dashed var(--cizgi);
+  margin-top:14px; padding-top:12px; border-top:1px dashed var(--cizgi);
   font-family:'Libre Baskerville',serif; font-size:14px; color:var(--murekkep); display:flex; gap:16px; flex-wrap:wrap;
 }
-#sonucKutu .puan-satiri b{ font-family:'Playfair Display',serif; color:var(--altin); }
+#sonucKutu .puan-satiri b{ font-family:'Playfair Display',serif; font-size:17px; color:var(--altin); }
+#sonucKutu .toplam-satiri{
+  font-family:'Playfair Display',serif; font-weight:800; font-size:20px; color:var(--murekkep); margin-top:6px;
+}
+#sonucKutu .toplam-satiri b{ color:var(--altin); font-size:26px; }
 
 footer{
   margin-top:60px; color:var(--soluk); font-size:12.5px; border-top:1px solid var(--cizgi);
@@ -213,7 +251,7 @@ footer{
       <path d="M22 46 L22 52 M42 46 L42 52" stroke="var(--altin)" stroke-width="3" stroke-linecap="round"/>
     </svg>
     <h1>Muzayede</h1>
-    <div class="tag">tabloyu tanı, fiyatı tahmin et</div>
+    <div class="tag">gerçek mi çakma mı, kaça satıldı, kimin eseri</div>
   </header>
 
   <main>
@@ -226,7 +264,24 @@ footer{
 
     <select id="adminSecici" style="display:none" aria-label="bulmaca seç (admin)"></select>
 
-    <div id="ressamAsama">
+    <div id="gercekAsama">
+      <p class="soru">bu, gerçek ve tanınmış bir eser mi; yoksa değersiz ya da çakma bir tablo mu?</p>
+      <div class="gercek-secim">
+        <button class="btn-ana" id="gercekBtn" type="button">gerçek eser</button>
+        <button class="btn-ikincil" id="cakmaBtn" type="button">değersiz / çakma</button>
+      </div>
+      <p id="gercekMesaj"></p>
+    </div>
+
+    <div id="fiyatAsama" style="display:none">
+      <p class="soru">bu tablo gerçekte kaç dolara satıldı?</p>
+      <div class="fiyat-gosterim" id="fiyatGosterim">$0</div>
+      <div class="fiyat-cark" id="fiyatCarki"></div>
+      <button class="btn-ana" id="fiyatGonderBtn" type="button">tahmin et</button>
+      <p id="fiyatMesaj"></p>
+    </div>
+
+    <div id="ressamAsama" style="display:none">
       <div class="giris-satiri">
         <input id="ressamGiris" type="text" placeholder="ressam adı" list="ressamListesi">
         <datalist id="ressamListesi"></datalist>
@@ -236,14 +291,6 @@ footer{
       <p id="ipucuDurum"></p>
       <div id="ipucuAlanlari"></div>
       <p id="ressamMesaj"></p>
-    </div>
-
-    <div id="fiyatAsama" style="display:none">
-      <div class="giris-satiri">
-        <input id="fiyatGiris" type="text" inputmode="decimal" placeholder="örn. 45 milyon ya da 45000000">
-        <button class="btn-ana" id="fiyatGonderBtn">tahmin et</button>
-      </div>
-      <p id="fiyatMesaj"></p>
     </div>
 
     <div id="sonucKutu"></div>
@@ -314,19 +361,22 @@ footer{
 
     const geriYuklendi = yukle();
     if(!geriYuklendi){
-      window.MUZ.state = { ressamBulundu: false, pesEdildi: false, hintCount: 0, hintsAcik: {}, ipucuKredi: 0, denenenler: [] };
+      window.MUZ.state = varsayilanDurum();
     }
 
     document.getElementById('ressamListesi').innerHTML =
       RESSAMLAR.slice().sort((a, b) => a.isim.localeCompare(b.isim, 'tr'))
         .map(r => '<option value="' + r.isim + '"></option>').join('');
 
+    document.getElementById('gercekBtn').addEventListener('click', () => gercekTahminYap(true));
+    document.getElementById('cakmaBtn').addEventListener('click', () => gercekTahminYap(false));
     document.getElementById('ressamGonderBtn').addEventListener('click', ressamGonder);
     document.getElementById('ressamGiris').addEventListener('keydown', e => {
       if(e.key === 'Enter') ressamGonder();
     });
     document.getElementById('pesEtBtn').addEventListener('click', pesEt);
 
+    fiyatCarkiCiz();
     ipucularinCiz();
     ipucuButonlariniGuncelle();
     adminSeciciDoldur();
@@ -356,10 +406,116 @@ footer{
   veriYukle();
 })();
 
+function varsayilanDurum(){
+  return {
+    gercekTahmin: null, gercekPuan: undefined,
+    fiyatBasamaklari: [0, 0, 0, 0, 0, 0, 0, 0, 0], fiyatTahminEdildi: false, fiyatPuan: undefined,
+    ressamBulundu: false, pesEdildi: false, hintCount: 0, hintsAcik: {}, ipucuKredi: 0, denenenler: [],
+    toplamPuan: undefined
+  };
+}
+
+const GERCEK_PUAN_DEGERI = 50;
+
 function isimNormallestir(s){
   return s.toLocaleLowerCase('tr').trim()
     .replace(/[̇]/g, '')
     .normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function gercekTahminYap(cevap){
+  const st = window.MUZ.state;
+  if(st.gercekTahmin !== null) return;
+  st.gercekTahmin = cevap;
+  const dogruMu = cevap === window.MUZ.tablo.gercek;
+  st.gercekPuan = dogruMu ? GERCEK_PUAN_DEGERI : 0;
+
+  const msg = document.getElementById('gercekMesaj');
+  document.getElementById('gercekBtn').disabled = true;
+  document.getElementById('cakmaBtn').disabled = true;
+
+  if(window.MUZ.tablo.gercek){
+    msg.textContent = dogruMu ? 'doğru, bu gerçek ve tanınmış bir eser.' : 'yanılmışsın, bu gerçek ve tanınmış bir eser.';
+    msg.className = dogruMu ? 'dogru' : '';
+    fiyatAsamasiniAc();
+  } else {
+    msg.textContent = dogruMu ? 'doğru, bu değersiz/çakma bir tablo.' : 'yanılmışsın, bu değersiz/çakma bir tablo.';
+    msg.className = dogruMu ? 'dogru' : '';
+    turuSonlandirCakma();
+  }
+  kaydet();
+}
+
+function fiyatCarkiCiz(){
+  const alan = document.getElementById('fiyatCarki');
+  alan.innerHTML = '';
+  const n = window.MUZ.state.fiyatBasamaklari.length;
+  for(let i = 0; i < n; i++){
+    const hane = document.createElement('div');
+    hane.className = 'hane';
+    if(i > 0 && (n - i) % 3 === 0) hane.classList.add('virgul-sonrasi');
+    hane.innerHTML =
+      '<button type="button" class="hane-yukari" data-i="' + i + '" aria-label="basamağı artır">&#9650;</button>' +
+      '<span class="hane-basamak" data-i="' + i + '">' + window.MUZ.state.fiyatBasamaklari[i] + '</span>' +
+      '<button type="button" class="hane-asagi" data-i="' + i + '" aria-label="basamağı azalt">&#9660;</button>';
+    alan.appendChild(hane);
+  }
+  alan.querySelectorAll('.hane-yukari').forEach(b => b.addEventListener('click', () => haneDegistir(+b.dataset.i, 1)));
+  alan.querySelectorAll('.hane-asagi').forEach(b => b.addEventListener('click', () => haneDegistir(+b.dataset.i, -1)));
+  fiyatGosterimGuncelle();
+}
+
+function haneDegistir(i, yon){
+  if(window.MUZ.state.fiyatTahminEdildi) return;
+  const basamaklar = window.MUZ.state.fiyatBasamaklari;
+  basamaklar[i] = (basamaklar[i] + yon + 10) % 10;
+  document.querySelector('.hane-basamak[data-i="' + i + '"]').textContent = basamaklar[i];
+  fiyatGosterimGuncelle();
+  kaydet();
+}
+
+function fiyatDegeriOku(){
+  return parseInt(window.MUZ.state.fiyatBasamaklari.join(''), 10);
+}
+
+function fiyatGosterimGuncelle(){
+  document.getElementById('fiyatGosterim').textContent = '$' + fiyatDegeriOku().toLocaleString('en-US');
+}
+
+function fiyatPuanHesapla(tahmin, gercek){
+  if(tahmin <= 0 || gercek <= 0) return 0;
+  const fark = Math.abs(Math.log10(tahmin) - Math.log10(gercek));
+  return Math.max(0, Math.round(100 * (1 - fark)));
+}
+
+function fiyatAsamasiniAc(){
+  document.getElementById('fiyatAsama').style.display = '';
+}
+
+function fiyatGonder(){
+  const st = window.MUZ.state;
+  if(st.fiyatTahminEdildi) return;
+  const tahmin = fiyatDegeriOku();
+  if(!(tahmin > 0)){
+    document.getElementById('fiyatMesaj').textContent = 'önce hanelerden bir tutar seç';
+    return;
+  }
+  const gercek = window.MUZ.tablo.fiyat_usd;
+  st.fiyatPuan = fiyatPuanHesapla(tahmin, gercek);
+  st.fiyatTahminEdildi = true;
+
+  document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
+  document.getElementById('fiyatGonderBtn').disabled = true;
+  document.getElementById('fiyatMesaj').textContent =
+    'gerçek fiyat: $' + gercek.toLocaleString('en-US') + ' (fiyat puanı: ' + st.fiyatPuan + ')';
+  document.getElementById('fiyatMesaj').className = st.fiyatPuan >= 60 ? 'dogru' : '';
+
+  ressamAsamasiniAc();
+  kaydet();
+}
+
+function ressamAsamasiniAc(){
+  document.getElementById('ressamAsama').style.display = '';
 }
 
 function ressamGonder(){
@@ -381,7 +537,7 @@ function ressamGonder(){
     msg.className = 'dogru';
     document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
     ipucuButonlariniGuncelle();
-    fiyatAsamasiniAc();
+    turuSonlandir();
     kaydet();
   } else {
     const n = isimNormallestir(giris);
@@ -427,7 +583,7 @@ function pesEt(){
   msg.className = '';
   document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
   ipucuButonlariniGuncelle();
-  fiyatAsamasiniAc();
+  turuSonlandir();
   kaydet();
 }
 
@@ -503,63 +659,74 @@ function ressamPuanHesapla(){
   return Math.max(0, 100 - 25 * window.MUZ.state.hintCount);
 }
 
-function fiyatParseEt(giris){
-  if(!giris) return NaN;
-  let s = giris.toLocaleLowerCase('tr').trim()
-    .replace(/\$/g, '').replace(/usd|dolar/g, '')
-    .replace(/\./g, '').replace(/,/g, '.').trim();
-  let carpan = 1;
-  if(/milyar/.test(s)){ carpan = 1e9; s = s.replace(/milyar/g, ''); }
-  else if(/milyon/.test(s)){ carpan = 1e6; s = s.replace(/milyon/g, ''); }
-  else if(/\bbin\b/.test(s)){ carpan = 1e3; s = s.replace(/bin/g, ''); }
-  s = s.trim();
-  const sayi = parseFloat(s);
-  if(!isFinite(sayi)) return NaN;
-  return Math.round(sayi * carpan);
+function puanSeviyesi(toplam, maxToplam){
+  const oran = toplam / maxToplam;
+  if(oran >= 0.85) return { sinif: 'yuksek', metin: 'MÜKEMMEL TAKDİR' };
+  if(oran >= 0.6) return { sinif: 'yuksek', metin: 'İYİ GÖZ' };
+  if(oran >= 0.35) return { sinif: 'orta', metin: 'FENA DEĞİL' };
+  return { sinif: 'dusuk', metin: 'ACEMİ İŞİ' };
 }
 
-function fiyatPuanHesapla(tahmin, gercek){
-  if(tahmin <= 0 || gercek <= 0) return 0;
-  const fark = Math.abs(Math.log10(tahmin) - Math.log10(gercek));
-  return Math.max(0, Math.round(100 * (1 - fark)));
-}
-
-function fiyatAsamasiniAc(){
-  document.getElementById('fiyatAsama').style.display = '';
-  document.getElementById('fiyatGiris').focus();
-}
-
-function fiyatGonder(){
-  const tahmin = fiyatParseEt(document.getElementById('fiyatGiris').value);
-  if(!(tahmin > 0)){
-    document.getElementById('fiyatMesaj').textContent = 'geçerli bir tutar gir, örn. 45 milyon ya da 45000000';
+function sayacAnimasyonu(el, hedef){
+  const azaltilmisHareket = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(azaltilmisHareket || hedef === 0){
+    el.textContent = hedef;
     return;
   }
-  const gercek = window.MUZ.tablo.fiyat_usd;
-  const fiyatPuan = fiyatPuanHesapla(tahmin, gercek);
-  const ressamPuan = ressamPuanHesapla();
-  const toplam = fiyatPuan + ressamPuan;
-
-  document.getElementById('fiyatAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
-
-  sonucGoster(ressamPuan, fiyatPuan, toplam);
-
-  window.MUZ.state.toplamPuan = toplam;
-  kaydet();
+  const adim = 18;
+  let i = 0;
+  const zamanlayici = setInterval(() => {
+    i++;
+    el.textContent = Math.round((hedef * i) / adim);
+    if(i >= adim){
+      el.textContent = hedef;
+      clearInterval(zamanlayici);
+    }
+  }, 22);
 }
 
-function sonucGoster(ressamPuan, fiyatPuan, toplam){
+function turuSonlandirCakma(){
+  const st = window.MUZ.state;
   const tablo = window.MUZ.tablo;
   const sonuc = document.getElementById('sonucKutu');
   sonuc.style.display = 'block';
+  const seviye = puanSeviyesi(st.gercekPuan, GERCEK_PUAN_DEGERI);
+  sonuc.innerHTML =
+    '<div class="tablo-adi-etiket">' + tablo.tablo_adi + ' (' + tablo.tablo_yili + '), çakma/değersiz bir eser</div>' +
+    '<div class="seviye ' + seviye.sinif + '">' + seviye.metin + '</div>' +
+    '<div class="fiyat-etiket">gerçek değeri: $' + tablo.fiyat_usd.toLocaleString('en-US') + '</div>' +
+    '<div class="kaynak-satiri">' + tablo.muzayede_evi + ', ' + tablo.satis_yili +
+    ' · <a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
+    '<div class="toplam-satiri">toplam <b id="sayacToplam">0</b></div>';
+  sayacAnimasyonu(document.getElementById('sayacToplam'), st.gercekPuan);
+  st.toplamPuan = st.gercekPuan;
+  kaydet();
+}
+
+function turuSonlandir(){
+  const st = window.MUZ.state;
+  const tablo = window.MUZ.tablo;
+  const ressamPuan = ressamPuanHesapla();
+  const toplam = st.gercekPuan + st.fiyatPuan + ressamPuan;
+  const maxToplam = GERCEK_PUAN_DEGERI + 100 + 100;
+
+  const sonuc = document.getElementById('sonucKutu');
+  sonuc.style.display = 'block';
+  const seviye = puanSeviyesi(toplam, maxToplam);
   sonuc.innerHTML =
     '<div class="tablo-adi-etiket">' + tablo.tablo_adi + ' (' + tablo.tablo_yili + ')</div>' +
+    '<div class="seviye ' + seviye.sinif + '">' + seviye.metin + '</div>' +
     '<div class="fiyat-etiket">$' + tablo.fiyat_usd.toLocaleString('en-US') + '</div>' +
     '<div class="kaynak-satiri">' + tablo.muzayede_evi + ', ' + tablo.satis_yili +
     ' · <a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
-    '<div class="puan-satiri"><span>ressam <b>' + ressamPuan + '</b></span>' +
-    '<span>fiyat <b>' + fiyatPuan + '</b></span>' +
-    '<span>toplam <b>' + toplam + '</b></span></div>';
+    '<div class="puan-satiri"><span>gerçek/çakma <b>' + st.gercekPuan + '</b></span>' +
+    '<span>fiyat <b>' + st.fiyatPuan + '</b></span>' +
+    '<span>ressam <b>' + ressamPuan + '</b></span></div>' +
+    '<div class="toplam-satiri">toplam <b id="sayacToplam">0</b> / ' + maxToplam + '</div>';
+  sayacAnimasyonu(document.getElementById('sayacToplam'), toplam);
+
+  st.toplamPuan = toplam;
+  kaydet();
 }
 
 function kaydet(){
@@ -578,38 +745,61 @@ function yukle(){
   try{
     const v = JSON.parse(localStorage.getItem('muzayede:gun'));
     if(!v || v.gun !== window.MUZ.GUN || v.tabloId !== window.MUZ.tablo.id) return false;
-    window.MUZ.state = v.state;
-    if(window.MUZ.state.ipucuKredi === undefined) window.MUZ.state.ipucuKredi = 0;
-    if(!window.MUZ.state.denenenler) window.MUZ.state.denenenler = [];
+    const varsayilan = varsayilanDurum();
+    window.MUZ.state = Object.assign(varsayilan, v.state);
+    if(!Array.isArray(window.MUZ.state.fiyatBasamaklari) || window.MUZ.state.fiyatBasamaklari.length !== 9){
+      window.MUZ.state.fiyatBasamaklari = varsayilan.fiyatBasamaklari;
+    }
     return true;
   }catch(e){ return false; }
 }
 
 function durumuUygula(){
   const st = window.MUZ.state;
+
+  if(st.gercekTahmin !== null){
+    document.getElementById('gercekBtn').disabled = true;
+    document.getElementById('cakmaBtn').disabled = true;
+    const dogruMu = st.gercekTahmin === window.MUZ.tablo.gercek;
+    const msg = document.getElementById('gercekMesaj');
+    if(window.MUZ.tablo.gercek){
+      msg.textContent = dogruMu ? 'doğru, bu gerçek ve tanınmış bir eser.' : 'yanılmışsın, bu gerçek ve tanınmış bir eser.';
+    } else {
+      msg.textContent = dogruMu ? 'doğru, bu değersiz/çakma bir tablo.' : 'yanılmışsın, bu değersiz/çakma bir tablo.';
+    }
+    msg.className = dogruMu ? 'dogru' : '';
+  }
+
+  if(!window.MUZ.tablo.gercek){
+    if(st.gercekTahmin !== null) turuSonlandirCakma();
+    return;
+  }
+
+  if(st.gercekTahmin !== null) fiyatAsamasiniAc();
+
+  if(st.fiyatTahminEdildi){
+    document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
+    document.getElementById('fiyatGonderBtn').disabled = true;
+    document.getElementById('fiyatMesaj').textContent =
+      'gerçek fiyat: $' + window.MUZ.tablo.fiyat_usd.toLocaleString('en-US') + ' (fiyat puanı: ' + st.fiyatPuan + ')';
+    document.getElementById('fiyatMesaj').className = st.fiyatPuan >= 60 ? 'dogru' : '';
+    ressamAsamasiniAc();
+  }
+
   Object.keys(st.hintsAcik).forEach(kategoriId => {
     if(st.hintsAcik[kategoriId]) ipucuGoster(kategoriId);
   });
   ipucuButonlariniGuncelle();
+
   if(st.ressamBulundu || st.pesEdildi){
     const msg = document.getElementById('ressamMesaj');
     msg.textContent = 'doğru: ' + window.MUZ.ressam.isim;
     msg.className = st.ressamBulundu ? 'dogru' : '';
     document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
-    fiyatAsamasiniAc();
   }
-  if(st.toplamPuan !== undefined){
-    const ressamPuan = ressamPuanHesapla();
-    const fiyatPuan = st.toplamPuan - ressamPuan;
-    document.getElementById('fiyatAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
-    sonucGoster(ressamPuan, fiyatPuan, st.toplamPuan);
-  }
-}
 
-document.getElementById('fiyatGonderBtn').addEventListener('click', fiyatGonder);
-document.getElementById('fiyatGiris').addEventListener('keydown', e => {
-  if(e.key === 'Enter') fiyatGonder();
-});
+  if(st.toplamPuan !== undefined) turuSonlandir();
+}
 
 const girisDug = document.getElementById('girisDug');
 girisDug.onclick = () => { if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(e => console.error(e)); };
