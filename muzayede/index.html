@@ -493,15 +493,20 @@ function fiyatGonder(){
 
   document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
   document.getElementById('fiyatGonderBtn').disabled = true;
-  fiyatMesajCiz(st.fiyatPuan, gercekFiyat, window.MUZ.tablo.gercek);
+  const ressamaGecilsinMi = window.MUZ.tablo.gercek && gercekFiyat >= ESIK_UNLU_FIYAT;
+  fiyatMesajCiz(st.fiyatPuan, gercekFiyat, ressamaGecilsinMi);
 
-  if(window.MUZ.tablo.gercek){
+  if(ressamaGecilsinMi){
     ressamAsamasiniAc();
     kaydet();
+  } else if(!window.MUZ.tablo.gercek){
+    turuSonlandirErken('cakma');
   } else {
-    turuSonlandirCakma();
+    turuSonlandirErken('az_taninan');
   }
 }
+
+const ESIK_UNLU_FIYAT = 1000000;
 
 function fiyatTepkisi(puan){
   if(puan >= 90) return { sinif: 'yuksek', metin: 'TAM İSABET' };
@@ -693,14 +698,17 @@ function sayacAnimasyonu(el, hedef){
   }, 22);
 }
 
-function turuSonlandirCakma(){
+function turuSonlandirErken(sebep){
   const st = window.MUZ.state;
   const tablo = window.MUZ.tablo;
   const sonuc = document.getElementById('sonucKutu');
   sonuc.style.display = 'block';
   const seviye = puanSeviyesi(st.fiyatPuan, 100);
+  const aciklama = sebep === 'cakma'
+    ? 'meğer çakma/değersiz bir eserdi'
+    : 'ressamı yeterince tanınmadığı için tur burada bitiyor';
   sonuc.innerHTML =
-    '<div class="tablo-adi-etiket">' + tablo.tablo_adi + ' (' + tablo.tablo_yili + '), meğer çakma/değersiz bir eserdi</div>' +
+    '<div class="tablo-adi-etiket">' + tablo.tablo_adi + ' (' + tablo.tablo_yili + '), ' + aciklama + '</div>' +
     '<div class="seviye ' + seviye.sinif + '">' + seviye.metin + '</div>' +
     '<div class="kaynak-satiri">' + tablo.muzayede_evi + ', ' + tablo.satis_yili +
     ' · <a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
@@ -768,10 +776,11 @@ function durumuUygula(){
   document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
   document.getElementById('fiyatGonderBtn').disabled = true;
   const gercekFiyat = window.MUZ.tablo.fiyat_usd;
-  fiyatMesajCiz(st.fiyatPuan, gercekFiyat, window.MUZ.tablo.gercek);
+  const ressamaGecilsinMi = window.MUZ.tablo.gercek && gercekFiyat >= ESIK_UNLU_FIYAT;
+  fiyatMesajCiz(st.fiyatPuan, gercekFiyat, ressamaGecilsinMi);
 
-  if(!window.MUZ.tablo.gercek){
-    turuSonlandirCakma();
+  if(!ressamaGecilsinMi){
+    turuSonlandirErken(window.MUZ.tablo.gercek ? 'az_taninan' : 'cakma');
     return;
   }
 
