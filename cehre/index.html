@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<script src="../ortak/analitik.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Çehre — Ünlüyü yüzünden tanı</title>
+<meta name="description" content="Burun, göz ya da ağız kesitinden günün ünlüsünü çıkar. Yanlış tahminde yeni bir organ açılır.">
+<meta name="theme-color" content="#0c0a09">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{color-scheme:dark;}
+  :root{
+    --bg:#0c0a09; --card:#1a1614; --border:#2e2724;
+    --paper:#efe9dc; --text:#ece7de; --muted:#94897c;
+    --accent:#e2a13f; --ok:#7cb46b; --bad:#e5382e;
+  }
+  body{background:var(--bg); color:var(--text); font-family:"Inter",-apple-system,sans-serif;
+    min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px;}
+  .wrap{max-width:760px; margin:0 auto;}
+  h1{font-family:"Special Elite",cursive; font-size:28px; color:var(--accent); margin-bottom:4px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:18px;}
+
+  .sekmeler{display:flex; gap:8px; margin-bottom:18px;}
+  .sekme-btn{flex:1; background:var(--card); border:1px solid var(--border); color:var(--muted);
+    border-radius:6px; padding:10px; font-size:14px; cursor:pointer; font-weight:600;}
+  .sekme-btn.aktif{color:var(--accent); border-color:var(--accent);}
+
+  .portre-alan{display:flex; gap:10px; justify-content:center; margin-bottom:20px; min-height:160px;}
+  .kesit{width:150px; height:150px; border:3px solid var(--paper); border-radius:4px;
+    overflow:hidden; background:#000;}
+  .kesit img{width:100%; height:100%; object-fit:cover; display:block;}
+  .kesit.kilitli{display:flex; align-items:center; justify-content:center; color:var(--border); font-size:32px;}
+
+  .guess-row{display:flex; gap:8px; margin-bottom:10px; position:relative;}
+  .guess-row input{flex:1; background:var(--card); border:1px solid var(--border); color:var(--text);
+    border-radius:6px; padding:14px 16px; font-size:16px; outline:none;}
+  .guess-row button{background:var(--accent); color:#1a1614; border:none; border-radius:6px;
+    padding:0 22px; font-weight:600; cursor:pointer;}
+  .guess-row button:disabled{opacity:.35; cursor:default;}
+  .ac-list{position:absolute; top:56px; left:0; right:70px; background:var(--card);
+    border:1px solid var(--border); border-radius:6px; max-height:220px; overflow-y:auto; z-index:5; display:none;}
+  .ac-item{padding:10px 14px; cursor:pointer; font-size:14px;}
+  .ac-item:hover, .ac-item.sel{background:var(--border);}
+
+  .durum{font-size:13px; color:var(--muted); min-height:20px; margin-bottom:8px;}
+  .durum.iyi{color:var(--ok);} .durum.kotu{color:var(--bad);}
+  .puan{font-size:13px; color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Çehre</h1>
+    <p class="tagline">Yüz kesitinden günün ünlüsünü çıkar.</p>
+  </header>
+
+  <div class="sekmeler">
+    <button class="sekme-btn" data-sekme="burun">Burun</button>
+    <button class="sekme-btn" data-sekme="gozler">Gözler</button>
+    <button class="sekme-btn" data-sekme="agiz">Ağız</button>
+  </div>
+
+  <div class="portre-alan" id="portreAlan"></div>
+
+  <div class="guess-row">
+    <input type="text" id="guessInput" placeholder="İsim yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <button id="guessBtn" disabled>Tahmin</button>
+    <div class="ac-list" id="acList"></div>
+  </div>
+  <div class="durum" id="durum"></div>
+  <div class="puan" id="puanAlan"></div>
+</div>
+<script src="puzzles.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const EPOCH = new Date("2026-07-21T00:00:00");
+const KISILER = window.CEHRE_KISILER || {};
+const SEKME = window.CEHRE_SEKME || {burun:[], gozler:[], agiz:[]};
+const SIRA = {burun:["burun","gozler","agiz"], gozler:["gozler","burun","agiz"], agiz:["agiz","burun","gozler"]};
+
+function gunIndex(sekmeAdi){
+  const gun = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
+  const n = SEKME[sekmeAdi].length;
+  return n ? ((gun % n) + n) % n : 0;
+}
+
+function gununKisisi(sekmeAdi){
+  const qid = SEKME[sekmeAdi][gunIndex(sekmeAdi)];
+  return {qid, ...KISILER[qid]};
+}
+
+let aktifSekme = "burun";
+
+function renderPortre(){
+  const kisi = gununKisisi(aktifSekme);
+  const sira = SIRA[aktifSekme];
+  const acikSayisi = 1;   // Task 5'te wrongCount'a göre güncellenecek
+  $("portreAlan").innerHTML = sira.map((organ, i) =>
+    i < acikSayisi
+      ? `<div class="kesit"><img src="${kisi.g[organ]}" alt="yüz kesiti"></div>`
+      : `<div class="kesit kilitli">?</div>`
+  ).join("");
+}
+
+document.querySelectorAll(".sekme-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".sekme-btn").forEach(b => b.classList.remove("aktif"));
+    btn.classList.add("aktif");
+    aktifSekme = btn.dataset.sekme;
+    renderPortre();
+  });
+});
+document.querySelector('.sekme-btn[data-sekme="burun"]').classList.add("aktif");
+renderPortre();
+</script>
+<script src="../ortak/nav-panel.js"></script>
+</body>
+</html>
