@@ -239,26 +239,33 @@ header .bosluk{flex:1}
 #mesaj.iyi{color:#a9b878}
 
 /* ---- son perde ---- */
-#sonEkran{display:none}
+#sonEkran{display:none; max-width:1000px}
 #sonEkran #sonBaslik{
   font-family:'Oswald', sans-serif; font-weight:500; font-size:.9rem;
   letter-spacing:.5em; padding-left:.5em; text-transform:uppercase; color:var(--turuncu);
 }
 #sonEkran .buyuk{font-size:clamp(2.4rem,4.6vw,3.6rem); font-weight:600; margin:14px 0 4px}
-#sonEmoji{font-size:1.5rem; letter-spacing:.12em; margin:8px 0 14px}
-#cevapBaslik{color:var(--soluk); font-style:italic; font-size:1.02rem; margin-top:6px}
-#cevapAfisler{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:14px; max-width:640px}
-.afis{width:100px; text-align:center}
+#sonEmoji{font-size:1.7rem; letter-spacing:.14em; margin:8px 0 16px}
+#cevapBaslik{color:var(--soluk); font-style:italic; font-size:1.1rem; margin-top:6px}
+#cevapAfisler{display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin-top:18px; max-width:960px}
+.afis{position:relative; width:180px; border-bottom:3px solid rgba(240,154,54,.65); border-radius:2px; overflow:hidden;
+  box-shadow:0 16px 32px -14px rgba(0,0,0,.75); transition:transform .18s ease}
+.afis:hover{transform:translateY(-4px)}
 .afis img{
   width:100%; aspect-ratio:2/3; object-fit:cover; display:block;
-  border:1px solid var(--cizgi2); filter:saturate(.68) sepia(.14) contrast(.96);
+  filter:saturate(.72) sepia(.13) contrast(.97);
 }
 .afis .bos{
   width:100%; aspect-ratio:2/3; display:flex; align-items:center; justify-content:center;
-  border:1px solid var(--cizgi2); background:var(--kagit); color:var(--sessiz); font-size:1.6rem;
+  background:var(--kagit); color:var(--sessiz); font-size:2.4rem;
 }
-.afis .ft{font-size:.8rem; margin-top:6px; line-height:1.25; color:var(--soluk)}
-#sonEkran .dugmeler{display:flex; gap:14px; justify-content:center; margin-top:22px}
+.afis .ft{
+  position:absolute; left:0; right:0; bottom:0; padding:22px 10px 9px;
+  background:linear-gradient(transparent, rgba(10,8,5,.95) 55%);
+  font-family:'Oswald', sans-serif; font-size:.86rem; font-weight:500; color:var(--metin);
+  text-align:center; line-height:1.28;
+}
+#sonEkran .dugmeler{display:flex; gap:14px; justify-content:center; margin-top:26px}
 
 /* ---- film şeridi (ilerleme) — masaüstünde sağda dikey, dar ekranda alta yatay ---- */
 #seritKutu{

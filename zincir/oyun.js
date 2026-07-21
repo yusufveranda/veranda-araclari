@@ -199,6 +199,7 @@ function kaynakYaz(html){ kaynakEl.innerHTML = html || ""; }
 let makaraZamanlayici = null;
 let donuyor = false; // çekiliş sürerken zincir ucunda hedefi gösterme
 function kareHTML(pid){
+  if (pid == null) return `<div class="bos">?</div><div class="ad">&nbsp;</div>`; // kol çekilmeden önce görünen gizem karesi
   return (P[pid].p ? `<img src="${IMG}${P[pid].p}" alt="">` : `<div class="bos">?</div>`)
     + `<div class="ad">${P[pid].n}</div>`;
 }
@@ -208,7 +209,9 @@ function makara(pool, hedef, etiket, bitis){
   if (AZ_HAREKET || pool.length < 3){ devam(); return; }
   donuyor = true;
   const adaylar = pool.filter(q => q !== hedef && P[q].p);
-  const sira = [];
+  // baştaki null: kol çekilmeden önce pencerede gerçek bir yüz değil "?"
+  // dursun — yoksa oyuncu "zaten biri seçilmiş" sanabiliyor.
+  const sira = [null];
   for (let i = 0; i < 9 && adaylar.length; i++)
     sira.push(adaylar[Math.floor(Math.random()*adaylar.length)]);
   sira.push(hedef);
@@ -272,7 +275,7 @@ function sahneKisileri(){
   if (st.tip === "solo" || st.tip === "dir") return [st.pid];
   if (st.tip === "pick2") return st.adaylar;
   if (st.tip === "pair") return [st.a, st.b];
-  if (st.tip === "bonus") return st.secili.length ? st.secili : st.besli;
+  if (st.tip === "bonus") return st.besli;
   return [];
 }
 const MAKAS_SVG =
@@ -409,7 +412,7 @@ function sec(pid){
   S.log.push({tip:"kisi", id:pid});
   partnerSahne(pid);
 }
-function partnerSahne(pid, haricPid, sessiz, zorlaEs){
+function partnerSahne(pid, haricPid, sessiz, zorlaEs, zorlaHavuz){
   if (!S.kisi.includes(pid)) S.kisi.push(pid);
   const resumePair = sessiz && S.stage && S.stage.tip === "pair";
   let es, adaylar;
@@ -421,10 +424,10 @@ function partnerSahne(pid, haricPid, sessiz, zorlaEs){
     if (!S.kisi.includes(es)) S.kisi.push(es);
     S.log.push({tip:"kisi", id:es});
   } else {
-    adaylar = partnerler(pid, haricPid);
+    adaylar = zorlaHavuz || partnerler(pid, haricPid);
     if (!adaylar.length) return bonusSahne(); // oyunun eksiği, zincir kopmasın
     es = rnd(adaylar);
-    S.stage = {tip:"pair", a:pid, b:es};
+    S.stage = {tip:"pair", a:pid, b:es, bonus: !!zorlaHavuz, havuz: zorlaHavuz || null};
     if (!S.kisi.includes(es)) S.kisi.push(es);
     S.log.push({tip:"kisi", id:es});
   }
@@ -434,7 +437,7 @@ function partnerSahne(pid, haricPid, sessiz, zorlaEs){
     baslik(`tur ${S.tur} · ${bonus ? "bonus ortak film" : "ortak film"}`, `${P[pid].n} + ${P[es].n}`,
            "birlikte oynadıkları bir filmi söyle.");
     kaynakYaz(bonus
-      ? `<span class="chip bonus">⚡ bonus, seçtiğin ikili</span>`
+      ? `<span class="chip bonus">⚡ bonus</span> <span class="zar">⚄</span> yanına, ortak filmi garanti biri çekildi`
       : `<span class="chip">${P[pid].n}</span> <span class="zar">⚄</span> yanına, birlikte oynadığı biri çekildi`);
     const k2 = kart(es); if (!resumePair && !AZ_HAREKET) k2.classList.add("beliris");
     kartEl.replaceChildren(kart(pid), k2);
@@ -447,59 +450,43 @@ function partnerSahne(pid, haricPid, sessiz, zorlaEs){
     kaynakYaz(`<span class="chip">${P[pid].n}</span> <span class="zar">⚄</span> yanına rastgele bir partner çekiliyor…`);
     girisGoster(false);
     kartEl.replaceChildren(kart(pid));
-    makara(adaylar, es, "partner çekilişi dönüyor", son);
+    makara(adaylar, es, zorlaHavuz ? "bonus partner çekilişi dönüyor" : "partner çekilişi dönüyor", son);
     isimEl.textContent = P[pid].n + " + …";
   } else son();
 }
 
 // ---- bonus tur: veri boşluğu yüzünden zincir kopacaksa devreye girer ------
+// Oyuncu 5'ten BİRİNİ seçer; yanına, aynı besliden (kaynak filmi garanti
+// paylaşan) rastgele bir partner normal çekiliş gibi (makara+pas) gelir —
+// eski "ikisini de manuel seç" akışı kaldırıldı, tek seçim + rastgele eş.
 function bonusSahne(sessiz){
   if (sessiz && S.stage && S.stage.tip === "bonus"){
-    // devam (resume): aynı beşliyi ve seçili işaretlerini yeniden çiz
+    // devam (resume): henüz seçim yapılmadıysa aynı beşliyi yeniden çiz
   } else {
     const besli = bonusHavuzBul();
     if (!besli) return bitir("koptu", "Zincir için havuzda uygun kimse kalmadı.");
-    S.stage = {tip:"bonus", besli, secili:[]};
+    S.stage = {tip:"bonus", besli};
     S.tur++; turBasi();
     if (!sessiz) Ses.bonus();
   }
   kaydet();
   const st = S.stage;
-  baslik(`tur ${S.tur} · bonus tur`, "5 rastgele oyuncu",
-    `${2 - st.secili.length} kişi daha seç, ikisi de aynı filmden.`);
+  baslik(`tur ${S.tur} · bonus tur`, "5 rastgele oyuncu", "birini seç, yanına ortağı çekilecek.");
   kaynakYaz(`<span class="chip bonus">⚡ bonus</span> zincir bilgi boşluğuna denk geldi, yeni beşli çekildi`);
   girisGoster(false);
   kartEl.replaceChildren(...st.besli.map(q => {
     const k = kart(q, true, bonusTikla);
-    if (st.secili.includes(q)) k.classList.add("secildi");
     if (!sessiz && !AZ_HAREKET) k.classList.add("beliris");
     return k;
   }));
   durumCiz();
 }
-function bonusTikla(pid, el){
+function bonusTikla(pid){
   if (!S.stage || S.stage.tip !== "bonus" || S.bitti) return;
-  const st = S.stage;
-  const i = st.secili.indexOf(pid);
-  if (i >= 0){
-    st.secili.splice(i, 1);
-    el.classList.remove("secildi");
-    altEl.textContent = `${2 - st.secili.length} kişi daha seç, ikisi de aynı filmden.`;
-    kaydet();
-    return;
-  }
-  if (st.secili.length >= 2) return;
-  st.secili.push(pid);
-  el.classList.add("secildi");
-  if (st.secili.length < 2){
-    altEl.textContent = `${2 - st.secili.length} kişi daha seç, ikisi de aynı filmden.`;
-    kaydet();
-    return;
-  }
-  const [a, b] = st.secili;
-  S.log.push({tip:"kisi", id:a});
+  const havuz = S.stage.besli.filter(q => q !== pid);
+  S.log.push({tip:"kisi", id:pid});
   kaydet();
-  partnerSahne(a, null, false, b);
+  partnerSahne(pid, null, false, null, havuz);
 }
 
 // ---- cevap / ilerleme ------------------------------------------------------
@@ -584,12 +571,15 @@ pasEl.onclick = () => {
       ok = true;
     }
   } else if (st.tip === "pair"){
-    const adaylar = partnerler(st.a, st.b);
+    // bonus kökenli çiftte yeniden çekiliş de GÜVENLİ havuzdan (ortak kaynak
+    // filmi garanti) kalmalı, genel partnerler() değil — yoksa bonus'un
+    // varlık sebebi (zincir kopmasın garantisi) yeniden çekilişte bozulur.
+    const adaylar = (st.bonus && st.havuz) ? st.havuz.filter(q => q !== st.b) : partnerler(st.a, st.b);
     if (adaylar.length){
       const eski = st.b;
       const es = rnd(adaylar);
       S.pas--; S.pasBuTur = true;
-      S.stage = {tip:"pair", a:st.a, b:es};
+      S.stage = {tip:"pair", a:st.a, b:es, bonus:st.bonus, havuz:st.havuz};
       if (!S.kisi.includes(es)) S.kisi.push(es);
       S.log.push({tip:"kisi", id:es});
       kaydet();
