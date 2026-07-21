@@ -2,22 +2,22 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship a playable v1 of Muzayede (site/muzayede/) — a daily game where the
+**Goal:** Ship a playable v1 of Muzayede (muzayede/) — a daily game where the
 player guesses a painter from a painting, chooses which hint categories to reveal,
 then guesses the painting's real auction sale price — seeded with a small curated
 sample dataset, plus the first two (cheap) phases of the large-scale data pipeline
 that will eventually grow the roster to 300-500 painters.
 
-**Architecture:** Follows the existing static-site game pattern used by `site/cati`
-and `site/atlas` (vanilla JS, no build step, no fetch of local data in those games)
-crossed with `site/bitki`'s pattern (large JSON dataset fetched at runtime, since
+**Architecture:** Follows the existing static-site game pattern used by `cati`
+and `atlas` (vanilla JS, no build step, no fetch of local data in those games)
+crossed with `bitki`'s pattern (large JSON dataset fetched at runtime, since
 Muzayede's corpus is data/image-heavy like plants, not a small fixed word list).
-Concretely: full painter/painting detail lives in `site/muzayede/data/*.json`
+Concretely: full painter/painting detail lives in `muzayede/data/*.json`
 (fetched via `fetch()`), while the *daily ordering* of which painting shows on
-which day is a small baked file `site/muzayede/gunler.js`
+which day is a small baked file `muzayede/gunler.js`
 (`window.MUZAYEDE_GUNLER = {epoch, sira: [tabloId, ...]}`), matching how
 `karanlik-oda` orders its film list. Admin-only unlimited access reuses the
-existing Firebase `VF.adminMi` gate (`site/ortak/firebase.js`) already used by
+existing Firebase `VF.adminMi` gate (`ortak/firebase.js`) already used by
 `karanlik-oda` and `cati`. Data generation follows `veri/cati_uret.py` (validate
 then bake to JS/JSON) for the build step, and `bitki_harvest.py` (urllib + linear
 backoff retry) for anything that hits an external source (Faz 1/Faz 2 scripts).
@@ -25,7 +25,7 @@ backoff retry) for anything that hits an external source (Faz 1/Faz 2 scripts).
 **Tech Stack:** Vanilla HTML/CSS/JS (no framework, no build step), Python 3
 stdlib only (`urllib`, `json`, `argparse` — no `requests`, no `pytest`; neither is
 installed in this environment and the codebase doesn't use them), Firebase
-compat SDK (already wired site-wide via `site/ortak/firebase.js`).
+compat SDK (already wired site-wide via `ortak/firebase.js`).
 
 ## Global Constraints
 
@@ -34,9 +34,9 @@ compat SDK (already wired site-wide via `site/ortak/firebase.js`).
 - Do not `git add -A` — stage only the files this plan touches.
 - After committing files you created/modified, push without asking (per existing
   project convention).
-- Follow existing file/data conventions exactly as found in `site/cati`,
-  `site/atlas`, `site/bitki`, `site/karanlik-oda`, `site/ortak/nav-panel.js`,
-  `site/ortak/firebase.js` — do not introduce a JS test framework, a Node
+- Follow existing file/data conventions exactly as found in `cati`,
+  `atlas`, `bitki`, `karanlik-oda`, `ortak/nav-panel.js`,
+  `ortak/firebase.js` — do not introduce a JS test framework, a Node
   toolchain, `requests`, or `pytest`; none exist in this repo and none are
   needed for this plan.
 - Price-guess scoring: `diff = |log10(guess) - log10(actual)|`,
@@ -55,9 +55,9 @@ compat SDK (already wired site-wide via `site/ortak/firebase.js`).
 ## File Structure
 
 ```
-site/muzayede/
+muzayede/
   index.html          # game shell: markup, inline <style>, inline game JS
-  manifest.json        # PWA manifest, same shape as site/cati/manifest.json
+  manifest.json        # PWA manifest, same shape as cati/manifest.json
   icon.svg              # game icon
   gorsel/               # favicons (favicon-32.png, favicon-180.png)
   data/
@@ -67,13 +67,13 @@ site/muzayede/
 
 veri/
   muzayede_ornek.py        # Task 1: hand-curated v1 sample content (Python DATA list)
-  muzayede_uret.py          # Task 2: validates + bakes DATA into site/muzayede/{data/*.json, gunler.js}
+  muzayede_uret.py          # Task 2: validates + bakes DATA into muzayede/{data/*.json, gunler.js}
   muzayede_harvest.py        # Task 10 (Faz 1): Wikipedia curated-list scraper -> veri/muzayede_aday.json
   muzayede_genislet.py        # Task 11 (Faz 2): Wikidata SPARQL expansion -> veri/muzayede_aday_genis.json
 
-site/ortak/nav-panel.js       # Task 9: add Muzayede entry to OYUNLAR
-site/oyunlar/index.html        # Task 9: add Muzayede card
-site/sitemap.xml                 # Task 9: add /muzayede/ entry
+ortak/nav-panel.js       # Task 9: add Muzayede entry to OYUNLAR
+oyunlar/index.html        # Task 9: add Muzayede card
+sitemap.xml                 # Task 9: add /muzayede/ entry
 ```
 
 ---
@@ -160,8 +160,8 @@ git push
 **Files:**
 - Create: `veri/muzayede_uret.py`
 - Depends on: `veri/muzayede_ornek.py` (Task 1)
-- Produces: `site/muzayede/data/ressamlar.json`, `site/muzayede/data/tablolar.json`,
-  `site/muzayede/gunler.js`
+- Produces: `muzayede/data/ressamlar.json`, `muzayede/data/tablolar.json`,
+  `muzayede/gunler.js`
 
 **Interfaces:**
 - Consumes: `DATA` list from `veri/muzayede_ornek.py` (see Task 1 tuple shape).
@@ -174,7 +174,7 @@ git push
 
 ```python
 # -*- coding: utf-8 -*-
-# Muzayede veri üretici: veri/muzayede_ornek.py -> site/muzayede/{data/*.json, gunler.js}
+# Muzayede veri üretici: veri/muzayede_ornek.py -> muzayede/{data/*.json, gunler.js}
 # Doğrulama başarısızsa hiçbir dosya yazılmaz (exit 1).
 import json, sys
 from pathlib import Path
@@ -240,7 +240,7 @@ def main():
     js += "window.MUZAYEDE_GUNLER=" + json.dumps(gunler, ensure_ascii=False, separators=(",", ":")) + ";\n"
     (SITE / "gunler.js").write_text(js, encoding="utf-8")
 
-    print(f"yazıldı: {len(ressamlar)} ressam, {len(tablolar)} tablo -> site/muzayede/")
+    print(f"yazıldı: {len(ressamlar)} ressam, {len(tablolar)} tablo -> muzayede/")
 
 if __name__ == "__main__":
     main()
@@ -249,8 +249,8 @@ if __name__ == "__main__":
 - [ ] **Step 2: Run it and verify output**
 
 Run: `python3 veri/muzayede_uret.py`
-Expected: `yazıldı: 8 ressam, 8 tablo -> site/muzayede/` and exit code 0.
-Then: `python3 -c "import json; d=json.load(open('site/muzayede/data/tablolar.json')); print(len(d), d[0]['id'])"`
+Expected: `yazıldı: 8 ressam, 8 tablo -> muzayede/` and exit code 0.
+Then: `python3 -c "import json; d=json.load(open('muzayede/data/tablolar.json')); print(len(d), d[0]['id'])"`
 Expected: `8 leonardo-da-vinci` (or whichever id you listed first).
 
 - [ ] **Step 3: Verify validation actually catches errors**
@@ -265,7 +265,7 @@ it's back to `yazıldı: ...` / exit 0.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add veri/muzayede_uret.py site/muzayede/data/ressamlar.json site/muzayede/data/tablolar.json site/muzayede/gunler.js
+git add veri/muzayede_uret.py muzayede/data/ressamlar.json muzayede/data/tablolar.json muzayede/gunler.js
 git commit -m "Muzayede: veri üretici script + ilk üretilen dosyalar"
 git push
 ```
@@ -275,12 +275,12 @@ git push
 ### Task 3: Game shell — `index.html`, `manifest.json`, `icon.svg`
 
 **Files:**
-- Create: `site/muzayede/index.html`
-- Create: `site/muzayede/manifest.json`
-- Create: `site/muzayede/icon.svg`
+- Create: `muzayede/index.html`
+- Create: `muzayede/manifest.json`
+- Create: `muzayede/icon.svg`
 
 **Interfaces:**
-- Consumes: `site/ortak/stil.css`, `site/ortak/nav-panel.js`, `site/ortak/firebase.js`
+- Consumes: `ortak/stil.css`, `ortak/nav-panel.js`, `ortak/firebase.js`
   (all pre-existing, included via relative `<script>`/`<link>` tags, no changes
   needed to those files in this task).
 - Produces: page skeleton that Tasks 4-8 fill in with a `<script>` block. Element
@@ -373,7 +373,7 @@ git push
 
 - [ ] **Step 4: Verify the page loads with no console errors**
 
-Use `preview_start` to open `site/muzayede/index.html` directly (or via the
+Use `preview_start` to open `muzayede/index.html` directly (or via the
 site's local server if one exists for the `site/` root), then check
 `read_console_messages` for errors. Expected: no 404s for `../ortak/stil.css`,
 `../ortak/firebase.js`, `../ortak/nav-panel.js`, `./gunler.js` — all should
@@ -382,7 +382,7 @@ resolve given this task runs after Task 2 has already written `gunler.js`.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add site/muzayede/index.html site/muzayede/manifest.json site/muzayede/icon.svg
+git add muzayede/index.html muzayede/manifest.json muzayede/icon.svg
 git commit -m "Muzayede: oyun kabuğu (html/manifest/icon)"
 git push
 ```
@@ -392,7 +392,7 @@ git push
 ### Task 4: Day-index selection + data loading
 
 **Files:**
-- Modify: `site/muzayede/index.html` (the empty `<script>` block from Task 3)
+- Modify: `muzayede/index.html` (the empty `<script>` block from Task 3)
 
 **Interfaces:**
 - Consumes: `window.MUZAYEDE_GUNLER` (from `gunler.js`, Task 2), `fetch('./data/ressamlar.json')`, `fetch('./data/tablolar.json')`.
@@ -470,7 +470,7 @@ Expected: `true`.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add site/muzayede/index.html
+git add muzayede/index.html
 git commit -m "Muzayede: gün seçimi ve veri yükleme"
 git push
 ```
@@ -480,7 +480,7 @@ git push
 ### Task 5: Painter guess — autocomplete input + submit
 
 **Files:**
-- Modify: `site/muzayede/index.html`
+- Modify: `muzayede/index.html`
 
 **Interfaces:**
 - Consumes: `window.MUZ.RESSAMLAR`, `window.MUZ.ressam` (from Task 4).
@@ -549,7 +549,7 @@ correct, since `isimNormallestir` folds case and diacritics.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add site/muzayede/index.html
+git add muzayede/index.html
 git commit -m "Muzayede: ressam tahmin girişi ve doğrulama"
 git push
 ```
@@ -559,7 +559,7 @@ git push
 ### Task 6: Hint mechanic — player picks which category to reveal
 
 **Files:**
-- Modify: `site/muzayede/index.html`
+- Modify: `muzayede/index.html`
 
 **Interfaces:**
 - Consumes: `window.MUZ.ressam` (fields: `dogum_olum`, `ulke`, `akim`),
@@ -634,7 +634,7 @@ painter name (Task 5's flow). Expected: guess still succeeds normally.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add site/muzayede/index.html
+git add muzayede/index.html
 git commit -m "Muzayede: kademeli ipucu seçim mekaniği"
 git push
 ```
@@ -644,7 +644,7 @@ git push
 ### Task 7: Price guess + scoring + result screen
 
 **Files:**
-- Modify: `site/muzayede/index.html`
+- Modify: `muzayede/index.html`
 
 **Interfaces:**
 - Consumes: `window.MUZ.tablo.fiyat_usd`, `window.MUZ.state.hintCount`.
@@ -724,7 +724,7 @@ via `javascript_tool` that `ressamPuanHesapla()` returns `50` (100 - 25*2).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add site/muzayede/index.html
+git add muzayede/index.html
 git commit -m "Muzayede: fiyat tahmini, puanlama, sonuç ekranı"
 git push
 ```
@@ -734,7 +734,7 @@ git push
 ### Task 8: localStorage persistence (daily save + stats)
 
 **Files:**
-- Modify: `site/muzayede/index.html`
+- Modify: `muzayede/index.html`
 
 **Interfaces:**
 - Consumes: `window.MUZ.state`, `GUN`, `window.MUZ.tablo.id` (as the content
@@ -798,7 +798,7 @@ and `localStorage.getItem('muzayede:gun')` is unaffected by this session.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add site/muzayede/index.html
+git add muzayede/index.html
 git commit -m "Muzayede: günlük ilerleme localStorage kaydı"
 git push
 ```
@@ -808,14 +808,14 @@ git push
 ### Task 9: Site registration (nav panel, hub card, sitemap)
 
 **Files:**
-- Modify: `site/ortak/nav-panel.js`
-- Modify: `site/oyunlar/index.html`
-- Modify: `site/sitemap.xml`
+- Modify: `ortak/nav-panel.js`
+- Modify: `oyunlar/index.html`
+- Modify: `sitemap.xml`
 
 **Interfaces:**
 - None (pure registration, no new functions other files depend on).
 
-- [ ] **Step 1: Add to `OYUNLAR` in `site/ortak/nav-panel.js`**
+- [ ] **Step 1: Add to `OYUNLAR` in `ortak/nav-panel.js`**
 
 Find the `OYUNLAR` array (near line 18) and add, matching the existing
 entries' style:
@@ -831,7 +831,7 @@ entries' style:
 plan's `gunler.js` epoch of `"2026-07-21"` from Task 2 — if Task 2's epoch
 changes, update this line to match, they must stay in sync.)
 
-- [ ] **Step 2: Add a hub card to `site/oyunlar/index.html`**
+- [ ] **Step 2: Add a hub card to `oyunlar/index.html`**
 
 Inside `<section class="grup grup-oyunlar">`, add (matching the Atlas card
 structure exactly, pick an unused `--td` accent color, e.g. `#8B2E3C`):
@@ -851,34 +851,34 @@ structure exactly, pick an unused `--td` accent color, e.g. `#8B2E3C`):
 Note: `../gorsel/muzayede.jpg` does not exist yet — this is a real missing
 asset, not a placeholder pattern to leave broken. Add a TODO comment above
 this task's commit reminding that a cover image needs to be dropped into
-`site/gorsel/muzayede.jpg` before this card looks right; do not block this
+`gorsel/muzayede.jpg` before this card looks right; do not block this
 task on producing that image (image sourcing is the user's own domain per
 existing project convention — see memory note "kart görselleri kullanıcının
 konusu, sorma").
 
 - [ ] **Step 3: Add sitemap entry**
 
-Open `site/sitemap.xml`, find an existing `<url>` entry for another game
+Open `sitemap.xml`, find an existing `<url>` entry for another game
 (e.g. search for `/atlas/`) to copy its exact structure, then add a matching
 entry for `https://verandatools.com/muzayede/` with today's date as
 `<lastmod>`.
 
 - [ ] **Step 4: Verify nav panel shows the new entry**
 
-Open any existing game page (e.g. `site/cati/index.html`) in the browser,
+Open any existing game page (e.g. `cati/index.html`) in the browser,
 open the nav panel UI, confirm "Muzayede" appears in the list and links to
 `../muzayede/`.
 
 - [ ] **Step 5: Verify hub card renders**
 
-Open `site/oyunlar/index.html` in the browser, confirm the Muzayede card
+Open `oyunlar/index.html` in the browser, confirm the Muzayede card
 renders (broken cover image is expected/acceptable per Step 2's note), and
-clicking it navigates to `site/muzayede/index.html`.
+clicking it navigates to `muzayede/index.html`.
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add site/ortak/nav-panel.js site/oyunlar/index.html site/sitemap.xml
+git add ortak/nav-panel.js oyunlar/index.html sitemap.xml
 git commit -m "Muzayede: site navigasyonuna ve hub'a kaydet"
 git push
 ```
