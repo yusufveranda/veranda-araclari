@@ -11,11 +11,13 @@
 ## Global Constraints
 
 - Görsel lisansı: yalnız CC0/CC-BY/CC-BY-SA/kamu malı (Wikimedia Commons `extmetadata.License`) — CC-BY-NC ve "fair use" KESİN yasak (spec: Ünlü havuzu ve görsel kaynağı).
-- Kesitler bağlamsal olacak (sadece organ değil, çevresi de dahil) — dar/soyut kesit YASAK (spec: Kesit sıkılığı kararı).
+- ~~Kesitler bağlamsal olacak (sadece organ değil, çevresi de dahil) — dar/soyut kesit YASAK~~ **REVİZE (2026-07-21, kullanıcı geri bildirimi — bkz. Task 10-13):** ilk gösterilen kesit gerçekten SIKI/organ-odaklı olacak (neredeyse tüm yüzü göstermeyecek kadar dar); "bağlamsallık" artık kademeli zoom-out'un SONUNDA ortaya çıkıyor, başta değil.
 - Üç sekmede günün kişileri birbirinden farklı olacak, asla çakışmayacak (spec: Kişi paylaşımı kararı).
 - Tahmin girişi otomatik tamamlamalı metin kutusu olacak, çoktan seçmeli DEĞİL (spec: Tahmin girişi kararı).
 - Puan ölçeği tam olarak `[100, 80, 60, 40, 25, 15]`, 6 deneme (spec: Puan ölçeği kararı).
-- Organ açılış eşiği: 3 yanlıştan sonra 2. organ, 5 yanlıştan sonra (2 yanlış daha) 3. organ, toplam 6 hak (spec: Son hak sayısı kararı).
+- ~~Organ açılış eşiği: 3 yanlıştan sonra 2. organ, 5 yanlıştan sonra 3. organ~~ **REVİZE:** 3 yanlıştan sonra 2. zoom seviyesi (aynı organ, daha geniş kesit), 5 yanlıştan sonra (2 yanlış daha) 3. zoom seviyesi, toplam 6 hak — eşik SAYILARI aynı kaldı, açılan şey "farklı organ" değil "aynı organın daha geniş kesiti".
+- Ünlü havuzu ünlülük filtresinden geçmeli (Wikidata sitelinks eşiği) — hem "son ~20 yılda hâlâ tanınan" hem "çok eski ama Mozart/Marx düzeyinde ünlü" olanları geçirir, obscure/niş figürleri eler (spec: kullanıcı geri bildirimi 2026-07-21).
+- Tam ekran genişliği kuralı: sayfada belirgin yatay/dikey boş alan KALMAYACAK — [[tam-ekran-genisligi]] hafıza kaydı, "SON UYARI" + 2026-07-21 tekrar ihlali notu.
 - Paylaşım Wordle-tarzı emoji ızgarası + puan olacak (spec: Paylaşım kararı).
 - v1'de leaderboard YOK (spec: Leaderboard kararı).
 - Em dash hiçbir metinde kullanılmayacak (proje-geneli kural).
@@ -1025,4 +1027,600 @@ Expected: üç sekmenin üçü de bağımsız çalışır, aynı gün aynı kiş
 
 ```bash
 cd "../site" && git add cehre/puzzles.js cehre/gorseller && git commit -m "Çehre: tam ölçekli veri hasadı" && git push
+```
+
+---
+
+## Ek görevler (2026-07-21, kullanıcı geri bildirimi sonrası)
+
+Yayına girdikten sonra kullanıcı üç sorun bildirdi: (1) kesitler o kadar geniş çıkıyordu ki pratikte tüm yüzü gösteriyordu, (2) ünlü havuzunda obscure/niş figürler çok, (3) "farklı organ açılıyor" yerine "aynı organ kademeli büyüyerek açılsın" istendi (zoom-out). Ayrıca [[tam-ekran-genisligi]] kuralı yine ihlal edildi (sayfanın büyük kısmı boş). Aşağıdaki 4 görev, Task 1-9'un ÜZERİNE inşa edilir (aynı dosyaları değiştirir/yeniden çalıştırır), Task 1-9 iptal olmuyor.
+
+**Yeni mimari özet:** Her ünlü artık TEK organ (kendi sekmesine karşılık gelen) için 3 farklı ZOOM SEVİYESİNDE kesit taşıyor (1=sıkı/organ-odaklı, 2=orta, 3=geniş/bağlamsal — eski tek-seviye kesit boyutuyla aynı). Ön yüzde 3 ayrı kutu yerine TEK büyük görsel var; yanlış tahminde aynı görsel yerini daha geniş zoom seviyesine bırakıyor (3 yanlış → seviye 2, 5 yanlış → seviye 3). `SIRA` (hangi organ önce) kavramı tamamen kalkıyor — artık her kişi zaten kendi sekmesinin organına atanmış durumda geliyor.
+
+### Task 10: Wikidata ünlülük filtresi + yeniden hasat
+
+**Files:**
+- Modify: `cehre-mutfak/wikidata_harvest.py`
+
+**Interfaces:**
+- Consumes/Produces: değişmedi (Task 1 ile aynı — `havuz-ham.json`), yalnız içerik daha ünlü kişilerle sınırlanıyor.
+
+- [ ] **Step 1: `sparql_sorgula` fonksiyonunu ünlülük filtresiyle güncelle**
+
+Şu anki dosyada (`cehre-mutfak/wikidata_harvest.py`) `MESLEKLER` sabitinin hemen altına yeni bir sabit ekle:
+
+```python
+MIN_SITELINKS = 40   # kaç farklı dil Wikipedia'sında makalesi var — ünlülük vekili (Mozart/Obama düzeyi ~100+, obscure figürler genelde <20)
+```
+
+`sparql_sorgula` fonksiyonundaki SPARQL sorgu metnini şu şekilde değiştir (WHERE bloğuna `wikibase:sitelinks` satırı ve `FILTER` ekleniyor, geri kalan fonksiyon AYNEN kalıyor):
+
+```python
+def sparql_sorgula(limit):
+    """Meslek başına ayrı sorgular çalıştır, sonuçları birleştir (zaman aşımı önlemek için).
+    Her meslek için limit // len(MESLEKLER) kişi iste, sonra qid'ye göre tekrarları kaldır.
+    Yalnız MIN_SITELINKS eşiğini geçen (yeterince ünlü) kişiler alınır.
+    """
+    per_meslek_limit = max(1, limit // len(MESLEKLER) + 1)  # Her meslek başına limit
+    out_dict = {}  # qid → {"qid", "isim", "commons_url"}
+
+    for meslek in MESLEKLER:
+        sorgu = f"""
+        SELECT DISTINCT ?person ?personLabel ?image WHERE {{
+          ?person wdt:P31 wd:Q5;
+                  wdt:P106 {meslek};
+                  wdt:P18 ?image;
+                  wikibase:sitelinks ?sitelinks.
+          FILTER(?sitelinks >= {MIN_SITELINKS})
+          SERVICE wikibase:label {{ bd:serviceParam wikibase:language "tr,en". }}
+        }}
+        ORDER BY DESC(?sitelinks)
+        LIMIT {per_meslek_limit}
+        """
+        url = SPARQL_URL + "?query=" + urllib.parse.quote(sorgu) + "&format=json"
+        d = http_json(url, headers={"Accept": "application/sparql-results+json"})
+        if not d:
+            continue
+        for b in d.get("results", {}).get("bindings", []):
+            qid = b["person"]["value"].rsplit("/", 1)[-1]
+            isim = temiz(b.get("personLabel", {}).get("value", ""))
+            img_url = b["image"]["value"]
+            if not isim or isim.startswith("Q"):   # etiket yoksa qid döner, atla
+                continue
+            if qid not in out_dict:  # İlk sefer görülen kişiyi kaydet
+                out_dict[qid] = {"qid": qid, "isim": isim, "commons_url": img_url}
+        time.sleep(0.1)  # Wikidata'ya saygılı (meslek başına sorgu arası bekleme)
+
+    # Sıra yaklaşık olarak limit'e ulaşıncaya kadar al
+    out = list(out_dict.values())[:limit]
+    return out
+```
+
+(`ORDER BY DESC(?sitelinks)` eklendi ki `per_meslek_limit` dolarken en ünlüler önce gelsin — filtre zaten 40+ ile sınırlı ama meslek başına migel limit'e takılırsa en ünlüler kaybolmasın.)
+
+- [ ] **Step 2: Self-test'in hâlâ geçtiğini doğrula**
+
+Run: `cd cehre-mutfak && python3 wikidata_harvest.py --self-test`
+Expected: değişmedi, `self-test OK: {...}` (self-test `commons_lisans`'ı test ediyor, `sparql_sorgula`'ya dokunmuyor).
+
+- [ ] **Step 3: Küçük ölçekte dene, filtrenin gerçekten daraltığını doğrula**
+
+Run: `python3 wikidata_harvest.py --limit 300`
+Expected: `havuz-ham.json`'a yazılan isimlerin gözle bariz daha tanınır olduğunu doğrula (ör. çıktıyı `python3 -c "import json; [print(x['isim']) for x in json.load(open('havuz-ham.json'))[:40]]"` ile yazdır, listeye bak — Jean-Baptiste Lully tarzı niş isimlerin yerini Paul Newman/Bob Dylan/Mozart tarzı isimlerin aldığını gözle onayla).
+
+- [ ] **Step 4: Not — commit yok, tam ölçekli yeniden hasat Task 13 sonrası (Task 9'un yerini alan) bir doğrulama adımında yapılacak**
+
+`cehre-mutfak/` git dışı. Tam ölçekli (`--limit`, filtre seçici olduğu için eskisinden YÜKSEK, ör. `5000`) yeniden hasat bu görevde DEĞİL, tüm zincir (Task 10+11+12) bitince tek seferde çalıştırılacak — aşağıdaki Task 13'ün doğrulama adımına bkz.
+
+---
+
+### Task 11: Sıkı + kademeli (3 zoom seviyeli) kesit çıkarma
+
+**Files:**
+- Modify: `cehre-mutfak/yuz_kesit.py`
+
+**Interfaces:**
+- Consumes: `havuz-ham.json` (değişmedi).
+- Produces: `havuz.json` — YENİ ŞEMA: `{"qid","isim","kesit": {"burun": {"1":"kesitler/{qid}/burun_1.webp","2":"...","3":"..."}, "gozler": {...}, "agiz": {...}}}` (üç organ × üç seviye = kişi başına 9 dosya). Task 12 bu yeni şemayı okuyacak.
+
+- [ ] **Step 1: `kesitleri_uret` ve `isle_kisi`'yi kademeli zoom üretecek şekilde değiştir**
+
+`cehre-mutfak/yuz_kesit.py`'de `MIN_YAW_ORAN` satırının altına yeni bir sabit ekle:
+
+```python
+# organ→[(seviye1 genişlik-katsayısı, yükseklik-katsayısı), seviye2, seviye3] — d=göz-arası mesafe birimi
+# seviye 1 SIKI (yalnız organ), seviye 3 eski tek-seviye kesitle aynı (bağlamsal)
+ZOOM = {
+    "burun":  [(0.9, 0.8), (1.3, 1.15), (1.9, 1.7)],
+    "gozler": [(1.3, 0.55), (1.8, 0.85), (2.3, 1.2)],
+    "agiz":   [(1.0, 0.75), (1.5, 1.1), (2.0, 1.5)],
+}
+```
+
+`kesitleri_uret` fonksiyonunu şununla DEĞİŞTİR:
+
+```python
+def kesitleri_uret(img, yuz):
+    box_w = yuz[2]
+    x_re, y_re, x_le, y_le, x_nt, y_nt, x_rcm, y_rcm, x_lcm, y_lcm = yuz[4:14]
+    d = float(np.hypot(x_le - x_re, y_le - y_re))   # göz-arası mesafe, ölçek birimi
+
+    if d < MIN_GOZ_MESAFESI or d / box_w < MIN_YAW_ORAN:
+        return None   # çözünürlük yetersiz ya da aşırı profil
+
+    ex, ey = (x_re + x_le) / 2, (y_re + y_le) / 2
+    mx, my = (x_rcm + x_lcm) / 2, (y_rcm + y_lcm) / 2
+    merkezler = {"burun": (x_nt, y_nt), "gozler": (ex, ey), "agiz": (mx, my)}
+
+    sonuc = {}
+    for organ, (cx, cy) in merkezler.items():
+        seviyeler = {}
+        for i, (kw, kh) in enumerate(ZOOM[organ], start=1):
+            kesit = kirp(img, cx, cy, d * kw, d * kh)
+            if kesit is None:
+                return None
+            seviyeler[i] = kesit
+        sonuc[organ] = seviyeler
+    return sonuc
+```
+
+`isle_kisi` fonksiyonunu şununla DEĞİŞTİR (kayıt döngüsü artık iç içe: organ → seviye):
+
+```python
+def isle_kisi(det, kisi, dizin):
+    dizin.mkdir(parents=True, exist_ok=True)
+    ham = dizin / "ham.jpg"
+    try:
+        if not indir(kisi["resim_url"], ham):
+            return False
+        img = cv2.imread(str(ham))
+        if img is None:
+            return False
+        yuz = en_iyi_yuz(det, img)
+        if yuz is None:
+            return False
+        kesitler = kesitleri_uret(img, yuz)
+        if kesitler is None:
+            return False
+        for organ, seviyeler in kesitler.items():
+            for seviye, kesit in seviyeler.items():
+                rgb = cv2.cvtColor(kesit, cv2.COLOR_BGR2RGB)
+                Image.fromarray(rgb).save(dizin / f"{organ}_{seviye}.webp", "WEBP", quality=85)
+        return True
+    finally:
+        ham.unlink(missing_ok=True)
+```
+
+`main()` içindeki `gecerli.append(...)` bloğunu şununla DEĞİŞTİR:
+
+```python
+        if ok:
+            gecerli.append({
+                "qid": kisi["qid"], "isim": kisi["isim"],
+                "kesit": {
+                    organ: {str(i): f"kesitler/{kisi['qid']}/{organ}_{i}.webp" for i in (1, 2, 3)}
+                    for organ in ("burun", "gozler", "agiz")
+                },
+            })
+```
+
+Dosyanın en üstündeki docstring'i de güncelle: "BAĞLAMSAL... kesitler üretir" cümlesini "her organ için 3 kademeli (sıkı→bağlamsal) zoom seviyesinde kesit üretir" olarak değiştir — kozmetik, isteğe bağlı ama tutarlılık için önerilir.
+
+- [ ] **Step 2: Self-test'i çalıştır**
+
+Run: `cd cehre-mutfak && python3 yuz_kesit.py --self-test`
+Expected: değişmedi, `self-test OK: model yüklendi, boş karede yüz tespit edilmedi (beklenen davranış)`.
+
+- [ ] **Step 3: Eski kesit/havuz çıktısını temizleyip küçük ölçekte yeniden dene**
+
+Eski tek-seviyeli kesitler yeni şemayla uyumsuz, temizle:
+```bash
+rm -rf kesitler havuz.json
+python3 yuz_kesit.py --limit 20
+```
+Expected: `Bitti. N/20 kişi geçerli kesitle yazıldı: .../havuz.json` (N önceki tek-seviye denemeyle benzer aralıkta, 10-18 civarı — kalite filtresi organ/seviye sayısından bağımsız, hâlâ `d`/yaw eşiklerine bağlı). `kesitler/{qid}/` altında ARTIK 9 dosya olmalı: `burun_1.webp, burun_2.webp, burun_3.webp, gozler_1.webp, ..., agiz_3.webp`.
+
+- [ ] **Step 4: Görsel doğrulama — seviye 1 gerçekten sıkı mı?**
+
+En az 1 kişinin `burun_1.webp`, `burun_2.webp`, `burun_3.webp` dosyalarını Read tool ile aç, görsel olarak karşılaştır: seviye 1'de SADECE burun bölgesi görünmeli (göz/ağız/çene büyük ölçüde ÇERÇEVE DIŞI), seviye 3'te eski (tek-seviye) kesitteki gibi geniş bağlam olmalı. Eğer seviye 1 hâlâ neredeyse tüm yüzü gösteriyorsa (kullanıcının orijinal şikayeti), `ZOOM` katsayılarını daha da küçült (ör. burun seviye-1'i `(0.7, 0.6)`'ya indir) ve yeniden dene — bu görsel doğrulama BAŞARISIZ olursa görevi DONE_WITH_CONCERNS olarak işaretleyip bulduğun gerçek katsayıları raporla.
+
+- [ ] **Step 5: Not — commit yok**
+
+`cehre-mutfak/` git dışı.
+
+---
+
+### Task 12: `cehre_uret.py`'yi yeni zoom-seviyeli şemaya uyarla
+
+**Files:**
+- Modify: `cehre-mutfak/cehre_uret.py`
+
+**Interfaces:**
+- Consumes: `havuz.json` (Task 11'in YENİ şeması — `kesit: {organ: {seviye: yol}}`).
+- Produces: `site/cehre/puzzles.js` — `window.CEHRE_KISILER[qid] = {"isim": str, "g": {"1": "gorseller/{qid}/1.webp", "2": "...", "3": "..."}}` (kişi artık yalnız KENDİ SEKMESİNİN organına ait 3 dosyayı taşıyor — diğer 6 dosya kopyalanmıyor). `window.CEHRE_SEKME` şeması değişmedi. Task 13 (index.html) bu yeni `g` şeklini okuyacak, `SIRA` kavramına artık ihtiyaç yok.
+
+- [ ] **Step 1: `main()`'i güncelle**
+
+`cehre-mutfak/cehre_uret.py`'de kişi-sözlüğü oluşturma ve görsel kopyalama bloklarını şununla DEĞİŞTİR (partition/shuffle mantığı — `gruplar`, `sekme_ata`, `_stabil_hash`, `SEED` — AYNEN kalıyor, değişen yalnızca `kisiler` sözlüğünün içeriği ve kopyalama döngüsü):
+
+```python
+    kisiler, sekme_listeleri = {}, {}
+    rnd = random.Random(SEED)
+    for s in SEKMELER:
+        grup = gruplar[s][:]
+        rnd.shuffle(grup)
+        sekme_listeleri[s] = [k["qid"] for k in grup]
+        for k in grup:
+            kisiler[k["qid"]] = {
+                "isim": k["isim"],
+                "g": {str(i): f"gorseller/{k['qid']}/{i}.webp" for i in (1, 2, 3)},
+            }
+
+    GORSEL_HEDEF.mkdir(parents=True, exist_ok=True)
+    for s in SEKMELER:
+        for kisi in gruplar[s]:
+            kaynak_dizin = KOK / "kesitler" / kisi["qid"]
+            hedef_dizin = GORSEL_HEDEF / kisi["qid"]
+            hedef_dizin.mkdir(parents=True, exist_ok=True)
+            for i in (1, 2, 3):
+                src = kaynak_dizin / f"{s}_{i}.webp"
+                if src.exists():
+                    shutil.copyfile(src, hedef_dizin / f"{i}.webp")
+```
+
+(Not: `s` burada döngü değişkeni olarak sekme adı = o kişiye atanan organ adı; `kaynak_dizin`'deki `{s}_{i}.webp` dosyaları tam olarak Task 11'in ürettiği `{organ}_{seviye}.webp` adlandırmasıyla eşleşiyor. Diğer 2 organın 6 dosyası kasıtlı olarak kopyalanmıyor — site'a yalnız oynanacak organ gidiyor, disk/bant genişliği tasarrufu.)
+
+- [ ] **Step 2: Eski çıktıyı temizleyip yeniden dene**
+
+```bash
+rm -f ../site/cehre/puzzles.js
+rm -rf ../site/cehre/gorseller
+python3 cehre_uret.py
+```
+Expected: üç sekme için kişi sayıları basılır (Task 11'in ürettiği `havuz.json` büyüklüğüne bağlı), `Yazıldı:`/`Görseller kopyalandı:` mesajları.
+
+- [ ] **Step 3: Çıktıyı doğrula**
+
+```bash
+python3 -c "
+import json
+d = json.loads(open('../site/cehre/puzzles.js').read().split('window.CEHRE_KISILER=')[1].split(';\n')[0])
+qid, kayit = next(iter(d.items()))
+print(qid, kayit)
+"
+```
+Expected: `kayit['g']` tam olarak `{"1": "gorseller/{qid}/1.webp", "2": "...", "3": "..."}` şeklinde 3 anahtarlı bir sözlük olmalı. Ardından o qid için `../site/cehre/gorseller/{qid}/1.webp`, `2.webp`, `3.webp` dosyalarının gerçekten var olduğunu `ls` ile doğrula (4. dosya vs. olmamalı — yalnız 3).
+
+- [ ] **Step 4: Not — commit yok (bu adımın site/ çıktısı Task 13'ün sonundaki toplu doğrulamada commit'lenecek)**
+
+---
+
+### Task 13: Ön yüzde zoom-out açılış mekaniği + tam-genişlik yerleşim
+
+**Files:**
+- Modify: `site/cehre/index.html`
+
+**Interfaces:**
+- Consumes: Task 12'nin ürettiği YENİ `puzzles.js` şeması (`g: {"1","2","3"}`).
+- Produces: tek büyük görsel + iki sütunlu (görsel + bilgi paneli) tam genişlik yerleşim; `SIRA` kaldırılıyor; `acikOrganSayisi` yerine `zoomSeviyesi` geliyor. `state[sekme]` şekli (`{wrong,solved,score,over}`), `PUAN`, `LS` anahtarı, `persist`/`state_yukle`'nin qid-doğrulama mantığı DEĞİŞMİYOR — yalnız hangi görselin gösterildiği ve genel sayfa yerleşimi değişiyor.
+
+**ÖNEMLİ — [[tam-ekran-genisligi]] kuralı bu görevde bağlayıcı:** sayfanın hiçbir yerinde belirgin boş yatay/dikey alan KALMAYACAK. Aşağıdaki kod bunu iki-sütunlu yerleşimle çözüyor (görsel solda büyük, bilgi paneli sağda) — bunu KÜÇÜLTME veya tek-sütun dar bir kutuya geri döndürme, 1680px genişlikte önizleyip iki yanda boşluk kalmadığını doğrula.
+
+- [ ] **Step 1: `site/cehre/index.html`'i tamamen şu içerikle DEĞİŞTİR**
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<script src="../ortak/analitik.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Çehre: Ünlüyü yüzünden tanı</title>
+<meta name="description" content="Yüz kesitinden günün ünlüsünü çıkar. Yanlış tahminde kesit genişler.">
+<meta name="theme-color" content="#0c0a09">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{color-scheme:dark;}
+  :root{
+    --bg:#0c0a09; --card:#1a1614; --border:#2e2724;
+    --paper:#efe9dc; --text:#ece7de; --muted:#94897c;
+    --accent:#e2a13f; --ok:#7cb46b; --bad:#e5382e;
+  }
+  body{background:var(--bg); color:var(--text); font-family:"Inter",-apple-system,sans-serif;
+    min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px;}
+  .wrap{max-width:min(96vw, 1400px); margin:0 auto;}
+  h1{font-family:"Special Elite",cursive; font-size:30px; color:var(--accent); margin-bottom:4px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:22px;}
+
+  .sekmeler{display:flex; gap:8px; margin-bottom:22px; max-width:600px;}
+  .sekme-btn{flex:1; background:var(--card); border:1px solid var(--border); color:var(--muted);
+    border-radius:6px; padding:10px; font-size:14px; cursor:pointer; font-weight:600;}
+  .sekme-btn.aktif{color:var(--accent); border-color:var(--accent);}
+
+  .oyun-alan{display:grid; grid-template-columns:minmax(320px,520px) 1fr; gap:40px; align-items:start;}
+  @media(max-width:760px){ .oyun-alan{grid-template-columns:1fr;} }
+
+  .kesit-buyuk{width:100%; aspect-ratio:1/1; border:5px solid var(--paper); border-radius:6px;
+    overflow:hidden; background:#000; box-shadow:0 10px 34px rgba(0,0,0,.5);}
+  .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block;}
+
+  .bilgi-panel{display:flex; flex-direction:column; gap:16px; padding-top:6px;}
+  .zoom-label{font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;}
+  .zoom-dots{display:flex; gap:6px;}
+  .zoom-dots i{width:26px; height:6px; border-radius:3px; background:var(--border); display:block;}
+  .zoom-dots i.acik{background:var(--accent);}
+  .can-dots{display:flex; gap:5px; font-size:18px; letter-spacing:2px;}
+
+  .guess-row{display:flex; gap:8px; position:relative;}
+  .guess-row input{flex:1; background:var(--card); border:1px solid var(--border); color:var(--text);
+    border-radius:6px; padding:14px 16px; font-size:16px; outline:none;}
+  .guess-row button{background:var(--accent); color:#1a1614; border:none; border-radius:6px;
+    padding:0 22px; font-weight:600; cursor:pointer;}
+  .guess-row button:disabled{opacity:.35; cursor:default;}
+  .ac-list{position:absolute; top:56px; left:0; right:70px; background:var(--card);
+    border:1px solid var(--border); border-radius:6px; max-height:260px; overflow-y:auto; z-index:5; display:none;}
+  .ac-item{padding:10px 14px; cursor:pointer; font-size:14px;}
+  .ac-item:hover, .ac-item.sel{background:var(--border);}
+
+  .durum{font-size:14px; color:var(--muted); min-height:20px;}
+  .durum.iyi{color:var(--ok);} .durum.kotu{color:var(--bad);}
+  .puan{font-size:14px; color:var(--muted);}
+  #shareBtn{align-self:flex-start; background:var(--card); color:var(--text); border:1px solid var(--border);
+    border-radius:6px; padding:10px 18px; cursor:pointer; display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Çehre</h1>
+    <p class="tagline">Yüz kesitinden günün ünlüsünü çıkar.</p>
+  </header>
+
+  <div class="sekmeler">
+    <button class="sekme-btn" data-sekme="burun">Burun</button>
+    <button class="sekme-btn" data-sekme="gozler">Gözler</button>
+    <button class="sekme-btn" data-sekme="agiz">Ağız</button>
+  </div>
+
+  <div class="oyun-alan">
+    <div class="kesit-buyuk" id="kesitBuyuk"></div>
+    <div class="bilgi-panel">
+      <div>
+        <div class="zoom-label" id="zoomEtiket">Kesit 1/3</div>
+        <div class="zoom-dots" id="zoomDots"></div>
+      </div>
+      <div class="can-dots" id="canDots"></div>
+      <div class="guess-row">
+        <input type="text" id="guessInput" placeholder="İsim yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <button id="guessBtn" disabled>Tahmin</button>
+        <div class="ac-list" id="acList"></div>
+      </div>
+      <div class="durum" id="durum"></div>
+      <div class="puan" id="puanAlan"></div>
+      <button id="shareBtn">Paylaş</button>
+    </div>
+  </div>
+</div>
+<script src="puzzles.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const EPOCH = new Date("2026-07-21T00:00:00");
+const KISILER = window.CEHRE_KISILER || {};
+const SEKME = window.CEHRE_SEKME || {burun:[], gozler:[], agiz:[]};
+
+function gunIndex(sekmeAdi){
+  const gun = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
+  const n = SEKME[sekmeAdi].length;
+  return n ? ((gun % n) + n) % n : 0;
+}
+
+function gununKisisi(sekmeAdi){
+  const qid = SEKME[sekmeAdi][gunIndex(sekmeAdi)];
+  return {qid, ...KISILER[qid]};
+}
+
+let aktifSekme = "burun";
+
+const PUAN = [100, 80, 60, 40, 25, 15];
+const TUM_ISIMLER = Object.entries(KISILER).map(([qid, k]) => ({qid, isim: k.isim}));
+
+const LS = "cehre_v1";
+function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){ return {}; } }
+function persist(){
+  const save = loadSave();
+  for (const s of ["burun", "gozler", "agiz"]) {
+    save[s] = save[s] || {};
+    save[s][gunIndex(s)] = {...state[s], qid: gununKisisi(s).qid};
+  }
+  try{ localStorage.setItem(LS, JSON.stringify(save)); }catch(e){}
+}
+function state_yukle(){
+  const save = loadSave();
+  const out = {};
+  for (const s of ["burun", "gozler", "agiz"]) {
+    const kayit = save[s] && save[s][gunIndex(s)];
+    if (kayit && kayit.qid === gununKisisi(s).qid){
+      const {qid, ...durum} = kayit;
+      out[s] = durum;
+    } else {
+      out[s] = bosDurum();
+    }
+  }
+  return out;
+}
+let state = state_yukle();
+function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
+
+function zoomSeviyesi(wrong){
+  if (wrong >= 5) return 3;
+  if (wrong >= 3) return 2;
+  return 1;
+}
+
+function renderPortre(){
+  const kisi = gununKisisi(aktifSekme);
+  const s = state[aktifSekme];
+  const seviye = s.over ? 3 : zoomSeviyesi(s.wrong);
+  $("kesitBuyuk").innerHTML = `<img src="${kisi.g[String(seviye)]}" alt="yüz kesiti">`;
+  $("zoomEtiket").textContent = `Kesit ${seviye}/3`;
+  $("zoomDots").innerHTML = [1,2,3].map(i => `<i class="${i <= seviye ? "acik" : ""}"></i>`).join("");
+  const kalanHak = PUAN.length - s.wrong;
+  $("canDots").innerHTML = Array.from({length: PUAN.length}, (_,i) =>
+    i < kalanHak ? "🤎" : "🖤").join("");
+  $("guessInput").disabled = s.over;
+  $("guessBtn").disabled = true;
+  $("puanAlan").textContent = s.solved ? `Bu sekmede puanın: ${s.score}` : "";
+  $("durum").textContent = "";
+  $("durum").className = "durum";
+  if (s.over && !s.solved) {
+    $("durum").textContent = `Hakların bitti. Cevap: ${kisi.isim}`;
+    $("durum").className = "durum kotu";
+  }
+  shareGoster();
+}
+
+const fold = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+let acResults = [], acIdx = -1;
+
+function showAc(){
+  const q = fold($("guessInput").value.trim());
+  $("guessBtn").disabled = true;
+  if (q.length < 2){ hideAc(); return; }
+  const starts = [], contains = [];
+  for (const p of TUM_ISIMLER){
+    const t = fold(p.isim);
+    if (t.startsWith(q)) starts.push(p);
+    else if (t.includes(q)) contains.push(p);
+    if (starts.length >= 8) break;
+  }
+  acResults = [...starts, ...contains].slice(0, 8);
+  acIdx = -1;
+  if (!acResults.length){ hideAc(); return; }
+  $("acList").innerHTML = acResults.map((r,i) => `<div class="ac-item" data-i="${i}">${esc(r.isim)}</div>`).join("");
+  $("acList").style.display = "block";
+  $("acList").querySelectorAll(".ac-item").forEach(el =>
+    el.addEventListener("click", () => choose(acResults[+el.dataset.i])));
+}
+function hideAc(){ $("acList").style.display = "none"; acResults = []; acIdx = -1; }
+let secilen = null;
+function choose(p){
+  secilen = p;
+  $("guessInput").value = p.isim;
+  $("guessBtn").disabled = false;
+  hideAc();
+}
+
+const SEKME_EMOJI = {burun:"👃", gozler:"👀", agiz:"👄"};
+function zoomEmoji(n){
+  return ["🟥","🟨","🟩"].slice(0, n).join("") + "⬛".repeat(3 - n);
+}
+function shareText(){
+  let satirlar = [`Çehre: Gün #${gunIndex("burun") + 1}`];
+  let toplamPuan = 0;
+  for (const s of ["burun", "gozler", "agiz"]) {
+    const st = state[s];
+    const seviye = st.solved ? zoomSeviyesi(st.wrong) : 3;
+    const puan = st.solved ? st.score : 0;
+    toplamPuan += puan;
+    satirlar.push(`${SEKME_EMOJI[s]} ${zoomEmoji(seviye)} ${st.solved ? puan : "✗"}`);
+  }
+  satirlar.push(`Toplam: ${toplamPuan} puan`);
+  return satirlar.join("\n");
+}
+function tumuBitti(){
+  return ["burun","gozler","agiz"].every(s => state[s].over);
+}
+function shareGoster(){
+  $("shareBtn").style.display = tumuBitti() ? "inline-block" : "none";
+}
+$("shareBtn").addEventListener("click", async () => {
+  try{ await navigator.clipboard.writeText(shareText()); $("shareBtn").textContent = "Kopyalandı ✓"; }
+  catch(e){}
+});
+
+function submit(){
+  const s = state[aktifSekme];
+  if (s.over || !secilen) return;
+  const kisi = gununKisisi(aktifSekme);
+  const secIsim = secilen.isim;
+  let yanlisMesaj = null;
+  if (secilen.qid === kisi.qid){
+    s.solved = true; s.over = true; s.score = PUAN[s.wrong];
+  } else {
+    s.wrong++;
+    if (s.wrong >= PUAN.length){
+      s.over = true;
+    } else {
+      yanlisMesaj = `${secIsim} değil.`;
+    }
+  }
+  secilen = null;
+  $("guessInput").value = "";
+  $("guessBtn").disabled = true;
+  persist();
+  shareGoster();
+  renderPortre();
+  if (s.solved){
+    $("durum").textContent = `Doğru! ${kisi.isim}. ${s.score} puan.`;
+    $("durum").className = "durum iyi";
+  } else if (yanlisMesaj){
+    $("durum").textContent = yanlisMesaj;
+    $("durum").className = "durum kotu";
+  }
+}
+
+$("guessInput").addEventListener("input", showAc);
+$("guessBtn").addEventListener("click", submit);
+$("guessInput").addEventListener("keydown", e => {
+  if (e.key === "Enter" && !$("guessBtn").disabled) submit();
+});
+
+document.querySelectorAll(".sekme-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".sekme-btn").forEach(b => b.classList.remove("aktif"));
+    btn.classList.add("aktif");
+    aktifSekme = btn.dataset.sekme;
+    hideAc();
+    renderPortre();
+  });
+});
+document.querySelector('.sekme-btn[data-sekme="burun"]').classList.add("aktif");
+renderPortre();
+</script>
+<script src="../ortak/nav-panel.js"></script>
+</body>
+</html>
+```
+
+- [ ] **Step 2: Tam ölçekli zinciri baştan sona çalıştır (Task 10+11+12'nin gerçek/büyük veriyle son hali)**
+
+```bash
+cd cehre-mutfak
+rm -rf havuz-ham.json havuz.json kesitler
+python3 wikidata_harvest.py --limit 5000
+python3 yuz_kesit.py
+python3 cehre_uret.py
+```
+
+Expected: ünlülük filtresi (Task 10) yüzünden aday sayısı öncekinden az ama ORTALAMA KALİTE yüksek olacak; `yuz_kesit.py` önceki turda görülen Wikimedia 429 hız-sınırı riskini hâlâ taşıyor — eğer aşırı miktarda `HTTP Error 429` hatası görülürse (art arda çoğu indirme başarısız oluyorsa), `indir()` fonksiyonuna indirmeler arası küçük bir `time.sleep(0.3)` eklemeyi düşün (bu görevin asıl kapsamı değil ama gerçek çalıştırmada havuz çok küçülüyorsa DONE_WITH_CONCERNS olarak işaretleyip bunu bulguların arasında raporla — kullanıcı ayrı bir turda bunu isteyebilir).
+
+- [ ] **Step 3: Tarayıcıda doğrula (üç sekme + zoom-out mekaniği + tam genişlik)**
+
+Preview server "site" (port 8642) ile `http://localhost:8642/cehre/` adresine git.
+
+- **Sıkı ilk kesit:** Burun sekmesinde AÇILAN İLK görselin gerçekten dar/organ-odaklı olduğunu, tüm yüzü göstermediğini gözle doğrula (kullanıcının orijinal şikayeti tam burada çözülüyor mu?).
+- **Zoom-out kademesi:** 3 yanlış tahminden sonra AYNI fotoğrafın daha geniş bir kesitinin göründüğünü (farklı bir organ DEĞİL) doğrula; 5 yanlıştan sonra en geniş (3. seviye) kesitin göründüğünü doğrula.
+- **Tam genişlik:** pencereyi 1680px+ genişliğe getir (`resize_window` ile), sayfanın solda görsel + sağda bilgi paneliyle genişliği kullandığını, belirgin boş alan kalmadığını `computer screenshot` ile gözle doğrula.
+- **Konsol hatası yok.**
+- **Em dash yok** (`grep -rn "—" site/cehre/`).
+
+- [ ] **Step 4: Tüm site/ çıktısını (Task 12 + bu görev) commit'le**
+
+```bash
+cd "../site" && git add cehre/index.html cehre/puzzles.js cehre/gorseller && git commit -m "Çehre: zoom-out açılış mekaniği, sıkı kesitler, ünlülük filtresi, tam genişlik yerleşim" && git push
 ```
