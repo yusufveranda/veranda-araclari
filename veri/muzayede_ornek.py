@@ -51,7 +51,7 @@ DATA = [
      "Neo-Ekspresyonizm", "dikkat",
      "Untitled", "1982",
      # gecici görsel, Faz 3'te lisans dogrulamasiyla degisecek
-     "https://upload.wikimedia.org/wikipedia/en/f/f6/Untitled1982Basquiat.jpg",
+     "https://upload.wikimedia.org/wikipedia/en/thumb/f/f6/Untitled1982Basquiat.jpg/330px-Untitled1982Basquiat.jpg",
      110500000, 2017, "Sotheby's",
      "https://en.wikipedia.org/wiki/Untitled_(1982_Basquiat_skull_painting)"),
 
@@ -59,7 +59,7 @@ DATA = [
      "Pop Art", "dikkat",
      "Shot Sage Blue Marilyn", "1964",
      # gecici görsel, Faz 3'te lisans dogrulamasiyla degisecek
-     "https://upload.wikimedia.org/wikipedia/en/0/0c/Andy_Warhol_Shot_Marilyns_1964.jpg",
+     "https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Andy_Warhol_Shot_Marilyns_1964.jpg/330px-Andy_Warhol_Shot_Marilyns_1964.jpg",
      195000000, 2022, "Christie's",
      "https://en.wikipedia.org/wiki/Shot_Marilyns"),
 
