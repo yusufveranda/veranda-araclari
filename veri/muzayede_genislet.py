@@ -8,7 +8,7 @@ Kullanim:
   python3 veri/muzayede_genislet.py
   python3 veri/muzayede_genislet.py --limit 50   # deneme
 """
-import json, time, argparse, urllib.request, urllib.parse
+import json, time, argparse, urllib.request, urllib.parse, re
 from pathlib import Path
 
 KOK = Path(__file__).resolve().parent.parent
@@ -27,6 +27,9 @@ SELECT DISTINCT ?ressam ?ressamLabel ?olum ?ulkeLabel ?gorsel WHERE {
 }
 LIMIT 2000
 """
+
+# Regex to parse ISO 8601 dates (including optional leading - for BC years)
+YIL_RE = re.compile(r'^(-?\d+)-\d{2}-\d{2}T')
 
 def sparql_sorgula(sorgu, deneme=3):
     url = SPARQL_ENDPOINT + "?" + urllib.parse.urlencode({"query": sorgu, "format": "json"})
@@ -65,8 +68,10 @@ def main():
         gorulen.add(wid)
         olum = s.get("olum", {}).get("value")
         olum_yili = None
-        if olum and olum[:4].isdigit():
-            olum_yili = int(olum[:4])
+        if olum:
+            m = YIL_RE.match(olum)
+            if m:
+                olum_yili = int(m.group(1))
         adaylar.append({
             "isim": s.get("ressamLabel", {}).get("value", wid),
             "wikidata_id": wid,
