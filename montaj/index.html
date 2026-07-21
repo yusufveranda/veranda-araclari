@@ -159,6 +159,8 @@
     <div class="controls">
       <span class="diff" id="diffBadge"></span>
       <button id="randomBtn" class="mini-btn" hidden>🎲 rastgele</button>
+      <select id="daySel" title="bulmaca seç" hidden></select>
+      <button id="girisDug" class="mini-btn">Google ile giriş</button>
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
@@ -196,6 +198,10 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
 <script src="puzzles.js"></script>
 <script>
 (function(){
@@ -208,17 +214,35 @@
   const PZ = window.MONTAJ[idx];
   document.getElementById('diffBadge').innerHTML = 'ZORLUK <b>' + PZ.level + '/10</b>';
 
-  // Gizli sonsuz mod: ?sinefil ile açılır (paylaşılabilir link, admin gerekmez).
+  // Erişim: ?sinefil paylaşılabilir link ile sadece rastgele; Google girişinde
+  // (admin) hem liste hem rastgele açılır.
   const randomBtn = document.getElementById('randomBtn');
-  if (params.has('sinefil')) {
-    randomBtn.hidden = false;
-    randomBtn.addEventListener('click', () => {
-      let i;
-      do { i = Math.floor(Math.random() * window.MONTAJ.length); }
-      while (window.MONTAJ.length > 1 && i === idx);
-      location.search = '?gun=' + i + '&sinefil';
-    });
+  const daySel = document.getElementById('daySel');
+  const girisDug = document.getElementById('girisDug');
+  const sinefilLink = params.has('sinefil') ? '&sinefil' : '';
+  for (let i = 0; i < window.MONTAJ.length; i++) {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = 'BULMACA ' + (i + 1) + ' · zorluk ' + window.MONTAJ[i].level;
+    if (i === idx) o.selected = true;
+    daySel.appendChild(o);
   }
+  daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value + sinefilLink);
+  randomBtn.addEventListener('click', () => {
+    let i;
+    do { i = Math.floor(Math.random() * window.MONTAJ.length); }
+    while (window.MONTAJ.length > 1 && i === idx);
+    location.search = '?gun=' + i + sinefilLink;
+  });
+  function applyAccess(adminMi){
+    randomBtn.hidden = !(params.has('sinefil') || adminMi);
+    daySel.hidden = !adminMi;
+  }
+  applyAccess(false);
+  girisDug.onclick = () => { if (window.VF && VF.kullanici) VF.cikisYap(); else window.VF && VF.girisYap().catch(e => console.error(e)); };
+  if (window.VF) VF.kullaniciDinle(u => {
+    girisDug.textContent = u ? (u.ad + ' · çıkış') : 'Google ile giriş';
+    applyAccess(!!VF.adminMi);
+  });
 
   const KEY = 'montaj_v2_' + idx;
   // kareler: [filmIdx, sceneIdx]

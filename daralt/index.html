@@ -117,6 +117,8 @@
     <h1>DARALT</h1>
     <div style="display:flex;gap:8px;align-items:center;">
       <button id="randomBtn" class="mini-btn" hidden>🎲 rastgele</button>
+      <select id="daySel" title="bulmaca seç" hidden></select>
+      <button id="girisDug" class="mini-btn">Google ile giriş</button>
       <a class="mini-btn" href="../">verandatools</a>
     </div>
   </header>
@@ -157,6 +159,10 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
 <script src="data.js"></script>
 <script>
 (function(){
@@ -171,17 +177,35 @@
   const KEY = 'daralt_v3_' + idx;
   const ANS_I = DAY.w.indexOf(DAY.a);
 
-  // Gizli sonsuz mod: ?sinefil ile açılır (paylaşılabilir link, admin gerekmez).
+  // Erişim: ?sinefil paylaşılabilir link ile sadece rastgele; Google girişinde
+  // (admin) hem liste hem rastgele açılır.
   const randomBtn = document.getElementById('randomBtn');
-  if (params.has('sinefil')) {
-    randomBtn.hidden = false;
-    randomBtn.addEventListener('click', () => {
-      let i;
-      do { i = Math.floor(Math.random() * D.days.length); }
-      while (D.days.length > 1 && i === idx);
-      location.search = '?gun=' + i + '&sinefil';
-    });
+  const daySel = document.getElementById('daySel');
+  const girisDug = document.getElementById('girisDug');
+  const sinefilLink = params.has('sinefil') ? '&sinefil' : '';
+  for (let i = 0; i < D.days.length; i++) {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = 'BULMACA ' + (i + 1);
+    if (i === idx) o.selected = true;
+    daySel.appendChild(o);
   }
+  daySel.addEventListener('change', () => location.search = '?gun=' + daySel.value + sinefilLink);
+  randomBtn.addEventListener('click', () => {
+    let i;
+    do { i = Math.floor(Math.random() * D.days.length); }
+    while (D.days.length > 1 && i === idx);
+    location.search = '?gun=' + i + sinefilLink;
+  });
+  function applyAccess(adminMi){
+    randomBtn.hidden = !(params.has('sinefil') || adminMi);
+    daySel.hidden = !adminMi;
+  }
+  applyAccess(false);
+  girisDug.onclick = () => { if (window.VF && VF.kullanici) VF.cikisYap(); else window.VF && VF.girisYap().catch(e => console.error(e)); };
+  if (window.VF) VF.kullaniciDinle(u => {
+    girisDug.textContent = u ? (u.ad + ' · çıkış') : 'Google ile giriş';
+    applyAccess(!!VF.adminMi);
+  });
 
   const F = D.films; // id -> [t, y, pp]
   const IMG = p => 'https://image.tmdb.org/t/p/w342' + p;
