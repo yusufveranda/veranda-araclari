@@ -9,7 +9,7 @@
 const IMG = "https://image.tmdb.org/t/p/w342";
 const AFIS_IMG = "https://image.tmdb.org/t/p/w185";
 const ORDER_MAX = 15, DENEME_HAK = 3, PAS_HAK = 1, TAVAN = 10, ADAY = 3;
-const EPOCH = 20654; // 2026-07-20 => Zincir #1
+const EPOCH = 20654; // 2026-07-20 => Film Şeridi #1
 const KAYIT = "zincir_v1";
 const SES_ANAHTAR = "zincir_ses";
 const AZ_HAREKET = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -604,7 +604,7 @@ function paylasimSatiri(){
   return S.emoji.join("") + uc;
 }
 $("paylas").onclick = () => {
-  const txt = `⛓️ Zincir #${gunNo} · ${S.halka} halka\n${paylasimSatiri()}\nverandatools.com/zincir`;
+  const txt = `🎞️ Film Şeridi #${gunNo} · ${S.halka} halka\n${paylasimSatiri()}\nverandatools.com/zincir`;
   (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject())
     .then(()=>{ $("paylas").textContent = "kopyalandı ✓"; })
     .catch(()=>{ prompt("kopyala:", txt); });
