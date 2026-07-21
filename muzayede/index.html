@@ -27,6 +27,7 @@
   <div id="ressamAsama">
     <input id="ressamGiris" type="text" placeholder="ressam adı" autocomplete="off">
     <button id="ressamGonderBtn">tahmin et</button>
+    <button id="pesEtBtn">pes et</button>
     <div id="ipucuAlanlari"></div>
     <p id="ressamMesaj"></p>
   </div>
@@ -89,13 +90,14 @@
 
     const geriYuklendi = yukle();
     if(!geriYuklendi){
-      window.MUZ.state = { ressamBulundu: false, hintCount: 0, hintsAcik: {} };
+      window.MUZ.state = { ressamBulundu: false, pesEdildi: false, hintCount: 0, hintsAcik: {} };
     }
 
     document.getElementById('ressamGonderBtn').addEventListener('click', ressamGonder);
     document.getElementById('ressamGiris').addEventListener('keydown', e => {
       if(e.key === 'Enter') ressamGonder();
     });
+    document.getElementById('pesEtBtn').addEventListener('click', pesEt);
 
     ipucularinCiz();
 
@@ -125,6 +127,16 @@ function ressamGonder(){
   } else {
     msg.textContent = 'yanlış, bir ipucu seç';
   }
+}
+
+function pesEt(){
+  if(window.MUZ.state.ressamBulundu) return;
+  window.MUZ.state.pesEdildi = true;
+  const msg = document.getElementById('ressamMesaj');
+  msg.textContent = 'doğru: ' + window.MUZ.ressam.isim;
+  document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
+  fiyatAsamasiniAc();
+  kaydet();
 }
 
 const IPUCU_KATEGORILERI = [
@@ -235,7 +247,7 @@ function durumuUygula(){
   Object.keys(st.hintsAcik).forEach(kategoriId => {
     if(st.hintsAcik[kategoriId]) ipucuGoster(kategoriId);
   });
-  if(st.ressamBulundu){
+  if(st.ressamBulundu || st.pesEdildi){
     document.getElementById('ressamMesaj').textContent = 'doğru: ' + window.MUZ.ressam.isim;
     document.getElementById('ressamAsama').querySelectorAll('input,button').forEach(el => el.disabled = true);
     fiyatAsamasiniAc();
