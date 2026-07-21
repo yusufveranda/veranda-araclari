@@ -48,7 +48,12 @@ body::before{
 }
 [data-tema="gece"] body::before{ opacity:.16; }
 
-.sarmal{ width:min(720px,94vw); margin:0 auto; padding:18px 0 70px; }
+.sarmal{ width:min(1440px,96vw); margin:0 auto; padding:18px 0 70px; }
+
+.oyun-duzen{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(20px,3vw,48px); align-items:start; }
+@media(max-width:860px){ .oyun-duzen{ grid-template-columns:1fr; } }
+.sol-sutun{ position:sticky; top:18px; }
+@media(max-width:860px){ .sol-sutun{ position:static; } }
 
 .ust{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .ust-sag{ margin-left:auto; display:flex; gap:8px; }
@@ -108,7 +113,7 @@ body::before{
   color:var(--murekkep); background:var(--kart); border:1px solid var(--cizgi); border-radius:8px; padding:6px 10px;
 }
 
-#fiyatAsama, #ressamAsama{ margin-top:22px; }
+#ressamAsama{ margin-top:22px; }
 
 .soru{
   font-family:'Playfair Display',serif; font-weight:700; font-size:16.5px; color:var(--murekkep);
@@ -256,40 +261,44 @@ footer{
     <div class="tag">gerçek mi çakma mı, kaça satıldı, kimin eseri</div>
   </header>
 
-  <main>
-    <div class="levha">
-      <div class="cerceve">
-        <img id="tabloGorsel" alt="günün tablosu" src="">
+  <main class="oyun-duzen">
+    <div class="sol-sutun">
+      <div class="levha">
+        <div class="cerceve">
+          <img id="tabloGorsel" alt="günün tablosu" src="">
+        </div>
+        <p class="plaka">günün tablosu</p>
       </div>
-      <p class="plaka">günün tablosu</p>
-    </div>
 
-    <div id="adminKutu" style="display:none">
-      <select id="adminSecici" aria-label="bulmaca seç (admin)"></select>
-      <button class="ikonbtn" id="adminRastgeleBtn" type="button">rastgele</button>
-    </div>
-
-    <div id="fiyatAsama" style="display:none">
-      <p class="soru">bu tablo gerçekte kaç dolara satıldı?</p>
-      <div class="fiyat-gosterim" id="fiyatGosterim">$0</div>
-      <div class="fiyat-cark" id="fiyatCarki"></div>
-      <button class="btn-ana" id="fiyatGonderBtn" type="button">tahmin et</button>
-      <div id="fiyatMesaj"></div>
-    </div>
-
-    <div id="ressamAsama" style="display:none">
-      <div class="giris-satiri">
-        <input id="ressamGiris" type="text" placeholder="ressam adı" list="ressamListesi">
-        <datalist id="ressamListesi"></datalist>
-        <button class="btn-ana" id="ressamGonderBtn">tahmin et</button>
-        <button class="btn-ikincil" id="pesEtBtn">pes et</button>
+      <div id="adminKutu" style="display:none">
+        <select id="adminSecici" aria-label="bulmaca seç (admin)"></select>
+        <button class="ikonbtn" id="adminRastgeleBtn" type="button">rastgele</button>
       </div>
-      <p id="ipucuDurum"></p>
-      <div id="ipucuAlanlari"></div>
-      <p id="ressamMesaj"></p>
     </div>
 
-    <div id="sonucKutu"></div>
+    <div class="sag-sutun">
+      <div id="fiyatAsama" style="display:none">
+        <p class="soru">bu tablo gerçekte kaç dolara satıldı?</p>
+        <div class="fiyat-gosterim" id="fiyatGosterim">$0</div>
+        <div class="fiyat-cark" id="fiyatCarki"></div>
+        <button class="btn-ana" id="fiyatGonderBtn" type="button">tahmin et</button>
+        <div id="fiyatMesaj"></div>
+      </div>
+
+      <div id="ressamAsama" style="display:none">
+        <div class="giris-satiri">
+          <input id="ressamGiris" type="text" placeholder="ressam adı" list="ressamListesi">
+          <datalist id="ressamListesi"></datalist>
+          <button class="btn-ana" id="ressamGonderBtn">tahmin et</button>
+          <button class="btn-ikincil" id="pesEtBtn">pes et</button>
+        </div>
+        <p id="ipucuDurum"></p>
+        <div id="ipucuAlanlari"></div>
+        <p id="ressamMesaj"></p>
+      </div>
+
+      <div id="sonucKutu"></div>
+    </div>
   </main>
 
   <footer>Muzayede · veranda</footer>
