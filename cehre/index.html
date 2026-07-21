@@ -5,7 +5,7 @@
 <script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Çehre: Ünlüyü yüzünden tanı</title>
-<meta name="description" content="Burun, göz ya da ağız kesitinden günün ünlüsünü çıkar. Yanlış tahminde yeni bir organ açılır.">
+<meta name="description" content="Yüz kesitinden günün ünlüsünü çıkar. Yanlış tahminde kesit genişler.">
 <meta name="theme-color" content="#0c0a09">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
@@ -21,35 +21,45 @@
   }
   body{background:var(--bg); color:var(--text); font-family:"Inter",-apple-system,sans-serif;
     min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px;}
-  .wrap{max-width:760px; margin:0 auto;}
-  h1{font-family:"Special Elite",cursive; font-size:28px; color:var(--accent); margin-bottom:4px;}
-  .tagline{font-size:13px; color:var(--muted); margin-bottom:18px;}
+  .wrap{max-width:min(96vw, 1900px); margin:0 auto;}
+  h1{font-family:"Special Elite",cursive; font-size:30px; color:var(--accent); margin-bottom:4px;}
+  .tagline{font-size:13px; color:var(--muted); margin-bottom:22px;}
 
-  .sekmeler{display:flex; gap:8px; margin-bottom:18px;}
+  .sekmeler{display:flex; gap:8px; margin-bottom:22px; max-width:600px;}
   .sekme-btn{flex:1; background:var(--card); border:1px solid var(--border); color:var(--muted);
     border-radius:6px; padding:10px; font-size:14px; cursor:pointer; font-weight:600;}
   .sekme-btn.aktif{color:var(--accent); border-color:var(--accent);}
 
-  .portre-alan{display:flex; gap:10px; justify-content:center; margin-bottom:20px; min-height:160px;}
-  .kesit{width:150px; height:150px; border:3px solid var(--paper); border-radius:4px;
-    overflow:hidden; background:#000;}
-  .kesit img{width:100%; height:100%; object-fit:cover; display:block;}
-  .kesit.kilitli{display:flex; align-items:center; justify-content:center; color:var(--border); font-size:32px;}
+  .oyun-alan{display:grid; grid-template-columns: 1fr minmax(320px, 460px); gap:40px; align-items:start;}
+  @media(max-width:760px){ .oyun-alan{grid-template-columns:1fr;} }
 
-  .guess-row{display:flex; gap:8px; margin-bottom:10px; position:relative;}
+  .kesit-buyuk{width:100%; aspect-ratio:1/1; max-height:72vh; border:5px solid var(--paper); border-radius:6px;
+    overflow:hidden; background:#000; box-shadow:0 10px 34px rgba(0,0,0,.5);}
+  .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block;}
+
+  .bilgi-panel{display:flex; flex-direction:column; gap:16px; padding-top:6px;}
+  .zoom-label{font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;}
+  .zoom-dots{display:flex; gap:6px;}
+  .zoom-dots i{width:26px; height:6px; border-radius:3px; background:var(--border); display:block;}
+  .zoom-dots i.acik{background:var(--accent);}
+  .can-dots{display:flex; gap:5px; font-size:18px; letter-spacing:2px;}
+
+  .guess-row{display:flex; gap:8px; position:relative;}
   .guess-row input{flex:1; background:var(--card); border:1px solid var(--border); color:var(--text);
     border-radius:6px; padding:14px 16px; font-size:16px; outline:none;}
   .guess-row button{background:var(--accent); color:#1a1614; border:none; border-radius:6px;
     padding:0 22px; font-weight:600; cursor:pointer;}
   .guess-row button:disabled{opacity:.35; cursor:default;}
   .ac-list{position:absolute; top:56px; left:0; right:70px; background:var(--card);
-    border:1px solid var(--border); border-radius:6px; max-height:220px; overflow-y:auto; z-index:5; display:none;}
+    border:1px solid var(--border); border-radius:6px; max-height:260px; overflow-y:auto; z-index:5; display:none;}
   .ac-item{padding:10px 14px; cursor:pointer; font-size:14px;}
   .ac-item:hover, .ac-item.sel{background:var(--border);}
 
-  .durum{font-size:13px; color:var(--muted); min-height:20px; margin-bottom:8px;}
+  .durum{font-size:14px; color:var(--muted); min-height:20px;}
   .durum.iyi{color:var(--ok);} .durum.kotu{color:var(--bad);}
-  .puan{font-size:13px; color:var(--muted);}
+  .puan{font-size:14px; color:var(--muted);}
+  #shareBtn{align-self:flex-start; background:var(--card); color:var(--text); border:1px solid var(--border);
+    border-radius:6px; padding:10px 18px; cursor:pointer; display:none;}
 </style>
 </head>
 <body>
@@ -65,16 +75,24 @@
     <button class="sekme-btn" data-sekme="agiz">Ağız</button>
   </div>
 
-  <div class="portre-alan" id="portreAlan"></div>
-
-  <div class="guess-row">
-    <input type="text" id="guessInput" placeholder="İsim yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
-    <button id="guessBtn" disabled>Tahmin</button>
-    <div class="ac-list" id="acList"></div>
+  <div class="oyun-alan">
+    <div class="kesit-buyuk" id="kesitBuyuk"></div>
+    <div class="bilgi-panel">
+      <div>
+        <div class="zoom-label" id="zoomEtiket">Kesit 1/3</div>
+        <div class="zoom-dots" id="zoomDots"></div>
+      </div>
+      <div class="can-dots" id="canDots"></div>
+      <div class="guess-row">
+        <input type="text" id="guessInput" placeholder="İsim yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <button id="guessBtn" disabled>Tahmin</button>
+        <div class="ac-list" id="acList"></div>
+      </div>
+      <div class="durum" id="durum"></div>
+      <div class="puan" id="puanAlan"></div>
+      <button id="shareBtn">Paylaş</button>
+    </div>
   </div>
-  <div class="durum" id="durum"></div>
-  <div class="puan" id="puanAlan"></div>
-  <button id="shareBtn" style="margin-top:10px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:10px 16px; cursor:pointer; display:none;">Paylaş</button>
 </div>
 <script src="puzzles.js"></script>
 <script>
@@ -83,7 +101,6 @@ const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&
 const EPOCH = new Date("2026-07-21T00:00:00");
 const KISILER = window.CEHRE_KISILER || {};
 const SEKME = window.CEHRE_SEKME || {burun:[], gozler:[], agiz:[]};
-const SIRA = {burun:["burun","gozler","agiz"], gozler:["gozler","burun","agiz"], agiz:["agiz","burun","gozler"]};
 
 function gunIndex(sekmeAdi){
   const gun = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
@@ -128,7 +145,7 @@ function state_yukle(){
 let state = state_yukle();
 function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
 
-function acikOrganSayisi(wrong){
+function zoomSeviyesi(wrong){
   if (wrong >= 5) return 3;
   if (wrong >= 3) return 2;
   return 1;
@@ -136,14 +153,14 @@ function acikOrganSayisi(wrong){
 
 function renderPortre(){
   const kisi = gununKisisi(aktifSekme);
-  const sira = SIRA[aktifSekme];
   const s = state[aktifSekme];
-  const acikSayisi = s.over ? 3 : acikOrganSayisi(s.wrong);
-  $("portreAlan").innerHTML = sira.map((organ, i) =>
-    i < acikSayisi
-      ? `<div class="kesit"><img src="${kisi.g[organ]}" alt="yüz kesiti"></div>`
-      : `<div class="kesit kilitli">?</div>`
-  ).join("");
+  const seviye = s.over ? 3 : zoomSeviyesi(s.wrong);
+  $("kesitBuyuk").innerHTML = `<img src="${kisi.g[String(seviye)]}" alt="yüz kesiti">`;
+  $("zoomEtiket").textContent = `Kesit ${seviye}/3`;
+  $("zoomDots").innerHTML = [1,2,3].map(i => `<i class="${i <= seviye ? "acik" : ""}"></i>`).join("");
+  const kalanHak = PUAN.length - s.wrong;
+  $("canDots").innerHTML = Array.from({length: PUAN.length}, (_,i) =>
+    i < kalanHak ? "🤎" : "🖤").join("");
   $("guessInput").disabled = s.over;
   $("guessBtn").disabled = true;
   $("puanAlan").textContent = s.solved ? `Bu sekmede puanın: ${s.score}` : "";
@@ -188,7 +205,7 @@ function choose(p){
 }
 
 const SEKME_EMOJI = {burun:"👃", gozler:"👀", agiz:"👄"};
-function organSayisiEmoji(n){
+function zoomEmoji(n){
   return ["🟥","🟨","🟩"].slice(0, n).join("") + "⬛".repeat(3 - n);
 }
 function shareText(){
@@ -196,10 +213,10 @@ function shareText(){
   let toplamPuan = 0;
   for (const s of ["burun", "gozler", "agiz"]) {
     const st = state[s];
-    const acik = st.solved ? acikOrganSayisi(st.wrong) : 3;
+    const seviye = st.solved ? zoomSeviyesi(st.wrong) : 3;
     const puan = st.solved ? st.score : 0;
     toplamPuan += puan;
-    satirlar.push(`${SEKME_EMOJI[s]} ${organSayisiEmoji(acik)} ${st.solved ? puan : "✗"}`);
+    satirlar.push(`${SEKME_EMOJI[s]} ${zoomEmoji(seviye)} ${st.solved ? puan : "✗"}`);
   }
   satirlar.push(`Toplam: ${toplamPuan} puan`);
   return satirlar.join("\n");
