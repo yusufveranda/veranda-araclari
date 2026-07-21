@@ -51,26 +51,113 @@ def wikipedia_api_html(sayfa_url):
     api = f"https://en.wikipedia.org/api/rest_v1/page/html/{baslik}"
     return http_get(api)
 
-# Iki farkli fiyat deseni deneniyor, once en guvenilir olan (HTML yorumdaki
-# tam dolar tutari), sonra daha genel "$X million" metin deseni.
+# Uc fiyat deseni deneniyor, once en guvenilir olan (HTML yorumdaki tam
+# dolar tutari), sonra "$X million" metin deseni, en son da (fiyat
+# sutununda "million" kelimesi hic gecmeyen, birim basligindan anlasilan
+# satirlar icin) ciplak "$X.X" deseni.
 FIYAT_YORUM_RE = re.compile(r"<!--\s*\$\s*([\d,]+)\s*-->")
 FIYAT_MILYON_RE = re.compile(r"\$\s*([\d,]+(?:\.\d+)?)\s*million", re.I)
+FIYAT_CIPLAK_RE = re.compile(r"\$\s*([\d]{1,3}(?:,\d{3})*(?:\.\d+)?)")
+# Parsoid ciktisinda kaynakca/dipnot metni iki farkli yerde saklanabiliyor
+# ve ikisi de gercek fiyatla alakasiz dolar rakamlari tasiyabiliyor:
+#  1) ic ice bir <sup>'un data-mw='{"parts":[...]}' JSON ozniteliginde
+#     (orn. bir alici hakkindaki "...privately resold for $65-$90
+#     million..." notu).
+#  2) Parsoid'in tablo hucresi icine birakabildigi ham HTML yorumlarinda
+#     (orn. <!--<ref>{{Cite news |title=...Record $1.21 Million...}}</ref>-->
+#     gibi, gercek "fiyat yorumu" desenimizle (<!-- $ N,NNN,NNN -->)
+#     KARISTIRILMAMASI gereken, eski/artik wikitext kalintisi yorumlar).
+# Bu iki blogu temizlemezsek, gorunmeyen bir dipnottaki alakasiz bir dolar
+# rakami hucrenin gercek fiyatiymis gibi eslesebilir.
+DATA_MW_RE = re.compile(r"""data-mw=(['"]).*?\1""", re.S)
+YORUM_RE = re.compile(r"<!--.*?-->", re.S)
 
-def fiyat_ayikla(ham_satir_html):
-    # Once tam dolar tutarini tasiyan HTML yorumunu dene (en guvenilir).
-    ym = FIYAT_YORUM_RE.search(ham_satir_html)
-    if ym:
-        try:
-            return int(ym.group(1).replace(",", ""))
-        except ValueError:
-            pass
-    # Yoksa "$X million" metin desenini dene.
-    mm = FIYAT_MILYON_RE.search(ham_satir_html)
-    if mm:
-        try:
-            return int(float(mm.group(1).replace(",", "")) * 1_000_000)
-        except ValueError:
-            pass
+def _hucreyi_temizle(ham_hucre_html):
+    # data-mw ozniteliklerini temizler ama HTML yorumlarina dokunmaz -
+    # gercek "<!-- $ N,NNN,NNN -->" fiyat yorumunu (FIYAT_YORUM_RE) hala
+    # bulabilmemiz gerekiyor.
+    return DATA_MW_RE.sub("", ham_hucre_html)
+
+def _hucreyi_agir_temizle(temizlenmis_hucre_html):
+    # FIYAT_YORUM_RE hicbir seyle eslesmediyse (yani gecerli bir fiyat
+    # yorumu yoksa), daha az guvenilir MILYON/ciplak desenlerini denemeden
+    # once TUM HTML yorumlarini da temizle - aksi halde eski/artik bir
+    # wikitext-kalintisi yorumun icindeki alakasiz bir "$X million" metni
+    # yanlislikla eslesebilir.
+    return YORUM_RE.sub("", temizlenmis_hucre_html)
+
+def _satir_eskiden_bulunur_muydu(ham_satir_html):
+    # Satirin "aday" sayilip sayilmayacagina eski (temizlenmemis, tum
+    # satirin ham HTML'i uzerinde arama yapan) davranisla karar verir -
+    # SADECE hangi satirlarin secildigini belirlemek icin kullanilir, asla
+    # gercek fiyat degeri icin degil (bkz. tablo_satirlarini_ayikla).
+    # Boylece bu fiks hangi satirlarin bulundugunu degistirmez, sadece
+    # zaten bulunacak olan satirlarin kaydedilen fiyat degerini duzeltir.
+    if FIYAT_YORUM_RE.search(ham_satir_html):
+        return True
+    if FIYAT_MILYON_RE.search(ham_satir_html):
+        return True
+    return False
+
+def satir_fiyatini_ayikla(hucreler_ham):
+    # Fiyati SADECE tek tek hucrelerin ham HTML'inde ara, tum satirin
+    # birlestirilmis HTML'inde degil. Aksi halde bir hucredeki kaynakca/
+    # dipnot ilgisiz bir rakamla eslesebilir (orn. "[note 9]" iceren
+    # Parsoid blobu). Once tum hucrelerde HTML-yorum desenini dene (en
+    # guvenilir), sonra yine tum hucrelerde "$X million" desenini dene -
+    # boylece bir hucrede yorum deseni gecerken baska bir hucrede daha az
+    # guvenilir "million" deseninin yanlislikla oncelik kazanmasi
+    # engellenir.
+    temiz = [_hucreyi_temizle(h) for h in hucreler_ham]
+    for h in temiz:
+        ym = FIYAT_YORUM_RE.search(h)
+        if ym:
+            try:
+                return int(ym.group(1).replace(",", ""))
+            except ValueError:
+                pass
+    for h in temiz:
+        mm = FIYAT_MILYON_RE.search(_hucreyi_agir_temizle(h))
+        if mm:
+            try:
+                return int(float(mm.group(1).replace(",", "")) * 1_000_000)
+            except ValueError:
+                pass
+    return None
+
+def _ciplak_fiyat_dene(hucreler_ham):
+    # Son care yedegi - SADECE zaten "eski (hatali) davranisla da bu satir
+    # zaten bulunuyordu" diye onceden dogrulanmis satirlar icin cagirilir
+    # (bkz. tablo_satirlarini_ayikla). Boylece bu yedek yeni satirlar
+    # eklemez / tabloya kapsam genisletmez, sadece zaten secilmis olan bir
+    # satirin degerini kaynakca kirliligi yuzunden None donerse kurtarir.
+    # Fiyat sutunlari (bu tur "most expensive X" tablolarinda her zaman en
+    # bastaki 1-2 sutun; tablo basligi birimi "million USD" olarak
+    # belirtiyor) genelde "$203.3" gibi "million" kelimesi gecmeyen ciplak
+    # bir ondalik tasir. Sadece ilk iki hucreye bakariz (baska sutunlarda -
+    # alici/satici adi vb. - rastlantisal "$" gecmesi riskini azaltmak
+    # icin). Birden fazla aday varsa en kucugunu aliriz: bu tablolarda ilk
+    # sutun enflasyona-gore-guncellenmis (her zaman buyuk/esit) tutar,
+    # sonraki sutun ise satisin gerceklestigi yildaki nominal/gercek
+    # tutardir - kaydetmek istedigimiz gercek satis fiyati budur.
+    temiz = [_hucreyi_agir_temizle(_hucreyi_temizle(h)) for h in hucreler_ham]
+    adaylar = []
+    for h in temiz[:2]:
+        cm = FIYAT_CIPLAK_RE.search(h)
+        if cm:
+            try:
+                deger = float(cm.group(1).replace(",", ""))
+            except ValueError:
+                continue
+            # Virgullu (binlik ayiracli) tam sayi zaten dolar cinsinden
+            # yazilmis (orn. "$450,312,500"); virgulsuz kucuk ondalik ise
+            # "million" biriminde (orn. "$82.5" -> 82.5 milyon dolar).
+            if "," in cm.group(1):
+                adaylar.append(int(deger))
+            else:
+                adaylar.append(int(deger * 1_000_000))
+    if adaylar:
+        return min(adaylar)
     return None
 
 def tablo_satirlarini_ayikla(html, kaynak_url):
@@ -82,11 +169,22 @@ def tablo_satirlarini_ayikla(html, kaynak_url):
     # bir id ozniteligi tasiyor, bu yuzden ozniteliksiz <tr> varsayimi
     # (orijinal taslak) gercek tablo satirlarini kacirir.
     for satir in re.findall(r"<tr[^>]*>.*?</tr>", html, re.S):
-        fiyat = fiyat_ayikla(satir)
-        if fiyat is None:
-            continue
         hucreler = re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", satir, re.S)
         if len(hucreler) < 4:
+            continue
+        # Once bu satirin FIYAT bulunabilir bir satir olup olmadigini eski
+        # (temizlenmemis, tum satir HTML'i uzerinde arama yapan) davranisla
+        # belirle - bu, hangi satirlarin "aday" sayildigini eskisiyle ayni
+        # tutar (kapsam genislemez/daralmaz). Sonra GERCEK fiyat degerini
+        # guvenli (hucre-bazli + kaynakca temizlenmis) yontemle hesapla;
+        # kirlilik yuzunden guvenli yontem None donerse, sadece bu onceden
+        # nitelikli satir icin ciplak-fiyat yedegine basvur.
+        if not _satir_eskiden_bulunur_muydu(satir):
+            continue
+        fiyat = satir_fiyatini_ayikla(hucreler)
+        if fiyat is None:
+            fiyat = _ciplak_fiyat_dene(hucreler)
+        if fiyat is None:
             continue
         metin = [re.sub(r"<[^>]+>", "", h).strip() for h in hucreler]
         metin = [m for m in metin if m]
