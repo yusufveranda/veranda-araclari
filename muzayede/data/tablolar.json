@@ -9,7 +9,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Salvator_Mundi_(Leonardo)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "pablo-picasso",
@@ -21,7 +22,8 @@
   "satis_yili": 2015,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Les_Femmes_d%27Alger",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "vincent-van-gogh",
@@ -33,7 +35,8 @@
   "satis_yili": 1990,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Portrait_of_Dr._Gachet",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "claude-monet",
@@ -45,7 +48,8 @@
   "satis_yili": 2019,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "gustav-klimt",
@@ -57,7 +61,8 @@
   "satis_yili": 2023,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Lady_with_a_Fan_(Klimt)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-michel-basquiat",
@@ -69,7 +74,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Untitled_(1982_Basquiat_skull_painting)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "andy-warhol",
@@ -81,7 +87,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Shot_Marilyns",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "frida-kahlo",
@@ -93,7 +100,8 @@
   "satis_yili": 2025,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://hyperallergic.com/frida-kahlo-becomes-most-expensive-woman-artist-at-auction/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "eugene-de-blaas",
@@ -105,7 +113,8 @@
   "satis_yili": 2005,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Eugen_von_Blaas_-_Catch_of_the_day.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "edouard-manet",
@@ -117,7 +126,8 @@
   "satis_yili": 2014,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://www.cbsnews.com/newyork/news/famed-manet-portrait-auctioned-off-for-65-million-at-christies",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "francisco-goya",
@@ -129,7 +139,8 @@
   "satis_yili": 1992,
   "muzayede_evi": "Sotheby's (New York, 9 Aralık 1992, alıcı J. Paul Getty Museum)",
   "kaynak_url": "https://en.wikipedia.org/wiki/Bullfight_(Goya)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "friedensreich-hundertwasser",
@@ -141,7 +152,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "Christie's Paris",
   "kaynak_url": "https://hundertwasser.com/en/paintings/241_ville_vue_dau_dela_du_soleil_180",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "raphael",
@@ -153,7 +165,8 @@
   "satis_yili": 2007,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://www.cbc.ca/news/entertainment/lavish-raphael-painting-fetches-37-2m-at-london-auction-1.657753",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "diego-velazquez",
@@ -165,7 +178,8 @@
   "satis_yili": 2007,
   "muzayede_evi": "Sotheby's London",
   "kaynak_url": "https://theartwolf.com/news/velazquez-santa-rufina-sold/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "sandro-botticelli",
@@ -177,7 +191,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://www.sothebys.com/en/press/newsflash-sandro-botticelli",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "maurice-quentin-de-la-tour",
@@ -189,7 +204,8 @@
   "satis_yili": 2009,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "http://www.sothebys.com/en/auctions/ecatalogue/2009/important-old-master-paintings-including-european-works-of-art-n08516/lot.66.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "johannes-vermeer",
@@ -201,7 +217,8 @@
   "satis_yili": 2004,
   "muzayede_evi": "Sotheby's Londra",
   "kaynak_url": "https://en.wikipedia.org/wiki/A_Young_Woman_Seated_at_the_Virginals",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "ken-currie",
@@ -213,7 +230,8 @@
   "satis_yili": 2016,
   "muzayede_evi": "Bonhams Edinburgh",
   "kaynak_url": "https://www.transceltic.com/blog/glasgow-artist-ken-currie-painting-achieves-record-price-auction",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "titian",
@@ -225,7 +243,8 @@
   "satis_yili": 2024,
   "muzayede_evi": "Christie's (Londra)",
   "kaynak_url": "https://en.wikipedia.org/wiki/Rest_on_the_Flight_into_Egypt_(Titian)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "eugene-delacroix",
@@ -237,7 +256,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Tiger_with_a_Tortoise",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-baptiste-camille-corot",
@@ -249,7 +269,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Christie's (New York, Rockefeller Koleksiyonu)",
   "kaynak_url": "https://barnies.fr/cote-estimation-jean-baptiste-camille-corot/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "albert-osabu-bartimeus",
@@ -261,7 +282,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Bonhams (Londra)",
   "kaynak_url": "https://www.bonhams.com/auction/24692/lot/30/albert-osabu-bartimeus-ghanaian-born-1927-fishermen-and-their-catch/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "francesco-guardi",
@@ -273,7 +295,8 @@
   "satis_yili": 2011,
   "muzayede_evi": "Sotheby's London",
   "kaynak_url": "https://www.artfixdaily.com/news_feed/2011/07/11/5927-guardi-fetches-record-43m-at-london-auction",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "gerard-david",
@@ -285,7 +308,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://www.getty.edu/art/collection/object/1149BM",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "salvador-dali",
@@ -297,7 +321,8 @@
   "satis_yili": 2011,
   "muzayede_evi": "Sotheby's Londra",
   "kaynak_url": "https://www.mutualart.com/Article/Dali-painting-fetches-record--21-5m-as-B/73AC581133640327",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "tran-van-can",
@@ -309,7 +334,8 @@
   "satis_yili": 2024,
   "muzayede_evi": "Aguttes",
   "kaynak_url": "https://vnexpress.net/dau-gia-tranh-hiem-cua-danh-hoa-tran-van-can-4812644.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "samuel-f-b-morse",
@@ -321,7 +347,8 @@
   "satis_yili": 2005,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Marquis_de_Lafayette_(Morse)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "pierre-auguste-renoir",
@@ -333,7 +360,8 @@
   "satis_yili": 1990,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://www.guinnessworldrecords.com/world-records/769008-most-expensive-painting-by-renoir-sold-at-auction",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "edward-hopper",
@@ -345,7 +373,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Christie's New York (Barney A. Ebsworth Koleksiyonu)",
   "kaynak_url": "https://en.wikipedia.org/wiki/Chop_Suey_(Hopper); https://www.forbes.com/sites/bardenprisant/2018/11/15/edward-hoppers-chop-suey-fetches-record-92-million-and-no-chop-suey-is-not-chinese/; https://commons.wikimedia.org/wiki/File:Edward_hopper_chop_suey.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dogrulanmis_serbest"
  },
  {
   "id": "rosa-bonheur",
@@ -357,7 +386,8 @@
   "satis_yili": 1887,
   "muzayede_evi": "American Art Association (Cornelia Stewart terekesi satışı, New York)",
   "kaynak_url": "https://en.wikipedia.org/wiki/The_Horse_Fair",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jacques-louis-david",
@@ -369,7 +399,8 @@
   "satis_yili": 2008,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://www.nicholashall.art/artwork/portrait-of-ramel-de-nogaret/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "theodor-pistek",
@@ -381,7 +412,8 @@
   "satis_yili": 2020,
   "muzayede_evi": "Galerie Kodl (Prag)",
   "kaynak_url": "https://www.galeriekodl.cz/en/polozka/2116/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "dirck-van-baburen",
@@ -393,7 +425,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Koller Auktionen, Zürich",
   "kaynak_url": "https://www.mutualart.com/Artist/Dirck-van-Baburen/2D99B0940D94DF16",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "henri-matisse",
@@ -405,7 +438,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://heni.com/news/article/henri-matisse-odalisque-couchee-aux-magnolias-2018-05-08",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "john-william-waterhouse",
@@ -417,7 +451,8 @@
   "satis_yili": 2000,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://www.mutualart.com/Artist/John-William-Waterhouse",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "peter-paul-rubens",
@@ -429,7 +464,8 @@
   "satis_yili": 2002,
   "muzayede_evi": "Sotheby's, Londra",
   "kaynak_url": "https://en.wikipedia.org/wiki/Massacre_of_the_Innocents_(Rubens)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "caspar-david-friedrich",
@@ -441,7 +477,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Sotheby's London",
   "kaynak_url": "https://fineartconnoisseur.com/2018/12/art-museum-caspar-david-friedrich/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "nc-wyeth",
@@ -453,7 +490,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Portrait_of_a_Farmer_by_NC_Wyeth,_1943.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "ilya-repin",
@@ -465,7 +503,8 @@
   "satis_yili": 2011,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Parisian_Cafe_by_Repin.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "carl-spitzweg",
@@ -477,7 +516,8 @@
   "satis_yili": 2020,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://www.christies.com/en/lot/lot-6282302",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "j-m-w-turner",
@@ -489,7 +529,8 @@
   "satis_yili": 2010,
   "muzayede_evi": "Sotheby's Londra",
   "kaynak_url": "https://en.wikipedia.org/wiki/Modern_Rome_%E2%80%93_Campo_Vaccino",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "rembrandt",
@@ -501,7 +542,8 @@
   "satis_yili": 2009,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://en.wikipedia.org/wiki/Portrait_of_a_Man_with_Arms_Akimbo",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "theodore-gericault",
@@ -513,7 +555,8 @@
   "satis_yili": 2009,
   "muzayede_evi": "Christie's Paris (Pierre Bergé ve Yves Saint Laurent koleksiyonu satışı, Şubat 2009)",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:G%C3%A9ricault_-_Portrait_d%27Elise_et_Alfred_Dedreux_enfants.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "katsushika-hokusai",
@@ -525,7 +568,8 @@
   "satis_yili": 2023,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://en.wikipedia.org/wiki/The_Great_Wave_off_Kanagawa",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jan-matejko",
@@ -537,7 +581,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "DESA Unicum (Varşova)",
   "kaynak_url": "https://wprost.pl/sztuka-foto/10059097/obraz-matejki-sprzedany-za-rekordowa-cene",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "guercino",
@@ -549,7 +594,8 @@
   "satis_yili": 2010,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://news.artnet.com/art-world/sopranos-actor-discovers-10-million-guercino-117651",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "camille-pissarro",
@@ -561,7 +607,8 @@
   "satis_yili": 2014,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Boulevard_Montmartre,_Spring",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "john-everett-millais",
@@ -573,7 +620,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://www.christies.com/en/lot/lot-5701815",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "lawrence-alma-tadema",
@@ -585,7 +633,8 @@
   "satis_yili": 2010,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Lawrence_Alma-Tadema",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "dieric-bouts",
@@ -597,7 +646,8 @@
   "satis_yili": 1980,
   "muzayede_evi": "Sotheby's (Londra)",
   "kaynak_url": "https://www.dailyartmagazine.com/dietric-bouts-the-resurrection/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "william-adolphe-bouguereau",
@@ -609,7 +659,8 @@
   "satis_yili": 2019,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2019/european-art-n10009/lot.407.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "john-constable",
@@ -621,7 +672,8 @@
   "satis_yili": 2012,
   "muzayede_evi": "Christie's, Londra",
   "kaynak_url": "https://en.wikipedia.org/wiki/The_Lock_(Constable)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "lorenzo-lotto",
@@ -633,7 +685,8 @@
   "satis_yili": 2011,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Lorenzo_Lotto_092.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "hans-memling",
@@ -645,7 +698,8 @@
   "satis_yili": 2026,
   "muzayede_evi": "Sotheby's, Londra",
   "kaynak_url": "https://heni.com/news/article/hans-memling-the-virgin-mary-nursing-the-christ-child-2026-07-01",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "gustave-courbet",
@@ -657,7 +711,8 @@
   "satis_yili": 2015,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Gustave_Courbet,_Femme_nue_couch%C3%A9e,_1862.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "joan-miro",
@@ -669,7 +724,8 @@
   "satis_yili": 2012,
   "muzayede_evi": "Sotheby's London",
   "kaynak_url": "https://www.bbc.co.uk/news/entertainment-arts-18518062",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "alphonse-mucha",
@@ -681,7 +737,8 @@
   "satis_yili": 2006,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://www.mutualart.com/Artist/Alphonse-Mucha/07C0AB2DE7911B93/Auction-Records",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "paul-gauguin",
@@ -693,7 +750,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Christie's, New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "frederic-edwin-church",
@@ -705,7 +763,8 @@
   "satis_yili": 1979,
   "muzayede_evi": "Sotheby's (New York)",
   "kaynak_url": "https://en.wikipedia.org/wiki/The_Icebergs",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "artemisia-gentileschi",
@@ -717,7 +776,8 @@
   "satis_yili": 2019,
   "muzayede_evi": "Artcurial, Paris",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Artemisia_Gentileschi_-_Lucretia_artcurial.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-leon-gerome",
@@ -729,7 +789,8 @@
   "satis_yili": 2019,
   "muzayede_evi": "Sotheby's Londra",
   "kaynak_url": "https://en.wikipedia.org/wiki/Jean-L%C3%A9on_G%C3%A9r%C3%B4me",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "kazimir-malevich",
@@ -741,7 +802,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-antoine-watteau",
@@ -753,7 +815,8 @@
   "satis_yili": 2008,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://en.wikipedia.org/wiki/Jean-Antoine_Watteau",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "andrea-mantegna",
@@ -765,7 +828,8 @@
   "satis_yili": 1985,
   "muzayede_evi": "Christie's, New York (18 Nisan 1985)",
   "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "arnold-bocklin",
@@ -777,7 +841,8 @@
   "satis_yili": 2024,
   "muzayede_evi": "Sotheby's (Londra)",
   "kaynak_url": "https://www.sothebys.com/en/buy/auction/2024/old-master-19th-century-paintings-evening-auction/the-battle-on-the-bridge",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "henri-rousseau",
@@ -789,7 +854,8 @@
   "satis_yili": 2023,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.thevalue.com/articles/christies-new-york-20th-centuries-art-auction-henri-rousseau-record-breaking-2023",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "joseph-wright-of-derby",
@@ -801,7 +867,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "Sotheby's Londra (Old Masters Evening Sale, 6 Aralık 2017)",
   "kaynak_url": "https://www.sothebys.com/en/slideshows/wright-of-derby-breaks-auction-record-in-london-old-masters-sale",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "francisco-de-zurbaran",
@@ -813,7 +880,8 @@
   "satis_yili": 2010,
   "muzayede_evi": "Sotheby's New York (28 Ocak 2010, Important Old Master Paintings and Sculpture, N08610, Lot 204)",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2010/important-old-master-paintings-and-sculpture-n08610/lot.204.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "james-mcneill-whistler",
@@ -825,7 +893,8 @@
   "satis_yili": 2000,
   "muzayede_evi": "Christie's New York (25 Mayıs 2000, lot 10)",
   "kaynak_url": "https://www.whistlerpaintings.gla.ac.uk/catalogue/printdisplay/?mid=y053",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "hugo-van-der-goes",
@@ -837,7 +906,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Sotheby's, New York (Master Paintings &amp; Sculpture Part I, 28 Ocak 2021)",
   "kaynak_url": "https://www.sothebys.com/buy/302398ce-2909-4083-8a49-9f13e57d7f5d/lots/1875deda-e1ae-43ae-aeb0-94c5b2fabb38",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "james-tissot",
@@ -849,7 +919,8 @@
   "satis_yili": 1994,
   "muzayede_evi": "Sotheby's, New York",
   "kaynak_url": "https://thehammocknovel.wordpress.com/2014/09/12/james-tissot-in-the-andrew-lloyd-webber-collection/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "antonio-da-correggio",
@@ -861,7 +932,8 @@
   "satis_yili": 2011,
   "muzayede_evi": "Sotheby's London",
   "kaynak_url": "https://www.ngv.vic.gov.au/media_release/ngv-acquires-newly-discovered-renaissance-masterpiece/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "dante-gabriel-rossetti",
@@ -873,7 +945,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Sotheby's, Londra",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2013/old-master-british-paintings-evening-l13036/lot.48.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jacopo-zucchi",
@@ -885,7 +958,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Sotheby's New York (2 Şubat 2018, Master Paintings and Sculpture Day Sale, lot 151)",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2017/master-paintings-and-sculpture-day-sale-n09813/lot.151.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jacopo-pontormo",
@@ -897,7 +971,8 @@
   "satis_yili": 1989,
   "muzayede_evi": "Christie's, New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "christopher-pratt",
@@ -909,7 +984,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Heffel Fine Art Auction House (Vancouver)",
   "kaynak_url": "https://www.gallerieswest.ca/magazine/historical-art/auction-report-fall-2021/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "giovanni-segantini",
@@ -921,7 +997,8 @@
   "satis_yili": 1999,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://www.artnet.com/artists/giovanni-segantini/primavera-sulle-alpi-mNtzJ9vKvd20FA2tBT1SUw2",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "johann-peter-hasenclever",
@@ -933,7 +1010,8 @@
   "satis_yili": 2015,
   "muzayede_evi": "Kunsthaus Lempertz, Köln (16 Mayıs 2015, Lot 1216)",
   "kaynak_url": "https://www.lempertz.com/en/catalogues/lot/1049-1/1216-johann-peter-hasenclever.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "lorenzo-monaco",
@@ -945,7 +1023,8 @@
   "satis_yili": 2019,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://www.christies.com/en/lot/lot-6198679",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "georges-de-la-tour",
@@ -957,7 +1036,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Christie's (Londra)",
   "kaynak_url": "https://news.artnet.com/market/old-master-london-july-2021-1987779",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "carl-larsson",
@@ -969,7 +1049,8 @@
   "satis_yili": 2020,
   "muzayede_evi": "Bukowskis (Stockholm)",
   "kaynak_url": "https://www.bukowskis.com/en/news/2005",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "thomas-eakins",
@@ -981,7 +1062,8 @@
   "satis_yili": 2003,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://www.antiquesandthearts.com/new-record-for-eakins-painting-in-new-york/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jacopo-de-barbari",
@@ -993,7 +1075,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "Sotheby's Londra (Old Masters Evening Sale, satış GBP 1,448,750; yaklaşık USD karşılığı)",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2017/old-masters-evening-sale-l17033/lot.27.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "norman-rockwell",
@@ -1005,7 +1088,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Saying_Grace_(Rockwell)",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "gustave-boulanger",
@@ -1017,7 +1101,8 @@
   "satis_yili": 2005,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Gustave_Boulanger",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "benjamin-west",
@@ -1029,7 +1114,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Sotheby's Londra",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2013/old-master-british-paintings-evening-l13033/lot.44.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "william-holman-hunt",
@@ -1041,7 +1127,8 @@
   "satis_yili": 2014,
   "muzayede_evi": "Christie's, Londra",
   "kaynak_url": "https://www.delawareonline.com/story/life/2014/06/17/delaware-art-museum-painting-brings-million/10663037/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "georges-seurat",
@@ -1053,7 +1140,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Christie's, New York (Paul G. Allen collection sale)",
   "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "rene-magritte",
@@ -1065,7 +1153,8 @@
   "satis_yili": 2024,
   "muzayede_evi": "Christie's, New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "ivan-aivazovsky",
@@ -1077,7 +1166,8 @@
   "satis_yili": 2012,
   "muzayede_evi": "Sotheby's Londra",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Aivazovsky_-_View_of_Constantinople_and_the_Bosphorus.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "franz-marc",
@@ -1089,7 +1179,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Christie's (Londra)",
   "kaynak_url": "https://en.wikipedia.org/wiki/Franz_Marc",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "paul-delaroche",
@@ -1101,7 +1192,8 @@
   "satis_yili": 2019,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://en.wikipedia.org/wiki/Paul_Delaroche",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "alexandre-cabanel",
@@ -1113,7 +1205,8 @@
   "satis_yili": 2002,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Alexandre_Cabanel",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "francesco-hayez",
@@ -1125,7 +1218,8 @@
   "satis_yili": 2024,
   "muzayede_evi": "Christie's (Londra)",
   "kaynak_url": "https://www.christies.com.cn/en/lot/lot-6510043",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "herbert-james-draper",
@@ -1137,7 +1231,8 @@
   "satis_yili": 2010,
   "muzayede_evi": "Christie's (Londra)",
   "kaynak_url": "https://en.wikipedia.org/wiki/Herbert_James_Draper",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "angelica-kauffman",
@@ -1149,7 +1244,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Christie's (New York, Old Master Paintings and Sculpture)",
   "kaynak_url": "https://www.christies.com/en/lot/lot-6338032",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "john-singer-sargent",
@@ -1161,7 +1257,8 @@
   "satis_yili": 2004,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://en.wikipedia.org/wiki/John_Singer_Sargent",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-etienne-liotard",
@@ -1173,7 +1270,8 @@
   "satis_yili": 2012,
   "muzayede_evi": "Sotheby's Paris",
   "kaynak_url": "https://artdaily.cc/news/56113/World-record-for-Jean-Etienne-Liotard--Portrait-of-Mademoiselle-Jacquet-sold-for--1-853-509",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "amedeo-modigliani",
@@ -1185,7 +1283,8 @@
   "satis_yili": 2015,
   "muzayede_evi": "Christie's, New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Modigliani_-_Nu_couch%C3%A9.jpg ve https://en.wikipedia.org/wiki/List_of_most_expensive_paintings",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "cima-da-conegliano",
@@ -1197,7 +1296,8 @@
   "satis_yili": 2007,
   "muzayede_evi": "Christie's New York (19 Nisan 2007, lot 64)",
   "kaynak_url": "https://collections.lacma.org/object/140357",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "andrea-del-sarto",
@@ -1209,7 +1309,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Andrea_del_Sarto_-_Portrait_of_a_man,_possibly_Ottaviano_de_Medici.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "piet-mondrian",
@@ -1221,7 +1322,8 @@
   "satis_yili": 2025,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Piet_Mondrian",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "bernardo-bellotto",
@@ -1233,7 +1335,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Christie's, Londra (King Street)",
   "kaynak_url": "https://en.wikipedia.org/wiki/Bernardo_Bellotto",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-francois-millet",
@@ -1245,7 +1348,8 @@
   "satis_yili": 2014,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://www.christies.com/en/lot/lot-5834634",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "piero-del-pollaiuolo",
@@ -1257,7 +1361,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Sotheby's, Londra (25 Mart 2021)",
   "kaynak_url": "https://en.wikipedia.org/wiki/Piero_del_Pollaiuolo",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "gustave-caillebotte",
@@ -1269,7 +1374,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Young_Man_at_His_Window",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "franz-von-stuck",
@@ -1281,7 +1387,8 @@
   "satis_yili": 2014,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2014/19th-century-european-art-n09218/lot.49.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "charles-le-brun",
@@ -1293,7 +1400,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Christie's (Paris)",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Charles_Le_Brun_-_The_Sacrifice_of_Polyxena.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "john-frederick-lewis",
@@ -1305,7 +1413,8 @@
   "satis_yili": 2009,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:John_Frederick_Lewis_The_Kibab_Shop_1858.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "edvard-munch",
@@ -1317,7 +1426,8 @@
   "satis_yili": 2012,
   "muzayede_evi": "Sotheby's",
   "kaynak_url": "https://en.wikipedia.org/wiki/The_Scream",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "cimabue",
@@ -1329,7 +1439,8 @@
   "satis_yili": 2019,
   "muzayede_evi": "Actéon Hôtel des Ventes, Senlis, Fransa",
   "kaynak_url": "https://en.wikipedia.org/wiki/Cimabue",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "joseph-farquharson",
@@ -1341,7 +1452,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Bonhams",
   "kaynak_url": "https://en.wikipedia.org/wiki/Joseph_Farquharson",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-beraud",
@@ -1353,7 +1465,8 @@
   "satis_yili": 2016,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:%27Bois_de_Boulogne%27_by_Jean_B%C3%A9raud.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "gilbert-stuart",
@@ -1365,7 +1478,8 @@
   "satis_yili": 2018,
   "muzayede_evi": "Christie's (New York, Peggy and David Rockefeller koleksiyonu satışı)",
   "kaynak_url": "https://www.cbsnews.com/news/rockefeller-collection-auction-record-christies/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "lucas-cranach-the-elder",
@@ -1377,7 +1491,8 @@
   "satis_yili": 2015,
   "muzayede_evi": "Sotheby's, Londra (8 Temmuz 2015, Old Master &amp; British Paintings Evening Sale, lot 8)",
   "kaynak_url": "https://www.bloomberg.com/news/articles/2015-07-08/cranach-s-adulteress-portrait-fetches-record-14-3-million",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jan-brueghel-the-elder",
@@ -1389,7 +1504,8 @@
   "satis_yili": 2014,
   "muzayede_evi": "Christie's London",
   "kaynak_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Jan%20Brueghel%20I%20-%20The%20Garden%20of%20Eden%20with%20the%20Fall%20of%20Man.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "john-singleton-copley",
@@ -1401,7 +1517,8 @@
   "satis_yili": 2005,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:John_Singleton_Copley_-_Mrs._Theodore_Atkinson_Jr._(Frances_Deering_Wentworth)_-_2005.24_-_Crystal_Bridges_Museum_of_American_Art.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "marc-chagall",
@@ -1413,7 +1530,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://artdaily.com/news/100265/Marc-Chagall-s--Les-Amoureux--sets-auction-record-at--28-5-million-at-Sotheby-s",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "alexei-savrasov",
@@ -1425,7 +1543,8 @@
   "satis_yili": 2021,
   "muzayede_evi": "Sotheby's (Londra)",
   "kaynak_url": "https://www.sothebys.com/en/buy/auction/2021/russian-pictures-2/the-volga-near-yurevets",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "gerard-van-honthorst",
@@ -1437,7 +1556,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Christie's (New York)",
   "kaynak_url": "https://observer.com/2013/06/gerrit-van-honthorst-record-set-at-christies/",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "thomas-cole",
@@ -1449,7 +1569,8 @@
   "satis_yili": 2025,
   "muzayede_evi": "Christie's New York",
   "kaynak_url": "https://en.wikipedia.org/wiki/Thomas_Cole",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "paul-cezanne",
@@ -1461,7 +1582,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Christie's",
   "kaynak_url": "https://commons.wikimedia.org/wiki/File:Montagne_Sainte-Victoire,_par_Paul_C%C3%A9zanne_114.jpg",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "david-alfaro-siqueiros",
@@ -1473,7 +1595,8 @@
   "satis_yili": 2007,
   "muzayede_evi": "Sotheby's New York",
   "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2007/latin-american-art-n08367/lot.25.html",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "dikkat"
  },
  {
   "id": "max-beckmann",
@@ -1485,7 +1608,8 @@
   "satis_yili": 2017,
   "muzayede_evi": "Christie's Londra",
   "kaynak_url": "https://www.ibtimes.com/max-beckmanns-birds-hell-auctioned-458-million-new-record-german-expressionist-art-2558412",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "quinten-metsys",
@@ -1497,7 +1621,8 @@
   "satis_yili": 2024,
   "muzayede_evi": "Christie's London",
   "kaynak_url": "https://news.artnet.com/market/getty-acquires-rediscovered-madonna-cherries-metsys-2507556",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "ivan-shishkin",
@@ -1509,7 +1634,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "MacDougall's (Londra)",
   "kaynak_url": "https://macdougallauction.com/en/catalogue/view?id=6958",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "jean-honore-fragonard",
@@ -1521,7 +1647,8 @@
   "satis_yili": 2013,
   "muzayede_evi": "Bonhams (Londra)",
   "kaynak_url": "https://www.bloomberg.com/news/articles/2013-12-06/fragonard-portrait-fetches-record-27-9-million-in-london",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "howard-chandler-christy",
@@ -1533,7 +1660,8 @@
   "satis_yili": 2022,
   "muzayede_evi": "Weschler's",
   "kaynak_url": "https://www.weschlers.com/auction-lot/howard-chandler-christy-american-1873-1952-re_6C94EC09B6",
-  "gercek": true
+  "gercek": true,
+  "risk_seviyesi": "public_domain"
  },
  {
   "id": "stil-abraham-pether",
@@ -1545,6 +1673,7 @@
   "satis_yili": 2023,
   "muzayede_evi": "Bonhams",
   "kaynak_url": "https://en.wikipedia.org/wiki/Abraham_Pether",
-  "gercek": false
+  "gercek": false,
+  "risk_seviyesi": "public_domain"
  }
 ]

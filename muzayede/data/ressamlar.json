@@ -4,1031 +4,902 @@
   "isim": "Leonardo da Vinci",
   "dogum_olum": "1452-1519",
   "ulke": "İtalya",
-  "akim": "Rönesans",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans"
  },
  {
   "id": "pablo-picasso",
   "isim": "Pablo Picasso",
   "dogum_olum": "1881-1973",
   "ulke": "İspanya",
-  "akim": "Kübizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Kübizm"
  },
  {
   "id": "vincent-van-gogh",
   "isim": "Vincent van Gogh",
   "dogum_olum": "1853-1890",
   "ulke": "Hollanda",
-  "akim": "Post-Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Post-Empresyonizm"
  },
  {
   "id": "claude-monet",
   "isim": "Claude Monet",
   "dogum_olum": "1840-1926",
   "ulke": "Fransa",
-  "akim": "Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Empresyonizm"
  },
  {
   "id": "gustav-klimt",
   "isim": "Gustav Klimt",
   "dogum_olum": "1862-1918",
   "ulke": "Avusturya",
-  "akim": "Sembolizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Sembolizm"
  },
  {
   "id": "jean-michel-basquiat",
   "isim": "Jean-Michel Basquiat",
   "dogum_olum": "1960-1988",
   "ulke": "ABD",
-  "akim": "Neo-Ekspresyonizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Neo-Ekspresyonizm"
  },
  {
   "id": "andy-warhol",
   "isim": "Andy Warhol",
   "dogum_olum": "1928-1987",
   "ulke": "ABD",
-  "akim": "Pop Art",
-  "risk_seviyesi": "dikkat"
+  "akim": "Pop Art"
  },
  {
   "id": "frida-kahlo",
   "isim": "Frida Kahlo",
   "dogum_olum": "1907-1954",
   "ulke": "Meksika",
-  "akim": "Sürrealizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Sürrealizm"
  },
  {
   "id": "eugene-de-blaas",
   "isim": "Eugene de Blaas",
   "dogum_olum": "1843-1931",
   "ulke": "İtalya (Avusturya kökenli, Venedik'te yaşadı)",
-  "akim": "Akademik Klasisizm (Venedik janr resmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Akademik Klasisizm (Venedik janr resmi)"
  },
  {
   "id": "edouard-manet",
   "isim": "Édouard Manet",
   "dogum_olum": "1832-1883",
   "ulke": "Fransa",
-  "akim": "Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Empresyonizm"
  },
  {
   "id": "francisco-goya",
   "isim": "Francisco Goya",
   "dogum_olum": "1746-1828",
   "ulke": "İspanya",
-  "akim": "Romantizm (geç dönem Rokoko'dan geçişli, İspanyol sarayı ressamı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm (geç dönem Rokoko'dan geçişli, İspanyol sarayı ressamı)"
  },
  {
   "id": "friedensreich-hundertwasser",
   "isim": "Friedensreich Hundertwasser",
   "dogum_olum": "1928-2000",
   "ulke": "Austria",
-  "akim": "Ekspresyonizm / Soyut-Organik",
-  "risk_seviyesi": "dikkat"
+  "akim": "Ekspresyonizm / Soyut-Organik"
  },
  {
   "id": "raphael",
   "isim": "Raphael (Raffaello Sanzio)",
   "dogum_olum": "1483-1520",
   "ulke": "İtalya",
-  "akim": "Rönesans (Yüksek Rönesans)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (Yüksek Rönesans)"
  },
  {
   "id": "diego-velazquez",
   "isim": "Diego Velázquez",
   "dogum_olum": "1599-1660",
   "ulke": "İspanya",
-  "akim": "Barok",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok"
  },
  {
   "id": "sandro-botticelli",
   "isim": "Sandro Botticelli",
   "dogum_olum": "1445-1510",
   "ulke": "İtalya",
-  "akim": "Rönesans (İtalyan Erken Rönesans)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (İtalyan Erken Rönesans)"
  },
  {
   "id": "maurice-quentin-de-la-tour",
   "isim": "Maurice-Quentin de La Tour",
   "dogum_olum": "1704-1788",
   "ulke": "Fransa",
-  "akim": "Rokoko (pastel portre ustası)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rokoko (pastel portre ustası)"
  },
  {
   "id": "johannes-vermeer",
   "isim": "Johannes Vermeer",
   "dogum_olum": "1632-1675",
   "ulke": "Hollanda (Dutch Republic)",
-  "akim": "Hollanda Altın Çağı / Barok (Dutch Golden Age)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Hollanda Altın Çağı / Barok (Dutch Golden Age)"
  },
  {
   "id": "ken-currie",
   "isim": "Ken Currie",
   "dogum_olum": "1960-",
   "ulke": "İskoçya (Birleşik Krallık)",
-  "akim": "Yeni Figüratif Resim (New Glasgow Boys)",
-  "risk_seviyesi": "dikkat"
+  "akim": "Yeni Figüratif Resim (New Glasgow Boys)"
  },
  {
   "id": "titian",
   "isim": "Titian (Tiziano Vecellio)",
   "dogum_olum": "1488-1576",
   "ulke": "Republic of Venice (Italy)",
-  "akim": "Venedik Rönesansı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Venedik Rönesansı"
  },
  {
   "id": "eugene-delacroix",
   "isim": "Eugène Delacroix",
   "dogum_olum": "1798-1863",
   "ulke": "Fransa",
-  "akim": "Romantizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm"
  },
  {
   "id": "jean-baptiste-camille-corot",
   "isim": "Jean-Baptiste Camille Corot",
   "dogum_olum": "1796-1875",
   "ulke": "Fransa",
-  "akim": "Barbizon Okulu / Erken Empresyonizm öncüsü",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barbizon Okulu / Erken Empresyonizm öncüsü"
  },
  {
   "id": "albert-osabu-bartimeus",
   "isim": "Albert Osabu Bartimeus",
   "dogum_olum": "1927-1988",
   "ulke": "Gana",
-  "akim": "Gana Modern Sanatı",
-  "risk_seviyesi": "dikkat"
+  "akim": "Gana Modern Sanatı"
  },
  {
   "id": "francesco-guardi",
   "isim": "Francesco Guardi",
   "dogum_olum": "1712-1793",
   "ulke": "Italy (Republic of Venice)",
-  "akim": "Vedute (Venedik manzara resmi) / Rokoko",
-  "risk_seviyesi": "public_domain"
+  "akim": "Vedute (Venedik manzara resmi) / Rokoko"
  },
  {
   "id": "gerard-david",
   "isim": "Gerard David",
   "dogum_olum": "1460-1523",
   "ulke": "Habsburg Hollandası (Flanders, Bruges)",
-  "akim": "Erken Flaman Rönesansı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Erken Flaman Rönesansı"
  },
  {
   "id": "salvador-dali",
   "isim": "Salvador Dalí",
   "dogum_olum": "1904-1989",
   "ulke": "İspanya",
-  "akim": "Sürrealizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Sürrealizm"
  },
  {
   "id": "tran-van-can",
   "isim": "Trần Văn Cẩn",
   "dogum_olum": "1910-1994",
   "ulke": "Vietnam",
-  "akim": "Vietnam Modern Sanatı (Hint-Çin/École des Beaux-Arts d'Indochine ekolü)",
-  "risk_seviyesi": "dikkat"
+  "akim": "Vietnam Modern Sanatı (Hint-Çin/École des Beaux-Arts d'Indochine ekolü)"
  },
  {
   "id": "samuel-f-b-morse",
   "isim": "Samuel Finley Breese Morse",
   "dogum_olum": "1791-1872",
   "ulke": "United States",
-  "akim": "Amerikan Portre Ressamlığı (19. yüzyıl)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Amerikan Portre Ressamlığı (19. yüzyıl)"
  },
  {
   "id": "pierre-auguste-renoir",
   "isim": "Pierre-Auguste Renoir",
   "dogum_olum": "1841-1919",
   "ulke": "France",
-  "akim": "Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Empresyonizm"
  },
  {
   "id": "edward-hopper",
   "isim": "Edward Hopper",
   "dogum_olum": "1882-1967",
   "ulke": "United States",
-  "akim": "Amerikan Realizmi",
-  "risk_seviyesi": "dogrulanmis_serbest"
+  "akim": "Amerikan Realizmi"
  },
  {
   "id": "rosa-bonheur",
   "isim": "Rosa Bonheur",
   "dogum_olum": "1822-1899",
   "ulke": "Fransa",
-  "akim": "Realizm (Hayvan Ressamlığı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Realizm (Hayvan Ressamlığı)"
  },
  {
   "id": "jacques-louis-david",
   "isim": "Jacques-Louis David",
   "dogum_olum": "1748-1825",
   "ulke": "Fransa",
-  "akim": "Neoklasizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Neoklasizm"
  },
  {
   "id": "theodor-pistek",
   "isim": "Theodor Pištěk",
   "dogum_olum": "1932-2025",
   "ulke": "Çekya",
-  "akim": "Fotorealizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Fotorealizm"
  },
  {
   "id": "dirck-van-baburen",
   "isim": "Dirck van Baburen",
   "dogum_olum": "1595-1624",
   "ulke": "Hollanda Cumhuriyeti (Dutch Republic)",
-  "akim": "Utrecht Karavacılığı (Utrecht Caravaggism)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Utrecht Karavacılığı (Utrecht Caravaggism)"
  },
  {
   "id": "henri-matisse",
   "isim": "Henri Matisse",
   "dogum_olum": "1869-1954",
   "ulke": "Fransa",
-  "akim": "Fovizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Fovizm"
  },
  {
   "id": "john-william-waterhouse",
   "isim": "John William Waterhouse",
   "dogum_olum": "1849-1917",
   "ulke": "Birleşik Krallık",
-  "akim": "Pre-Raphaelite / Akademik Klasisizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Pre-Raphaelite / Akademik Klasisizm"
  },
  {
   "id": "peter-paul-rubens",
   "isim": "Peter Paul Rubens",
   "dogum_olum": "1577-1640",
   "ulke": "Flaman (İspanyol Hollandası / bugünkü Belçika)",
-  "akim": "Barok",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok"
  },
  {
   "id": "caspar-david-friedrich",
   "isim": "Caspar David Friedrich",
   "dogum_olum": "1774-1840",
   "ulke": "Almanya",
-  "akim": "Romantizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm"
  },
  {
   "id": "nc-wyeth",
   "isim": "N. C. Wyeth",
   "dogum_olum": "1882-1945",
   "ulke": "United States",
-  "akim": "Amerikan İllüstrasyon Sanatı / Realizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Amerikan İllüstrasyon Sanatı / Realizm"
  },
  {
   "id": "ilya-repin",
   "isim": "Ilya Repin",
   "dogum_olum": "1844-1930",
   "ulke": "Rusya",
-  "akim": "Realizm (Rus Gezginler / Peredvizhniki)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Realizm (Rus Gezginler / Peredvizhniki)"
  },
  {
   "id": "carl-spitzweg",
   "isim": "Carl Spitzweg",
   "dogum_olum": "1808-1885",
   "ulke": "Almanya (Bavyera Krallığı)",
-  "akim": "Biedermeier",
-  "risk_seviyesi": "public_domain"
+  "akim": "Biedermeier"
  },
  {
   "id": "j-m-w-turner",
   "isim": "J. M. W. Turner",
   "dogum_olum": "1775-1851",
   "ulke": "İngiltere",
-  "akim": "Romantizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm"
  },
  {
   "id": "rembrandt",
   "isim": "Rembrandt van Rijn",
   "dogum_olum": "1606-1669",
   "ulke": "Hollanda (Felemenk Cumhuriyeti)",
-  "akim": "Barok (Hollanda Altın Çağı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok (Hollanda Altın Çağı)"
  },
  {
   "id": "theodore-gericault",
   "isim": "Théodore Géricault",
   "dogum_olum": "1791-1824",
   "ulke": "Fransa",
-  "akim": "Romantizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm"
  },
  {
   "id": "katsushika-hokusai",
   "isim": "Katsushika Hokusai",
   "dogum_olum": "1760-1849",
   "ulke": "Japonya",
-  "akim": "Ukiyo-e",
-  "risk_seviyesi": "public_domain"
+  "akim": "Ukiyo-e"
  },
  {
   "id": "jan-matejko",
   "isim": "Jan Matejko",
   "dogum_olum": "1838-1893",
   "ulke": "Polonya (Krakow Serbest Şehri)",
-  "akim": "Tarihsel Romantizm (Polonya)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Tarihsel Romantizm (Polonya)"
  },
  {
   "id": "guercino",
   "isim": "Guercino (Giovanni Francesco Barbieri)",
   "dogum_olum": "1591-1666",
   "ulke": "İtalya (Papalık Devletleri, Bologna okulu)",
-  "akim": "Barok",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok"
  },
  {
   "id": "camille-pissarro",
   "isim": "Camille Pissarro",
   "dogum_olum": "1830-1903",
   "ulke": "Fransa",
-  "akim": "Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Empresyonizm"
  },
  {
   "id": "john-everett-millais",
   "isim": "John Everett Millais",
   "dogum_olum": "1829-1896",
   "ulke": "Birleşik Krallık",
-  "akim": "Pre-Rafaelitler (Pre-Raphaelite Brotherhood)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Pre-Rafaelitler (Pre-Raphaelite Brotherhood)"
  },
  {
   "id": "lawrence-alma-tadema",
   "isim": "Lawrence Alma-Tadema",
   "dogum_olum": "1836-1912",
   "ulke": "Hollanda (İngiltere'de yerleşik)",
-  "akim": "Viktorya Dönemi Akademik Klasisizmi",
-  "risk_seviyesi": "public_domain"
+  "akim": "Viktorya Dönemi Akademik Klasisizmi"
  },
  {
   "id": "dieric-bouts",
   "isim": "Dieric Bouts",
   "dogum_olum": "1420-1475",
   "ulke": "Flandre (Burgonya Dükalığı, Leuven)",
-  "akim": "Erken Flaman Resim Sanatı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Erken Flaman Resim Sanatı"
  },
  {
   "id": "william-adolphe-bouguereau",
   "isim": "William-Adolphe Bouguereau",
   "dogum_olum": "1825-1905",
   "ulke": "Fransa",
-  "akim": "Akademizm (Fransız Akademik Sanatı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Akademizm (Fransız Akademik Sanatı)"
  },
  {
   "id": "john-constable",
   "isim": "John Constable",
   "dogum_olum": "1776-1837",
   "ulke": "Birleşik Krallık",
-  "akim": "Romantizm (İngiliz manzara resmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm (İngiliz manzara resmi)"
  },
  {
   "id": "lorenzo-lotto",
   "isim": "Lorenzo Lotto",
   "dogum_olum": "1480-1556",
   "ulke": "İtalya (Venedik Cumhuriyeti)",
-  "akim": "Rönesans (Venedik okulu)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (Venedik okulu)"
  },
  {
   "id": "hans-memling",
   "isim": "Hans Memling",
   "dogum_olum": "1430-1494",
   "ulke": "Almanya doğumlu, Flaman (Habsburg Hollandası / Bruges)",
-  "akim": "Erken Flaman Rönesansı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Erken Flaman Rönesansı"
  },
  {
   "id": "gustave-courbet",
   "isim": "Gustave Courbet",
   "dogum_olum": "1819-1877",
   "ulke": "Fransa",
-  "akim": "Realizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Realizm"
  },
  {
   "id": "joan-miro",
   "isim": "Joan Miró",
   "dogum_olum": "1893-1983",
   "ulke": "Spain",
-  "akim": "Sürrealizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Sürrealizm"
  },
  {
   "id": "alphonse-mucha",
   "isim": "Alphonse Mucha",
   "dogum_olum": "1860-1939",
   "ulke": "Çekoslovakya (Çek)",
-  "akim": "Art Nouveau",
-  "risk_seviyesi": "public_domain"
+  "akim": "Art Nouveau"
  },
  {
   "id": "paul-gauguin",
   "isim": "Paul Gauguin",
   "dogum_olum": "1848-1903",
   "ulke": "Fransa",
-  "akim": "Post-Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Post-Empresyonizm"
  },
  {
   "id": "frederic-edwin-church",
   "isim": "Frederic Edwin Church",
   "dogum_olum": "1826-1900",
   "ulke": "Amerika Birleşik Devletleri",
-  "akim": "Hudson River School (Amerikan Manzara Ressamlığı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Hudson River School (Amerikan Manzara Ressamlığı)"
  },
  {
   "id": "artemisia-gentileschi",
   "isim": "Artemisia Gentileschi",
   "dogum_olum": "1593-1653",
   "ulke": "İtalya",
-  "akim": "Barok",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok"
  },
  {
   "id": "jean-leon-gerome",
   "isim": "Jean-Léon Gérôme",
   "dogum_olum": "1824-1904",
   "ulke": "Fransa",
-  "akim": "Akademizm / Oryantalizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Akademizm / Oryantalizm"
  },
  {
   "id": "kazimir-malevich",
   "isim": "Kazimir Malevich",
   "dogum_olum": "1879-1935",
   "ulke": "Rusya İmparatorluğu / Sovyetler Birliği (Kiev doğumlu, Ukraynalı-Polonyalı kökenli)",
-  "akim": "Süprematizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Süprematizm"
  },
  {
   "id": "jean-antoine-watteau",
   "isim": "Jean-Antoine Watteau",
   "dogum_olum": "1684-1721",
   "ulke": "Fransa",
-  "akim": "Rokoko",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rokoko"
  },
  {
   "id": "andrea-mantegna",
   "isim": "Andrea Mantegna",
   "dogum_olum": "1431-1506",
   "ulke": "İtalya (Padua/Venedik Cumhuriyeti)",
-  "akim": "Rönesans (Erken İtalyan Rönesansı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (Erken İtalyan Rönesansı)"
  },
  {
   "id": "arnold-bocklin",
   "isim": "Arnold Böcklin",
   "dogum_olum": "1827-1901",
   "ulke": "İsviçre",
-  "akim": "Sembolizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Sembolizm"
  },
  {
   "id": "henri-rousseau",
   "isim": "Henri Rousseau",
   "dogum_olum": "1844-1910",
   "ulke": "Fransa",
-  "akim": "Naif sanat (Primitivizm)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Naif sanat (Primitivizm)"
  },
  {
   "id": "joseph-wright-of-derby",
   "isim": "Joseph Wright of Derby",
   "dogum_olum": "1734-1797",
   "ulke": "İngiltere (Kingdom of Great Britain)",
-  "akim": "Aydınlanma Dönemi Realizmi (chiaroscuro / candlelight painting)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Aydınlanma Dönemi Realizmi (chiaroscuro / candlelight painting)"
  },
  {
   "id": "francisco-de-zurbaran",
   "isim": "Francisco de Zurbarán",
   "dogum_olum": "1598-1664",
   "ulke": "İspanya",
-  "akim": "Barok (İspanyol Barok / tenebrizm)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok (İspanyol Barok / tenebrizm)"
  },
  {
   "id": "james-mcneill-whistler",
   "isim": "James McNeill Whistler",
   "dogum_olum": "1834-1903",
   "ulke": "United States (worked mainly in England/France)",
-  "akim": "Tonalizm / Amerikan Estetik Hareketi (Empresyonizm etkili)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Tonalizm / Amerikan Estetik Hareketi (Empresyonizm etkili)"
  },
  {
   "id": "hugo-van-der-goes",
   "isim": "Hugo van der Goes",
   "dogum_olum": "1440-1482",
   "ulke": "Flaman (Burgonya Hollandası, bugünkü Belçika)",
-  "akim": "Erken Flaman Rönesansı (Northern Renaissance)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Erken Flaman Rönesansı (Northern Renaissance)"
  },
  {
   "id": "james-tissot",
   "isim": "James Tissot",
   "dogum_olum": "1836-1902",
   "ulke": "Fransa",
-  "akim": "Realizm / Estetik Hareket (Aesthetic Movement)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Realizm / Estetik Hareket (Aesthetic Movement)"
  },
  {
   "id": "antonio-da-correggio",
   "isim": "Antonio da Correggio (Antonio Allegri)",
   "dogum_olum": "1489-1534",
   "ulke": "İtalya (Correggio Beyliği)",
-  "akim": "Rönesans (Parma Okulu)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (Parma Okulu)"
  },
  {
   "id": "dante-gabriel-rossetti",
   "isim": "Dante Gabriel Rossetti",
   "dogum_olum": "1828-1882",
   "ulke": "Birleşik Krallık",
-  "akim": "Pre-Rafaelit",
-  "risk_seviyesi": "public_domain"
+  "akim": "Pre-Rafaelit"
  },
  {
   "id": "jacopo-zucchi",
   "isim": "Jacopo Zucchi",
   "dogum_olum": "1541-1596",
   "ulke": "İtalya (Floransa/Roma, Toskana Büyük Dükalığı)",
-  "akim": "Maniyerizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Maniyerizm"
  },
  {
   "id": "jacopo-pontormo",
   "isim": "Jacopo Pontormo",
   "dogum_olum": "1494-1557",
   "ulke": "İtalya",
-  "akim": "Manyerizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Manyerizm"
  },
  {
   "id": "christopher-pratt",
   "isim": "Christopher Pratt",
   "dogum_olum": "1935-2022",
   "ulke": "Canada",
-  "akim": "Realizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Realizm"
  },
  {
   "id": "giovanni-segantini",
   "isim": "Giovanni Segantini",
   "dogum_olum": "1858-1899",
   "ulke": "İtalya (İsviçre'de yaşadı)",
-  "akim": "Divizyonizm / Sembolizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Divizyonizm / Sembolizm"
  },
  {
   "id": "johann-peter-hasenclever",
   "isim": "Johann Peter Hasenclever",
   "dogum_olum": "1810-1853",
   "ulke": "Almanya (Prusya Krallığı)",
-  "akim": "Düsseldorf Okulu (sosyal-eleştirel tür/genre resmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Düsseldorf Okulu (sosyal-eleştirel tür/genre resmi)"
  },
  {
   "id": "lorenzo-monaco",
   "isim": "Lorenzo Monaco",
   "dogum_olum": "1370-1425",
   "ulke": "İtalya",
-  "akim": "Uluslararası Gotik (Geç Gotik / erken Rönesans geçiş dönemi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Uluslararası Gotik (Geç Gotik / erken Rönesans geçiş dönemi)"
  },
  {
   "id": "georges-de-la-tour",
   "isim": "Georges de La Tour",
   "dogum_olum": "1593-1652",
   "ulke": "Fransa (Lorraine Dükalığı)",
-  "akim": "Barok (Caravaggisti)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok (Caravaggisti)"
  },
  {
   "id": "carl-larsson",
   "isim": "Carl Larsson",
   "dogum_olum": "1853-1919",
   "ulke": "İsveç (Sweden)",
-  "akim": "Sembolizm / İsveç Ulusal Romantizmi (Arts and Crafts etkili suluboya)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Sembolizm / İsveç Ulusal Romantizmi (Arts and Crafts etkili suluboya)"
  },
  {
   "id": "thomas-eakins",
   "isim": "Thomas Eakins",
   "dogum_olum": "1844-1916",
   "ulke": "United States",
-  "akim": "Amerikan Realizmi",
-  "risk_seviyesi": "public_domain"
+  "akim": "Amerikan Realizmi"
  },
  {
   "id": "jacopo-de-barbari",
   "isim": "Jacopo de' Barbari",
   "dogum_olum": "1460-1516",
   "ulke": "Venedik Cumhuriyeti (İtalya)",
-  "akim": "Rönesans (Kuzey İtalyan/Venedik Rönesansı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (Kuzey İtalyan/Venedik Rönesansı)"
  },
  {
   "id": "norman-rockwell",
   "isim": "Norman Rockwell",
   "dogum_olum": "1894-1978",
   "ulke": "United States",
-  "akim": "Amerikan Realizmi / İllüstrasyon Sanatı",
-  "risk_seviyesi": "dikkat"
+  "akim": "Amerikan Realizmi / İllüstrasyon Sanatı"
  },
  {
   "id": "gustave-boulanger",
   "isim": "Gustave Boulanger",
   "dogum_olum": "1824-1888",
   "ulke": "Fransa",
-  "akim": "Akademisyen / Oryantalizm (Academic art, Orientalism)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Akademisyen / Oryantalizm (Academic art, Orientalism)"
  },
  {
   "id": "benjamin-west",
   "isim": "Benjamin West",
   "dogum_olum": "1738-1820",
   "ulke": "Amerika Birleşik Devletleri (İngiltere'de yaşadı)",
-  "akim": "Tarih Resmi (History Painting) / Neoklasizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Tarih Resmi (History Painting) / Neoklasizm"
  },
  {
   "id": "william-holman-hunt",
   "isim": "William Holman Hunt",
   "dogum_olum": "1827-1910",
   "ulke": "Birleşik Krallık",
-  "akim": "Pre-Raphaelite (Rafaelöncesi Kardeşlik)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Pre-Raphaelite (Rafaelöncesi Kardeşlik)"
  },
  {
   "id": "georges-seurat",
   "isim": "Georges Seurat",
   "dogum_olum": "1859-1891",
   "ulke": "France",
-  "akim": "Pointillism / Neo-Impressionism",
-  "risk_seviyesi": "public_domain"
+  "akim": "Pointillism / Neo-Impressionism"
  },
  {
   "id": "rene-magritte",
   "isim": "René Magritte",
   "dogum_olum": "1898-1967",
   "ulke": "Belçika",
-  "akim": "Sürrealizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Sürrealizm"
  },
  {
   "id": "ivan-aivazovsky",
   "isim": "Ivan Aivazovsky",
   "dogum_olum": "1817-1900",
   "ulke": "Rus İmparatorluğu (Ermeni kökenli)",
-  "akim": "Romantizm (Deniz Manzarası Ressamlığı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm (Deniz Manzarası Ressamlığı)"
  },
  {
   "id": "franz-marc",
   "isim": "Franz Marc",
   "dogum_olum": "1880-1916",
   "ulke": "Almanya (Bavyera Krallığı)",
-  "akim": "Alman Ekspresyonizmi (Der Blaue Reiter)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Alman Ekspresyonizmi (Der Blaue Reiter)"
  },
  {
   "id": "paul-delaroche",
   "isim": "Paul Delaroche",
   "dogum_olum": "1797-1856",
   "ulke": "France",
-  "akim": "Romantizm (Akademik Tarih Resmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm (Akademik Tarih Resmi)"
  },
  {
   "id": "alexandre-cabanel",
   "isim": "Alexandre Cabanel",
   "dogum_olum": "1823-1889",
   "ulke": "Fransa",
-  "akim": "Akademizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Akademizm"
  },
  {
   "id": "francesco-hayez",
   "isim": "Francesco Hayez",
   "dogum_olum": "1791-1882",
   "ulke": "İtalya (Avusturya İmparatorluğu döneminde Venedik/Milano)",
-  "akim": "Romantizm (İtalyan Romantizmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Romantizm (İtalyan Romantizmi)"
  },
  {
   "id": "herbert-james-draper",
   "isim": "Herbert James Draper",
   "dogum_olum": "1863-1920",
   "ulke": "Birleşik Krallık (İngiltere)",
-  "akim": "Viktorien Klasisizm (Akademik Sanat)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Viktorien Klasisizm (Akademik Sanat)"
  },
  {
   "id": "angelica-kauffman",
   "isim": "Angelica Kauffman",
   "dogum_olum": "1741-1807",
   "ulke": "İsviçre",
-  "akim": "Neoklasisizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Neoklasisizm"
  },
  {
   "id": "john-singer-sargent",
   "isim": "John Singer Sargent",
   "dogum_olum": "1856-1925",
   "ulke": "United States",
-  "akim": "İzlenimcilik (Amerikan Gilded Age portre resmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "İzlenimcilik (Amerikan Gilded Age portre resmi)"
  },
  {
   "id": "jean-etienne-liotard",
   "isim": "Jean-Étienne Liotard",
   "dogum_olum": "1702-1789",
   "ulke": "İsviçre (Cenevre Cumhuriyeti)",
-  "akim": "Rokoko / Neoklasik geçiş dönemi (pastel portre ustası)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rokoko / Neoklasik geçiş dönemi (pastel portre ustası)"
  },
  {
   "id": "amedeo-modigliani",
   "isim": "Amedeo Modigliani",
   "dogum_olum": "1884-1920",
   "ulke": "İtalya",
-  "akim": "Ecole de Paris / Ekspresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Ecole de Paris / Ekspresyonizm"
  },
  {
   "id": "cima-da-conegliano",
   "isim": "Giovanni Battista Cima da Conegliano",
   "dogum_olum": "1459-1517",
   "ulke": "İtalya (Venedik Cumhuriyeti)",
-  "akim": "Rönesans (Venedik Okulu)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (Venedik Okulu)"
  },
  {
   "id": "andrea-del-sarto",
   "isim": "Andrea del Sarto",
   "dogum_olum": "1486-1530",
   "ulke": "İtalya (Floransa Cumhuriyeti)",
-  "akim": "Rönesans (Floransa Yüksek Rönesansı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (Floransa Yüksek Rönesansı)"
  },
  {
   "id": "piet-mondrian",
   "isim": "Piet Mondrian",
   "dogum_olum": "1872-1944",
   "ulke": "Hollanda",
-  "akim": "De Stijl / Neoplastisizm (Geometrik Soyutlama)",
-  "risk_seviyesi": "public_domain"
+  "akim": "De Stijl / Neoplastisizm (Geometrik Soyutlama)"
  },
  {
   "id": "bernardo-bellotto",
   "isim": "Bernardo Bellotto",
   "dogum_olum": "1721-1780",
   "ulke": "İtalya (Venedik Cumhuriyeti)",
-  "akim": "Vedutizm (18. yy İtalyan manzara/şehir resmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Vedutizm (18. yy İtalyan manzara/şehir resmi)"
  },
  {
   "id": "jean-francois-millet",
   "isim": "Jean-François Millet",
   "dogum_olum": "1814-1875",
   "ulke": "Fransa",
-  "akim": "Realizm (Barbizon Okulu)",
-  "risk_seviyesi": "dikkat"
+  "akim": "Realizm (Barbizon Okulu)"
  },
  {
   "id": "piero-del-pollaiuolo",
   "isim": "Piero del Pollaiuolo",
   "dogum_olum": "1441-1496",
   "ulke": "İtalya (Floransa)",
-  "akim": "Rönesans (İtalyan Erken Rönesansı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rönesans (İtalyan Erken Rönesansı)"
  },
  {
   "id": "gustave-caillebotte",
   "isim": "Gustave Caillebotte",
   "dogum_olum": "1848-1894",
   "ulke": "France",
-  "akim": "Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Empresyonizm"
  },
  {
   "id": "franz-von-stuck",
   "isim": "Franz von Stuck",
   "dogum_olum": "1863-1928",
   "ulke": "Almanya",
-  "akim": "Sembolizm (Symbolism)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Sembolizm (Symbolism)"
  },
  {
   "id": "charles-le-brun",
   "isim": "Charles Le Brun",
   "dogum_olum": "1619-1690",
   "ulke": "Fransa",
-  "akim": "Barok (Fransız Klasik Baroku)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok (Fransız Klasik Baroku)"
  },
  {
   "id": "john-frederick-lewis",
   "isim": "John Frederick Lewis",
   "dogum_olum": "1804-1876",
   "ulke": "Birleşik Krallık (İngiltere)",
-  "akim": "Oryantalizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Oryantalizm"
  },
  {
   "id": "edvard-munch",
   "isim": "Edvard Munch",
   "dogum_olum": "1863-1944",
   "ulke": "Norveç",
-  "akim": "Ekspresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Ekspresyonizm"
  },
  {
   "id": "cimabue",
   "isim": "Cimabue",
   "dogum_olum": "1240-1302",
   "ulke": "İtalya (Floransa Cumhuriyeti)",
-  "akim": "Proto-Rönesans / Bizans etkili İtalyan resmi",
-  "risk_seviyesi": "public_domain"
+  "akim": "Proto-Rönesans / Bizans etkili İtalyan resmi"
  },
  {
   "id": "joseph-farquharson",
   "isim": "Joseph Farquharson",
   "dogum_olum": "1846-1935",
   "ulke": "İskoçya (Birleşik Krallık)",
-  "akim": "Realizm / Manzara Resmi (Naturalist Landscape)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Realizm / Manzara Resmi (Naturalist Landscape)"
  },
  {
   "id": "jean-beraud",
   "isim": "Jean Béraud",
   "dogum_olum": "1849-1935",
   "ulke": "Fransa",
-  "akim": "Belle Époque Gerçekçiliği (Paris kent yaşamı ressamı)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Belle Époque Gerçekçiliği (Paris kent yaşamı ressamı)"
  },
  {
   "id": "gilbert-stuart",
   "isim": "Gilbert Stuart",
   "dogum_olum": "1755-1828",
   "ulke": "United States",
-  "akim": "Amerikan Federal Dönem Portre Ressamlığı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Amerikan Federal Dönem Portre Ressamlığı"
  },
  {
   "id": "lucas-cranach-the-elder",
   "isim": "Lucas Cranach the Elder (Lucas Cranach der Ältere)",
   "dogum_olum": "1472-1553",
   "ulke": "Almanya (Kutsal Roma İmparatorluğu, Wittenberg)",
-  "akim": "Kuzey Rönesansı / Alman Rönesansı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Kuzey Rönesansı / Alman Rönesansı"
  },
  {
   "id": "jan-brueghel-the-elder",
   "isim": "Jan Brueghel the Elder",
   "dogum_olum": "1568-1625",
   "ulke": "Flanders (Habsburg Netherlands)",
-  "akim": "Flaman Barok / Rönesans sonrası manzara-natürmort",
-  "risk_seviyesi": "public_domain"
+  "akim": "Flaman Barok / Rönesans sonrası manzara-natürmort"
  },
  {
   "id": "john-singleton-copley",
   "isim": "John Singleton Copley",
   "dogum_olum": "1738-1815",
   "ulke": "Amerika Birleşik Devletleri (İngiliz Kolonisi) / İngiltere",
-  "akim": "Amerikan Kolonyal Portre Sanatı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Amerikan Kolonyal Portre Sanatı"
  },
  {
   "id": "marc-chagall",
   "isim": "Marc Chagall",
   "dogum_olum": "1887-1985",
   "ulke": "Fransa (Rusya doğumlu)",
-  "akim": "Modernizm / Sürrealizm-Ekspresyonizm karışımı",
-  "risk_seviyesi": "dikkat"
+  "akim": "Modernizm / Sürrealizm-Ekspresyonizm karışımı"
  },
  {
   "id": "alexei-savrasov",
   "isim": "Alexei Savrasov",
   "dogum_olum": "1830-1897",
   "ulke": "Rusya (Rus İmparatorluğu)",
-  "akim": "Realizm (Gezici Ressamlar / Peredvizhniki - lirik peyzaj)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Realizm (Gezici Ressamlar / Peredvizhniki - lirik peyzaj)"
  },
  {
   "id": "gerard-van-honthorst",
   "isim": "Gerard van Honthorst",
   "dogum_olum": "1592-1656",
   "ulke": "Hollanda (Dutch Republic)",
-  "akim": "Barok (Utrecht Caravaggisti)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Barok (Utrecht Caravaggisti)"
  },
  {
   "id": "thomas-cole",
   "isim": "Thomas Cole",
   "dogum_olum": "1801-1848",
   "ulke": "Amerika Birleşik Devletleri (İngiltere doğumlu)",
-  "akim": "Hudson Nehri Okulu (Romantizm)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Hudson Nehri Okulu (Romantizm)"
  },
  {
   "id": "paul-cezanne",
   "isim": "Paul Cézanne",
   "dogum_olum": "1839-1906",
   "ulke": "Fransa",
-  "akim": "Post-Empresyonizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Post-Empresyonizm"
  },
  {
   "id": "david-alfaro-siqueiros",
   "isim": "David Alfaro Siqueiros",
   "dogum_olum": "1896-1974",
   "ulke": "Meksika",
-  "akim": "Meksika Muralizmi / Sosyal Realizm",
-  "risk_seviyesi": "dikkat"
+  "akim": "Meksika Muralizmi / Sosyal Realizm"
  },
  {
   "id": "max-beckmann",
   "isim": "Max Beckmann",
   "dogum_olum": "1884-1950",
   "ulke": "Almanya",
-  "akim": "Yeni Nesnellik (Alman Ekspresyonizmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Yeni Nesnellik (Alman Ekspresyonizmi)"
  },
  {
   "id": "quinten-metsys",
   "isim": "Quinten Metsys (Quentin Matsys)",
   "dogum_olum": "1466-1530",
   "ulke": "Habsburg Hollandası (Antwerp, günümüz Belçika)",
-  "akim": "Flaman Rönesansı",
-  "risk_seviyesi": "public_domain"
+  "akim": "Flaman Rönesansı"
  },
  {
   "id": "ivan-shishkin",
   "isim": "Ivan Shishkin",
   "dogum_olum": "1832-1898",
   "ulke": "Rusya",
-  "akim": "Realizm (Peredvizhniki / gezici sergiciler, Rus manzara realizmi)",
-  "risk_seviyesi": "public_domain"
+  "akim": "Realizm (Peredvizhniki / gezici sergiciler, Rus manzara realizmi)"
  },
  {
   "id": "jean-honore-fragonard",
   "isim": "Jean-Honoré Fragonard",
   "dogum_olum": "1732-1806",
   "ulke": "Fransa",
-  "akim": "Rokoko",
-  "risk_seviyesi": "public_domain"
+  "akim": "Rokoko"
  },
  {
   "id": "howard-chandler-christy",
   "isim": "Howard Chandler Christy",
   "dogum_olum": "1873-1952",
   "ulke": "Amerika Birleşik Devletleri",
-  "akim": "Amerikan İllüstrasyon Sanatı / Realizm",
-  "risk_seviyesi": "public_domain"
+  "akim": "Amerikan İllüstrasyon Sanatı / Realizm"
  },
  {
   "id": "stil-abraham-pether",
   "isim": "Bilinmiyor (Abraham Pether tarzında)",
   "dogum_olum": "1752-1812",
   "ulke": "İngiltere",
-  "akim": "Taklit/atfedilen",
-  "risk_seviyesi": "public_domain"
+  "akim": "Taklit/atfedilen"
  }
 ]

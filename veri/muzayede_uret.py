@@ -12,13 +12,40 @@ from muzayede_faz3_data import FAZ3_DATA
 SITE = KOK / "muzayede"
 RISK_GECERLI = {"public_domain", "dogrulanmis_serbest", "dikkat"}
 
+# KANONIK sabit sira: yeni fazlar eklendikce SONUNA eklenir, araya sokulmaz.
+# ressam_id ile tablo_id (bulmaca/gün kimliği) ayrı kavramlar: bir ressamın
+# birden fazla tablosu olabilir. tablo_id, bu kanonik sirada bir (ressam_id,
+# tablo_adi) ciftinin kacinci karsilasma oldugundan turetilir: ilk gorulen
+# hep ressam_id kalir (mevcut gunler asla degismesin diye), sonrakiler -2,
+# -3... soneki alir. Toplam sayima gore DEGIL, ilk-gorulme sirasina gore
+# hesaplanir; boylece bir ressama sonradan tablo eklemek, o ressamin daha
+# once yayinlanmis tablosunun id'sini asla degistirmez.
+TUMU = DATA + FAZ3_DATA + CAKMA_DATA
+
+def _tablo_id_haritasi():
+    gorulen = {}
+    harita = {}
+    for d in TUMU:
+        rid, tablo_adi = d[0], d[6]
+        n = gorulen.get(rid, 0) + 1
+        gorulen[rid] = n
+        harita[(rid, tablo_adi)] = rid if n == 1 else f"{rid}-{n}"
+    return harita
+
+_TABLO_ID_HARITASI = _tablo_id_haritasi()
+
+def tablo_id(d):
+    return _TABLO_ID_HARITASI[(d[0], d[6])]
+
 def dogrula():
     hata = []
-    tumu = DATA + FAZ3_DATA + CAKMA_DATA
-    idler = [d[0] for d in tumu]
+    ciftler = [(d[0], d[6]) for d in TUMU]
+    if len(ciftler) != len(set(ciftler)):
+        hata.append("ayni ressamin iki tablosu tam ayni tablo_adi ile tekrar ediyor")
+    idler = [tablo_id(d) for d in TUMU]
     if len(idler) != len(set(idler)):
-        hata.append("tekrar eden ressam_id var")
-    for d in tumu:
+        hata.append("tekrar eden tablo_id var")
+    for d in TUMU:
         (rid, isim, dogum_olum, ulke, akim, risk, tablo_adi, tablo_yili,
          gorsel, fiyat, satis_yili, ev, kaynak) = d
         if risk not in RISK_GECERLI:
@@ -33,17 +60,21 @@ def dogrula():
 
 def uret():
     ressamlar = []
+    ressam_seen = set()
     tablolar = []
     for gercek, veri in ((True, DATA), (True, FAZ3_DATA), (False, CAKMA_DATA)):
         for d in veri:
             (rid, isim, dogum_olum, ulke, akim, risk, tablo_adi, tablo_yili,
              gorsel, fiyat, satis_yili, ev, kaynak) = d
-            ressamlar.append({"id": rid, "isim": isim, "dogum_olum": dogum_olum,
-                               "ulke": ulke, "akim": akim, "risk_seviyesi": risk})
-            tablolar.append({"id": rid, "ressam_id": rid, "tablo_adi": tablo_adi,
+            if rid not in ressam_seen:
+                ressam_seen.add(rid)
+                ressamlar.append({"id": rid, "isim": isim, "dogum_olum": dogum_olum,
+                                   "ulke": ulke, "akim": akim})
+            tablolar.append({"id": tablo_id(d), "ressam_id": rid, "tablo_adi": tablo_adi,
                               "tablo_yili": tablo_yili, "gorsel": gorsel,
                               "fiyat_usd": fiyat, "satis_yili": satis_yili,
-                              "muzayede_evi": ev, "kaynak_url": kaynak, "gercek": gercek})
+                              "muzayede_evi": ev, "kaynak_url": kaynak, "gercek": gercek,
+                              "risk_seviyesi": risk})
     return ressamlar, tablolar
 
 def main():
@@ -64,7 +95,7 @@ def main():
 
     # DATA+CAKMA_DATA sirasi korunuyor (mevcut gunlerin bulmacasi degismesin diye),
     # FAZ3_DATA yeni gunler olarak sona ekleniyor.
-    sira = [d[0] for d in DATA + CAKMA_DATA + FAZ3_DATA]
+    sira = [tablo_id(d) for d in DATA + CAKMA_DATA + FAZ3_DATA]
     gunler = {"epoch": "2026-07-21", "sira": sira}
     js = "// Muzayede gün sırası. Üretim: veri/muzayede_uret.py. Elle düzenleme: doğrulamayı çalıştır.\n"
     js += "window.MUZAYEDE_GUNLER=" + json.dumps(gunler, ensure_ascii=False, separators=(",", ":")) + ";\n"
