@@ -896,6 +896,139 @@
   "akim": "Amerikan İllüstrasyon Sanatı / Realizm"
  },
  {
+  "id": "francis-bacon",
+  "isim": "Francis Bacon",
+  "dogum_olum": "1909-1992",
+  "ulke": "İrlanda/Birleşik Krallık",
+  "akim": "Figüratif Ekspresyonizm"
+ },
+ {
+  "id": "roy-lichtenstein",
+  "isim": "Roy Lichtenstein",
+  "dogum_olum": "1923-1997",
+  "ulke": "ABD",
+  "akim": "Pop Art"
+ },
+ {
+  "id": "mark-rothko",
+  "isim": "Mark Rothko",
+  "dogum_olum": "1903-1970",
+  "ulke": "ABD",
+  "akim": "Soyut Ekspresyonizm (Color Field)"
+ },
+ {
+  "id": "barnett-newman",
+  "isim": "Barnett Newman",
+  "dogum_olum": "1905-1970",
+  "ulke": "ABD",
+  "akim": "Soyut Dışavurumculuk (Renk Alanı Resmi)"
+ },
+ {
+  "id": "wu-bin",
+  "isim": "Wu Bin",
+  "dogum_olum": "c. 1543 - c. 1626 (kesin tarihler bilinmiyor; 1573-1620 Wanli döneminde aktif)",
+  "ulke": "Çin (Ming Hanedanlığı)",
+  "akim": "Ming Hanedanlığı edebiyatçı ressamları / Nanjing'in \"eksantrik\" ressamları"
+ },
+ {
+  "id": "fernand-leger",
+  "isim": "Fernand Léger",
+  "dogum_olum": "1881-1955",
+  "ulke": "Fransa",
+  "akim": "Kübizm"
+ },
+ {
+  "id": "clyfford-still",
+  "isim": "Clyfford Still",
+  "dogum_olum": "1904–1980",
+  "ulke": "ABD",
+  "akim": "Soyut Dışavurumculuk (Renk Alanı Resmi)"
+ },
+ {
+  "id": "jan-van-eyck",
+  "isim": "Jan van Eyck",
+  "dogum_olum": "yak. 1390-1441",
+  "ulke": "Flandre (bugünkü Belçika)",
+  "akim": "Erken Flaman Resim Sanatı (Early Netherlandish)"
+ },
+ {
+  "id": "bartolome-esteban-murillo",
+  "isim": "Bartolomé Esteban Murillo",
+  "dogum_olum": "1617-1682",
+  "ulke": "İspanya",
+  "akim": "Barok (İspanyol Altın Çağı, Sevilla ekolü)"
+ },
+ {
+  "id": "anthony-van-dyck",
+  "isim": "Anthony van Dyck",
+  "dogum_olum": "1599-1641",
+  "ulke": "Flandre (Güney Hollanda, günümüz Belçika)",
+  "akim": "Barok"
+ },
+ {
+  "id": "jackson-pollock",
+  "isim": "Jackson Pollock",
+  "dogum_olum": "1912-1956",
+  "ulke": "ABD",
+  "akim": "Soyut Ekspresyonizm"
+ },
+ {
+  "id": "willem-de-kooning",
+  "isim": "Willem de Kooning",
+  "dogum_olum": "1904-1997",
+  "ulke": "Hollanda (ABD'ye göç etti)",
+  "akim": "Soyut Dışavurumculuk (Abstract Expressionism)"
+ },
+ {
+  "id": "david-hockney",
+  "isim": "David Hockney",
+  "dogum_olum": "1937 (hala hayatta)",
+  "ulke": "Ingiltere",
+  "akim": "Pop Art / Ingiliz figuratif resim"
+ },
+ {
+  "id": "jasper-johns",
+  "isim": "Jasper Johns",
+  "dogum_olum": "1930-",
+  "ulke": "ABD",
+  "akim": "Neo-Dada / Pop Art"
+ },
+ {
+  "id": "ed-ruscha",
+  "isim": "Ed Ruscha",
+  "dogum_olum": "1937-",
+  "ulke": "ABD",
+  "akim": "Pop Art / Kavramsal Sanat"
+ },
+ {
+  "id": "sacha-jafri",
+  "isim": "Sacha Jafri",
+  "dogum_olum": "1977 - ",
+  "ulke": "Birleşik Krallık",
+  "akim": "Çağdaş sanat / soyut-figüratif (büyülü gerçekçilik etkili)"
+ },
+ {
+  "id": "gerhard-richter",
+  "isim": "Gerhard Richter",
+  "dogum_olum": "1932-",
+  "ulke": "Almanya",
+  "akim": "Fotogerçekçilik / Kapitalist Gerçekçilik / Soyut Sanat"
+ },
+ {
+  "id": "ernest-meissonier",
+  "isim": "Ernest Meissonier",
+  "dogum_olum": "1815-1891",
+  "ulke": "Fransa",
+  "akim": "Akademizm / Askeri-tarih türü resim"
+ },
+ {
+  "id": "jules-breton",
+  "isim": "Jules Breton",
+  "dogum_olum": "1827-1906",
+  "ulke": "Fransa",
+  "akim": "Realizm (natüralist köylü sahneleri)"
+ },
+ {
   "id": "stil-abraham-pether",
   "isim": "Bilinmiyor (Abraham Pether tarzında)",
   "dogum_olum": "1752-1812",

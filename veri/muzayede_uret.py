@@ -8,6 +8,7 @@ KOK = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from muzayede_ornek import DATA, CAKMA_DATA
 from muzayede_faz3_data import FAZ3_DATA
+from muzayede_faz4_data import FAZ4_DATA
 
 SITE = KOK / "muzayede"
 RISK_GECERLI = {"public_domain", "dogrulanmis_serbest", "dikkat"}
@@ -20,7 +21,7 @@ RISK_GECERLI = {"public_domain", "dogrulanmis_serbest", "dikkat"}
 # -3... soneki alir. Toplam sayima gore DEGIL, ilk-gorulme sirasina gore
 # hesaplanir; boylece bir ressama sonradan tablo eklemek, o ressamin daha
 # once yayinlanmis tablosunun id'sini asla degistirmez.
-TUMU = DATA + FAZ3_DATA + CAKMA_DATA
+TUMU = DATA + FAZ3_DATA + FAZ4_DATA + CAKMA_DATA
 
 def _tablo_id_haritasi():
     gorulen = {}
@@ -62,7 +63,7 @@ def uret():
     ressamlar = []
     ressam_seen = set()
     tablolar = []
-    for gercek, veri in ((True, DATA), (True, FAZ3_DATA), (False, CAKMA_DATA)):
+    for gercek, veri in ((True, DATA), (True, FAZ3_DATA), (True, FAZ4_DATA), (False, CAKMA_DATA)):
         for d in veri:
             (rid, isim, dogum_olum, ulke, akim, risk, tablo_adi, tablo_yili,
              gorsel, fiyat, satis_yili, ev, kaynak) = d
@@ -94,8 +95,8 @@ def main():
         json.dumps(tablolar, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # DATA+CAKMA_DATA sirasi korunuyor (mevcut gunlerin bulmacasi degismesin diye),
-    # FAZ3_DATA yeni gunler olarak sona ekleniyor.
-    sira = [tablo_id(d) for d in DATA + CAKMA_DATA + FAZ3_DATA]
+    # FAZ3_DATA ve FAZ4_DATA yeni gunler olarak sirayla sona ekleniyor.
+    sira = [tablo_id(d) for d in DATA + CAKMA_DATA + FAZ3_DATA + FAZ4_DATA]
     gunler = {"epoch": "2026-07-21", "sira": sira}
     js = "// Muzayede gün sırası. Üretim: veri/muzayede_uret.py. Elle düzenleme: doğrulamayı çalıştır.\n"
     js += "window.MUZAYEDE_GUNLER=" + json.dumps(gunler, ensure_ascii=False, separators=(",", ":")) + ";\n"
