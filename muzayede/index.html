@@ -462,6 +462,16 @@ function isimNormallestir(s){
     .normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
+// insanlar ressamlari genelde soyadiyla taniyor (Picasso, van Gogh, Klimt),
+// isim ile degil (Pablo, Vincent, Gustav) - bas harf ipucu/altyazi bu yuzden
+// soyadin ilk harfini kullanir. Parantez ici alternatif isimler ("Raphael
+// (Raffaello Sanzio)") ve son kelime esas alinir.
+function soyadiBasHarfi(isim){
+  const ana = isim.split('(')[0].trim();
+  const kelimeler = ana.split(/\s+/);
+  return kelimeler[kelimeler.length - 1][0];
+}
+
 function oneriListesiKur(){
   const input = document.getElementById('ressamGiris');
   const kutu = document.getElementById('ressamOneriler');
@@ -567,7 +577,7 @@ function fiyatGonder(){
 
   document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
   document.getElementById('fiyatGonderBtn').disabled = true;
-  const ressamaGecilsinMi = window.MUZ.tablo.gercek && gercekFiyat >= ESIK_UNLU_FIYAT;
+  const ressamaGecilsinMi = window.MUZ.tablo.gercek && ressamUnluMu(window.MUZ.tablo.ressam_id);
   fiyatMesajCiz(st.fiyatPuan, gercekFiyat, ressamaGecilsinMi);
 
   if(ressamaGecilsinMi){
@@ -580,7 +590,16 @@ function fiyatGonder(){
   }
 }
 
-const ESIK_UNLU_FIYAT = 1000000;
+// ressam bazinda: bu ressamin veritabanindaki HERHANGI bir gercek tablosu
+// 10M+ dolara satilmissa, o ressamin tum gunlerinde (ucuz tablolari dahil)
+// ressam tahmin turu acilir. Tek bir tablonun gunluk fiyatina degil, ressamin
+// genel unlulugune gore karar verilir (orn. Da Vinci'nin 1.5M'lik Benois
+// Madonna'si da tahmin edilebilir olmali, cunku Salvator Mundi'si 450M).
+const ESIK_UNLU_FIYAT = 10000000;
+
+function ressamUnluMu(ressamId){
+  return window.MUZ.TABLOLAR.some(t => t.ressam_id === ressamId && t.gercek && t.fiyat_usd >= ESIK_UNLU_FIYAT);
+}
 
 function fiyatTepkisi(puan){
   if(puan >= 90) return { sinif: 'yuksek', metin: 'TAM İSABET' };
@@ -678,7 +697,7 @@ const IPUCU_KATEGORILERI = [
   { id: 'donem', etiket: 'dönem', metin: r => (Math.floor(parseInt(r.dogum_olum.split('-')[0], 10) / 100) + 1) + '. yüzyıl civarı' },
   { id: 'ulke', etiket: 'ülke', metin: r => r.ulke },
   { id: 'akim', etiket: 'sanat akımı', metin: r => r.akim },
-  { id: 'tablo', etiket: 'tablo adı + baş harf', metin: (r, t) => t.tablo_adi + ' (' + t.tablo_yili + ') - ' + r.isim[0] + '.' }
+  { id: 'tablo', etiket: 'tablo adı + baş harf', metin: (r, t) => t.tablo_adi + ' (' + t.tablo_yili + ') - ' + soyadiBasHarfi(r.isim) + '.' }
 ];
 
 function ipucularinCiz(){
@@ -740,7 +759,7 @@ function ipucuGoster(kategoriId){
   btn.dataset.acik = '1';
   btn.textContent = k.etiket + ': ' + k.metin(window.MUZ.ressam, window.MUZ.tablo);
   if(kategoriId === 'tablo' && !window.MUZ.state.ressamBulundu && !window.MUZ.state.pesEdildi){
-    altyaziAyarla('<span class="altyazi-harf">' + window.MUZ.ressam.isim[0] + '.</span>');
+    altyaziAyarla('<span class="altyazi-harf">' + soyadiBasHarfi(window.MUZ.ressam.isim) + '.</span>');
   }
 }
 
@@ -855,7 +874,7 @@ function durumuUygula(){
   document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
   document.getElementById('fiyatGonderBtn').disabled = true;
   const gercekFiyat = window.MUZ.tablo.fiyat_usd;
-  const ressamaGecilsinMi = window.MUZ.tablo.gercek && gercekFiyat >= ESIK_UNLU_FIYAT;
+  const ressamaGecilsinMi = window.MUZ.tablo.gercek && ressamUnluMu(window.MUZ.tablo.ressam_id);
   fiyatMesajCiz(st.fiyatPuan, gercekFiyat, ressamaGecilsinMi);
 
   if(!ressamaGecilsinMi){
