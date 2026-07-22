@@ -1029,6 +1029,314 @@
   "akim": "Realizm (natüralist köylü sahneleri)"
  },
  {
+  "id": "agnes-martin",
+  "isim": "Agnes Martin",
+  "dogum_olum": "1912-2004",
+  "ulke": "Kanada doğumlu, ABD vatandaşı (Taos, New Mexico'da yaşadı ve öldü)",
+  "akim": "Minimalizm"
+ },
+ {
+  "id": "yves-klein",
+  "isim": "Yves Klein",
+  "dogum_olum": "1928-1962",
+  "ulke": "Fransa",
+  "akim": "Nouveau Realisme (Monokrom Resim)"
+ },
+ {
+  "id": "cy-twombly",
+  "isim": "Cy Twombly",
+  "dogum_olum": "1928-2011",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Soyut Ekspresyonizm (kaligrafik/gestural soyutlama)"
+ },
+ {
+  "id": "ellsworth-kelly",
+  "isim": "Ellsworth Kelly",
+  "dogum_olum": "1923-2015",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Hard-edge / Renk Alanı Resmi"
+ },
+ {
+  "id": "frank-stella",
+  "isim": "Frank Stella",
+  "dogum_olum": "1936-2024",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Minimalizm (Erken \"Siyah Resimler\" serisi, Post-Painterly Abstraction)"
+ },
+ {
+  "id": "helen-frankenthaler",
+  "isim": "Helen Frankenthaler",
+  "dogum_olum": "1928-2011",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Soyut Ekspresyonizm / Renk Alanı Resmi"
+ },
+ {
+  "id": "joan-mitchell",
+  "isim": "Joan Mitchell",
+  "dogum_olum": "1925-1992",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Soyut Ekspresyonizm"
+ },
+ {
+  "id": "lee-krasner",
+  "isim": "Lee Krasner",
+  "dogum_olum": "1908-1984",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Soyut Ekspresyonizm"
+ },
+ {
+  "id": "robert-rauschenberg",
+  "isim": "Robert Rauschenberg",
+  "dogum_olum": "1925-2008",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Neo-Dada"
+ },
+ {
+  "id": "ad-reinhardt",
+  "isim": "Ad Reinhardt",
+  "dogum_olum": "1913-1967",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Soyut Ekspresyonizm / Minimalizm öncüsü"
+ },
+ {
+  "id": "morris-louis",
+  "isim": "Morris Louis",
+  "dogum_olum": "1912-1962",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Renk Alanı Resmi (Color Field Painting)"
+ },
+ {
+  "id": "kenneth-noland",
+  "isim": "Kenneth Noland",
+  "dogum_olum": "1924-2010",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Renk Alanı Resmi (Washington Color School)"
+ },
+ {
+  "id": "philip-guston",
+  "isim": "Philip Guston",
+  "dogum_olum": "1913-1980",
+  "ulke": "Kanada doğumlu, Amerikalı",
+  "akim": "Soyut Ekspresyonizm / Neo-Ekspresyonizm"
+ },
+ {
+  "id": "wayne-thiebaud",
+  "isim": "Wayne Thiebaud",
+  "dogum_olum": "1920-2021",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Pop Art"
+ },
+ {
+  "id": "chuck-close",
+  "isim": "Chuck Close",
+  "dogum_olum": "1940-2021",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Fotogerçekçilik"
+ },
+ {
+  "id": "alex-katz",
+  "isim": "Alex Katz",
+  "dogum_olum": "1927-",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Figüratif Resim (Soyut Dışavurumculuğa Karşı Düz Figürasyon)"
+ },
+ {
+  "id": "keith-haring",
+  "isim": "Keith Haring",
+  "dogum_olum": "1958-1990",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Pop Art / Sokak Sanatı kökenli figüratif resim"
+ },
+ {
+  "id": "georgia-okeeffe",
+  "isim": "Georgia O'Keeffe",
+  "dogum_olum": "1887-1986",
+  "ulke": "ABD",
+  "akim": "Amerikan Modernizmi"
+ },
+ {
+  "id": "franz-kline",
+  "isim": "Franz Kline",
+  "dogum_olum": "1910-1962",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Soyut Ekspresyonizm"
+ },
+ {
+  "id": "robert-motherwell",
+  "isim": "Robert Motherwell",
+  "dogum_olum": "1915-1991",
+  "ulke": "ABD",
+  "akim": "Soyut Ekspresyonizm"
+ },
+ {
+  "id": "arshile-gorky",
+  "isim": "Arshile Gorky",
+  "dogum_olum": "1904-1948",
+  "ulke": "Ermeni-Amerikan (Osmanlı Ermenistanı doğumlu, ABD'de yaşadı)",
+  "akim": "Soyut Ekspresyonizm"
+ },
+ {
+  "id": "julian-schnabel",
+  "isim": "Julian Schnabel",
+  "dogum_olum": "1951-",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Neo-Ekspresyonizm"
+ },
+ {
+  "id": "peter-doig",
+  "isim": "Peter Doig",
+  "dogum_olum": "1959-",
+  "ulke": "İskoçya (Birleşik Krallık)",
+  "akim": "Figüratif Peyzaj Resmi (Neo-Ekspresyonizm etkili)"
+ },
+ {
+  "id": "kerry-james-marshall",
+  "isim": "Kerry James Marshall",
+  "dogum_olum": "1955-",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Çağdaş Figüratif Resim"
+ },
+ {
+  "id": "kehinde-wiley",
+  "isim": "Kehinde Wiley",
+  "dogum_olum": "1977-",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Çağdaş Portre Resmi (Eski Ustalar referanslı)"
+ },
+ {
+  "id": "njideka-akunyili-crosby",
+  "isim": "Njideka Akunyili Crosby",
+  "dogum_olum": "1983-",
+  "ulke": "Nijerya / Amerika Birleşik Devletleri",
+  "akim": "Kolaj Figürasyonu (fotoğraf transferli figüratif resim)"
+ },
+ {
+  "id": "yayoi-kusama",
+  "isim": "Yayoi Kusama",
+  "dogum_olum": "1929-",
+  "ulke": "Japonya",
+  "akim": "Soyut Ekspresyonizm / Infinity Net serisi"
+ },
+ {
+  "id": "takashi-murakami",
+  "isim": "Takashi Murakami",
+  "dogum_olum": "1962-",
+  "ulke": "Japonya",
+  "akim": "Superflat"
+ },
+ {
+  "id": "wassily-kandinsky",
+  "isim": "Wassily Kandinsky",
+  "dogum_olum": "1866-1944",
+  "ulke": "Rusya (sonradan Fransa vatandaşı)",
+  "akim": "Soyut Sanat (Der Blaue Reiter öncüsü)"
+ },
+ {
+  "id": "paul-klee",
+  "isim": "Paul Klee",
+  "dogum_olum": "1879-1940",
+  "ulke": "İsviçre/Almanya",
+  "akim": "Bauhaus / Soyut Sembolizm"
+ },
+ {
+  "id": "egon-schiele",
+  "isim": "Egon Schiele",
+  "dogum_olum": "1890-1918",
+  "ulke": "Avusturya",
+  "akim": "Ekspresyonizm"
+ },
+ {
+  "id": "diego-rivera",
+  "isim": "Diego Rivera",
+  "dogum_olum": "1886-1957",
+  "ulke": "Meksika",
+  "akim": "Meksika Muralizmi / Sosyal Realizm"
+ },
+ {
+  "id": "grant-wood",
+  "isim": "Grant Wood",
+  "dogum_olum": "1891-1942",
+  "ulke": "ABD",
+  "akim": "Amerikan Bölgeselciliği (Regionalism)"
+ },
+ {
+  "id": "andrew-wyeth",
+  "isim": "Andrew Wyeth",
+  "dogum_olum": "1917-2009",
+  "ulke": "Amerika Birlesik Devletleri",
+  "akim": "Amerikan Realizmi (Buyululeu Realizm / Regionalizm)"
+ },
+ {
+  "id": "lucian-freud",
+  "isim": "Lucian Freud",
+  "dogum_olum": "1922-2011",
+  "ulke": "Almanya doğumlu, İngiliz",
+  "akim": "Figüratif Ekspresyonizm (Britanyalı realist portre geleneği)"
+ },
+ {
+  "id": "balthus",
+  "isim": "Balthus (Balthasar Klossowski de Rola)",
+  "dogum_olum": "1908-2001",
+  "ulke": "Fransa (Polonya kokenli)",
+  "akim": "Figüratif Resim"
+ },
+ {
+  "id": "anselm-kiefer",
+  "isim": "Anselm Kiefer",
+  "dogum_olum": "1945-",
+  "ulke": "Almanya",
+  "akim": "Neo-Ekspresyonizm"
+ },
+ {
+  "id": "sigmar-polke",
+  "isim": "Sigmar Polke",
+  "dogum_olum": "1941-2010",
+  "ulke": "Almanya",
+  "akim": "Kapitalist Gerçekçilik / Rasterbilder (nokta-resim)"
+ },
+ {
+  "id": "georg-baselitz",
+  "isim": "Georg Baselitz",
+  "dogum_olum": "1938-",
+  "ulke": "Almanya",
+  "akim": "Neo-Ekspresyonizm"
+ },
+ {
+  "id": "banksy",
+  "isim": "Banksy",
+  "dogum_olum": "1974-",
+  "ulke": "Birleşik Krallık (İngiltere)",
+  "akim": "Sokak Sanatı / Kavramsal Sanat"
+ },
+ {
+  "id": "kaws",
+  "isim": "KAWS (Brian Donnelly)",
+  "dogum_olum": "1974-",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Pop Art / Sokak Sanatı kökenli Pop Art"
+ },
+ {
+  "id": "amy-sherald",
+  "isim": "Amy Sherald",
+  "dogum_olum": "1973-",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Çağdaş Figüratif Realizm (portre)"
+ },
+ {
+  "id": "cecily-brown",
+  "isim": "Cecily Brown",
+  "dogum_olum": "1969-",
+  "ulke": "Birleşik Krallık (Britanya, New York'ta yaşıyor)",
+  "akim": "Neo-Ekspresyonizm (soyut-figüratif)"
+ },
+ {
+  "id": "nicolas-party",
+  "isim": "Nicolas Party",
+  "dogum_olum": "1980-",
+  "ulke": "İsviçre",
+  "akim": "Çağdaş Pastel Resim (Neo-Sembolist Peyzaj)"
+ },
+ {
   "id": "stil-abraham-pether",
   "isim": "Bilinmiyor (Abraham Pether tarzında)",
   "dogum_olum": "1752-1812",
