@@ -968,6 +968,62 @@
   "risk_seviyesi": "public_domain"
  },
  {
+  "id": "paul-cezanne",
+  "isim": "Paul Cézanne",
+  "dogum_olum": "1839-1906",
+  "ulke": "Fransa",
+  "akim": "Post-Empresyonizm",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "david-alfaro-siqueiros",
+  "isim": "David Alfaro Siqueiros",
+  "dogum_olum": "1896-1974",
+  "ulke": "Meksika",
+  "akim": "Meksika Muralizmi / Sosyal Realizm",
+  "risk_seviyesi": "dikkat"
+ },
+ {
+  "id": "max-beckmann",
+  "isim": "Max Beckmann",
+  "dogum_olum": "1884-1950",
+  "ulke": "Almanya",
+  "akim": "Yeni Nesnellik (Alman Ekspresyonizmi)",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "quinten-metsys",
+  "isim": "Quinten Metsys (Quentin Matsys)",
+  "dogum_olum": "1466-1530",
+  "ulke": "Habsburg Hollandası (Antwerp, günümüz Belçika)",
+  "akim": "Flaman Rönesansı",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "ivan-shishkin",
+  "isim": "Ivan Shishkin",
+  "dogum_olum": "1832-1898",
+  "ulke": "Rusya",
+  "akim": "Realizm (Peredvizhniki / gezici sergiciler, Rus manzara realizmi)",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "jean-honore-fragonard",
+  "isim": "Jean-Honoré Fragonard",
+  "dogum_olum": "1732-1806",
+  "ulke": "Fransa",
+  "akim": "Rokoko",
+  "risk_seviyesi": "public_domain"
+ },
+ {
+  "id": "howard-chandler-christy",
+  "isim": "Howard Chandler Christy",
+  "dogum_olum": "1873-1952",
+  "ulke": "Amerika Birleşik Devletleri",
+  "akim": "Amerikan İllüstrasyon Sanatı / Realizm",
+  "risk_seviyesi": "public_domain"
+ },
+ {
   "id": "stil-abraham-pether",
   "isim": "Bilinmiyor (Abraham Pether tarzında)",
   "dogum_olum": "1752-1812",
