@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Çehre: Ünlüyü yüzünden tanı</title>
-<meta name="description" content="Yüz kesitinden günün ünlüsünü çıkar. Yanlış tahminde kesit genişler.">
+<title>Çehre: Ünlüyü burnundan tanı</title>
+<meta name="description" content="Burun kesitinden günün ünlüsünü çıkar. Yanlış tahminde sansür şeridi küçülür, yüz daha çok açılır.">
 <meta name="theme-color" content="#0c0a09">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
@@ -30,12 +30,7 @@
     padding:8px 12px; font-size:13px; cursor:pointer;}
   .mini-btn:hover{border-color:var(--accent); color:var(--accent);}
 
-  .sekmeler{display:flex; gap:8px; margin-bottom:22px; max-width:600px;}
-  .sekme-btn{flex:1; background:var(--card); border:1px solid var(--border); color:var(--muted);
-    border-radius:6px; padding:10px; font-size:14px; cursor:pointer; font-weight:600;}
-  .sekme-btn.aktif{color:var(--accent); border-color:var(--accent);}
-
-  .oyun-alan{display:grid; grid-template-columns: minmax(320px, 860px) minmax(320px, 520px); gap:40px; align-items:start; justify-content:center;}
+  .oyun-alan{display:grid; grid-template-columns: minmax(320px, 860px) minmax(320px, 520px); gap:40px; align-items:start; justify-content:center; margin-top:22px;}
   @media(max-width:760px){ .oyun-alan{grid-template-columns:1fr;} }
 
   .kesit-buyuk{width:100%; aspect-ratio:1/1; max-height:72vh; border:5px solid var(--paper); border-radius:6px;
@@ -52,8 +47,8 @@
   .zoom-dots i.acik{background:var(--accent);}
   .can-dots{display:flex; gap:5px; font-size:18px; letter-spacing:2px;}
 
-  .guess-row{display:flex; gap:8px; position:relative;}
-  .guess-row input{flex:1; background:var(--card); border:1px solid var(--border); color:var(--text);
+  .guess-row{display:flex; gap:8px; position:relative; flex-wrap:wrap;}
+  .guess-row input{flex:1; min-width:180px; background:var(--card); border:1px solid var(--border); color:var(--text);
     border-radius:6px; padding:14px 16px; font-size:16px; outline:none;}
   .guess-row button{background:var(--accent); color:#1a1614; border:none; border-radius:6px;
     padding:0 22px; font-weight:600; cursor:pointer;}
@@ -75,19 +70,13 @@
   <header class="ust">
     <div>
       <h1>Çehre</h1>
-      <p class="tagline">Yüz kesitinden günün ünlüsünü çıkar.</p>
+      <p class="tagline">Burun kesitinden günün ünlüsünü çıkar.</p>
     </div>
     <div class="ust-dugmeler">
       <button id="randomBtn" class="mini-btn" hidden>🎲 Rastgele</button>
       <button id="girisDug" class="mini-btn">Google ile giriş</button>
     </div>
   </header>
-
-  <div class="sekmeler">
-    <button class="sekme-btn" data-sekme="burun">Burun</button>
-    <button class="sekme-btn" data-sekme="gozler">Gözler</button>
-    <button class="sekme-btn" data-sekme="agiz">Ağız</button>
-  </div>
 
   <div class="oyun-alan">
     <div class="kesit-buyuk" id="kesitBuyuk"></div>
@@ -100,7 +89,7 @@
       <div class="guess-row">
         <input type="text" id="guessInput" placeholder="İsim yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
         <button id="guessBtn" disabled>Tahmin</button>
-        <button id="pesBtn" class="mini-btn" style="align-self:flex-start;">Pes et</button>
+        <button id="pesBtn" class="mini-btn">Pes et</button>
         <div class="ac-list" id="acList"></div>
       </div>
       <div class="durum" id="durum"></div>
@@ -119,43 +108,40 @@ const $ = id => document.getElementById(id);
 const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const EPOCH = new Date("2026-07-21T00:00:00");
 const KISILER = window.CEHRE_KISILER || {};
-const SEKME = window.CEHRE_SEKME || {burun:[], gozler:[], agiz:[]};
+const LISTE = window.CEHRE_LISTE || [];
 
-function gunIndex(sekmeAdi){
+function gunIndex(){
   const gun = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
-  const n = SEKME[sekmeAdi].length;
+  const n = LISTE.length;
   return n ? ((gun % n) + n) % n : 0;
 }
 
-function gununKisisi(sekmeAdi){
-  const qid = SEKME[sekmeAdi][gunIndex(sekmeAdi)];
+function gununKisisi(){
+  const qid = LISTE[gunIndex()];
   return {qid, ...KISILER[qid]};
 }
 
-// Admine özel sonsuz mod: bir sekme için rastgele bir kişi seçilince o sekme
-// günün gerçek bulmacasının yerine geçici olarak bunu gösterir (kalıcı değil,
-// sayfa yenilenince günün gerçek bulmacasına döner, localStorage'a yazılmaz).
-let rastgele = {burun: null, gozler: null, agiz: null};
-function aktifKisi(sekmeAdi){
-  return rastgele[sekmeAdi] ? {qid: rastgele[sekmeAdi].qid, ...KISILER[rastgele[sekmeAdi].qid]} : gununKisisi(sekmeAdi);
+// Admine özel sonsuz mod: rastgele bir kişi seçilince günün gerçek bulmacasının
+// yerine geçici olarak bunu gösterir (kalıcı değil, sayfa yenilenince günün
+// gerçek bulmacasına döner, localStorage'a yazılmaz).
+let rastgele = null;
+function aktifKisi(){
+  return rastgele ? {qid: rastgele.qid, ...KISILER[rastgele.qid]} : gununKisisi();
 }
-function aktifDurum(sekmeAdi){
-  return rastgele[sekmeAdi] ? rastgele[sekmeAdi].durum : state[sekmeAdi];
+function aktifDurum(){
+  return rastgele ? rastgele.durum : state;
 }
 function pickRandom(){
-  const havuz = SEKME[aktifSekme];
-  if (!havuz.length) return;
-  const simdiki = aktifKisi(aktifSekme).qid;
+  if (!LISTE.length) return;
+  const simdiki = aktifKisi().qid;
   let qid;
-  do { qid = havuz[Math.floor(Math.random() * havuz.length)]; }
-  while (havuz.length > 1 && qid === simdiki);
-  rastgele[aktifSekme] = {qid, durum: bosDurum()};
+  do { qid = LISTE[Math.floor(Math.random() * LISTE.length)]; }
+  while (LISTE.length > 1 && qid === simdiki);
+  rastgele = {qid, durum: bosDurum()};
   secilen = null;
   hideAc();
   renderPortre();
 }
-
-let aktifSekme = "burun";
 
 const PUAN = [100, 80, 60, 40, 25, 15];
 const TUM_ISIMLER = Object.entries(KISILER).map(([qid, k]) => ({qid, isim: k.isim}));
@@ -163,27 +149,19 @@ const TUM_ISIMLER = Object.entries(KISILER).map(([qid, k]) => ({qid, isim: k.isi
 const LS = "cehre_v1";
 function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){ return {}; } }
 function persist(){
+  if (rastgele) return;   // rastgele moddaki tahminler kalıcı olmaz
   const save = loadSave();
-  for (const s of ["burun", "gozler", "agiz"]) {
-    if (rastgele[s]) continue;   // rastgele moddaki tahminler kalıcı olmaz
-    save[s] = save[s] || {};
-    save[s][gunIndex(s)] = {...state[s], qid: gununKisisi(s).qid};
-  }
+  save[gunIndex()] = {...state, qid: gununKisisi().qid};
   try{ localStorage.setItem(LS, JSON.stringify(save)); }catch(e){}
 }
 function state_yukle(){
   const save = loadSave();
-  const out = {};
-  for (const s of ["burun", "gozler", "agiz"]) {
-    const kayit = save[s] && save[s][gunIndex(s)];
-    if (kayit && kayit.qid === gununKisisi(s).qid){
-      const {qid, ...durum} = kayit;
-      out[s] = durum;
-    } else {
-      out[s] = bosDurum();
-    }
+  const kayit = save[gunIndex()];
+  if (kayit && kayit.qid === gununKisisi().qid){
+    const {qid, ...durum} = kayit;
+    return durum;
   }
-  return out;
+  return bosDurum();
 }
 let state = state_yukle();
 function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
@@ -194,22 +172,18 @@ function zoomSeviyesi(wrong){
   return 1;
 }
 
-// organ->[seviye1 "genişlik% yükseklik%", seviye2 "..."], seviye 3'te maske tamamen kalkıyor.
-// burun DİKEY (dar-yüksek), gözler/ağız YATAY (geniş-alçak).
-const SANSUR_PENCERE = {
-  burun:  ["26% 42%", "42% 62%"],
-  gozler: ["46% 20%", "68% 34%"],
-  agiz:   ["34% 20%", "55% 34%"],
-};
+// [seviye1 "genişlik% yükseklik%", seviye2 "..."] - burun dikey (dar-yüksek).
+// Seviye 3'te maske tamamen kalkıyor.
+const SANSUR_PENCERE = ["26% 42%", "42% 62%"];
 
 function renderPortre(){
-  const kisi = aktifKisi(aktifSekme);
-  const s = aktifDurum(aktifSekme);
+  const kisi = aktifKisi();
+  const s = aktifDurum();
   const seviye = s.over ? 3 : zoomSeviyesi(s.wrong);
   const temelGorsel = kisi.g["3"];   // taban her zaman en geniş/bağlamsal kare
   let pencereHtml = "";
   if (seviye < 3) {
-    const [pw, ph] = SANSUR_PENCERE[aktifSekme][seviye - 1].split(" ");
+    const [pw, ph] = SANSUR_PENCERE[seviye - 1].split(" ");
     pencereHtml = `<div class="sansur" style="width:${pw}; height:${ph};"></div>`;
   }
   $("kesitBuyuk").innerHTML = `<img src="${temelGorsel}" alt="yüz kesiti">` + pencereHtml;
@@ -220,7 +194,7 @@ function renderPortre(){
     i < kalanHak ? "🤎" : "🖤").join("");
   $("guessInput").disabled = s.over;
   $("guessBtn").disabled = true;
-  $("puanAlan").textContent = s.solved ? `Bu sekmede puanın: ${s.score}` : "";
+  $("puanAlan").textContent = s.solved ? `Puanın: ${s.score}` : "";
   $("durum").textContent = "";
   $("durum").className = "durum";
   if (s.over && !s.solved) {
@@ -262,25 +236,19 @@ function choose(p){
   hideAc();
 }
 
-const SEKME_EMOJI = {burun:"👃", gozler:"👀", agiz:"👄"};
 function zoomEmoji(n){
   return ["🟥","🟨","🟩"].slice(0, n).join("") + "⬛".repeat(3 - n);
 }
 function shareText(){
-  let satirlar = [`Çehre: Gün #${gunIndex("burun") + 1}`];
-  let toplamPuan = 0;
-  for (const s of ["burun", "gozler", "agiz"]) {
-    const st = state[s];
-    const seviye = st.solved ? zoomSeviyesi(st.wrong) : 3;
-    const puan = st.solved ? st.score : 0;
-    toplamPuan += puan;
-    satirlar.push(`${SEKME_EMOJI[s]} ${zoomEmoji(seviye)} ${st.solved ? puan : "✗"}`);
-  }
-  satirlar.push(`Toplam: ${toplamPuan} puan`);
-  return satirlar.join("\n");
+  const seviye = state.solved ? zoomSeviyesi(state.wrong) : 3;
+  const puan = state.solved ? state.score : 0;
+  return [
+    `Çehre: Gün #${gunIndex() + 1}`,
+    `👃 ${zoomEmoji(seviye)} ${state.solved ? puan : "✗"}`,
+  ].join("\n");
 }
 function tumuBitti(){
-  return ["burun","gozler","agiz"].every(s => state[s].over);
+  return state.over;
 }
 function shareGoster(){
   $("shareBtn").style.display = tumuBitti() ? "inline-block" : "none";
@@ -291,9 +259,9 @@ $("shareBtn").addEventListener("click", async () => {
 });
 
 function submit(){
-  const s = aktifDurum(aktifSekme);
+  const s = aktifDurum();
   if (s.over || !secilen) return;
-  const kisi = aktifKisi(aktifSekme);
+  const kisi = aktifKisi();
   const secIsim = secilen.isim;
   let yanlisMesaj = null;
   if (secilen.qid === kisi.qid){
@@ -327,20 +295,8 @@ $("guessInput").addEventListener("keydown", e => {
   if (e.key === "Enter" && !$("guessBtn").disabled) submit();
 });
 
-document.querySelectorAll(".sekme-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".sekme-btn").forEach(b => b.classList.remove("aktif"));
-    btn.classList.add("aktif");
-    aktifSekme = btn.dataset.sekme;
-    hideAc();
-    renderPortre();
-  });
-});
-document.querySelector('.sekme-btn[data-sekme="burun"]').classList.add("aktif");
-renderPortre();
-
 function pesEt(){
-  const s = aktifDurum(aktifSekme);
+  const s = aktifDurum();
   if (s.over) return;
   s.over = true;
   persist();
@@ -350,6 +306,8 @@ function pesEt(){
 $("pesBtn").addEventListener("click", pesEt);
 
 $("randomBtn").addEventListener("click", pickRandom);
+
+renderPortre();
 
 /* ===================== admine özel: giriş + sonsuz mod ===================== */
 const girisDug = $("girisDug");
