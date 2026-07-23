@@ -10,7 +10,7 @@ body{background-color:var(--kagit);background-image:url("data:image/svg+xml,%3Cs
 .baslik .alt{color:var(--soluk);margin-top:10px;font-size:15px;font-style:italic}
 .liste{display:flex;flex-direction:column;gap:28px}
 .kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:10px;overflow:hidden;box-shadow:0 3px 10px var(--golge)}
-.gun-tarih{font-size:19px;font-weight:600;padding:16px 16px 4px;color:var(--murekkep)}
+.gun-tarih{font-family:'Caveat',cursive;font-size:30px;font-weight:700;padding:16px 16px 0;color:var(--murekkep)}
 .galeri{display:flex;flex-wrap:wrap;gap:2px}
 .foto-blok{flex:1 1 240px;min-width:200px}
 .foto-blok img{display:block;width:100%;height:auto}
@@ -19,7 +19,7 @@ body{background-color:var(--kagit);background-image:url("data:image/svg+xml,%3Cs
 .isim-alan{font-size:15px}
 .isim-btn{background:none;border:none;color:var(--vurgu);font:inherit;font-style:italic;cursor:pointer;padding:0}
 .isim-btn:hover{text-decoration:underline}
-.isim-metin{font-weight:600;cursor:pointer}
+.isim-metin{font-family:'Caveat',cursive;font-size:20px;font-weight:700;cursor:pointer}
 .isim-metin:hover{text-decoration:underline dotted}
 .isim-input{font:inherit;font-size:15px;border:1px solid var(--cizgi);border-radius:6px;padding:4px 8px;width:140px;background:var(--kagit);color:var(--murekkep)}
 .durum{text-align:center;color:var(--soluk);margin-top:20px}
