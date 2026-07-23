@@ -615,5 +615,14 @@
         "gorsel": "gorseller/2026-06-15-01.jpg"
       }
     ]
+  },
+  {
+    "tarih": "2026-06-16",
+    "fotograflar": [
+      {
+        "id": "2026-06-16-01",
+        "gorsel": "gorseller/2026-06-16-01.jpg"
+      }
+    ]
   }
 ]
