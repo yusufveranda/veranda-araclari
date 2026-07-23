@@ -246,5 +246,14 @@
         "gorsel": "gorseller/2026-02-16-02.jpg"
       }
     ]
+  },
+  {
+    "tarih": "2026-02-17",
+    "fotograflar": [
+      {
+        "id": "2026-02-17-01",
+        "gorsel": "gorseller/2026-02-17-01.jpg"
+      }
+    ]
   }
 ]
