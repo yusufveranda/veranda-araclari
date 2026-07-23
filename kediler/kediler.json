@@ -502,5 +502,14 @@
         "gorsel": "gorseller/2026-04-27-01.jpg"
       }
     ]
+  },
+  {
+    "tarih": "2026-05-20",
+    "fotograflar": [
+      {
+        "id": "2026-05-20-01",
+        "gorsel": "gorseller/2026-05-20-01.jpg"
+      }
+    ]
   }
 ]
