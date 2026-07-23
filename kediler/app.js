@@ -104,7 +104,7 @@
   ]).then(function (sonuclar) {
     const gunler = sonuclar[0];
     const isimler = (sonuclar[1] && sonuclar[1].isimler) || {};
-    gunler.sort(function (a, b) { return a.tarih < b.tarih ? -1 : 1; });
+    gunler.sort(function (a, b) { return a.tarih > b.tarih ? -1 : 1; });
     gunler.forEach(function (gun) {
       liste.appendChild(kartCiz(gun, isimler));
     });
