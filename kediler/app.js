@@ -61,31 +61,40 @@
     input.addEventListener('blur', kaydet);
   }
 
-  function kartCiz(kedi, isim) {
+  function kartCiz(gun, isimler) {
     const el = document.createElement('article');
     el.className = 'kart';
-    el.dataset.id = kedi.id;
 
-    const img = document.createElement('img');
-    img.src = kedi.gorsel;
-    img.loading = 'lazy';
-    img.alt = 'kedi, ' + kedi.tarih;
-    el.appendChild(img);
+    const tarihEl = document.createElement('h2');
+    tarihEl.className = 'gun-tarih';
+    tarihEl.textContent = tarihYazi(gun.tarih);
+    el.appendChild(tarihEl);
 
-    const alt = document.createElement('div');
-    alt.className = 'kart-alt';
+    const galeri = document.createElement('div');
+    galeri.className = 'galeri';
+    gun.fotograflar.forEach(function (foto) {
+      const blok = document.createElement('div');
+      blok.className = 'foto-blok';
+      blok.dataset.id = foto.id;
 
-    const tarih = document.createElement('span');
-    tarih.className = 'tarih';
-    tarih.textContent = tarihYazi(kedi.tarih);
-    alt.appendChild(tarih);
+      const img = document.createElement('img');
+      img.src = foto.gorsel;
+      img.loading = 'lazy';
+      img.alt = 'kedi, ' + gun.tarih;
+      blok.appendChild(img);
 
-    const isimAlan = document.createElement('span');
-    isimAlan.className = 'isim-alan';
-    isimAlanCiz(isimAlan, kedi.id, isim);
-    alt.appendChild(isimAlan);
+      const alt = document.createElement('div');
+      alt.className = 'kart-alt';
+      const isimAlan = document.createElement('span');
+      isimAlan.className = 'isim-alan';
+      isimAlanCiz(isimAlan, foto.id, isimler[foto.id] || '');
+      alt.appendChild(isimAlan);
+      blok.appendChild(alt);
 
-    el.appendChild(alt);
+      galeri.appendChild(blok);
+    });
+    el.appendChild(galeri);
+
     return el;
   }
 
@@ -93,11 +102,11 @@
     fetch('kediler.json').then(function (r) { return r.json(); }),
     fetch(API_URL + '?fn=al').then(function (r) { return r.json(); }).catch(function () { return { ok: false, isimler: {} }; })
   ]).then(function (sonuclar) {
-    const kediler = sonuclar[0];
+    const gunler = sonuclar[0];
     const isimler = (sonuclar[1] && sonuclar[1].isimler) || {};
-    kediler.sort(function (a, b) { return a.id < b.id ? -1 : 1; });
-    kediler.forEach(function (kedi) {
-      liste.appendChild(kartCiz(kedi, isimler[kedi.id] || ''));
+    gunler.sort(function (a, b) { return a.tarih < b.tarih ? -1 : 1; });
+    gunler.forEach(function (gun) {
+      liste.appendChild(kartCiz(gun, isimler));
     });
   }).catch(function () {
     durum.hidden = false;
