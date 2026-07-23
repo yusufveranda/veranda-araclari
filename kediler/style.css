@@ -67,3 +67,13 @@ body{background-color:var(--kagit);background-image:url("data:image/svg+xml,%3Cs
   100%{transform:translateY(-118vh) translateX(0) rotate(0deg);opacity:0}
 }
 @media(prefers-reduced-motion:reduce){.kapak-emoji{animation:none;display:none}}
+
+.muzik{margin:16px auto 0;max-width:400px}
+.muzik iframe{display:block;border-radius:8px}
+.slayt-baslat{margin-top:12px;font:inherit;font-size:14px;padding:8px 22px;border:1px solid var(--murekkep);border-radius:24px;background:none;color:var(--murekkep);cursor:pointer}
+.slayt-baslat:hover{background:var(--murekkep);color:var(--kagit)}
+
+.lb-slayt{position:absolute;top:16px;left:20px;display:flex;gap:8px;z-index:1}
+.lb-slayt button{background:rgba(255,255,255,.12);border:1px solid rgba(241,235,221,.5);color:#f1ebdd;font:inherit;font-size:13px;padding:6px 16px;border-radius:16px;cursor:pointer}
+.lb-slayt button.aktif{background:#f1ebdd;color:#231a12;border-color:#f1ebdd}
+@media(max-width:600px){.lb-slayt{top:10px;left:10px}.lb-slayt button{font-size:12px;padding:5px 12px}}
