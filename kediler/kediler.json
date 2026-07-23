@@ -16,5 +16,14 @@
         "gorsel": "gorseller/2026-01-14-01.jpg"
       }
     ]
+  },
+  {
+    "tarih": "2026-01-24",
+    "fotograflar": [
+      {
+        "id": "2026-01-24-01",
+        "gorsel": "gorseller/2026-01-24-01.jpg"
+      }
+    ]
   }
 ]
