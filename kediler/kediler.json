@@ -802,5 +802,14 @@
         "gorsel": "gorseller/2026-07-04-02.jpg"
       }
     ]
+  },
+  {
+    "tarih": "2026-07-06",
+    "fotograflar": [
+      {
+        "id": "2026-07-06-01",
+        "gorsel": "gorseller/2026-07-06-01.jpg"
+      }
+    ]
   }
 ]
