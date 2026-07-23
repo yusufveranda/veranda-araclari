@@ -7,6 +7,22 @@
     kapak.hidden = true;
     return;
   }
+
+  var SEMBOLLER = ['🐱', '🐈', '🐈‍⬛', '😺', '😸', '😻', '🙀', '❤️', '💕', '🐾'];
+  var ADET = 22;
+  for (var i = 0; i < ADET; i++) {
+    var span = document.createElement('span');
+    span.className = 'kapak-emoji';
+    span.textContent = SEMBOLLER[Math.floor(Math.random() * SEMBOLLER.length)];
+    span.style.left = Math.random() * 100 + '%';
+    span.style.fontSize = (18 + Math.random() * 22) + 'px';
+    span.style.setProperty('--surukle', (Math.random() * 90 - 45) + 'px');
+    span.style.setProperty('--don', (Math.random() * 50 - 25) + 'deg');
+    span.style.animationDuration = (7 + Math.random() * 6) + 's';
+    span.style.animationDelay = (Math.random() * 8) + 's';
+    kapak.appendChild(span);
+  }
+
   var btn = document.getElementById('kapakAc');
   btn.onclick = function () {
     kapak.classList.add('kapaniyor');
