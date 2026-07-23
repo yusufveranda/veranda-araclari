@@ -1,5 +1,38 @@
 [
-  { "tarih": "2026-01-05", "fotograflar": [ { "id": "2026-01-05-01", "gorsel": "gorseller/2026-01-05-01.jpg" } ] },
-  { "tarih": "2026-01-12", "fotograflar": [ { "id": "2026-01-12-01", "gorsel": "gorseller/2026-01-12-01.jpg" } ] },
-  { "tarih": "2026-01-20", "fotograflar": [ { "id": "2026-01-20-01", "gorsel": "gorseller/2026-01-20-01.jpg" } ] }
+  {
+    "tarih": "2026-01-05",
+    "fotograflar": [
+      {
+        "id": "2026-01-05-01",
+        "gorsel": "gorseller/2026-01-05-01.jpg"
+      }
+    ]
+  },
+  {
+    "tarih": "2026-01-12",
+    "fotograflar": [
+      {
+        "id": "2026-01-12-01",
+        "gorsel": "gorseller/2026-01-12-01.jpg"
+      }
+    ]
+  },
+  {
+    "tarih": "2026-01-20",
+    "fotograflar": [
+      {
+        "id": "2026-01-20-01",
+        "gorsel": "gorseller/2026-01-20-01.jpg"
+      }
+    ]
+  },
+  {
+    "tarih": "2026-02-01",
+    "fotograflar": [
+      {
+        "id": "2026-02-01-01",
+        "gorsel": "gorseller/2026-02-01-01.jpg"
+      }
+    ]
+  }
 ]
