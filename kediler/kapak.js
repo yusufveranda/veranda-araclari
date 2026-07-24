@@ -1,5 +1,21 @@
 (function () {
   'use strict';
+
+  // Müziği başlatma: kapağın açılıp açılmadığından BAĞIMSIZ, sayfadaki İLK
+  // dokunuşta (tıklama/tuş/ekrana dokunma) tetiklenir. Tarayıcılar sessiz
+  // otomatik oynatmaya izin vermiyor, gerçek bir kullanıcı etkileşimi şart
+  // — bu yüzden "sayfaya girer girmez" yerine "sayfadaki ilk hareket anında"
+  // çalışıyor (kapak zaten kapalıysa bu, gerçekten ilk tıklama/kaydırma olur).
+  function muzikBaslat() {
+    var calar = document.getElementById('muzikCalar');
+    if (calar && calar.src.indexOf('autoplay=1') === -1) {
+      calar.src = calar.src + '&autoplay=1';
+    }
+  }
+  ['click', 'touchstart', 'keydown'].forEach(function (olay) {
+    document.addEventListener(olay, muzikBaslat, { once: true, capture: true });
+  });
+
   var ANAHTAR = 'kediler:acildi';
   var kapak = document.getElementById('kapak');
   if (!kapak) return;
@@ -28,14 +44,5 @@
     kapak.classList.add('kapaniyor');
     localStorage.setItem(ANAHTAR, '1');
     setTimeout(function () { kapak.hidden = true; }, 650);
-
-    // Müziği tam bu tıklama anında başlat: tarayıcıların otomatik oynatma
-    // engeli, kullanıcı etkileşimiyle aynı anda tetiklenen oynatmaya izin
-    // veriyor. Autoplay parametresi src'ye SONRADAN eklenir (baştan
-    // koyulsaydı sayfa yüklenir yüklenmez engellenip konsola uyarı basardı).
-    var calar = document.getElementById('muzikCalar');
-    if (calar && calar.src.indexOf('autoplay=1') === -1) {
-      calar.src = calar.src + '&autoplay=1';
-    }
   };
 })();
