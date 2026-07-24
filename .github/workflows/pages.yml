@@ -14,8 +14,10 @@ permissions:
   id-token: write
 
 # Aynı anda tek dağıtım; art arda push'lar sıraya girer, sonuncusu kazanır (iptal yok).
+# Grup adı degistirildi (2026-07-24): eski "pages" grubunda kalici takili bir
+# run vardi (cancel/force-cancel HTTP 500 veriyordu), yeni isim o kilidi atlar.
 concurrency:
-  group: pages
+  group: pages-v2
   cancel-in-progress: false
 
 jobs:
