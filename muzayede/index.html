@@ -300,7 +300,9 @@ footer{
       <div id="tabloAltyazi" class="tablo-altyazi"></div>
 
       <div id="adminKutu" style="display:none">
+        <button class="ikonbtn" id="adminOncekiBtn" type="button" aria-label="önceki bulmaca">&#9664;</button>
         <select id="adminSecici" aria-label="bulmaca seç (admin)"></select>
+        <button class="ikonbtn" id="adminSonrakiBtn" type="button" aria-label="sonraki bulmaca">&#9654;</button>
         <button class="ikonbtn" id="adminRastgeleBtn" type="button">rastgele</button>
       </div>
     </div>
@@ -442,6 +444,20 @@ footer{
       let i;
       do{ i = Math.floor(Math.random() * sira2.length); }while(i === GUN % sira2.length && sira2.length > 1);
       bulmacayaGit(i);
+    });
+
+    function suankiIndeks(){
+      const sira2 = MUZAYEDE_GUNLER.sira;
+      const key = (_METAB !== null) ? _METAB : GUN;
+      return ((key % sira2.length) + sira2.length) % sira2.length;
+    }
+    document.getElementById('adminOncekiBtn').addEventListener('click', () => {
+      const sira2 = MUZAYEDE_GUNLER.sira;
+      bulmacayaGit((suankiIndeks() - 1 + sira2.length) % sira2.length);
+    });
+    document.getElementById('adminSonrakiBtn').addEventListener('click', () => {
+      const sira2 = MUZAYEDE_GUNLER.sira;
+      bulmacayaGit((suankiIndeks() + 1) % sira2.length);
     });
   }
 
