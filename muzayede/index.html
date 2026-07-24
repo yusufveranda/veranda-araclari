@@ -401,6 +401,11 @@ footer{
     if(!geriYuklendi){
       window.MUZ.state = varsayilanDurum();
     }
+    // fiyatsiz tablo: gercek fiyati bilinmeyen ama taninmis ressamin gercek
+    // eseri - fiyat sorulmadan direkt ressam turuna geçilir (uydurma fiyat
+    // koymak yerine). fiyat_usd === 0 bu durumun isareti.
+    window.MUZ.state.fiyatsiz = (tablo.fiyat_usd === 0);
+    if(window.MUZ.state.fiyatsiz) window.MUZ.state.fiyatTahminEdildi = true;
 
     oneriListesiKur();
 
@@ -415,7 +420,12 @@ footer{
     ipucularinCiz();
     ipucuButonlariniGuncelle();
     adminSeciciDoldur();
-    fiyatAsamasiniAc();
+    if(window.MUZ.state.fiyatsiz){
+      document.getElementById('fiyatAsama').style.display = 'none';
+      ressamAsamasiniAc();
+    } else {
+      fiyatAsamasiniAc();
+    }
 
     if(geriYuklendi) durumuUygula();
   }
@@ -836,20 +846,25 @@ function turuSonlandir(){
   const tablo = window.MUZ.tablo;
   altyaziTamCevap();
   const ressamPuan = ressamPuanHesapla();
-  const toplam = st.fiyatPuan + ressamPuan;
-  const maxToplam = 200;
+  const toplam = st.fiyatsiz ? ressamPuan : (st.fiyatPuan + ressamPuan);
+  const maxToplam = st.fiyatsiz ? 100 : 200;
 
   const sonuc = document.getElementById('sonucKutu');
   sonuc.style.display = 'block';
   const seviye = puanSeviyesi(toplam, maxToplam);
+  const fiyatBolumu = st.fiyatsiz
+    ? '<div class="kaynak-satiri">bu eserin gerçek satış fiyatı belgelenmemiş · ' +
+      '<a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
+      '<div class="puan-satiri"><span>ressam <b>' + ressamPuan + '</b></span></div>'
+    : '<div class="fiyat-etiket">$' + tablo.fiyat_usd.toLocaleString('en-US') + '</div>' +
+      '<div class="kaynak-satiri">' + tablo.muzayede_evi + ', ' + tablo.satis_yili +
+      ' · <a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
+      '<div class="puan-satiri"><span>fiyat <b>' + st.fiyatPuan + '</b></span>' +
+      '<span>ressam <b>' + ressamPuan + '</b></span></div>';
   sonuc.innerHTML =
     '<div class="tablo-adi-etiket">' + tablo.tablo_adi + ' (' + tablo.tablo_yili + ')</div>' +
     '<div class="seviye ' + seviye.sinif + '">' + seviye.metin + '</div>' +
-    '<div class="fiyat-etiket">$' + tablo.fiyat_usd.toLocaleString('en-US') + '</div>' +
-    '<div class="kaynak-satiri">' + tablo.muzayede_evi + ', ' + tablo.satis_yili +
-    ' · <a href="' + tablo.kaynak_url + '" target="_blank" rel="noopener">kaynak</a></div>' +
-    '<div class="puan-satiri"><span>fiyat <b>' + st.fiyatPuan + '</b></span>' +
-    '<span>ressam <b>' + ressamPuan + '</b></span></div>' +
+    fiyatBolumu +
     '<div class="toplam-satiri">toplam <b id="sayacToplam">0</b> / ' + maxToplam + '</div>';
   sayacAnimasyonu(document.getElementById('sayacToplam'), toplam);
 
@@ -885,20 +900,25 @@ function yukle(){
 function durumuUygula(){
   const st = window.MUZ.state;
 
-  if(!st.fiyatTahminEdildi) return;
+  if(st.fiyatsiz){
+    document.getElementById('fiyatAsama').style.display = 'none';
+    ressamAsamasiniAc();
+  } else {
+    if(!st.fiyatTahminEdildi) return;
 
-  document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
-  document.getElementById('fiyatGonderBtn').disabled = true;
-  const gercekFiyat = window.MUZ.tablo.fiyat_usd;
-  const ressamaGecilsinMi = window.MUZ.tablo.gercek && ressamUnluMu(window.MUZ.tablo.ressam_id);
-  fiyatMesajCiz(st.fiyatPuan, gercekFiyat, ressamaGecilsinMi);
+    document.querySelectorAll('.hane-yukari,.hane-asagi').forEach(el => el.disabled = true);
+    document.getElementById('fiyatGonderBtn').disabled = true;
+    const gercekFiyat = window.MUZ.tablo.fiyat_usd;
+    const ressamaGecilsinMi = window.MUZ.tablo.gercek && ressamUnluMu(window.MUZ.tablo.ressam_id);
+    fiyatMesajCiz(st.fiyatPuan, gercekFiyat, ressamaGecilsinMi);
 
-  if(!ressamaGecilsinMi){
-    turuSonlandirErken(window.MUZ.tablo.gercek ? 'az_taninan' : 'cakma');
-    return;
+    if(!ressamaGecilsinMi){
+      turuSonlandirErken(window.MUZ.tablo.gercek ? 'az_taninan' : 'cakma');
+      return;
+    }
+
+    ressamAsamasiniAc();
   }
-
-  ressamAsamasiniAc();
 
   Object.keys(st.hintsAcik).forEach(kategoriId => {
     if(st.hintsAcik[kategoriId]) ipucuGoster(kategoriId);

@@ -56,7 +56,10 @@ def dogrula():
          gorsel, fiyat, satis_yili, ev, kaynak) = d
         if risk not in RISK_GECERLI:
             hata.append(f"{rid}: gecersiz risk_seviyesi '{risk}'")
-        if not isinstance(fiyat, int) or fiyat <= 0:
+        # fiyat_usd == 0: "fiyatsiz" tablo (gercek fiyat belgelenmemis,
+        # oyunda fiyat sorusu atlanip direkt ressam turuna geçilir) - kasitli,
+        # gecersiz sayilmaz. Sadece negatif/eksik/tam-sayi-olmayan reddedilir.
+        if not isinstance(fiyat, int) or fiyat < 0:
             hata.append(f"{rid}: gecersiz fiyat_usd {fiyat!r}")
         if not kaynak.startswith("http"):
             hata.append(f"{rid}: kaynak_url http ile baslamiyor")
