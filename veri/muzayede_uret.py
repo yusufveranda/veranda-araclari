@@ -14,6 +14,7 @@ from muzayede_faz6_data import FAZ6_DATA
 from muzayede_faz7_data import FAZ7_DATA
 from muzayede_faz9_data import FAZ9_DATA
 from muzayede_faz10_data import FAZ10_DATA
+from muzayede_faz11_data import FAZ11_DATA
 
 SITE = KOK / "muzayede"
 RISK_GECERLI = {"public_domain", "dogrulanmis_serbest", "dikkat"}
@@ -26,7 +27,7 @@ RISK_GECERLI = {"public_domain", "dogrulanmis_serbest", "dikkat"}
 # -3... soneki alir. Toplam sayima gore DEGIL, ilk-gorulme sirasina gore
 # hesaplanir; boylece bir ressama sonradan tablo eklemek, o ressamin daha
 # once yayinlanmis tablosunun id'sini asla degistirmez.
-TUMU = DATA + FAZ3_DATA + FAZ4_DATA + FAZ5_DATA + FAZ6_DATA + FAZ7_DATA + FAZ9_DATA + FAZ10_DATA + CAKMA_DATA
+TUMU = DATA + FAZ3_DATA + FAZ4_DATA + FAZ5_DATA + FAZ6_DATA + FAZ7_DATA + FAZ9_DATA + FAZ10_DATA + FAZ11_DATA + CAKMA_DATA
 
 def _tablo_id_haritasi():
     gorulen = {}
@@ -71,7 +72,7 @@ def uret():
     ressamlar = []
     ressam_seen = set()
     tablolar = []
-    for gercek, veri in ((True, DATA), (True, FAZ3_DATA), (True, FAZ4_DATA), (True, FAZ5_DATA), (True, FAZ6_DATA), (True, FAZ7_DATA), (True, FAZ9_DATA), (True, FAZ10_DATA), (False, CAKMA_DATA)):
+    for gercek, veri in ((True, DATA), (True, FAZ3_DATA), (True, FAZ4_DATA), (True, FAZ5_DATA), (True, FAZ6_DATA), (True, FAZ7_DATA), (True, FAZ9_DATA), (True, FAZ10_DATA), (True, FAZ11_DATA), (False, CAKMA_DATA)):
         for d in veri:
             (rid, isim, dogum_olum, ulke, akim, risk, tablo_adi, tablo_yili,
              gorsel, fiyat, satis_yili, ev, kaynak) = d
@@ -104,7 +105,7 @@ def main():
 
     # DATA+CAKMA_DATA sirasi korunuyor (mevcut gunlerin bulmacasi degismesin diye),
     # FAZ3/FAZ4/FAZ5/FAZ6/FAZ7_DATA yeni gunler olarak sirayla sona ekleniyor.
-    sira = [tablo_id(d) for d in DATA + CAKMA_DATA + FAZ3_DATA + FAZ4_DATA + FAZ5_DATA + FAZ6_DATA + FAZ7_DATA + FAZ9_DATA + FAZ10_DATA]
+    sira = [tablo_id(d) for d in DATA + CAKMA_DATA + FAZ3_DATA + FAZ4_DATA + FAZ5_DATA + FAZ6_DATA + FAZ7_DATA + FAZ9_DATA + FAZ10_DATA + FAZ11_DATA]
     gunler = {"epoch": "2026-07-21", "sira": sira}
     js = "// Muzayede gün sırası. Üretim: veri/muzayede_uret.py. Elle düzenleme: doğrulamayı çalıştır.\n"
     js += "window.MUZAYEDE_GUNLER=" + json.dumps(gunler, ensure_ascii=False, separators=(",", ":")) + ";\n"
