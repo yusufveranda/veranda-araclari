@@ -28,5 +28,14 @@
     kapak.classList.add('kapaniyor');
     localStorage.setItem(ANAHTAR, '1');
     setTimeout(function () { kapak.hidden = true; }, 650);
+
+    // Müziği tam bu tıklama anında başlat: tarayıcıların otomatik oynatma
+    // engeli, kullanıcı etkileşimiyle aynı anda tetiklenen oynatmaya izin
+    // veriyor. Autoplay parametresi src'ye SONRADAN eklenir (baştan
+    // koyulsaydı sayfa yüklenir yüklenmez engellenip konsola uyarı basardı).
+    var calar = document.getElementById('muzikCalar');
+    if (calar && calar.src.indexOf('autoplay=1') === -1) {
+      calar.src = calar.src + '&autoplay=1';
+    }
   };
 })();
