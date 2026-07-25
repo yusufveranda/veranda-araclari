@@ -34,6 +34,14 @@
      özellikler (önizleme seçicisi, rastgele-gün debug modu vb.) gösterilir. */
   const ADMIN_UID = 'YSDnv5FlXHUZhbZpT17vs6WVg3f2';
 
+  /* ikinci kişiye giriş gerektirmeden aynı erişimi vermek için: ?vip=TOKEN ile açılan
+     link bu tarayıcıda kalıcı bir localStorage bayrağı bırakır, adminMi bunu da sayar.
+     Token sızarsa buradaki string'i değiştirip yeniden deploy etmek gerekir (eski link ölür). */
+  const VIP_TOKEN = 'NsFO49CTs4KlD5Cf4nSp0cw5';
+  try{
+    if(new URLSearchParams(location.search).get('vip') === VIP_TOKEN) localStorage.setItem('vfVip','1');
+  }catch(e){}
+
   /* signInWithRedirect DEĞİL: Chrome tarayıcı hesabına girişliyken üçüncü taraf depolama
      bölümlemesi redirect akışının başlamasını sessizce engelliyor (bilinen Firebase/Chrome
      sorunu, SDK sürümünden bağımsız — authDomain firebaseapp.com kaldığı sürece geçerli).
@@ -316,6 +324,6 @@
     get ad(){ return kullaniciAdi; },
     get streak(){ return kullaniciStreak; },
     get anonimMi(){ return !!(auth.currentUser && auth.currentUser.isAnonymous); },
-    get adminMi(){ return !!(auth.currentUser && auth.currentUser.uid===ADMIN_UID); }
+    get adminMi(){ return !!(auth.currentUser && auth.currentUser.uid===ADMIN_UID) || localStorage.getItem('vfVip')==='1'; }
   };
 })();
