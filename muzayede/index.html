@@ -498,6 +498,12 @@ function soyadiBasHarfi(isim){
   return kelimeler[kelimeler.length - 1][0];
 }
 
+function soyadi(isim){
+  const ana = isim.split('(')[0].trim();
+  const kelimeler = ana.split(/\s+/);
+  return kelimeler[kelimeler.length - 1];
+}
+
 function oneriListesiKur(){
   const input = document.getElementById('ressamGiris');
   const kutu = document.getElementById('ressamOneriler');
@@ -508,7 +514,18 @@ function oneriListesiKur(){
   function goster(deger){
     const n = isimNormallestir(deger);
     if(!n){ kapat(); return; }
-    const eslesenler = isimler.filter(r => isimNormallestir(r.isim).includes(n)).slice(0, 8);
+    function oncelik(r){
+      const soyadN = isimNormallestir(soyadi(r.isim));
+      const isimN = isimNormallestir(r.isim);
+      if(soyadN.startsWith(n)) return 0;
+      if(isimN.startsWith(n)) return 1;
+      if(soyadN.includes(n)) return 2;
+      return 3;
+    }
+    const eslesenler = isimler
+      .filter(r => isimNormallestir(r.isim).includes(n))
+      .sort((a, b) => oncelik(a) - oncelik(b))
+      .slice(0, 8);
     if(!eslesenler.length){ kapat(); return; }
     kutu.innerHTML = eslesenler.map(r =>
       '<div class="oneri-satir" data-isim="' + r.isim.replace(/"/g, '&quot;') + '">' + r.isim + '</div>'
