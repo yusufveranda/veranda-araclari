@@ -3939,19 +3939,6 @@
   "risk_seviyesi": "dikkat"
  },
  {
-  "id": "william-holman-hunt-3",
-  "ressam_id": "william-holman-hunt",
-  "tablo_adi": "The Mosque of Assakreh (Interior of the Mosque Ar Sakara)",
-  "tablo_yili": "1869",
-  "gorsel": "https://sothebys-com.brightspotcdn.com/dims4/default/4a3f158/2147483647/strip/true/crop/500x500+0+0/resize/421x421!/quality/90/?url=http%3A%2F%2Fsothebys-brightspot-migration.s3.amazonaws.com%2Fc6%2F4c%2F28%2F59fa5b71fac41f69087283fc636e351464ae6e590e9c1cb5f016306f9a%2Flot.jpg",
-  "fiyat_usd": 33840,
-  "satis_yili": 2001,
-  "muzayede_evi": "Sotheby's",
-  "kaynak_url": "https://www.sothebys.com/en/auctions/ecatalogue/2001/the-leverhulme-collection-at-thornton-manor-wirral-merseyside-l01703/lot.395.html",
-  "gercek": true,
-  "risk_seviyesi": "dikkat"
- },
- {
   "id": "thomas-eakins-2",
   "ressam_id": "thomas-eakins",
   "tablo_adi": "Study for \"The Surrender of General Lee\"",
