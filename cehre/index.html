@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Çehre: Ünlüyü burnundan tanı</title>
-<meta name="description" content="Burun kesitinden günün ünlüsünü çıkar. Yanlış tahminde sansür şeridi küçülür, yüz daha çok açılır.">
+<title>Çehre: Ünlüyü yüzünden tanı</title>
+<meta name="description" content="Sansürlü yüz kesitinden günün ünlüsünü çıkar. Yanlış tahminde yeni bir bölge açılır.">
 <meta name="theme-color" content="#0c0a09">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
@@ -30,21 +30,35 @@
     padding:8px 12px; font-size:13px; cursor:pointer;}
   .mini-btn:hover{border-color:var(--accent); color:var(--accent);}
 
-  .oyun-alan{display:grid; grid-template-columns: minmax(320px, 860px) minmax(320px, 520px); gap:40px; align-items:start; justify-content:center; margin-top:22px;}
+  .oyun-alan{display:grid; grid-template-columns: minmax(320px, 600px) minmax(320px, 460px); gap:40px; align-items:start; margin-top:22px;}
   @media(max-width:760px){ .oyun-alan{grid-template-columns:1fr;} }
 
-  .kesit-buyuk{width:100%; aspect-ratio:1/1; max-height:72vh; border:5px solid var(--paper); border-radius:6px;
-    overflow:hidden; background:#000; box-shadow:0 10px 34px rgba(0,0,0,.5); position:relative;}
-  .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block; position:absolute; inset:0;}
-  .sansur{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    box-shadow:0 0 0 9999px rgba(6,4,3,0.98); border:2px solid var(--accent); border-radius:3px;
-    transition:width .35s ease, height .35s ease;}
+  /* Kesit kartı: fotoğraf normal boyutunda kalır, etrafı paspartu gibi dokulu bir
+     zeminle doldurulur - görsel ekranı doldurmak için zorla büyütülmüyor. */
+  .kesit-kart{
+    background:
+      radial-gradient(120% 140% at 30% 20%, rgba(226,161,63,0.07), transparent 60%),
+      linear-gradient(160deg, #1e1a16, #14110e);
+    border:1px solid var(--border); border-radius:10px;
+    padding:clamp(20px,4vw,40px);
+    display:flex; align-items:center; justify-content:center;
+    min-height:420px;
+    box-shadow: inset 0 0 60px rgba(0,0,0,.4);
+  }
+  /* Tüm kesitler aynı sabit oranla üretiliyor (yuz_kesit.py: PAY_SOL_SAG/PAY_UST/PAY_ALT
+     katsayıları herkes için aynı) - kartın oranını buna sabitlemek, SVG maskesinin
+     fotoğrafla piksel piksel örtüşmesini garantiliyor. */
+  .kesit-buyuk{position:relative; width:min(100%, 420px); aspect-ratio:3.4/3.9; max-height:64vh;
+    border:5px solid var(--paper); border-radius:4px; overflow:hidden; background:#000;
+    box-shadow:0 14px 40px rgba(0,0,0,.6);}
+  .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block;}
+  .kesit-buyuk svg{position:absolute; inset:0; width:100%; height:100%; display:block;}
 
   .bilgi-panel{display:flex; flex-direction:column; gap:16px; padding-top:6px;}
-  .zoom-label{font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;}
-  .zoom-dots{display:flex; gap:6px;}
-  .zoom-dots i{width:26px; height:6px; border-radius:3px; background:var(--border); display:block;}
-  .zoom-dots i.acik{background:var(--accent);}
+  .netlik-label{font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;}
+  .netlik-dots{display:flex; gap:6px;}
+  .netlik-dots i{width:26px; height:6px; border-radius:3px; background:var(--border); display:block;}
+  .netlik-dots i.acik{background:var(--accent);}
   .can-dots{display:flex; gap:5px; font-size:18px; letter-spacing:2px;}
 
   .guess-row{display:flex; gap:8px; position:relative; flex-wrap:wrap;}
@@ -70,7 +84,7 @@
   <header class="ust">
     <div>
       <h1>Çehre</h1>
-      <p class="tagline">Burun kesitinden günün ünlüsünü çıkar.</p>
+      <p class="tagline">Yüz kesitinden günün ünlüsünü çıkar.</p>
     </div>
     <div class="ust-dugmeler">
       <button id="randomBtn" class="mini-btn" hidden>🎲 Rastgele</button>
@@ -79,11 +93,11 @@
   </header>
 
   <div class="oyun-alan">
-    <div class="kesit-buyuk" id="kesitBuyuk"></div>
+    <div class="kesit-kart"><div class="kesit-buyuk" id="kesitBuyuk"></div></div>
     <div class="bilgi-panel">
       <div>
-        <div class="zoom-label" id="zoomEtiket">Kesit 1/3</div>
-        <div class="zoom-dots" id="zoomDots"></div>
+        <div class="netlik-label" id="netlikEtiket">1/3 bölge açık</div>
+        <div class="netlik-dots" id="netlikDots"></div>
       </div>
       <div class="can-dots" id="canDots"></div>
       <div class="guess-row">
@@ -166,29 +180,42 @@ function state_yukle(){
 let state = state_yukle();
 function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
 
-function zoomSeviyesi(wrong){
-  if (wrong >= 5) return 3;
-  if (wrong >= 3) return 2;
+// Kaç bölge açık: 0-1 yanlış -> yalnız burun, 2-3 -> +gözler, 4-5 -> +ağız (hepsi)
+function bolgeSayisi(wrong){
+  if (wrong >= 4) return 3;
+  if (wrong >= 2) return 2;
   return 1;
 }
 
-// [seviye1 "genişlik% yükseklik%", seviye2 "..."] - burun dikey (dar-yüksek).
-// Seviye 3'te maske tamamen kalkıyor.
-const SANSUR_PENCERE = ["26% 42%", "42% 62%"];
+// Pencere boyutları (yüzde, kesitin kendi genişlik/yüksekliğine göre) - burun dikey,
+// gözler/ağız yatay. Konum (merkez) kişiye özel, kesitte kaydedilmiş yüzde-koordinat.
+const PENCERE_BOYUT = {
+  burun:  [16, 22],
+  gozler: [46, 13],
+  agiz:   [26, 13],
+};
+
+function pencereSvg(kisi, bolge){
+  const organlar = ["burun", "gozler", "agiz"].slice(0, bolge);
+  const delikler = organlar.map(organ => {
+    const [cx, cy] = kisi.konum[organ];
+    const [w, h] = PENCERE_BOYUT[organ];
+    const x = Math.max(0, cx - w / 2), y = Math.max(0, cy - h / 2);
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.2" fill="black"/>`;
+  }).join("");
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs><mask id="pm"><rect width="100" height="100" fill="white"/>${delikler}</mask></defs>
+    <rect width="100" height="100" fill="#0c0a09" mask="url(#pm)"/>
+  </svg>`;
+}
 
 function renderPortre(){
   const kisi = aktifKisi();
   const s = aktifDurum();
-  const seviye = s.over ? 3 : zoomSeviyesi(s.wrong);
-  const temelGorsel = kisi.g["3"];   // taban her zaman en geniş/bağlamsal kare
-  let pencereHtml = "";
-  if (seviye < 3) {
-    const [pw, ph] = SANSUR_PENCERE[seviye - 1].split(" ");
-    pencereHtml = `<div class="sansur" style="width:${pw}; height:${ph};"></div>`;
-  }
-  $("kesitBuyuk").innerHTML = `<img src="${temelGorsel}" alt="yüz kesiti">` + pencereHtml;
-  $("zoomEtiket").textContent = `Kesit ${seviye}/3`;
-  $("zoomDots").innerHTML = [1,2,3].map(i => `<i class="${i <= seviye ? "acik" : ""}"></i>`).join("");
+  const bolge = s.over ? 3 : bolgeSayisi(s.wrong);
+  $("kesitBuyuk").innerHTML = `<img src="${kisi.g}" alt="yüz kesiti">` + pencereSvg(kisi, bolge);
+  $("netlikEtiket").textContent = `${bolge}/3 bölge açık`;
+  $("netlikDots").innerHTML = [1,2,3].map(i => `<i class="${i <= bolge ? "acik" : ""}"></i>`).join("");
   const kalanHak = PUAN.length - s.wrong;
   $("canDots").innerHTML = Array.from({length: PUAN.length}, (_,i) =>
     i < kalanHak ? "🤎" : "🖤").join("");
@@ -236,15 +263,15 @@ function choose(p){
   hideAc();
 }
 
-function zoomEmoji(n){
+function bolgeEmoji(n){
   return ["🟥","🟨","🟩"].slice(0, n).join("") + "⬛".repeat(3 - n);
 }
 function shareText(){
-  const seviye = state.solved ? zoomSeviyesi(state.wrong) : 3;
+  const bolge = state.solved ? bolgeSayisi(state.wrong) : 3;
   const puan = state.solved ? state.score : 0;
   return [
     `Çehre: Gün #${gunIndex() + 1}`,
-    `👃 ${zoomEmoji(seviye)} ${state.solved ? puan : "✗"}`,
+    `${bolgeEmoji(bolge)} ${state.solved ? puan : "✗"}`,
   ].join("\n");
 }
 function tumuBitti(){
