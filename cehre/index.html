@@ -209,11 +209,54 @@ function pencereSvg(kisi, bolge){
   </svg>`;
 }
 
+// Bulmaca bitince (bilince ya da pes edilince): tek bir "delik" başlangıçtaki
+// (yalnız burun) boyutundan tüm fotoğrafı kaplayana kadar büyüyüp küçülerek
+// gif gibi döngüye giriyor - Karanlık Oda'daki poster açıl-kapan döngüsüyle aynı fikir.
+let donguTimer = null;
+function donguDurdur(){
+  if (donguTimer){ clearInterval(donguTimer); donguTimer = null; }
+}
+function bitisSvg(kisi){
+  const [bx, by] = kisi.konum.burun;
+  const [bw, bh] = PENCERE_BOYUT.burun;
+  const x = Math.max(0, bx - bw / 2), y = Math.max(0, by - bh / 2);
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs><mask id="pm"><rect width="100" height="100" fill="white"/>
+      <rect id="donguDelik" x="${x}" y="${y}" width="${bw}" height="${bh}" rx="1.2" fill="black"
+        style="transition:x 1.3s ease-in-out, y 1.3s ease-in-out, width 1.3s ease-in-out, height 1.3s ease-in-out, rx 1.3s ease-in-out;"/>
+    </mask></defs>
+    <rect width="100" height="100" fill="#0c0a09" mask="url(#pm)"/>
+  </svg>`;
+}
+function donguBaslat(kisi){
+  donguDurdur();
+  const [bx, by] = kisi.konum.burun;
+  const [bw, bh] = PENCERE_BOYUT.burun;
+  const kapali = {x: Math.max(0, bx - bw / 2), y: Math.max(0, by - bh / 2), width: bw, height: bh, rx: 1.2};
+  const acikDurum = {x: 0, y: 0, width: 100, height: 100, rx: 0};
+  let acik = false;
+  donguTimer = setInterval(() => {
+    const r = document.getElementById("donguDelik");
+    if (!r) { donguDurdur(); return; }
+    const hedef = acik ? kapali : acikDurum;
+    r.setAttribute("x", hedef.x); r.setAttribute("y", hedef.y);
+    r.setAttribute("width", hedef.width); r.setAttribute("height", hedef.height);
+    r.setAttribute("rx", hedef.rx);
+    acik = !acik;
+  }, 1700);
+}
+
 function renderPortre(){
   const kisi = aktifKisi();
   const s = aktifDurum();
   const bolge = s.over ? 3 : bolgeSayisi(s.wrong);
-  $("kesitBuyuk").innerHTML = `<img src="${kisi.g}" alt="yüz kesiti">` + pencereSvg(kisi, bolge);
+  if (s.over) {
+    $("kesitBuyuk").innerHTML = `<img src="${kisi.g}" alt="yüz kesiti">` + bitisSvg(kisi);
+    donguBaslat(kisi);
+  } else {
+    donguDurdur();
+    $("kesitBuyuk").innerHTML = `<img src="${kisi.g}" alt="yüz kesiti">` + pencereSvg(kisi, bolge);
+  }
   $("netlikEtiket").textContent = `${bolge}/3 bölge açık`;
   $("netlikDots").innerHTML = [1,2,3].map(i => `<i class="${i <= bolge ? "acik" : ""}"></i>`).join("");
   const kalanHak = PUAN.length - s.wrong;
