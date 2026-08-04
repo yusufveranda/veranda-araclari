@@ -128,6 +128,19 @@
   .puan{font-size:14px; color:var(--muted);}
   #shareBtn{align-self:flex-start; background:var(--card); color:var(--text); border:1px solid var(--border);
     border-radius:6px; padding:10px 18px; cursor:pointer; display:none;}
+
+  .bayrak-alan{position:relative;}
+  .bayrak-menu{position:absolute; bottom:calc(100% + 8px); left:0; z-index:6; min-width:250px;
+    background:var(--card); border:1px solid var(--border); border-radius:8px; padding:6px;
+    box-shadow:0 10px 30px rgba(0,0,0,.5); display:none;}
+  .bayrak-menu.acik{display:block;}
+  .bayrak-menu button{display:flex; align-items:center; gap:8px; width:100%; text-align:left;
+    background:transparent; border:none; color:var(--text); font-size:13px; padding:9px 10px;
+    border-radius:5px; cursor:pointer;}
+  .bayrak-menu button:hover:not(:disabled){background:var(--border);}
+  .bayrak-menu button:disabled{opacity:.5; cursor:default;}
+  .bayrak-menu .baslik{font-size:11px; color:var(--muted); letter-spacing:.5px; text-transform:uppercase;
+    padding:6px 10px 4px;}
 </style>
 </head>
 <body>
@@ -164,6 +177,17 @@
       <div class="durum" id="durum"></div>
       <div class="puan" id="puanAlan"></div>
       <button id="shareBtn">Paylaş</button>
+      <div class="bayrak-alan">
+        <button id="bayrakDug" class="mini-btn">🚩 Sorunu bildir</button>
+        <div class="bayrak-menu" id="bayrakMenu">
+          <div class="baslik">Bu fotoğrafla ilgili sorun</div>
+          <button data-sebep="yasli-taninmiyor">👴 Çok yaşlı / tanınmıyor</button>
+          <button data-sebep="yanlis-foto">🖼️ Yanlış fotoğraf (bu kişi değil)</button>
+          <button data-sebep="dusuk-cozunurluk">🔍 Çözünürlük çok düşük</button>
+          <button data-sebep="kesit-hatali">✂️ Kesit hatalı (organlar yanlış yerde)</button>
+          <button data-sebep="diger">❓ Diğer</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -381,6 +405,55 @@ function shareGoster(){
 $("shareBtn").addEventListener("click", async () => {
   try{ await navigator.clipboard.writeText(shareText()); $("shareBtn").textContent = "Kopyalandı ✓"; }
   catch(e){}
+});
+
+/* ===================== bayrak: "bu fotoğrafla sorun var" bildirimi =====================
+   VF.bayrakYaz(oyun, kelime, gun) Firestore'a bayraklar/{oyun}_{kelime} olarak yazıyor
+   (bkz. site/ortak/firebase.js) - burada kelime alanına "{qid}-{sebep}" kodlanıyor, böylece
+   backend/.gs tarafında hiçbir değişiklik gerekmiyor, aynı depo farklı sebeplerle çoğalıyor. */
+const BAYRAK_LS = "cehre_bayraklar";
+function bayrakGonderilmisMi(anah){
+  try{ return !!(JSON.parse(localStorage.getItem(BAYRAK_LS)) || {})[anah]; }catch(e){ return false; }
+}
+function bayrakIsaretle(anah){
+  try{
+    const g = JSON.parse(localStorage.getItem(BAYRAK_LS)) || {};
+    g[anah] = 1;
+    localStorage.setItem(BAYRAK_LS, JSON.stringify(g));
+  }catch(e){}
+}
+function bayrakMenuKapat(){ $("bayrakMenu").classList.remove("acik"); }
+$("bayrakDug").addEventListener("click", e => {
+  e.stopPropagation();
+  $("bayrakMenu").classList.toggle("acik");
+});
+document.addEventListener("click", e => {
+  if (!$("bayrakMenu").contains(e.target) && e.target !== $("bayrakDug")) bayrakMenuKapat();
+});
+function bayrakOncesiGiris(){
+  // bayraklar koleksiyonu Firestore kuralında girişli (Google ya da anonim) kullanıcı
+  // istiyor - kullanıcı hiç giriş yapmadıysa sessizce anonim oturum aç, isim sorma.
+  if (window.VF && VF.kullanici) return Promise.resolve();
+  if (window.firebase && firebase.auth) return firebase.auth().signInAnonymously().catch(() => {});
+  return Promise.resolve();
+}
+$("bayrakMenu").querySelectorAll("button[data-sebep]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const kisi = aktifKisi();
+    const anah = kisi.qid + "-" + btn.dataset.sebep;
+    if (bayrakGonderilmisMi(anah)){ bayrakMenuKapat(); return; }
+    btn.disabled = true;
+    const yaz = window.VF
+      ? bayrakOncesiGiris().then(() => VF.bayrakYaz("cehre", anah, gunIndex()))
+      : Promise.resolve({ok:false});
+    yaz.then(r => {
+      if (r && r.ok){ bayrakIsaretle(anah); }
+      btn.disabled = false;
+      bayrakMenuKapat();
+      $("bayrakDug").textContent = (r && r.ok) ? "🚩 Bildirildi ✓" : "🚩 Sorunu bildir";
+      if (r && r.ok) setTimeout(() => { $("bayrakDug").textContent = "🚩 Sorunu bildir"; }, 2500);
+    });
+  });
 });
 
 function submit(){
