@@ -157,7 +157,7 @@ function pickRandom(){
   renderPortre();
 }
 
-const PUAN = [100, 80, 60, 40, 25, 15];
+const PUAN = [100, 60, 30];
 const TUM_ISIMLER = Object.entries(KISILER).map(([qid, k]) => ({qid, isim: k.isim}));
 
 const LS = "cehre_v1";
@@ -180,10 +180,10 @@ function state_yukle(){
 let state = state_yukle();
 function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
 
-// Kaç bölge açık: 0-1 yanlış -> yalnız burun, 2-3 -> +gözler, 4-5 -> +ağız (hepsi)
+// Kaç bölge açık: 0 yanlış -> yalnız burun, 1 -> +gözler, 2 -> +ağız (hepsi)
 function bolgeSayisi(wrong){
-  if (wrong >= 4) return 3;
-  if (wrong >= 2) return 2;
+  if (wrong >= 2) return 3;
+  if (wrong >= 1) return 2;
   return 1;
 }
 
@@ -209,9 +209,9 @@ function pencereSvg(kisi, bolge){
   </svg>`;
 }
 
-// Bulmaca bitince (bilince ya da pes edilince): AYNI burun->göz->ağız pencereleri
-// sırayla açılır (1: burun, 2: +gözler, 3: +ağız), SONRA fotoğrafın TAMAMI
-// (maskesiz, 4. adım) açılır, ardından başa (1) dönüp döngü tekrar eder - gif gibi.
+// Bulmaca bitince (bilince ya da pes edilince): önce fotoğrafın TAMAMI (maskesiz,
+// 4. adım) açılır, SONRA AYNI burun->göz->ağız pencereleri sırayla açılır
+// (1: burun, 2: +gözler, 3: +ağız), ardından başa (4: tamamı) dönüp döngü tekrar eder.
 let donguTimer = null;
 function donguDurdur(){
   if (donguTimer){ clearInterval(donguTimer); donguTimer = null; }
@@ -224,7 +224,7 @@ function tamAcikSvg(){
 }
 function donguBaslat(kisi){
   donguDurdur();
-  let adim = 1;   // 1-3: burun/+göz/+ağız pencereleri, 4: fotoğrafın tamamı
+  let adim = 4;   // 4: fotoğrafın tamamı (önce bu), 1-3: burun/+göz/+ağız pencereleri
   const uygula = () => {
     $("kesitBuyuk").querySelector("svg")?.remove();
     const svg = adim <= 3 ? pencereSvg(kisi, adim) : tamAcikSvg();
