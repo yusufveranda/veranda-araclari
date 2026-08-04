@@ -21,6 +21,7 @@
     {ad:'Harfiyat',     href:B+'wordle/?oyun=harfiyat', oyun:'harfiyat', gun:function(){ return g2026(); }},
     {ad:'Taraça',       href:B+'wordle/?oyun=taraca',   oyun:'taraca',   gun:function(){ return g2026(); }},
     {ad:'Avlu',         href:B+'wordle/?oyun=avlu',     oyun:'avlu',     gun:function(){ return g2026(); }},
+    {ad:'Aralık',       href:B+'wordle/?oyun=aralik',   oyun:'aralik',   gun:function(){ return g2026(); }},
     {ad:'Çatı',         href:B+'cati/',                 oyun:'cati',     gun:function(){ return g2026(); }},
     {ad:'Şömine',       href:B+'sicaksoguk/',           oyun:'sicak',    gun:function(){ return g2026utc(); }},
     {ad:'Parsel',       href:B+'pedantle/',             oyun:'pedantle', gun:function(){ return g2026utc(); }},

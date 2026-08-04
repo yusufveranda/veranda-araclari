@@ -88,7 +88,7 @@ body{transition:background .4s,color .4s}
 .kartlar-oyun{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:720px;margin:30px auto 0}
 .okart{display:block;text-align:left;width:100%;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:13px;
   padding:16px 18px;box-shadow:5px 6px 0 var(--mat-golge);cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s}
-.okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)} .okart:nth-child(4){transform:rotate(.45deg)} .okart:nth-child(5){transform:rotate(-.45deg)} .okart:nth-child(6){transform:rotate(.4deg)}
+.okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)} .okart:nth-child(4){transform:rotate(.45deg)} .okart:nth-child(5){transform:rotate(-.45deg)} .okart:nth-child(6){transform:rotate(.4deg)} .okart:nth-child(7){transform:rotate(-.42deg)}
 .okart-anlam{text-decoration:none} .okart-anlam .okart-rozet{color:var(--kirmizi)}
 .okart:hover{transform:rotate(0) translateY(-3px);box-shadow:7px 9px 0 var(--mat-golge)}
 .okart:active{transform:translate(1px,2px);box-shadow:2px 2px 0 var(--mat-golge)}
@@ -458,6 +458,11 @@ body{transition:background .4s,color .4s}
         <h3 data-ad="karine">Avlu</h3>
         <p data-ad="karine_aciklama">İpuculu, kısa.</p>
       </button>
+      <button class="okart" data-git="aralik">
+        <span class="okart-rozet" data-ad="aralik_rozet">4-8 harf · zamana karşı</span>
+        <h3 data-ad="aralik">Aralık</h3>
+        <p data-ad="aralik_aciklama">Süre bitmeden ne kadar çok kelime çözebilirsin?</p>
+      </button>
       <a class="okart okart-anlam" href="../cati/">
         <span class="okart-rozet" data-ad="cati_rozet">beş kelime · gizli tema</span>
         <h3 data-ad="cati">Çatı</h3>
@@ -493,6 +498,7 @@ body{transition:background .4s,color .4s}
       <button data-oyun="harfiyat" class="secili" data-ad="harfiyat">harfiyat</button>
       <button data-oyun="iskelime" data-ad="taraca">taraça</button>
       <button data-oyun="anlamca" data-ad="karine">karine</button>
+      <button data-oyun="aralik" data-ad="aralik">aralık</button>
       <a class="oyun-disi" href="../cati/" data-ad="cati">Çatı</a>
       <a class="oyun-disi" href="../sicaksoguk/" data-ad="sicak">Şömine</a>
       <a class="oyun-disi" href="../pedantle/" data-ad="pedantle">Parsel</a>
@@ -1006,6 +1012,10 @@ function introIcerik(o){
     '<p>Üstteki <b>3·4·5·6·7·8 sekmelerine dokunarak</b> kelimeler arasında geçersin. Her kelimenin <b>7 deneme</b> hakkı var.</p>'+
     '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış, gri hiç yok.</p>'+
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
+  if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
+    '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 8 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
+    '<p>Süre <b>30 saniyeyle</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
+    '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b> — amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
     '<p>Sen bunların <b>işaret ettiği 5 harfli kelimeyi</b> bul (cevap: <i>deniz</i>). 3 deneme hakkın var.</p>'+
@@ -1280,12 +1290,12 @@ function sonucCiz(){
   document.getElementById('sonucKapatBtn').onclick=sonucKapat;
   if(sonucYeni){ el.classList.remove('acilis'); void el.offsetWidth; el.classList.add('acilis'); sonucYeni=false; }
 }
-const OYUN_SIRA=['harfiyat','iskelime','anlamca'];   // sıradaki oyun; sonda Sıcak Soğuk (ayrı sayfa)
+const OYUN_SIRA=['harfiyat','iskelime','anlamca','aralik'];   // sıradaki oyun; sonda Sıcak Soğuk (ayrı sayfa)
 function sonrakiOyunBilgi(){ const i=OYUN_SIRA.indexOf(oyun); return i>=0 && i<OYUN_SIRA.length-1 ? {oyun:OYUN_SIRA[i+1]} : {link:'../sicaksoguk/'}; }
 function sonrakiOyunAd(){
   const n=sonrakiOyunBilgi(), A=window.ADLAR||{};
   if(n.link) return A.sicak||'Sıcak Soğuk';
-  return A[{iskelime:'taraca',anlamca:'karine'}[n.oyun]] || n.oyun;
+  return A[{iskelime:'taraca',anlamca:'karine',aralik:'aralik'}[n.oyun]] || n.oyun;
 }
 function sonrakiOyunaGec(){ const n=sonrakiOyunBilgi(); sonucKapali=true; if(n.link) location.href=n.link; else { sonucKapat(); oyunSec(n.oyun); } }
 function sonucKapat(){ sonucKapali=true; document.getElementById('sonucKatman').classList.add('gizli'); }
@@ -1307,10 +1317,11 @@ function tus(h,ek){ const b=document.createElement('button'); b.className='tus'+
 const MOTIFLER={
   harfiyat:'<path d="M18 40 Q44 18 70 40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="84" y1="8" x2="98" y2="8" stroke="var(--mur)" stroke-width="5" stroke-linecap="round"/><line x1="91" y1="8" x2="91" y2="27" stroke="var(--mur)" stroke-width="5" stroke-linecap="round"/><path d="M84 27 h14 v5 q0 8 -7 8 q-7 0 -7 -8 z" fill="var(--mur)"/>',
   iskelime:'<path d="M10 40 H34 V28 H58 V16 H82 V8 H110" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="22" y1="40" x2="22" y2="31" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="22" cy="26" r="4.5" fill="var(--mur)"/>',
-  anlamca:'<path d="M22 40 V26 Q22 8 60 8 Q98 8 98 26 V40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="9" x2="60" y2="15" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="20" r="4.5" fill="var(--mur)"/>'
+  anlamca:'<path d="M22 40 V26 Q22 8 60 8 Q98 8 98 26 V40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="9" x2="60" y2="15" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="20" r="4.5" fill="var(--mur)"/>',
+  aralik:'<path d="M28 8 H92 M28 40 H92 M32 8 Q32 24 60 24 Q32 24 32 40 M88 8 Q88 24 60 24 Q88 24 88 40" fill="none" stroke="var(--mur)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="60" cy="24" r="3" fill="var(--kirmizi)"/>'
 };
 function basligiCiz(){
-  const A=window.ADLAR||{}, ad=A[{harfiyat:'harfiyat',iskelime:'taraca',anlamca:'karine'}[oyun]]||oyun;
+  const A=window.ADLAR||{}, ad=A[{harfiyat:'harfiyat',iskelime:'taraca',anlamca:'karine',aralik:'aralik'}[oyun]]||oyun;
   document.getElementById('oyunMotif').innerHTML=MOTIFLER[oyun]||'';
   const h=document.getElementById('oyunBaslik'); h.textContent=ad;
   const n=document.createElement('span'); n.className='nokta'; n.textContent='.'; h.appendChild(n);
