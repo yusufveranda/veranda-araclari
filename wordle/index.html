@@ -88,7 +88,7 @@ body{transition:background .4s,color .4s}
 .kartlar-oyun{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:720px;margin:30px auto 0}
 .okart{display:block;text-align:left;width:100%;background:var(--mat);border:1.5px solid var(--kutu-cizgi);border-radius:13px;
   padding:16px 18px;box-shadow:5px 6px 0 var(--mat-golge);cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s}
-.okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)} .okart:nth-child(4){transform:rotate(.45deg)} .okart:nth-child(5){transform:rotate(-.45deg)} .okart:nth-child(6){transform:rotate(.4deg)}
+.okart:nth-child(1){transform:rotate(-.5deg)} .okart:nth-child(2){transform:rotate(.5deg)} .okart:nth-child(3){transform:rotate(-.4deg)} .okart:nth-child(4){transform:rotate(.45deg)} .okart:nth-child(5){transform:rotate(-.45deg)} .okart:nth-child(6){transform:rotate(.4deg)} .okart:nth-child(7){transform:rotate(-.42deg)}
 .okart-anlam{text-decoration:none} .okart-anlam .okart-rozet{color:var(--kirmizi)}
 .okart:hover{transform:rotate(0) translateY(-3px);box-shadow:7px 9px 0 var(--mat-golge)}
 .okart:active{transform:translate(1px,2px);box-shadow:2px 2px 0 var(--mat-golge)}
@@ -143,6 +143,8 @@ body{transition:background .4s,color .4s}
 /* İskelime: tahta geçiş okları (alt) */
 .tahta-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px auto 0}
 .tahta-nav.gizli{display:none}
+.ara-sayac{text-align:center;font-family:'Playfair Display',serif;font-weight:700;font-size:26px;color:var(--mur);margin:0 0 8px}
+.ara-sayac.dusuk{color:var(--kirmizi)}
 .tn-ok{font-family:'Playfair Display',serif;font-size:24px;line-height:1;width:46px;height:46px;border-radius:50%;
   border:1.5px solid var(--kutu-cizgi);background:var(--mat);color:var(--mur);cursor:pointer;box-shadow:2px 3px 0 var(--mat-golge);transition:transform .12s}
 .tn-ok:hover{transform:translateY(-1px);border-color:var(--kirmizi);color:var(--kirmizi)}
@@ -456,6 +458,11 @@ body{transition:background .4s,color .4s}
         <h3 data-ad="karine">Avlu</h3>
         <p data-ad="karine_aciklama">İpuculu, kısa.</p>
       </button>
+      <button class="okart" data-git="aralik">
+        <span class="okart-rozet" data-ad="aralik_rozet">4-8 harf · zamana karşı</span>
+        <h3 data-ad="aralik">Aralık</h3>
+        <p data-ad="aralik_aciklama">Süre bitmeden ne kadar çok kelime çözebilirsin?</p>
+      </button>
       <a class="okart okart-anlam" href="../cati/">
         <span class="okart-rozet" data-ad="cati_rozet">beş kelime · gizli tema</span>
         <h3 data-ad="cati">Çatı</h3>
@@ -491,6 +498,7 @@ body{transition:background .4s,color .4s}
       <button data-oyun="harfiyat" class="secili" data-ad="harfiyat">harfiyat</button>
       <button data-oyun="iskelime" data-ad="taraca">taraça</button>
       <button data-oyun="anlamca" data-ad="karine">karine</button>
+      <button data-oyun="aralik" data-ad="aralik">aralık</button>
       <a class="oyun-disi" href="../cati/" data-ad="cati">Çatı</a>
       <a class="oyun-disi" href="../sicaksoguk/" data-ad="sicak">Şömine</a>
       <a class="oyun-disi" href="../pedantle/" data-ad="pedantle">Parsel</a>
@@ -507,6 +515,7 @@ body{transition:background .4s,color .4s}
     <div class="sekme-ipucu gizli" id="sekmeIpucu">↔ 6 ayrı kelime</div>
     <div class="sekmeler gizli" id="sekmeler"></div>
     <div class="ipuclar gizli" id="ipuclar"></div>
+    <div class="ara-sayac gizli" id="araSayac"></div>
     <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
     <div class="tahta-alt" id="tahtaAlt"></div>
     <div class="tahta-nav gizli" id="tahtaNav">
@@ -561,6 +570,8 @@ const trLower=s=>s.replace(/[İIŞĞÜÖÇ]/g,c=>TRMAP[c]).toLowerCase();
 const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
+const ARA_UZ=[4,5,6,7,8];
+const ARA_BASLANGIC=30, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
 const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
 const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
@@ -580,6 +591,7 @@ let bellek={};                 // oyun:mod -> devam eden durum
 let oyunGun=0;                 // günü BAŞTA sabitle: gece yarısını geçince skor/kayıt/altın hep bu güne yazılsın (canlı gunSayisi() sayaçlar için)
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
+let araSure=0, araTimer=null, araIndeks=0, araGecmis=[];   // Aralık: kalan süre, sayaç interval'i, sıradaki kelime indeksi, biten kelimelerin geçmişi
 
 /* ===== ses (WebAudio, dosyasız) ===== */
 let actx=null;
@@ -618,6 +630,24 @@ function rasgele(L){ const a=HARF_CEVAP[L]; return a[Math.floor(Math.random()*a.
 function gunlukCevap(L,tuz){ const a=HARF_CEVAP[L]; return a[(oyunGun*31+L*7+(tuz||0))%a.length]; }
 function altinUz(){ return (mod==='gun'&&oyun==='iskelime') ? ISK_UZ[((oyunGun*2654435761)>>>0)%ISK_UZ.length] : 0; }   // günün altın kelimesi (uzunluk): sabitlenmiş güne göre — gece yarısı kaymasın
 
+/* ===== aralık: kelime akışı ===== */
+// gün modu: uzunluk + kelime, gün numarası + sıradaki indekse göre DETERMİNİSTİK üretilir (herkese aynı sıra).
+// sonsuz modu: tam rastgele. Liste sonsuza uzayabilir (zincirleme 1.-denemede bonuslar süreyi çok uzatabilir), formülün üst sınırı yok.
+function aralikUzunluk(i){
+  return mod==='gun' ? ARA_UZ[((oyunGun*2654435761 + i*40503)>>>0)%ARA_UZ.length]
+                      : ARA_UZ[Math.floor(Math.random()*ARA_UZ.length)];
+}
+function aralikSonraki(){
+  const L=aralikUzunluk(araIndeks);
+  const cevap = mod==='gun' ? gunlukCevap(L, araIndeks*97+1) : rasgele(L);
+  araIndeks++;
+  return yeniTahta(L,cevap);
+}
+function araSureMetni(){
+  const s=Math.max(0,araSure), dk=Math.floor(s/60), sn=s%60;
+  return dk>0 ? dk+':'+String(sn).padStart(2,'0') : s+'sn';
+}
+
 function yeniTahta(L,cevap){
   return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:oyun==='iskelime'?7:6};
 }
@@ -628,6 +658,9 @@ function tahtalariKur(){
     const ks=Object.keys(ANLAM_CEVAP);
     const c=mod==='gun'?ks[oyunGun%ks.length]:ks[Math.floor(Math.random()*ks.length)];
     const t=yeniTahta(5,c); t.maxSatir=3; t.ipucu=ANLAM_CEVAP[c]; tahtalar=[t];
+  } else if(oyun==='aralik'){
+    araIndeks=0; araGecmis=[]; araSure=ARA_BASLANGIC;
+    tahtalar=[ aralikSonraki() ];
   } else tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false; sonucKapali=false;
   revealAnim=false; bekleyenMesaj=''; bekleyenSes=null; clearTimeout(revealTimer); revealTimer=null;
@@ -715,12 +748,32 @@ function revealBitti(){
   if(bekleyenMesaj){ mesaj(bekleyenMesaj); bekleyenMesaj=''; }
   if(oyunBitti){ sonucHazir=true; sonucYeni=true; lbGonder(); }
   if(oyun==='iskelime' && sonBitenTahta>=0 && mod==='gun'){ kelimeIstatPopup(tahtalar[sonBitenTahta]); }
+  const araKelimeBitti = (oyun==='aralik' && sonBitenTahta>=0);   // bu turdaki tahmin kelimeyi BİTİRDİ mi (çözüldü ya da 6 deneme doldu), yoksa hâlâ hakkı var
   sonBitenTahta=-1;
+  // Aralık: bu kelimenin çevirme animasyonu bittikten SONRA sıradaki kelimeye geç (süre henüz bitmediyse), AMA SADECE kelime gerçekten bittiyse.
+  // Hemen tahtalar[]'ı değiştirmek az önceki tahminin renk açılma animasyonunu keserdi.
+  if(araKelimeBitti && !oyunBitti){ tahtalar=[aralikSonraki()]; aktif=0; }
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
   // İskelime: ZORLA otomatik geçiş YOK (hayalet ipucu kısa kelimeyi erken çözünce "ışınlanma" oluyordu).
   // Bunun yerine çözülen tahtada "sonraki kelime →" butonu var (ciz'de tahtaAlt); oyuncu kontrol eder.
   // oyun bitince: sonuç kartı (overlay) sonucCiz'de kendiliğinden öne gelir; sayfa kaydırma yok, leaderboard karttaki düğmeden
+}
+function araTick(){
+  if(oyun!=='aralik' || oyunBitti){ if(araTimer){ clearInterval(araTimer); araTimer=null; } return; }
+  araSure--;
+  if(araSure<=0){
+    araSure=0;
+    if(araTimer){ clearInterval(araTimer); araTimer=null; }
+    if(!revealAnim){ oyunBitti=true; sonucHazir=true; sonucYeni=true; lbGonder(); ciz(); }
+    else oyunBitti=true;   // reveal animasyonu bitince revealBitti() zaten sonucHazir'ı açacak
+  } else {
+    const el=document.getElementById('araSayac'); if(el){ el.textContent='⏱ '+araSureMetni(); el.classList.toggle('dusuk', araSure<=10); }
+  }
+}
+function araTimerYonet(){
+  if(araTimer){ clearInterval(araTimer); araTimer=null; }
+  if(oyun==='aralik' && !oyunBitti) araTimer=setInterval(araTick,1000);
 }
 function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
   if((window.innerWidth||999)>440) return;
@@ -734,6 +787,13 @@ const OVGU=['dâhice!','harika!','bravo!','güzel!','oldu!','ucu ucuna!'];
 function durumDegerlendir(){
   const b=aktifTahta();
   bekleyenMesaj=''; bekleyenSes=null;
+  if(oyun==='aralik'){   // zamana karşı: kelime bitince (kazanılsa da kaybedilse de) süreye bonus + geçmişe kaydet
+    if(!b.bitti) return;   // deneme hakkı kaldı, sıradaki kelimeye geçme, aynı kelimede devam
+    araGecmis.push({uz:b.uz, cozuldu:b.kazandi, deneme:b.gecmis.length});
+    if(b.kazandi){ araSure+=ARA_BONUS[b.gecmis.length-1]; bekleyenSes=()=>sBitis(true); }
+    else bekleyenSes=()=>sBitis(false);
+    return;   // oyunBitti burada set edilmez, süre 0'a inince araTick() bitirir
+  }
   if(oyun!=='iskelime'){   // harfiyat + anlamca: tek tahta
     if(b.kazandi){ oyunBitti=true; bekleyenMesaj=OVGU[Math.min(b.gecmis.length-1,OVGU.length-1)]; bekleyenSes=()=>sBitis(true); istatleGuncelle(true); }
     else if(b.bitti){ oyunBitti=true; bekleyenSes=()=>sBitis(false); istatleGuncelle(false); }
@@ -747,6 +807,13 @@ function durumDegerlendir(){
     bekleyenSes=()=>sBitis(k>=4);
     istatleGuncelle(k===6);
   }
+}
+
+/* ===== aralık: skor ===== */
+function araSkorHesapla(){
+  const cozulen=araGecmis.filter(p=>p.cozuldu).length;
+  const toplamDeneme=araGecmis.reduce((a,p)=>a+p.deneme,0);
+  return {cozulen, toplamDeneme, oynanan:araGecmis.length};
 }
 
 /* ===== skor ===== */
@@ -783,15 +850,20 @@ function ozetIzgaraHTML(){   // 6 mini ızgara, tek ekranda — sadece oynanan s
   }).join('');
 }
 function payMetni(){   // spoiler vermez: yalnız uzunluk + çözüldü/çözülmedi + deneme
-  const s=skorHesapla(), isim=(localStorage.getItem('harfiyat:nick')||'').trim();
+  const isim=(localStorage.getItem('harfiyat:nick')||'').trim();
   const bas=(isim?isim+' · ':'')+oyunAdi()+(mod==='gun'?' #'+(oyunGun-168):' (sonsuz)');   // milat 2026-06-19 = 1. gün
   if(oyun==='iskelime'){
+    const s=skorHesapla();
     const KEY=L=>String.fromCodePoint(48+L,0xFE0F,0x20E3);   // 3️⃣ … 8️⃣
     const huc=s.per.map(p=>KEY(p.uz)+(p.cozuldu?'🟩'+p.deneme:'⬛–'));
     const sat=[]; for(let i=0;i<huc.length;i+=3) sat.push(huc.slice(i,i+3).join('  '));
     return bas+'\n✦ '+s.cozulen+'/6 · '+s.puan100+' puan\n'+sat.join('\n');
   }
-  const b=tahtalar[0];   // avlu — tek kelime
+  if(oyun==='aralik'){
+    const s=araSkorHesapla();
+    return bas+'\n⏱ '+s.cozulen+' kelime · '+s.toplamDeneme+' toplam deneme';
+  }
+  const s=skorHesapla(), b=tahtalar[0];   // avlu: tek kelime
   return bas+'\n'+(b.kazandi?'🟩 '+b.gecmis.length+'/'+b.maxSatir:'⬛ bilemedi')+' · '+s.puan100+' puan';
 }
 function kopyala(txt,notEl){
@@ -808,8 +880,8 @@ function elleKopya(txt,cb){
 /* ===== leaderboard (Google Sheets / Apps Script) ===== */
 const LB_URL='https://script.google.com/macros/s/AKfycbyVCs6SvfkJSOjunXd7HWnhDeNH7-M9udtLovpo7Wh_vdTTz9sc31ccdZ050IJdgqt2/exec';
 function lbOyun(){ return oyun==='iskelime'?'taraca':oyun==='anlamca'?'avlu':oyun; }   // tablo oyun anahtarı (harfiyat/taraca/avlu)
-function oyunAdi(){ return oyun==='iskelime'?'taraça':oyun==='anlamca'?'avlu':'harfiyat'; }
-function lbDestekli(){ return oyun==='iskelime'||oyun==='anlamca'||oyun==='harfiyat'; }   // verandle'ın üç oyunu da
+function oyunAdi(){ return oyun==='iskelime'?'taraça':oyun==='anlamca'?'avlu':oyun==='aralik'?'aralık':'harfiyat'; }
+function lbDestekli(){ return oyun==='iskelime'||oyun==='anlamca'||oyun==='harfiyat'||oyun==='aralik'; }   // verandle'ın üç oyunu da
 function haftaBas(){ const g=oyunGun; return g-(((g-1)%7)+7)%7; }   // haftanın başı = en son Cuma (gün no). hafta: Cuma 00:00 → Cuma 00:00 · sabit güne göre
 function ayBas(){ const n=new Date(); return Math.floor((new Date(n.getFullYear(),n.getMonth(),1)-new Date(2026,0,1))/86400000); }
 function gunTarih(g){ const d=new Date(2026,0,1); d.setDate(d.getDate()+g); return d; }
@@ -861,14 +933,15 @@ function kelimeIstatPopup(b){
 let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlenir)
   if(mod!=='gun' || !lbDestekli() || !oyunBitti) return Promise.resolve(null);
-  const s=skorHesapla();
+  const s = oyun==='aralik' ? araSkorHesapla() : skorHesapla();
+  const puan = oyun==='aralik' ? s.cozulen : s.puan100;   // aralık: puan = çözülen kelime sayısı (arcade yüksek-skor)
   /* Google ile girişliyse yeni deftere (Firestore) yaz — eski Sheets'e hiç dokunma */
   if(window.VF && VF.kullanici){
     const key=lbOyun()+':'+oyunGun+':'+VF.kullanici.uid;
     if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
-    const pr=VF.skorYaz(lbOyun(), oyunGun, {puan:s.puan100, cozulen:s.cozulen, deneme:s.toplamDeneme})
+    const pr=VF.skorYaz(lbOyun(), oyunGun, {puan, cozulen:s.cozulen, deneme:s.toplamDeneme})
       .then(()=>({ok:true})).catch(()=>({ok:true}));   // create-only: ikinci yazma zaten rules'ca reddedilir, kilit sayılır
-    if(lbOyun()!=='taraca'){   // taraça'nın kendi histogramı yok, alt-kelime popup'ları yeterli
+    if(lbOyun()!=='taraca' && lbOyun()!=='aralik'){   // taraça/aralık'ın kendi histogramı yok
       const bucket = s.cozulen ? String(tahtalar[0].gecmis.length) : 'X';
       VF.istatistikArttir(lbOyun(), oyunGun, bucket);
     }
@@ -879,7 +952,7 @@ function lbGonder(){   // oyun bitince skoru tabloya yaz (ilk gönderim kilitlen
   if(lbGonderildi[key]) return Promise.resolve(lbGonderildi[key]);
   const sheetsYaz=()=>{   // yedek yol: anonim giriş (konsolda sağlayıcı) kapalıysa
     const q=new URLSearchParams({fn:'add',oyun:lbOyun(),gun:String(oyunGun),nick,
-      puan:String(s.puan100),cozulen:String(s.cozulen),deneme:String(s.toplamDeneme)});
+      puan:String(puan),cozulen:String(s.cozulen),deneme:String(s.toplamDeneme)});
     return fetch(LB_URL+'?'+q.toString()).then(r=>r.json()).then(j=>{lbGonderildi[key]=j;return j;}).catch(()=>null);
   };
   /* nick'li oyuncu: kalıcı anonim Firebase oturumu aç, skor Firestore'a yazılsın
@@ -952,6 +1025,10 @@ function introIcerik(o){
     '<p>Üstteki <b>3·4·5·6·7·8 sekmelerine dokunarak</b> kelimeler arasında geçersin. Her kelimenin <b>7 deneme</b> hakkı var.</p>'+
     '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış, gri hiç yok.</p>'+
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
+  if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
+    '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 8 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
+    '<p>Süre <b>30 saniyeyle</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
+    '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b>; amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
     '<p>Sen bunların <b>işaret ettiği 5 harfli kelimeyi</b> bul (cevap: <i>deniz</i>). 3 deneme hakkın var.</p>'+
@@ -1067,11 +1144,13 @@ function istatGoster(){
 /* ===== günlük ilerleme + bellek ===== */
 const gA=()=> 'harfiyat:gun:'+oyun;
 function kaydet(){
-  if(mod!=='gun') return;
+  // Aralık: canlı sayaç durumu (kesirli saniye dahil) sayfa yenilemede tutarlı geri yüklenemez,
+  // reload = o günün dizisini baştan (indeks 0) yeniden dener, hile riski diğer günlük modlarla aynı seviyede kalır.
+  if(mod!=='gun' || oyun==='aralik') return;
   try{ localStorage.setItem(gA(),JSON.stringify({gun:oyunGun,oyun,t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi,c:b.cevap}))})); }catch(e){}
 }
 function yukle(){
-  if(mod!=='gun') return false;
+  if(mod!=='gun' || oyun==='aralik') return false;
   try{ const v=JSON.parse(localStorage.getItem(gA())); if(!v||v.gun!==oyunGun||v.oyun!==oyun) return false;
     // havuz deploy ile değişmişse eski kayıt yeni cevabın üstüne binmesin → cevabı doğrula
     if(v.t.some((sv,i)=>tahtalar[i] && sv.c && sv.c!==tahtalar[i].cevap)) return false;
@@ -1082,14 +1161,17 @@ function yukle(){
     return true;
   }catch(e){ return false; }
 }
-function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti,sonucHazir}; }
-function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; sonucHazir=!!d.sonucHazir; sonucYeni=false; return true; } return false; }
+function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti,sonucHazir,araSure,araGecmis,araIndeks}; }
+function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; sonucHazir=!!d.sonucHazir; sonucYeni=false; araSure=d.araSure||0; araGecmis=d.araGecmis||[]; araIndeks=d.araIndeks||0; return true; } return false; }
 
 /* ===== çizim ===== */
 function mesaj(m){ document.getElementById('mesaj').textContent=m||''; }
 
 function ciz(){
   const b=aktifTahta();
+  const araEl=document.getElementById('araSayac');
+  araEl.classList.toggle('gizli', oyun!=='aralik');
+  if(oyun==='aralik'){ araEl.textContent='⏱ '+araSureMetni(); araEl.classList.toggle('dusuk', araSure<=10); }
   // sekmeler
   const sek=document.getElementById('sekmeler');
   sek.classList.toggle('gizli', oyun!=='iskelime');
@@ -1174,6 +1256,7 @@ function ciz(){
   // başlık / altyazı / ipucu
   const _ay=document.getElementById('altYazi');
   if(oyun==='iskelime'){ const _a=altinUz(); _ay.innerHTML='üç’ten sekiz harfe · altı kelime'+(_a?' · <b class="altin-et">🌟 '+_a+' harf 2×</b>':', yedişer deneme'); }
+  else if(oyun==='aralik') _ay.textContent = '4-8 harf · altı deneme · zamana karşı';
   else _ay.textContent = oyun==='anlamca' ? 'beş harf · üç deneme · yakın anlam ipucuyla' : 'beş harf · altı deneme';
   document.getElementById('ipucu').textContent = oyunBitti ? '' : '';
 }
@@ -1208,6 +1291,12 @@ function sonucCiz(){
       <div class="ozet">${ozetIzgaraHTML()}</div>
       <div class="puan-not">3·7·8 harf 1.5× ağırlık${altin?' · <b class="altin-et">🌟 '+altin+' harf altın 2×</b>':''}</div>`+payHTML+ileriBtn;
     payBagla(el);
+  } else if(oyun==='aralik'){   // zamana karşı: çözülen kelime sayısı asıl skor
+    const s=araSkorHesapla();
+    el.innerHTML=kapatBtn+`<div class="baslik ok">${s.cozulen} kelime</div>
+      <div class="skor" style="margin-top:9px">${s.toplamDeneme}<small> toplam deneme</small></div>
+      <div class="alt2">${s.oynanan} kelime denendi · süre doldu</div>`+payHTML+ileriBtn;
+    payBagla(el);
   } else {   // harfiyat + avlu — tek kelime + 100 puan + paylaş + tablo
     const b=tahtalar[0], s=skorHesapla();
     el.innerHTML=kapatBtn+`<div class="baslik ${b.kazandi?'ok':'yo'}">${b.kazandi?'bildin!':'bilemedin'}</div>
@@ -1220,12 +1309,12 @@ function sonucCiz(){
   document.getElementById('sonucKapatBtn').onclick=sonucKapat;
   if(sonucYeni){ el.classList.remove('acilis'); void el.offsetWidth; el.classList.add('acilis'); sonucYeni=false; }
 }
-const OYUN_SIRA=['harfiyat','iskelime','anlamca'];   // sıradaki oyun; sonda Sıcak Soğuk (ayrı sayfa)
+const OYUN_SIRA=['harfiyat','iskelime','anlamca','aralik'];   // sıradaki oyun; sonda Sıcak Soğuk (ayrı sayfa)
 function sonrakiOyunBilgi(){ const i=OYUN_SIRA.indexOf(oyun); return i>=0 && i<OYUN_SIRA.length-1 ? {oyun:OYUN_SIRA[i+1]} : {link:'../sicaksoguk/'}; }
 function sonrakiOyunAd(){
   const n=sonrakiOyunBilgi(), A=window.ADLAR||{};
   if(n.link) return A.sicak||'Sıcak Soğuk';
-  return A[{iskelime:'taraca',anlamca:'karine'}[n.oyun]] || n.oyun;
+  return A[{iskelime:'taraca',anlamca:'karine',aralik:'aralik'}[n.oyun]] || n.oyun;
 }
 function sonrakiOyunaGec(){ const n=sonrakiOyunBilgi(); sonucKapali=true; if(n.link) location.href=n.link; else { sonucKapat(); oyunSec(n.oyun); } }
 function sonucKapat(){ sonucKapali=true; document.getElementById('sonucKatman').classList.add('gizli'); }
@@ -1247,10 +1336,11 @@ function tus(h,ek){ const b=document.createElement('button'); b.className='tus'+
 const MOTIFLER={
   harfiyat:'<path d="M18 40 Q44 18 70 40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="84" y1="8" x2="98" y2="8" stroke="var(--mur)" stroke-width="5" stroke-linecap="round"/><line x1="91" y1="8" x2="91" y2="27" stroke="var(--mur)" stroke-width="5" stroke-linecap="round"/><path d="M84 27 h14 v5 q0 8 -7 8 q-7 0 -7 -8 z" fill="var(--mur)"/>',
   iskelime:'<path d="M10 40 H34 V28 H58 V16 H82 V8 H110" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="22" y1="40" x2="22" y2="31" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="22" cy="26" r="4.5" fill="var(--mur)"/>',
-  anlamca:'<path d="M22 40 V26 Q22 8 60 8 Q98 8 98 26 V40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="9" x2="60" y2="15" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="20" r="4.5" fill="var(--mur)"/>'
+  anlamca:'<path d="M22 40 V26 Q22 8 60 8 Q98 8 98 26 V40" fill="none" stroke="var(--kirmizi)" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="9" x2="60" y2="15" stroke="var(--mur)" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="20" r="4.5" fill="var(--mur)"/>',
+  aralik:'<path d="M28 8 H92 M28 40 H92 M32 8 Q32 24 60 24 Q32 24 32 40 M88 8 Q88 24 60 24 Q88 24 88 40" fill="none" stroke="var(--mur)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="60" cy="24" r="3" fill="var(--kirmizi)"/>'
 };
 function basligiCiz(){
-  const A=window.ADLAR||{}, ad=A[{harfiyat:'harfiyat',iskelime:'taraca',anlamca:'karine'}[oyun]]||oyun;
+  const A=window.ADLAR||{}, ad=A[{harfiyat:'harfiyat',iskelime:'taraca',anlamca:'karine',aralik:'aralik'}[oyun]]||oyun;
   document.getElementById('oyunMotif').innerHTML=MOTIFLER[oyun]||'';
   const h=document.getElementById('oyunBaslik'); h.textContent=ad;
   const n=document.createElement('span'); n.className='nokta'; n.textContent='.'; h.appendChild(n);
@@ -1261,10 +1351,12 @@ function oyunlaKur(){
   if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni':'sonsuz oyun';
+  araTimerYonet();   // Aralık: sayaç her oyun/mod geçişinde temizlenip yeniden başlatılır (başka moddaysa çalışmaz)
   mesaj(''); ciz(); istatGoster();   // oyun/mod değişiminde scroll seviyesi korunur (en üste atma yok)
   if(oyunBitti) lbGonder();   // bitmiş günlük oyun yeniden açılınca da skoru gönder
   ghAcik=false; gecenHaftaGetir();   // sol panel: geçen haftanın galipleri (o oyun için)
   if(oyun==='iskelime' && !localStorage.getItem('harfiyat:taraca-intro')){ localStorage.setItem('harfiyat:taraca-intro','1'); introAc('iskelime'); }   // taraça'ya ilk girişte açıklama
+  if(oyun==='aralik' && !localStorage.getItem('harfiyat:aralik-intro')){ localStorage.setItem('harfiyat:aralik-intro','1'); introAc('aralik'); }   // aralık'a ilk girişte açıklama
 }
 function oyunSec(o){ if(o===oyun) return; durumKaydetBellek(); oyun=o;
   document.querySelectorAll('#oyunSeg button').forEach(x=>x.classList.toggle('secili',x.dataset.oyun===o)); oyunlaKur(); }
@@ -1351,7 +1443,7 @@ temaUygula(); sesUygula();
 /* ?oyun=harfiyat|taraca|avlu → hub'ı atlayıp doğrudan o oyuna gir (diğer oyun sayfalarındaki sekmeler için) */
 (function(){
   const istek=(new URLSearchParams(location.search).get('oyun')||'').toLowerCase();
-  const g={harfiyat:'harfiyat',taraca:'iskelime',iskelime:'iskelime',avlu:'anlamca',karine:'anlamca',anlamca:'anlamca'}[istek];
+  const g={harfiyat:'harfiyat',taraca:'iskelime',iskelime:'iskelime',avlu:'anlamca',karine:'anlamca',anlamca:'anlamca',aralik:'aralik'}[istek];
   if(g) oyunaGir(g); else hubGoster();
 })();
 
