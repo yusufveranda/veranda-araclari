@@ -742,10 +742,11 @@ function revealBitti(){
   if(bekleyenMesaj){ mesaj(bekleyenMesaj); bekleyenMesaj=''; }
   if(oyunBitti){ sonucHazir=true; sonucYeni=true; lbGonder(); }
   if(oyun==='iskelime' && sonBitenTahta>=0 && mod==='gun'){ kelimeIstatPopup(tahtalar[sonBitenTahta]); }
+  const araKelimeBitti = (oyun==='aralik' && sonBitenTahta>=0);   // bu turdaki tahmin kelimeyi BİTİRDİ mi (çözüldü ya da 6 deneme doldu) — yoksa hâlâ hakkı var
   sonBitenTahta=-1;
-  // Aralık: bu kelimenin çevirme animasyonu bittikten SONRA sıradaki kelimeye geç (süre henüz bitmediyse).
+  // Aralık: bu kelimenin çevirme animasyonu bittikten SONRA sıradaki kelimeye geç (süre henüz bitmediyse), AMA SADECE kelime gerçekten bittiyse.
   // Hemen tahtalar[]'ı değiştirmek az önceki tahminin renk açılma animasyonunu keserdi.
-  if(oyun==='aralik' && !oyunBitti){ tahtalar=[aralikSonraki()]; aktif=0; }
+  if(araKelimeBitti && !oyunBitti){ tahtalar=[aralikSonraki()]; aktif=0; }
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
   // İskelime: ZORLA otomatik geçiş YOK (hayalet ipucu kısa kelimeyi erken çözünce "ışınlanma" oluyordu).
@@ -781,6 +782,7 @@ function durumDegerlendir(){
   const b=aktifTahta();
   bekleyenMesaj=''; bekleyenSes=null;
   if(oyun==='aralik'){   // zamana karşı: kelime bitince (kazanılsa da kaybedilse de) süreye bonus + geçmişe kaydet
+    if(!b.bitti) return;   // deneme hakkı kaldı — sıradaki kelimeye geçme, aynı kelimede devam
     araGecmis.push({uz:b.uz, cozuldu:b.kazandi, deneme:b.gecmis.length});
     if(b.kazandi){ araSure+=ARA_BONUS[b.gecmis.length-1]; bekleyenSes=()=>sBitis(true); }
     else bekleyenSes=()=>sBitis(false);
