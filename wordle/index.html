@@ -561,6 +561,8 @@ const trLower=s=>s.replace(/[İIŞĞÜÖÇ]/g,c=>TRMAP[c]).toLowerCase();
 const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
+const ARA_UZ=[4,5,6,7,8];
+const ARA_BASLANGIC=30, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
 const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
 const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
@@ -580,6 +582,7 @@ let bellek={};                 // oyun:mod -> devam eden durum
 let oyunGun=0;                 // günü BAŞTA sabitle: gece yarısını geçince skor/kayıt/altın hep bu güne yazılsın (canlı gunSayisi() sayaçlar için)
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
+let araSure=0, araTimer=null, araIndeks=0, araGecmis=[];   // Aralık: kalan süre, sayaç interval'i, sıradaki kelime indeksi, biten kelimelerin geçmişi
 
 /* ===== ses (WebAudio, dosyasız) ===== */
 let actx=null;
@@ -617,6 +620,24 @@ function gunSayisi(){ return Math.floor((Date.now()-new Date(2026,0,1))/86400000
 function rasgele(L){ const a=HARF_CEVAP[L]; return a[Math.floor(Math.random()*a.length)]; }
 function gunlukCevap(L,tuz){ const a=HARF_CEVAP[L]; return a[(oyunGun*31+L*7+(tuz||0))%a.length]; }
 function altinUz(){ return (mod==='gun'&&oyun==='iskelime') ? ISK_UZ[((oyunGun*2654435761)>>>0)%ISK_UZ.length] : 0; }   // günün altın kelimesi (uzunluk): sabitlenmiş güne göre — gece yarısı kaymasın
+
+/* ===== aralık: kelime akışı ===== */
+// gün modu: uzunluk + kelime, gün numarası + sıradaki indekse göre DETERMİNİSTİK üretilir (herkese aynı sıra).
+// sonsuz modu: tam rastgele. Liste sonsuza uzayabilir (zincirleme 1.-denemede bonuslar süreyi çok uzatabilir) — formülün üst sınırı yok.
+function aralikUzunluk(i){
+  return mod==='gun' ? ARA_UZ[((oyunGun*2654435761 + i*40503)>>>0)%ARA_UZ.length]
+                      : ARA_UZ[Math.floor(Math.random()*ARA_UZ.length)];
+}
+function aralikSonraki(){
+  const L=aralikUzunluk(araIndeks);
+  const cevap = mod==='gun' ? gunlukCevap(L, araIndeks*97+1) : rasgele(L);
+  araIndeks++;
+  return yeniTahta(L,cevap);
+}
+function araSureMetni(){
+  const s=Math.max(0,araSure), dk=Math.floor(s/60), sn=s%60;
+  return dk>0 ? dk+':'+String(sn).padStart(2,'0') : s+'sn';
+}
 
 function yeniTahta(L,cevap){
   return {uz:L,cevap,gecmis:[],giris:Array(L).fill(''),imlec:0,bitti:false,kazandi:false,maxSatir:oyun==='iskelime'?7:6};
