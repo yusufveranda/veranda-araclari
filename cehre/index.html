@@ -20,15 +20,24 @@
     --accent:#e2a13f; --ok:#7cb46b; --bad:#e5382e;
   }
   body{background:var(--bg); color:var(--text); font-family:"Inter",-apple-system,sans-serif;
-    min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px;}
-  .wrap{max-width:min(96vw, 1900px); margin:0 auto;}
+    min-height:100dvh; padding:22px clamp(12px,3vw,44px) 90px; position:relative;}
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 50% -8%, rgba(226,161,63,.06), transparent 62%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.05; mix-blend-mode:overlay;
+  }
+  .wrap{max-width:min(96vw, 1900px); margin:0 auto; position:relative; z-index:1;}
   h1{font-family:"Special Elite",cursive; font-size:30px; color:var(--accent); margin-bottom:4px;}
   .tagline{font-size:13px; color:var(--muted); margin-bottom:22px;}
-  .ust{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;}
+  .ust{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;
+    padding-bottom:16px; border-bottom:1px dashed var(--border);}
   .ust-dugmeler{display:flex; gap:8px;}
   .mini-btn{background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px;
-    padding:8px 12px; font-size:13px; cursor:pointer;}
+    padding:8px 12px; font-size:13px; cursor:pointer; transition:transform .1s ease, border-color .15s ease, color .15s ease;}
   .mini-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .mini-btn:active{transform:translateY(1px);}
 
   .oyun-alan{display:grid; grid-template-columns: minmax(320px, 600px) minmax(320px, 460px); gap:40px; align-items:start; margin-top:22px;}
   @media(max-width:760px){ .oyun-alan{grid-template-columns:1fr;} }
@@ -42,30 +51,73 @@
     border:1px solid var(--border); border-radius:10px;
     padding:clamp(20px,4vw,40px);
     display:flex; align-items:center; justify-content:center;
-    min-height:420px;
+    min-height:420px; position:relative;
     box-shadow: inset 0 0 60px rgba(0,0,0,.4);
   }
+  .dosya-no{
+    position:absolute; top:14px; left:18px; z-index:3;
+    font-family:"Special Elite",cursive; font-size:11px; letter-spacing:1.5px;
+    color:rgba(226,161,63,.5); transform:rotate(-1deg); pointer-events:none;
+  }
+  .damga{
+    position:absolute; top:16px; right:2px; z-index:5;
+    font-family:"Special Elite",cursive; font-size:clamp(13px,2vw,17px); letter-spacing:2px;
+    padding:7px 16px; border:3px solid; border-radius:4px; transform:rotate(8deg);
+    background:rgba(12,10,9,.6); backdrop-filter:blur(1px);
+    animation: damgaVur .4s cubic-bezier(.2,1.4,.4,1);
+    pointer-events:none; white-space:nowrap;
+  }
+  .damga.iyi{color:var(--ok); border-color:var(--ok);}
+  .damga.kotu{color:var(--bad); border-color:var(--bad);}
+  @keyframes damgaVur{ from{ transform:rotate(8deg) scale(2.2); opacity:0;} to{ transform:rotate(8deg) scale(1); opacity:1;} }
   /* Tüm kesitler aynı sabit oranla üretiliyor (yuz_kesit.py: PAY_SOL_SAG/PAY_UST/PAY_ALT
      katsayıları herkes için aynı) - kartın oranını buna sabitlemek, SVG maskesinin
      fotoğrafla piksel piksel örtüşmesini garantiliyor. */
   .kesit-buyuk{position:relative; width:min(100%, 420px); aspect-ratio:3.4/3.9; max-height:64vh;
     border:5px solid var(--paper); border-radius:4px; overflow:hidden; background:#000;
-    box-shadow:0 14px 40px rgba(0,0,0,.6);}
+    box-shadow:0 14px 40px rgba(0,0,0,.6); transform:rotate(-0.6deg);}
   .kesit-buyuk img{width:100%; height:100%; object-fit:cover; display:block;}
-  .kesit-buyuk svg{position:absolute; inset:0; width:100%; height:100%; display:block;}
+  .kesit-buyuk svg{position:absolute; inset:0; width:100%; height:100%; display:block; animation:beliriyor .35s ease;}
+  @keyframes beliriyor{ from{opacity:0;} to{opacity:1;} }
 
   .bilgi-panel{display:flex; flex-direction:column; gap:16px; padding-top:6px;}
-  .netlik-label{font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;}
-  .netlik-dots{display:flex; gap:6px;}
-  .netlik-dots i{width:26px; height:6px; border-radius:3px; background:var(--border); display:block;}
-  .netlik-dots i.acik{background:var(--accent);}
-  .can-dots{display:flex; gap:5px; font-size:18px; letter-spacing:2px;}
+  .netlik-label{font-size:11px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;}
+  .netlik-dots{display:flex; gap:8px;}
+  .netlik-dots i{
+    flex:1; text-align:center; font-style:normal; font-family:"Special Elite",cursive;
+    font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--muted);
+    padding:7px 4px; border:1px solid var(--border); border-radius:4px; background:var(--card);
+    transition:background .25s ease, color .25s ease, border-color .25s ease;
+  }
+  .netlik-dots i.acik{color:#1a1614; background:var(--accent); border-color:var(--accent); font-weight:600;}
+  .can-dots{display:flex; gap:8px; align-items:center;}
+  .can-dots i{
+    width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+    font-style:normal; font-size:10px; color:#3a322b;
+    background:radial-gradient(circle at 35% 28%, #f3ca7d, #c9861f 72%);
+    border:1px solid rgba(0,0,0,.35);
+    box-shadow:0 1px 2px rgba(0,0,0,.4), inset 0 1px 1px rgba(255,255,255,.35);
+    transition:all .3s ease;
+  }
+  .can-dots i.harcandi{
+    background:#221d19; color:var(--muted);
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.6); border-color:var(--border);
+  }
 
   .guess-row{display:flex; gap:8px; position:relative; flex-wrap:wrap;}
-  .guess-row input{flex:1; min-width:180px; background:var(--card); border:1px solid var(--border); color:var(--text);
-    border-radius:6px; padding:14px 16px; font-size:16px; outline:none;}
+  .guess-row input{flex:1; min-width:180px; min-height:46px; background:var(--card); border:1px solid var(--border); color:var(--text);
+    border-radius:6px; padding:14px 16px; font-size:16px; outline:none; transition:border-color .15s ease;}
+  .guess-row input:focus{border-color:var(--accent);}
+  .guess-row input.sarsil{animation:sarsil .4s ease;}
+  @keyframes sarsil{
+    10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-7px);} 40%,60%{transform:translateX(7px);}
+  }
   .guess-row button{background:var(--accent); color:#1a1614; border:none; border-radius:6px;
-    padding:0 22px; font-weight:600; cursor:pointer;}
+    padding:0 22px; min-height:46px; font-weight:600; cursor:pointer;
+    transition:transform .1s ease, filter .15s ease;}
+  .guess-row button:hover:not(:disabled){filter:brightness(1.08);}
+  .guess-row button:active:not(:disabled){transform:translateY(1px);}
   .guess-row button:disabled{opacity:.35; cursor:default;}
   .ac-list{position:absolute; top:56px; left:0; right:70px; background:var(--card);
     border:1px solid var(--border); border-radius:6px; max-height:260px; overflow-y:auto; z-index:5; display:none;}
@@ -93,10 +145,14 @@
   </header>
 
   <div class="oyun-alan">
-    <div class="kesit-kart"><div class="kesit-buyuk" id="kesitBuyuk"></div></div>
+    <div class="kesit-kart">
+      <div class="dosya-no" id="dosyaNo"></div>
+      <div class="damga" id="damga" hidden></div>
+      <div class="kesit-buyuk" id="kesitBuyuk"></div>
+    </div>
     <div class="bilgi-panel">
       <div>
-        <div class="netlik-label" id="netlikEtiket">1/3 bölge açık</div>
+        <div class="netlik-label">Açılan Bölgeler</div>
         <div class="netlik-dots" id="netlikDots"></div>
       </div>
       <div class="can-dots" id="canDots"></div>
@@ -235,6 +291,7 @@ function donguBaslat(kisi){
   donguTimer = setInterval(uygula, 1300);
 }
 
+const BOLGE_AD = ["BURUN", "GÖZ", "AĞIZ"];
 function renderPortre(){
   const kisi = aktifKisi();
   const s = aktifDurum();
@@ -246,16 +303,22 @@ function renderPortre(){
     donguDurdur();
     $("kesitBuyuk").innerHTML = `<img src="${kisi.g}" alt="yüz kesiti">` + pencereSvg(kisi, bolge);
   }
-  $("netlikEtiket").textContent = `${bolge}/3 bölge açık`;
-  $("netlikDots").innerHTML = [1,2,3].map(i => `<i class="${i <= bolge ? "acik" : ""}"></i>`).join("");
+  $("dosyaNo").textContent = `DOSYA NO ${String(gunIndex() + 1).padStart(4, "0")}`;
+  $("netlikDots").innerHTML = BOLGE_AD.map((ad, i) => `<i class="${i < bolge ? "acik" : ""}">${ad}</i>`).join("");
   const kalanHak = PUAN.length - s.wrong;
   $("canDots").innerHTML = Array.from({length: PUAN.length}, (_,i) =>
-    i < kalanHak ? "🤎" : "🖤").join("");
+    i < kalanHak ? "<i></i>" : `<i class="harcandi">✕</i>`).join("");
   $("guessInput").disabled = s.over;
   $("guessBtn").disabled = true;
   $("puanAlan").textContent = s.solved ? `Puanın: ${s.score}` : "";
   $("durum").textContent = "";
   $("durum").className = "durum";
+  const damgaEl = $("damga");
+  damgaEl.hidden = !s.over;
+  if (s.over) {
+    damgaEl.textContent = s.solved ? "TESPİT EDİLDİ" : "KAPANDI";
+    damgaEl.className = "damga " + (s.solved ? "iyi" : "kotu");
+  }
   if (s.over && !s.solved) {
     $("durum").textContent = `Hakların bitti. Cevap: ${kisi.isim}`;
     $("durum").className = "durum kotu";
@@ -287,6 +350,10 @@ function showAc(){
     el.addEventListener("click", () => choose(acResults[+el.dataset.i])));
 }
 function hideAc(){ $("acList").style.display = "none"; acResults = []; acIdx = -1; }
+function acSecimiGoster(){
+  $("acList").querySelectorAll(".ac-item").forEach((el, i) => el.classList.toggle("sel", i === acIdx));
+  $("acList").querySelector(".ac-item.sel")?.scrollIntoView({block:"nearest"});
+}
 let secilen = null;
 function choose(p){
   secilen = p;
@@ -345,13 +412,25 @@ function submit(){
   } else if (yanlisMesaj){
     $("durum").textContent = yanlisMesaj;
     $("durum").className = "durum kotu";
+    const input = $("guessInput");
+    input.classList.remove("sarsil"); void input.offsetWidth; input.classList.add("sarsil");
+    if (!s.over) input.focus();
   }
 }
 
 $("guessInput").addEventListener("input", showAc);
 $("guessBtn").addEventListener("click", submit);
 $("guessInput").addEventListener("keydown", e => {
-  if (e.key === "Enter" && !$("guessBtn").disabled) submit();
+  if (e.key === "ArrowDown" && acResults.length){
+    e.preventDefault(); acIdx = (acIdx + 1) % acResults.length; acSecimiGoster();
+  } else if (e.key === "ArrowUp" && acResults.length){
+    e.preventDefault(); acIdx = (acIdx - 1 + acResults.length) % acResults.length; acSecimiGoster();
+  } else if (e.key === "Escape"){
+    hideAc();
+  } else if (e.key === "Enter"){
+    if (acIdx >= 0 && acResults[acIdx]) choose(acResults[acIdx]);
+    else if (!$("guessBtn").disabled) submit();
+  }
 });
 
 function pesEt(){
