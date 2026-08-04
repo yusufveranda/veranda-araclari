@@ -143,8 +143,38 @@ body{transition:background .4s,color .4s}
 /* İskelime: tahta geçiş okları (alt) */
 .tahta-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px auto 0}
 .tahta-nav.gizli{display:none}
-.ara-sayac{text-align:center;font-family:'Playfair Display',serif;font-weight:700;font-size:26px;color:var(--mur);margin:0 0 8px}
+.ara-sayac-row{display:flex;align-items:baseline;justify-content:center;gap:10px;margin:0 0 4px}
+.ara-sayac{text-align:center;font-family:'Playfair Display',serif;font-weight:700;font-size:26px;color:var(--mur)}
 .ara-sayac.dusuk{color:var(--kirmizi)}
+.ara-bonus{font-family:'Playfair Display',serif;font-weight:700;font-size:19px;color:var(--dogru)}
+.ara-kelime-no{text-align:center;font-family:'Libre Baskerville',serif;font-size:12px;color:var(--soluk);margin:0 0 12px}
+.ara-basla{text-align:center;padding:34px 10px 14px}
+.ara-basla p{font-family:'Libre Baskerville',serif;font-size:13px;color:var(--soluk);margin-bottom:16px}
+.ara-basla-btn{display:inline-block;font-family:'Playfair Display',serif;font-weight:700;font-size:19px;color:#fff;
+  background:var(--kirmizi);border:none;border-radius:14px;padding:16px 42px;cursor:pointer;box-shadow:3px 4px 0 var(--kirmizi-yum);transition:transform .12s}
+.ara-basla-btn:hover{transform:translateY(-1px)} .ara-basla-btn:active{transform:translate(1px,2px);box-shadow:1px 1px 0 var(--kirmizi-yum)}
+.ara-gecmis{margin:16px auto 0;max-width:464px;background:var(--mat);border:1.5px solid var(--kutu-cizgi);
+  border-radius:12px;box-shadow:5px 6px 0 var(--mat-golge);padding:13px 15px 12px}
+.ara-gecmis-bas{font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--mur);margin-bottom:9px}
+.ara-gecmis-liste{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto}
+@media(min-width:1120px){
+  .ara-gecmis{position:fixed;top:92px;right:calc(50% - 512px);width:250px;max-width:none;margin:0;max-height:calc(100vh - 124px)}
+  .ara-gecmis-liste{max-height:calc(100vh - 190px)}
+}
+.agk-kart{border:1.5px solid var(--kutu-cizgi);border-radius:9px;padding:7px 9px}
+.agk-kart.ok{border-color:var(--dogru)}
+.agk-ust{display:flex;justify-content:space-between;font-family:'Libre Baskerville',serif;font-size:11px;color:var(--soluk);margin-bottom:5px}
+.agk-sonuc{font-weight:700}
+.agk-kart.ok .agk-sonuc{color:var(--dogru)}
+.agk-kart.yo .agk-sonuc{color:var(--kirmizi)}
+.agk-satir{display:flex;gap:2px;margin-bottom:2px}
+.agk-satir:last-child{margin-bottom:0}
+.agk-h{width:16px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;text-transform:uppercase;border:1px solid var(--kutu-cizgi);color:var(--mur)}
+.agk-h.dogru{background:var(--dogru);border-color:var(--dogru);color:var(--dogru-ink)}
+.agk-h.varr{background:var(--varr);border-color:var(--varr);color:var(--varr-ink)}
+.agk-h.yok{background:var(--yok);border-color:var(--yok);color:var(--yok-ink)}
+.agk-cevap{font-family:'Libre Baskerville',serif;font-size:11px;color:var(--soluk);margin-top:5px}
+.agk-cevap b{color:var(--kirmizi)}
 .tn-ok{font-family:'Playfair Display',serif;font-size:24px;line-height:1;width:46px;height:46px;border-radius:50%;
   border:1.5px solid var(--kutu-cizgi);background:var(--mat);color:var(--mur);cursor:pointer;box-shadow:2px 3px 0 var(--mat-golge);transition:transform .12s}
 .tn-ok:hover{transform:translateY(-1px);border-color:var(--kirmizi);color:var(--kirmizi)}
@@ -515,7 +545,15 @@ body{transition:background .4s,color .4s}
     <div class="sekme-ipucu gizli" id="sekmeIpucu">↔ 6 ayrı kelime</div>
     <div class="sekmeler gizli" id="sekmeler"></div>
     <div class="ipuclar gizli" id="ipuclar"></div>
-    <div class="ara-sayac gizli" id="araSayac"></div>
+    <div class="ara-sayac-row gizli" id="araSayacRow">
+      <div class="ara-sayac" id="araSayac"></div>
+      <span class="ara-bonus gizli" id="araBonus"></span>
+    </div>
+    <div class="ara-kelime-no gizli" id="araKelimeNo"></div>
+    <div class="ara-basla gizli" id="araBaslaKatman">
+      <p>Hazır olduğunda başla. Süre o an işlemeye başlar.</p>
+      <button class="ara-basla-btn" id="araBaslaBtn" type="button">▶ başla</button>
+    </div>
     <div class="mat" id="mat"><div class="tahta" id="tahta"></div></div>
     <div class="tahta-alt" id="tahtaAlt"></div>
     <div class="tahta-nav gizli" id="tahtaNav">
@@ -534,6 +572,10 @@ body{transition:background .4s,color .4s}
     </div>
     <div class="istat" id="istat"></div>
     <div class="ipucu" id="ipucu"></div>
+    <aside class="ara-gecmis gizli" id="araGecmisPanel">
+      <div class="ara-gecmis-bas">geçmiş kelimeler</div>
+      <div class="ara-gecmis-liste" id="araGecmisListe"></div>
+    </aside>
   </section>
 </main>
 <footer><span data-ad="verandle">verandle</span> · <span id="ftnot">her gün yeni</span></footer>
@@ -571,7 +613,7 @@ const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
 const ARA_UZ=[4,5,6,7,8];
-const ARA_BASLANGIC=60, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
+const ARA_BASLANGIC=180, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi (3dk) + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
 const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
 const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
@@ -592,6 +634,7 @@ let oyunGun=0;                 // günü BAŞTA sabitle: gece yarısını geçin
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
 let araSure=0, araTimer=null, araIndeks=0, araGecmis=[];   // Aralık: kalan süre, sayaç interval'i, sıradaki kelime indeksi, biten kelimelerin geçmişi
+let araGecmisTahtalar=[], araBasladi=false, araBonusOynuyor=false;   // Aralık: yanda duran biten kelime kartları, başla-öncesi kapı, bonus akış animasyonu kilidi
 
 /* ===== ses (WebAudio, dosyasız) ===== */
 let actx=null;
@@ -659,7 +702,7 @@ function tahtalariKur(){
     const c=mod==='gun'?ks[oyunGun%ks.length]:ks[Math.floor(Math.random()*ks.length)];
     const t=yeniTahta(5,c); t.maxSatir=3; t.ipucu=ANLAM_CEVAP[c]; tahtalar=[t];
   } else if(oyun==='aralik'){
-    araIndeks=0; araGecmis=[]; araSure=ARA_BASLANGIC;
+    araIndeks=0; araGecmis=[]; araGecmisTahtalar=[]; araSure=ARA_BASLANGIC; araBasladi=false; araBonusOynuyor=false;
     tahtalar=[ aralikSonraki() ];
   } else tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false; sonucKapali=false;
@@ -761,10 +804,13 @@ function revealBitti(){
 }
 function araTick(){
   if(oyun!=='aralik' || oyunBitti){ if(araTimer){ clearInterval(araTimer); araTimer=null; } return; }
+  if(araBonusOynuyor) return;   // bonus rozeti ana süreye akarken gerçek geri sayım durur
   araSure--;
   if(araSure<=0){
     araSure=0;
     if(araTimer){ clearInterval(araTimer); araTimer=null; }
+    const b=aktifTahta();   // süre yarım kelimede biterse o kelime de yana kart olarak eklensin, cevabı görünsün
+    if(b && !b.bitti){ araGecmis.push({uz:b.uz, cozuldu:false, deneme:b.gecmis.length}); araGecmisTahtalar.push(b); }
     if(!revealAnim){ oyunBitti=true; sonucHazir=true; sonucYeni=true; lbGonder(); ciz(); }
     else oyunBitti=true;   // reveal animasyonu bitince revealBitti() zaten sonucHazir'ı açacak
   } else {
@@ -773,7 +819,40 @@ function araTick(){
 }
 function araTimerYonet(){
   if(araTimer){ clearInterval(araTimer); araTimer=null; }
-  if(oyun==='aralik' && !oyunBitti) araTimer=setInterval(araTick,1000);
+  if(oyun==='aralik' && !oyunBitti && araBasladi) araTimer=setInterval(araTick,1000);
+}
+function araBonusBaslat(bonus){
+  // "+Nsn" rozeti yandan geriye sayar, ana süre o sırada donuk kalır (araTick'teki araBonusOynuyor koruması);
+  // her adımda rozet bir azalır, ana süre bir artar: bonus "akıp" ana sayaca geçmiş gibi görünsün.
+  araBonusOynuyor=true;
+  let kalan=bonus;
+  const bel=document.getElementById('araBonus');
+  if(bel){ bel.classList.remove('gizli'); bel.textContent='+'+kalan+'sn'; }
+  const adim=()=>{
+    kalan--; araSure++;
+    const sayac=document.getElementById('araSayac'); if(sayac) sayac.textContent='⏱ '+araSureMetni();
+    if(kalan<=0){
+      araBonusOynuyor=false;
+      if(bel) bel.classList.add('gizli');
+      araTimerYonet();   // gerçek geri sayım kaldığı yerden devam etsin
+      return;
+    }
+    if(bel) bel.textContent='+'+kalan+'sn';
+    setTimeout(adim,55);
+  };
+  setTimeout(adim,55);
+}
+function araGecmisCiz(){   // biten kelimeler yanda kart olarak kalıcı dursun: en yeni üstte
+  const p=document.getElementById('araGecmisPanel');
+  if(!araGecmisTahtalar.length){ p.classList.add('gizli'); return; }
+  p.classList.remove('gizli');
+  const liste=document.getElementById('araGecmisListe');
+  liste.innerHTML = araGecmisTahtalar.map((t,i)=>{
+    const satirlar=t.gecmis.map(row=>'<div class="agk-satir">'+row.harfler.map((h,i2)=>'<span class="agk-h '+row.renkler[i2]+'">'+h+'</span>').join('')+'</div>').join('');
+    const cevapEt = t.kazandi ? '' : '<div class="agk-cevap">cevap: <b>'+t.cevap+'</b></div>';
+    return '<div class="agk-kart '+(t.kazandi?'ok':'yo')+'"><div class="agk-ust"><span>'+(i+1)+'. kelime · '+t.uz+' harf</span>'+
+      '<span class="agk-sonuc">'+(t.kazandi?'✓ '+t.gecmis.length:'✗')+'</span></div>'+satirlar+cevapEt+'</div>';
+  }).reverse().join('');
 }
 function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
   if((window.innerWidth||999)>440) return;
@@ -790,7 +869,8 @@ function durumDegerlendir(){
   if(oyun==='aralik'){   // zamana karşı: kelime bitince (kazanılsa da kaybedilse de) süreye bonus + geçmişe kaydet
     if(!b.bitti) return;   // deneme hakkı kaldı, sıradaki kelimeye geçme, aynı kelimede devam
     araGecmis.push({uz:b.uz, cozuldu:b.kazandi, deneme:b.gecmis.length});
-    if(b.kazandi){ araSure+=ARA_BONUS[b.gecmis.length-1]; bekleyenSes=()=>sBitis(true); }
+    araGecmisTahtalar.push(b);   // biten kart yana eklenip kalıcı kalsın (cevap dahil)
+    if(b.kazandi){ araBonusBaslat(ARA_BONUS[b.gecmis.length-1]); bekleyenSes=()=>sBitis(true); }
     else bekleyenSes=()=>sBitis(false);
     return;   // oyunBitti burada set edilmez, süre 0'a inince araTick() bitirir
   }
@@ -1027,7 +1107,7 @@ function introIcerik(o){
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
   if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
     '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 8 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
-    '<p>Süre <b>1 dakikayla</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
+    '<p>Süre <b>3 dakikayla</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
     '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b>; amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
@@ -1161,17 +1241,31 @@ function yukle(){
     return true;
   }catch(e){ return false; }
 }
-function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti,sonucHazir,araSure,araGecmis,araIndeks}; }
-function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; sonucHazir=!!d.sonucHazir; sonucYeni=false; araSure=d.araSure||0; araGecmis=d.araGecmis||[]; araIndeks=d.araIndeks||0; return true; } return false; }
+function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti,sonucHazir,araSure,araGecmis,araIndeks,araGecmisTahtalar,araBasladi}; }
+function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; sonucHazir=!!d.sonucHazir; sonucYeni=false; araSure=d.araSure||0; araGecmis=d.araGecmis||[]; araIndeks=d.araIndeks||0; araGecmisTahtalar=d.araGecmisTahtalar||[]; araBasladi=!!d.araBasladi; return true; } return false; }
 
 /* ===== çizim ===== */
 function mesaj(m){ document.getElementById('mesaj').textContent=m||''; }
 
 function ciz(){
   const b=aktifTahta();
-  const araEl=document.getElementById('araSayac');
-  araEl.classList.toggle('gizli', oyun!=='aralik');
+  const araEl=document.getElementById('araSayac'), araRow=document.getElementById('araSayacRow');
+  araRow.classList.toggle('gizli', oyun!=='aralik');
   if(oyun==='aralik'){ araEl.textContent='⏱ '+araSureMetni(); araEl.classList.toggle('dusuk', araSure<=10); }
+  // aralık: kaçıncı kelimedeyiz + "başla" kapısı (süre/tahmin başlamadan önce kelime ve klavye gizli) + geçmiş kart paneli
+  const araNo=document.getElementById('araKelimeNo'), araKapi=document.getElementById('araBaslaKatman'),
+        matEl=document.getElementById('mat'), agp=document.getElementById('araGecmisPanel');
+  if(oyun==='aralik'){
+    araNo.classList.remove('gizli'); araNo.textContent=(araIndeks||1)+'. kelime';
+    const kapida=!araBasladi;
+    araKapi.classList.toggle('gizli', !kapida);
+    matEl.classList.toggle('gizli', kapida);   // klavye görünürlüğü aşağıda tek yerden (satır ~1349) yönetiliyor
+    araGecmisCiz();
+  } else {
+    araNo.classList.add('gizli'); araKapi.classList.add('gizli');
+    matEl.classList.remove('gizli');
+    agp.classList.add('gizli');
+  }
   // sekmeler
   const sek=document.getElementById('sekmeler');
   sek.classList.toggle('gizli', oyun!=='iskelime');
@@ -1251,7 +1345,7 @@ function ciz(){
   } else alt.innerHTML='';
   klavyeCiz();
   sonucCiz();
-  document.querySelector('.klavye-sar').classList.toggle('gizli', oyunBitti && sonucHazir);   // bitince klavye gitsin (tek SS)
+  document.querySelector('.klavye-sar').classList.toggle('gizli', (oyunBitti && sonucHazir) || (oyun==='aralik' && !araBasladi));   // bitince ya da aralık başlamadan klavye gitsin
   document.getElementById('lbTepeBtn').classList.toggle('gizli', !(mod==='gun' && lbDestekli()));   // kalıcı 🏆 sadece günlük + desteklenen oyunda
   // başlık / altyazı / ipucu
   const _ay=document.getElementById('altYazi');
@@ -1403,6 +1497,7 @@ window.addEventListener('resize',function(){ if(!document.getElementById('oyunEk
 })();
 document.querySelectorAll('#modSeg button').forEach(x=>x.onclick=()=>{ modSec(x.dataset.mod); x.blur(); });
 document.getElementById('yeniBtn').onclick=yeniOyun;
+document.getElementById('araBaslaBtn').onclick=function(){ this.blur(); araBasladi=true; araTimerYonet(); durumKaydetBellek(); ciz(); };
 document.getElementById('silBtn').onclick=function(){ sil(); this.blur(); };
 document.getElementById('deneBtn').onclick=function(){ dene(); this.blur(); };
 document.getElementById('oncekiTahta').onclick=function(){ tahtaGec(-1); this.blur(); };
@@ -1426,6 +1521,7 @@ document.addEventListener('keydown',e=>{
   if(!document.getElementById('introModal').classList.contains('gizli')){ if(e.key==='Escape') introKapat(); return; }   // açıklama açıkken oyuna karışma
   if(/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName)) return;   // isim alanına yazarken oyuna karışma
   if(document.getElementById('oyunEkran').classList.contains('gizli')) return;   // hub'dayken karışma (kartlar Enter'la açılsın)
+  if(oyun==='aralik' && !araBasladi) return;   // "başla" tuşuna basmadan tahmin girilmesin
   const ae=document.activeElement;
   if(ae && (ae.tagName==='BUTTON'||ae.tagName==='A')) ae.blur();   // odaktaki düğme/link Enter'ı yutup toggle/gezinme yapmasın
   if(e.key==='Enter'){ e.preventDefault(); dene(); }
