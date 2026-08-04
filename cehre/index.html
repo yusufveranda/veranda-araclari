@@ -209,41 +209,30 @@ function pencereSvg(kisi, bolge){
   </svg>`;
 }
 
-// Bulmaca bitince (bilince ya da pes edilince): tek bir "delik" başlangıçtaki
-// (yalnız burun) boyutundan tüm fotoğrafı kaplayana kadar büyüyüp küçülerek
-// gif gibi döngüye giriyor - Karanlık Oda'daki poster açıl-kapan döngüsüyle aynı fikir.
+// Bulmaca bitince (bilince ya da pes edilince): AYNI burun->göz->ağız pencereleri
+// sırayla açılır (1: burun, 2: +gözler, 3: +ağız), SONRA fotoğrafın TAMAMI
+// (maskesiz, 4. adım) açılır, ardından başa (1) dönüp döngü tekrar eder - gif gibi.
 let donguTimer = null;
 function donguDurdur(){
   if (donguTimer){ clearInterval(donguTimer); donguTimer = null; }
 }
-function bitisSvg(kisi){
-  const [bx, by] = kisi.konum.burun;
-  const [bw, bh] = PENCERE_BOYUT.burun;
-  const x = Math.max(0, bx - bw / 2), y = Math.max(0, by - bh / 2);
+function tamAcikSvg(){
   return `<svg viewBox="0 0 100 100" preserveAspectRatio="none">
-    <defs><mask id="pm"><rect width="100" height="100" fill="white"/>
-      <rect id="donguDelik" x="${x}" y="${y}" width="${bw}" height="${bh}" rx="1.2" fill="black"
-        style="transition:x 1.3s ease-in-out, y 1.3s ease-in-out, width 1.3s ease-in-out, height 1.3s ease-in-out, rx 1.3s ease-in-out;"/>
-    </mask></defs>
+    <defs><mask id="pm"><rect width="100" height="100" fill="white"/><rect x="0" y="0" width="100" height="100" fill="black"/></mask></defs>
     <rect width="100" height="100" fill="#0c0a09" mask="url(#pm)"/>
   </svg>`;
 }
 function donguBaslat(kisi){
   donguDurdur();
-  const [bx, by] = kisi.konum.burun;
-  const [bw, bh] = PENCERE_BOYUT.burun;
-  const kapali = {x: Math.max(0, bx - bw / 2), y: Math.max(0, by - bh / 2), width: bw, height: bh, rx: 1.2};
-  const acikDurum = {x: 0, y: 0, width: 100, height: 100, rx: 0};
-  let acik = false;
-  donguTimer = setInterval(() => {
-    const r = document.getElementById("donguDelik");
-    if (!r) { donguDurdur(); return; }
-    const hedef = acik ? kapali : acikDurum;
-    r.setAttribute("x", hedef.x); r.setAttribute("y", hedef.y);
-    r.setAttribute("width", hedef.width); r.setAttribute("height", hedef.height);
-    r.setAttribute("rx", hedef.rx);
-    acik = !acik;
-  }, 1700);
+  let adim = 1;   // 1-3: burun/+göz/+ağız pencereleri, 4: fotoğrafın tamamı
+  const uygula = () => {
+    $("kesitBuyuk").querySelector("svg")?.remove();
+    const svg = adim <= 3 ? pencereSvg(kisi, adim) : tamAcikSvg();
+    $("kesitBuyuk").insertAdjacentHTML("beforeend", svg);
+    adim = adim >= 4 ? 1 : adim + 1;
+  };
+  uygula();
+  donguTimer = setInterval(uygula, 1300);
 }
 
 function renderPortre(){
@@ -251,7 +240,7 @@ function renderPortre(){
   const s = aktifDurum();
   const bolge = s.over ? 3 : bolgeSayisi(s.wrong);
   if (s.over) {
-    $("kesitBuyuk").innerHTML = `<img src="${kisi.g}" alt="yüz kesiti">` + bitisSvg(kisi);
+    $("kesitBuyuk").innerHTML = `<img src="${kisi.g}" alt="yüz kesiti">`;
     donguBaslat(kisi);
   } else {
     donguDurdur();
