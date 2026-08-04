@@ -632,7 +632,7 @@ function altinUz(){ return (mod==='gun'&&oyun==='iskelime') ? ISK_UZ[((oyunGun*2
 
 /* ===== aralık: kelime akışı ===== */
 // gün modu: uzunluk + kelime, gün numarası + sıradaki indekse göre DETERMİNİSTİK üretilir (herkese aynı sıra).
-// sonsuz modu: tam rastgele. Liste sonsuza uzayabilir (zincirleme 1.-denemede bonuslar süreyi çok uzatabilir) — formülün üst sınırı yok.
+// sonsuz modu: tam rastgele. Liste sonsuza uzayabilir (zincirleme 1.-denemede bonuslar süreyi çok uzatabilir), formülün üst sınırı yok.
 function aralikUzunluk(i){
   return mod==='gun' ? ARA_UZ[((oyunGun*2654435761 + i*40503)>>>0)%ARA_UZ.length]
                       : ARA_UZ[Math.floor(Math.random()*ARA_UZ.length)];
@@ -748,7 +748,7 @@ function revealBitti(){
   if(bekleyenMesaj){ mesaj(bekleyenMesaj); bekleyenMesaj=''; }
   if(oyunBitti){ sonucHazir=true; sonucYeni=true; lbGonder(); }
   if(oyun==='iskelime' && sonBitenTahta>=0 && mod==='gun'){ kelimeIstatPopup(tahtalar[sonBitenTahta]); }
-  const araKelimeBitti = (oyun==='aralik' && sonBitenTahta>=0);   // bu turdaki tahmin kelimeyi BİTİRDİ mi (çözüldü ya da 6 deneme doldu) — yoksa hâlâ hakkı var
+  const araKelimeBitti = (oyun==='aralik' && sonBitenTahta>=0);   // bu turdaki tahmin kelimeyi BİTİRDİ mi (çözüldü ya da 6 deneme doldu), yoksa hâlâ hakkı var
   sonBitenTahta=-1;
   // Aralık: bu kelimenin çevirme animasyonu bittikten SONRA sıradaki kelimeye geç (süre henüz bitmediyse), AMA SADECE kelime gerçekten bittiyse.
   // Hemen tahtalar[]'ı değiştirmek az önceki tahminin renk açılma animasyonunu keserdi.
@@ -788,11 +788,11 @@ function durumDegerlendir(){
   const b=aktifTahta();
   bekleyenMesaj=''; bekleyenSes=null;
   if(oyun==='aralik'){   // zamana karşı: kelime bitince (kazanılsa da kaybedilse de) süreye bonus + geçmişe kaydet
-    if(!b.bitti) return;   // deneme hakkı kaldı — sıradaki kelimeye geçme, aynı kelimede devam
+    if(!b.bitti) return;   // deneme hakkı kaldı, sıradaki kelimeye geçme, aynı kelimede devam
     araGecmis.push({uz:b.uz, cozuldu:b.kazandi, deneme:b.gecmis.length});
     if(b.kazandi){ araSure+=ARA_BONUS[b.gecmis.length-1]; bekleyenSes=()=>sBitis(true); }
     else bekleyenSes=()=>sBitis(false);
-    return;   // oyunBitti burada set edilmez — süre 0'a inince araTick() bitirir
+    return;   // oyunBitti burada set edilmez, süre 0'a inince araTick() bitirir
   }
   if(oyun!=='iskelime'){   // harfiyat + anlamca: tek tahta
     if(b.kazandi){ oyunBitti=true; bekleyenMesaj=OVGU[Math.min(b.gecmis.length-1,OVGU.length-1)]; bekleyenSes=()=>sBitis(true); istatleGuncelle(true); }
@@ -1015,7 +1015,7 @@ function introIcerik(o){
   if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
     '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 8 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
     '<p>Süre <b>30 saniyeyle</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
-    '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b> — amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
+    '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b>; amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
     '<p>Sen bunların <b>işaret ettiği 5 harfli kelimeyi</b> bul (cevap: <i>deniz</i>). 3 deneme hakkın var.</p>'+
@@ -1131,7 +1131,7 @@ function istatGoster(){
 /* ===== günlük ilerleme + bellek ===== */
 const gA=()=> 'harfiyat:gun:'+oyun;
 function kaydet(){
-  // Aralık: canlı sayaç durumu (kesirli saniye dahil) sayfa yenilemede tutarlı geri yüklenemez —
+  // Aralık: canlı sayaç durumu (kesirli saniye dahil) sayfa yenilemede tutarlı geri yüklenemez,
   // reload = o günün dizisini baştan (indeks 0) yeniden dener, hile riski diğer günlük modlarla aynı seviyede kalır.
   if(mod!=='gun' || oyun==='aralik') return;
   try{ localStorage.setItem(gA(),JSON.stringify({gun:oyunGun,oyun,t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi,c:b.cevap}))})); }catch(e){}
