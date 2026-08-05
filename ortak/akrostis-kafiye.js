@@ -1,4 +1,4 @@
-// Akrostiş kafiye motoru — site/sozluk'teki uyak sekmesinin (veri/template.html:566-616)
+// Akrostiş kafiye motoru: site/sozluk'teki uyak sekmesinin (veri/template.html:566-616)
 // kucuk bir portu: ek-dusurme + ortak-ses-uzunlugu ile iki kelime arasindaki kafiye gucunu hesaplar.
 (function(root){
   const TRMAP = {"İ":"i","I":"ı","Ş":"ş","Ğ":"ğ","Ü":"ü","Ö":"ö","Ç":"ç"};
