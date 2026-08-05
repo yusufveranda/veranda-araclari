@@ -161,6 +161,92 @@
 /* Takımyıldız — gömme kipi (yalnız ?meta=1) */
 body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar,body.gomulu .gece-dug{display:none}
 .ust-satir{display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+/* ---- bonus tur: bayrağı bildikten sonra ülke hakkında 6 soru ---- */
+.bonus-baslat{margin-top:14px;padding:13px 18px;border-radius:11px;border:1.5px dashed var(--acc);
+  background:var(--acc-soft);color:var(--acc);font:inherit;font-size:15px;text-align:left;width:100%}
+.bonus-baslat:hover{background:var(--acc);color:#F2E6CE;border-style:solid}
+.bonus-ozet-btn{margin-top:14px;padding:11px 16px;border-radius:11px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink);font:inherit;font-size:14px;width:100%;text-align:left;
+  display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bonus-ozet-btn:hover{border-color:var(--acc)}
+.bonus-adim{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);
+  border-radius:0 12px 12px 0;padding:16px 18px;margin-top:10px;animation:belB .3s ease}
+.bonus-adim.tamam{padding:11px 18px;border-left-color:var(--muted)}
+@keyframes belB{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.bonus-baslik{font-family:'Playfair Display',Georgia,serif;font-size:15px;color:var(--ink);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px}
+.bonus-baslik .no{width:21px;height:21px;border-radius:50%;background:var(--acc-soft);color:var(--acc);
+  font-size:11.5px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.bonus-tamam-satir{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted)}
+.bonus-tamam-satir .im{font-size:15px;flex:none}
+.bonus-govde{font-size:15px;color:var(--ink)}
+.bonus-govde p{margin:0 0 12px}
+.bonus-soz{font-family:'Playfair Display',Georgia,serif;font-size:25px;text-align:center;margin:4px 0 16px;color:var(--ink)}
+.bonus-sembol{font-family:'Playfair Display',Georgia,serif;font-size:40px;text-align:center;margin:2px 0 16px;color:var(--vurgu)}
+.secenekler{display:flex;flex-direction:column;gap:8px}
+.secenekler button{font:inherit;font-size:15px;padding:11px 15px;border-radius:10px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink);text-align:left}
+.secenekler button:hover:not(:disabled){border-color:var(--acc)}
+.secenekler button:disabled{cursor:default}
+.secenekler button.dogru{border-color:var(--acc);background:var(--acc-soft);color:var(--acc)}
+.secenekler button.yanlis{border-color:#c8743c;opacity:.55}
+.bonus-mesaj{margin-top:12px;font-size:14px;line-height:1.5}
+.bonus-mesaj b{font-family:'Playfair Display',Georgia,serif;font-size:15px}
+.bonus-mesaj.dogru b{color:var(--acc)}
+.bonus-mesaj.yanlis b{color:#b1502f}
+
+.komsu-form{display:flex;gap:8px;position:relative}
+.komsu-form input{flex:1;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);
+  color:var(--ink);font:inherit;font-size:15px}
+.komsu-form input.titre{animation:titreB .35s}
+@keyframes titreB{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.komsu-form button{padding:0 16px;border:none;border-radius:10px;background:var(--acc);color:#F2E6CE;font:inherit;font-size:14px}
+.komsu-say{font-size:13px;color:var(--muted);margin-top:9px}
+.komsu-cocuk{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.komsu-rozet{display:inline-flex;align-items:center;gap:6px;background:var(--acc-soft);border:1px solid var(--acc-soft);
+  border-radius:16px;padding:3px 10px 3px 3px;font-size:13px;color:var(--ink);animation:belB .25s ease}
+.komsu-rozet img{width:20px;height:14px;object-fit:cover;border-radius:3px}
+.komsu-oneri{position:absolute;left:0;right:74px;top:calc(100% + 4px);background:var(--card);border:1px solid var(--line);
+  border-radius:10px;box-shadow:0 8px 20px var(--shadow);z-index:10;overflow:hidden;display:none}
+.komsu-oneri.acik{display:block}
+.komsu-oneri button{display:block;width:100%;text-align:left;background:none;border:none;padding:8px 13px;font:inherit;font-size:14px;color:var(--ink)}
+.komsu-oneri button:hover{background:var(--acc-soft)}
+.komsu-gec{margin-top:11px;background:none!important;border:none!important;color:var(--muted)!important;
+  font-size:13px;text-decoration:underline;padding:0!important;width:auto!important}
+
+.hane-cark{display:flex;justify-content:center;gap:2px;flex-wrap:wrap;margin:14px 0}
+.hane-c{display:flex;flex-direction:column;align-items:center;gap:2px}
+.hane-c.vs{margin-right:7px}
+.hane-c button{width:23px;height:17px;border:1px solid var(--line);background:var(--card);color:var(--muted);
+  border-radius:4px;font-size:9px;line-height:1;padding:0;cursor:pointer}
+.hane-c button:hover{border-color:var(--acc);color:var(--acc)}
+.hane-c b{width:23px;text-align:center;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:16px;
+  color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:3px 0}
+.hane-gosterim{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;color:var(--vurgu);
+  text-align:center;margin-bottom:2px}
+.hane-gonder{display:block;margin:6px auto 0;padding:10px 24px;border:none;border-radius:10px;background:var(--acc);
+  color:#F2E6CE;font:inherit;font-size:15px}
+
+.alan-vs{display:flex;align-items:center;justify-content:center;gap:14px;margin:8px 0 16px}
+.alan-kutu{display:flex;flex-direction:column;align-items:center;gap:6px}
+.alan-kutu .bayrak{width:56px;height:38px;object-fit:cover;border-radius:5px;box-shadow:0 2px 8px var(--shadow)}
+.alan-kutu .ad{font-size:12px;color:var(--muted);max-width:92px;text-align:center}
+.alan-vs-orta{font-family:'Playfair Display',Georgia,serif;font-size:14px;color:var(--muted);font-style:italic}
+.alan-secim{display:flex;gap:8px;justify-content:center}
+.alan-secim button{font:inherit;font-size:14.5px;padding:10px 18px;border-radius:10px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink)}
+.alan-secim button:hover:not(:disabled){border-color:var(--acc)}
+.alan-oran{display:flex;align-items:flex-end;justify-content:center;gap:22px;margin:16px 0 4px}
+.alan-blok{display:flex;flex-direction:column;align-items:center;gap:6px}
+.alan-blok .kutu{background:var(--acc-soft);border:1.5px solid var(--acc);border-radius:4px}
+.alan-blok .km2{font-size:13px;color:var(--ink);font-weight:bold}
+.alan-blok .ad2{font-size:11.5px;color:var(--muted)}
+
+.bonus-yildiz{font-size:21px;letter-spacing:3px;margin:10px 0 4px}
+.bonus-ozet{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:10px;
+  box-shadow:0 6px 20px var(--shadow);text-align:center;animation:belB .4s ease}
+.bonus-ozet h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:19px;color:var(--ink);margin:0}
 </style>
 </head>
 <body>
@@ -212,6 +298,7 @@ body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar,body.gomulu .g
         </div>
         <div class="uyari" id="uyari"></div>
         <div id="sonucYuva"></div>
+        <div id="bonusYuva"></div>
         <p class="not">Otomatik tamamlamadan seçebilir ya da adını yazıp <b>tahmin</b>e basabilirsin. Türkçe ad esas; “İngiltere”, “ABD”, “BAE” gibi yaygın adlar da kabul. Yeni bir bayrak her gün gece yarısı; canın çekerse <b>🎲 rastgele</b> ile istediğin kadar antren yap.</p>
       </div>
     </div>
@@ -361,6 +448,131 @@ const U = [
 const HARITA = {}; U.forEach(u=>HARITA[u[0]]=u);
 const SIRA = U.map(u=>u[0]);
 
+/* ===================== bonus veri: nüfus, alan, dil, para, komşu, en kalabalık şehir ===================== */
+/* n:nüfus a:alan(km²) dk/dl:dil kodu+adı s:o dilde "merhaba" pk/pa:para kodu+adı sm:sembol
+   sh:başkentten farklıysa en kalabalık şehir, kom:[[kod,ad],...] komşu ülkeler, ka:ekstra kabul edilen komşu adı */
+const EK = {
+tr:{n:85325965,a:783562,dk:"tur",dl:"Türkçe",s:"Merhaba",pk:"TRY",pa:"Türk Lirası",sm:"₺",sh:"İstanbul",kom:[["am","Ermenistan"],["az","Azerbaycan"],["bg","Bulgaristan"],["ge","Gürcistan"],["gr","Yunanistan"],["ir","İran"],["iq","Irak"],["sy","Suriye"]],ka:[]},
+de:{n:83287273,a:357114,dk:"deu",dl:"Almanca",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["be","Belçika"],["cz","Çekya"],["dk","Danimarka"],["fr","Fransa"],["lu","Lüksemburg"],["nl","Hollanda"],["pl","Polonya"],["ch","İsviçre"]],ka:[]},
+fr:{n:68372286,a:551695,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["ad","Andorra"],["be","Belçika"],["de","Almanya"],["it","İtalya"],["lu","Lüksemburg"],["mc","Monako"],["es","İspanya"],["ch","İsviçre"]],ka:[]},
+it:{n:58984216,a:301336,dk:"ita",dl:"İtalyanca",s:"Ciao",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["fr","Fransa"],["sm","San Marino"],["si","Slovenya"],["ch","İsviçre"],["va","Vatikan"]],ka:[]},
+gb:{n:68526000,a:242900,dk:"eng",dl:"İngilizce",s:"Hello",pk:"GBP",pa:"İngiliz Sterlini",sm:"£",sh:null,kom:[["ie","İrlanda"]],ka:["ingiltere"]},
+us:{n:336755052,a:9372610,dk:"eng",dl:"İngilizce",s:"Hello",pk:"USD",pa:"ABD Doları",sm:"$",sh:"New York",kom:[["ca","Kanada"],["mx","Meksika"]],ka:[]},
+jp:{n:124516650,a:377930,dk:"jpn",dl:"Japonca",s:"こんにちは",pk:"JPY",pa:"Japon Yeni",sm:"¥",sh:null,kom:[],ka:[]},
+es:{n:48352528,a:505992,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["ad","Andorra"],["fr","Fransa"],["gi","Cebelitarık"],["pt","Portekiz"],["ma","Fas"]],ka:[]},
+br:{n:211140729,a:8515767,dk:"por",dl:"Portekizce",s:"Olá",pk:"BRL",pa:"Brezilya Reali",sm:"R$",sh:"São Paulo",kom:[["ar","Arjantin"],["bo","Bolivya"],["co","Kolombiya"],["gy","Guyana"],["py","Paraguay"],["pe","Peru"],["sr","Surinam"],["uy","Uruguay"],["ve","Venezuela"]],ka:[]},
+cn:{n:1410710000,a:9706961,dk:"zho",dl:"Çince",s:"你好",pk:"CNY",pa:"Çin Yuanı",sm:"¥",sh:"Şanghay",kom:[["af","Afganistan"],["bt","Butan"],["mm","Myanmar"],["in","Hindistan"],["kz","Kazakistan"],["np","Nepal"],["kp","Kuzey Kore"],["kg","Kırgızistan"],["la","Laos"],["mn","Moğolistan"],["pk","Pakistan"],["ru","Rusya"],["tj","Tacikistan"],["vn","Vietnam"]],ka:["birmanya"]},
+ru:{n:143826130,a:17098242,dk:"rus",dl:"Rusça",s:"Привет",pk:"RUB",pa:"Rus Rublesi",sm:"₽",sh:null,kom:[["az","Azerbaycan"],["by","Belarus"],["cn","Çin"],["ee","Estonya"],["fi","Finlandiya"],["ge","Gürcistan"],["kz","Kazakistan"],["kp","Kuzey Kore"],["lv","Letonya"],["lt","Litvanya"],["mn","Moğolistan"],["no","Norveç"],["pl","Polonya"],["ua","Ukrayna"]],ka:[]},
+ca:{n:40049088,a:9984670,dk:"eng",dl:"İngilizce",s:"Hello",pk:"CAD",pa:"Kanada Doları",sm:"$",sh:"Toronto",kom:[["us","ABD"]],ka:["ABD"]},
+gr:{n:10407351,a:131990,dk:"ell",dl:"Yunanca",s:"Γεια σου",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["al","Arnavutluk"],["bg","Bulgaristan"],["tr","Türkiye"],["mk","Kuzey Makedonya"]],ka:[]},
+nl:{n:17877117,a:41850,dk:"nld",dl:"Flemenkçe",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["be","Belçika"],["de","Almanya"]],ka:["felemenk"]},
+se:{n:10536632,a:450295,dk:"swe",dl:"İsveççe",s:"Hej",pk:"SEK",pa:"İsveç Kronu",sm:"kr",sh:null,kom:[["fi","Finlandiya"],["no","Norveç"]],ka:[]},
+no:{n:5519601,a:323802,dk:"nob",dl:"Norveççe",s:"Hei",pk:"NOK",pa:"Norveç Kronu",sm:"kr",sh:null,kom:[["fi","Finlandiya"],["se","İsveç"],["ru","Rusya"]],ka:[]},
+ch:{n:8888822,a:41284,dk:"gsw",dl:"İsviçre Almancası",s:"Grüezi",pk:"CHF",pa:"İsviçre Frangı",sm:"Fr.",sh:"Zürih",kom:[["at","Avusturya"],["fr","Fransa"],["it","İtalya"],["li","Lihtenştayn"],["de","Almanya"]],ka:[]},
+pt:{n:10578174,a:92090,dk:"por",dl:"Portekizce",s:"Olá",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["es","İspanya"]],ka:[]},
+ie:{n:5311538,a:70273,dk:"eng",dl:"İngilizce",s:"Hello",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["gb","Birleşik Krallık"]],ka:[]},
+in:{n:1438069596,a:3287590,dk:"hin",dl:"Hintçe",s:"नमस्ते",pk:"INR",pa:"Hindistan Rupisi",sm:"₹",sh:"Mumbai",kom:[["bd","Bangladeş"],["bt","Butan"],["mm","Myanmar"],["cn","Çin"],["np","Nepal"],["pk","Pakistan"]],ka:["birmanya"]},
+kr:{n:51712619,a:100210,dk:"kor",dl:"Korece",s:"안녕하세요",pk:"KRW",pa:"Güney Kore Wonu",sm:"₩",sh:null,kom:[["kp","Kuzey Kore"]],ka:[]},
+mx:{n:129739759,a:1964375,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"MXN",pa:"Meksika Pesosu",sm:"$",sh:null,kom:[["bz","Belize"],["gt","Guatemala"],["us","ABD"]],ka:["ABD"]},
+ar:{n:45538401,a:2780400,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"ARS",pa:"Arjantin Pesosu",sm:"$",sh:null,kom:[["bo","Bolivya"],["br","Brezilya"],["cl","Şili"],["py","Paraguay"],["uy","Uruguay"]],ka:[]},
+au:{n:26659922,a:7692024,dk:"eng",dl:"İngilizce",s:"Hello",pk:"AUD",pa:"Avustralya Doları",sm:"$",sh:"Sidney",kom:[],ka:[]},
+eg:{n:114535772,a:1002450,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"EGP",pa:"Mısır Lirası",sm:"£",sh:null,kom:[["il","İsrail"],["ly","Libya"],["ps","Filistin"],["sd","Sudan"]],ka:["Gazze"]},
+za:{n:63212384,a:1221037,dk:"zul",dl:"Zuluca",s:"Sawubona",pk:"ZAR",pa:"Güney Afrika Randı",sm:"R",sh:"Johannesburg",kom:[["bw","Botsvana"],["ls","Lesotho"],["mz","Mozambik"],["na","Namibya"],["sz","Esvatini"],["zw","Zimbabve"]],ka:["Svaziland"]},
+sa:{n:33702731,a:2149690,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SAR",pa:"Suudi Arabistan Riyali",sm:"ر.س",sh:null,kom:[["iq","Irak"],["jo","Ürdün"],["kw","Kuveyt"],["om","Umman"],["qa","Katar"],["ae","Birleşik Arap Emirlikleri"],["ye","Yemen"]],ka:["bae"]},
+pl:{n:36687353,a:312679,dk:"pol",dl:"Lehçe",s:"Cześć",pk:"PLN",pa:"Polonya Zlotisi",sm:"zł",sh:null,kom:[["by","Belarus"],["cz","Çekya"],["de","Almanya"],["lt","Litvanya"],["ru","Rusya"],["sk","Slovakya"],["ua","Ukrayna"]],ka:[]},
+ua:{n:37732836,a:603500,dk:"ukr",dl:"Ukraynaca",s:"Привіт",pk:"UAH",pa:"Ukrayna Grivnası",sm:"₴",sh:null,kom:[["by","Belarus"],["hu","Macaristan"],["md","Moldova"],["pl","Polonya"],["ro","Romanya"],["ru","Rusya"],["sk","Slovakya"]],ka:["kiyev"]},
+be:{n:11779946,a:30528,dk:"nld",dl:"Flamanca",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["fr","Fransa"],["de","Almanya"],["lu","Lüksemburg"],["nl","Hollanda"]],ka:[]},
+at:{n:9131761,a:83871,dk:"bar",dl:"Almanca",s:"Servus",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["cz","Çekya"],["de","Almanya"],["hu","Macaristan"],["it","İtalya"],["li","Lihtenştayn"],["sk","Slovakya"],["si","Slovenya"],["ch","İsviçre"]],ka:[]},
+fi:{n:5583911,a:338424,dk:"fin",dl:"Fince",s:"Hei",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["no","Norveç"],["se","İsveç"],["ru","Rusya"]],ka:[]},
+dk:{n:5946952,a:43094,dk:"dan",dl:"Danca",s:"Hej",pk:"DKK",pa:"Danimarka Kronu",sm:"kr",sh:null,kom:[["de","Almanya"]],ka:[]},
+ma:{n:37712505,a:446550,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"MAD",pa:"Fas Dirhemi",sm:"د.م.",sh:"Kazablanka",kom:[["dz","Cezayir"],["eh","Sahra Demokratik Arap Cumhuriyeti"],["es","İspanya"]],ka:["Batı Sahra"]},
+dz:{n:46164219,a:2381741,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"DZD",pa:"Cezayir Dinarı",sm:"د.ج",sh:null,kom:[["tn","Tunus"],["ly","Libya"],["ne","Nijer"],["eh","Sahra Demokratik Arap Cumhuriyeti"],["mr","Moritanya"],["ml","Mali"],["ma","Fas"]],ka:["Batı Sahra"]},
+ng:{n:227882945,a:923768,dk:"eng",dl:"İngilizce",s:"Hello",pk:"NGN",pa:"Nijerya Nairası",sm:"₦",sh:"Lagos",kom:[["bj","Benin"],["cm","Kamerun"],["td","Çad"],["ne","Nijer"]],ka:["Çad"]},
+ke:{n:55339003,a:580367,dk:"swa",dl:"Svahili",s:"Jambo",pk:"KES",pa:"Kenya Şilini",sm:"Sh",sh:null,kom:[["et","Etiyopya"],["so","Somali"],["ss","Güney Sudan"],["tz","Tanzanya"],["ug","Uganda"]],ka:[]},
+ir:{n:90608707,a:1648195,dk:"fas",dl:"Farsça",s:"سلام",pk:"IRR",pa:"İran Riyali",sm:"﷼",sh:null,kom:[["af","Afganistan"],["am","Ermenistan"],["az","Azerbaycan"],["iq","Irak"],["pk","Pakistan"],["tr","Türkiye"],["tm","Türkmenistan"]],ka:[]},
+iq:{n:45074049,a:438317,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"IQD",pa:"Irak Dinarı",sm:"ع.د",sh:null,kom:[["ir","İran"],["jo","Ürdün"],["kw","Kuveyt"],["sa","Suudi Arabistan"],["sy","Suriye"],["tr","Türkiye"]],ka:[]},
+il:{n:9849000,a:20770,dk:"heb",dl:"İbranice",s:"שלום",pk:"ILS",pa:"İsrail Yeni Şekeli",sm:"₪",sh:null,kom:[["eg","Mısır"],["jo","Ürdün"],["lb","Lübnan"],["ps","Filistin"],["sy","Suriye"]],ka:[]},
+th:{n:71702435,a:513120,dk:"tha",dl:"Tayca",s:"สวัสดี",pk:"THB",pa:"Tayland Bahtı",sm:"฿",sh:null,kom:[["mm","Myanmar"],["kh","Kamboçya"],["la","Laos"],["my","Malezya"]],ka:["birmanya","kambodya"]},
+vn:{n:100352192,a:331212,dk:"vie",dl:"Vietnamca",s:"Xin chào",pk:"VND",pa:"Vietnam Dongu",sm:"₫",sh:"Ho Chi Minh Kenti",kom:[["kh","Kamboçya"],["cn","Çin"],["la","Laos"]],ka:["kambodya"]},
+id:{n:281190067,a:1904569,dk:"ind",dl:"Endonezce",s:"Halo",pk:"IDR",pa:"Endonezya Rupisi",sm:"Rp",sh:null,kom:[["tl","Doğu Timor"],["my","Malezya"],["pg","Papua Yeni Gine"]],ka:["timor","png"]},
+my:{n:35126298,a:330803,dk:"msa",dl:"Malayca",s:"Salam",pk:"MYR",pa:"Malezya Ringgiti",sm:"RM",sh:null,kom:[["bn","Brunei"],["id","Endonezya"],["th","Tayland"]],ka:[]},
+ph:{n:114891199,a:342353,dk:"fil",dl:"Filipince",s:"Kumusta",pk:"PHP",pa:"Filipin Pesosu",sm:"₱",sh:"Quezon City",kom:[],ka:[]},
+pk:{n:247504495,a:881912,dk:"urd",dl:"Urduca",s:"السلام علیکم",pk:"PKR",pa:"Pakistan Rupisi",sm:"₨",sh:"Karaçi",kom:[["af","Afganistan"],["cn","Çin"],["in","Hindistan"],["ir","İran"]],ka:[]},
+bd:{n:171466990,a:147570,dk:"ben",dl:"Bengalce",s:"নমস্কার",pk:"BDT",pa:"Bangladeş Takası",sm:"৳",sh:null,kom:[["mm","Myanmar"],["in","Hindistan"]],ka:["birmanya"]},
+sg:{n:5917648,a:710,dk:"eng",dl:"İngilizce",s:"Hello",pk:"SGD",pa:"Singapur Doları",sm:"$",sh:null,kom:[],ka:[]},
+ae:{n:10483751,a:83600,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"AED",pa:"BAE Dirhemi",sm:"د.إ",sh:"Dubai",kom:[["om","Umman"],["sa","Suudi Arabistan"]],ka:[]},
+qa:{n:2656032,a:11586,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"QAR",pa:"Katar Riyali",sm:"ر.ق",sh:null,kom:[["sa","Suudi Arabistan"]],ka:[]},
+cz:{n:10864042,a:78865,dk:"ces",dl:"Çekçe",s:"Ahoj",pk:"CZK",pa:"Çek Korunası",sm:"Kč",sh:null,kom:[["at","Avusturya"],["de","Almanya"],["pl","Polonya"],["sk","Slovakya"]],ka:["çek cumhuriyeti"]},
+hu:{n:9592186,a:93028,dk:"hun",dl:"Macarca",s:"Szia",pk:"HUF",pa:"Macar Forinti",sm:"Ft",sh:null,kom:[["at","Avusturya"],["hr","Hırvatistan"],["ro","Romanya"],["rs","Sırbistan"],["sk","Slovakya"],["si","Slovenya"],["ua","Ukrayna"]],ka:[]},
+ro:{n:19061062,a:238391,dk:"ron",dl:"Rumence",s:"Bună",pk:"RON",pa:"Rumen Leyi",sm:"lei",sh:null,kom:[["bg","Bulgaristan"],["hu","Macaristan"],["md","Moldova"],["rs","Sırbistan"],["ua","Ukrayna"]],ka:[]},
+rs:{n:6623183,a:88361,dk:"srp",dl:"Sırpça",s:"Здраво",pk:"RSD",pa:"Sırp Dinarı",sm:"дин.",sh:null,kom:[["ba","Bosna-Hersek"],["bg","Bulgaristan"],["hr","Hırvatistan"],["hu","Macaristan"],["xk","Kosova"],["mk","Kuzey Makedonya"],["me","Karadağ"],["ro","Romanya"]],ka:[]},
+hr:{n:3859686,a:56594,dk:"hrv",dl:"Hırvatça",s:"Bok",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["ba","Bosna-Hersek"],["hu","Macaristan"],["me","Karadağ"],["rs","Sırbistan"],["si","Slovenya"]],ka:[]},
+bg:{n:6446596,a:110879,dk:"bul",dl:"Bulgarca",s:"Здравей",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["gr","Yunanistan"],["mk","Kuzey Makedonya"],["ro","Romanya"],["rs","Sırbistan"],["tr","Türkiye"]],ka:[]},
+sk:{n:5426740,a:49037,dk:"slk",dl:"Slovakça",s:"Ahoj",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["cz","Çekya"],["hu","Macaristan"],["pl","Polonya"],["ua","Ukrayna"]],ka:[]},
+si:{n:2120461,a:20273,dk:"slv",dl:"Slovence",s:"Živjo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["hr","Hırvatistan"],["it","İtalya"],["hu","Macaristan"]],ka:[]},
+ba:{n:3185073,a:51209,dk:"bos",dl:"Boşnakça",s:"Zdravo",pk:"BAM",pa:"Bosna-Hersek Markı",sm:"KM",sh:null,kom:[["hr","Hırvatistan"],["me","Karadağ"],["rs","Sırbistan"]],ka:["bosna"]},
+al:{n:2411658,a:28748,dk:"sqi",dl:"Arnavutça",s:"Tungjatjeta",pk:"ALL",pa:"Arnavutluk Leki",sm:"L",sh:null,kom:[["me","Karadağ"],["gr","Yunanistan"],["mk","Kuzey Makedonya"],["xk","Kosova"]],ka:[]},
+mk:{n:1827816,a:25713,dk:"mkd",dl:"Makedonca",s:"Здраво",pk:"MKD",pa:"Makedon Dinarı",sm:"den",sh:null,kom:[["al","Arnavutluk"],["bg","Bulgaristan"],["gr","Yunanistan"],["xk","Kosova"],["rs","Sırbistan"]],ka:["makedonya"]},
+me:{n:623529,a:13812,dk:"cnr",dl:"Karadağca",s:"Zdravo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["al","Arnavutluk"],["ba","Bosna-Hersek"],["hr","Hırvatistan"],["xk","Kosova"],["rs","Sırbistan"]],ka:[]},
+xk:{n:1682668,a:10908,dk:"sqi",dl:"Arnavutça",s:"Tungjatjeta",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["al","Arnavutluk"],["mk","Kuzey Makedonya"],["me","Karadağ"],["rs","Sırbistan"]],ka:[]},
+az:{n:10153958,a:86600,dk:"aze",dl:"Azerbaycan Türkçesi",s:"Salam",pk:"AZN",pa:"Azerbaycan Manatı",sm:"₼",sh:null,kom:[["am","Ermenistan"],["ge","Gürcistan"],["ir","İran"],["ru","Rusya"],["tr","Türkiye"]],ka:[]},
+ge:{n:3715483,a:69700,dk:"kat",dl:"Gürcüce",s:"გამარჯობა",pk:"GEL",pa:"Gürcistan Larisi",sm:"₾",sh:null,kom:[["am","Ermenistan"],["az","Azerbaycan"],["ru","Rusya"],["tr","Türkiye"]],ka:[]},
+am:{n:2964300,a:29743,dk:"hye",dl:"Ermenice",s:"Բարև",pk:"AMD",pa:"Ermenistan Dramı",sm:"֏",sh:null,kom:[["az","Azerbaycan"],["ge","Gürcistan"],["ir","İran"],["tr","Türkiye"]],ka:[]},
+kz:{n:20330104,a:2724900,dk:"kaz",dl:"Kazakça",s:"Сәлем",pk:"KZT",pa:"Kazakistan Tengesi",sm:"₸",sh:"Almatı",kom:[["cn","Çin"],["kg","Kırgızistan"],["ru","Rusya"],["tm","Türkmenistan"],["uz","Özbekistan"]],ka:[]},
+uz:{n:35652307,a:447400,dk:"uzb",dl:"Özbekçe",s:"Salom",pk:"UZS",pa:"Özbekistan Somu",sm:"so'm",sh:null,kom:[["af","Afganistan"],["kz","Kazakistan"],["kg","Kırgızistan"],["tj","Tacikistan"],["tm","Türkmenistan"]],ka:[]},
+tm:{n:7364438,a:488100,dk:"tuk",dl:"Türkmence",s:"Salam",pk:"TMT",pa:"Türkmenistan Manatı",sm:"m",sh:null,kom:[["af","Afganistan"],["ir","İran"],["kz","Kazakistan"],["uz","Özbekistan"]],ka:[]},
+kg:{n:7099750,a:199951,dk:"kir",dl:"Kırgızca",s:"Салам",pk:"KGS",pa:"Kırgızistan Somu",sm:"с",sh:null,kom:[["cn","Çin"],["kz","Kazakistan"],["tj","Tacikistan"],["uz","Özbekistan"]],ka:[]},
+af:{n:41454761,a:652230,dk:"prs",dl:"Dari Farsçası",s:"سلام",pk:"AFN",pa:"Afgan Afganisi",sm:"؋",sh:null,kom:[["ir","İran"],["pk","Pakistan"],["tm","Türkmenistan"],["uz","Özbekistan"],["tj","Tacikistan"],["cn","Çin"]],ka:[]},
+sy:{n:23594623,a:185180,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SYP",pa:"Suriye Lirası",sm:"£",sh:null,kom:[["iq","Irak"],["il","İsrail"],["jo","Ürdün"],["lb","Lübnan"],["tr","Türkiye"]],ka:[]},
+jo:{n:11439213,a:89342,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"JOD",pa:"Ürdün Dinarı",sm:"د.ا",sh:null,kom:[["iq","Irak"],["il","İsrail"],["ps","Filistin"],["sa","Suudi Arabistan"],["sy","Suriye"]],ka:[]},
+lb:{n:5773493,a:10452,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"LBP",pa:"Lübnan Lirası",sm:"ل.ل",sh:null,kom:[["il","İsrail"],["sy","Suriye"]],ka:[]},
+kw:{n:4853420,a:17818,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"KWD",pa:"Kuveyt Dinarı",sm:"د.ك",sh:null,kom:[["iq","Irak"],["sa","Suudi Arabistan"]],ka:[]},
+om:{n:5049269,a:309500,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"OMR",pa:"Umman Riyali",sm:"ر.ع.",sh:null,kom:[["sa","Suudi Arabistan"],["ae","Birleşik Arap Emirlikleri"],["ye","Yemen"]],ka:[]},
+ye:{n:39390799,a:527968,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"YER",pa:"Yemen Riyali",sm:"﷼",sh:null,kom:[["om","Umman"],["sa","Suudi Arabistan"]],ka:[]},
+cl:{n:19658835,a:756102,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CLP",pa:"Şili Pesosu",sm:"$",sh:null,kom:[["ar","Arjantin"],["bo","Bolivya"],["pe","Peru"]],ka:[]},
+co:{n:52321152,a:1141748,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"COP",pa:"Kolombiya Pesosu",sm:"$",sh:null,kom:[["br","Brezilya"],["ec","Ekvador"],["pa","Panama"],["pe","Peru"],["ve","Venezuela"]],ka:[]},
+pe:{n:33845617,a:1285216,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"PEN",pa:"Peru Solü",sm:"S/.",sh:null,kom:[["bo","Bolivya"],["br","Brezilya"],["cl","Şili"],["co","Kolombiya"],["ec","Ekvador"]],ka:[]},
+ve:{n:28300854,a:916445,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"VES",pa:"Venezuela Bolivarı",sm:"Bs.S.",sh:null,kom:[["br","Brezilya"],["co","Kolombiya"],["gy","Guyana"]],ka:[]},
+ec:{n:17980083,a:276841,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"USD",pa:"ABD Doları",sm:"$",sh:"Guayaquil",kom:[["co","Kolombiya"],["pe","Peru"]],ka:[]},
+bo:{n:12244159,a:1098581,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"BOB",pa:"Bolivya Bolivianosu",sm:"Bs.",sh:"Santa Cruz de la Sierra",kom:[["ar","Arjantin"],["br","Brezilya"],["cl","Şili"],["py","Paraguay"],["pe","Peru"]],ka:[]},
+uy:{n:3388081,a:181034,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"UYU",pa:"Uruguay Pesosu",sm:"$",sh:null,kom:[["ar","Arjantin"],["br","Brezilya"]],ka:[]},
+py:{n:6844146,a:406752,dk:"grn",dl:"Guarani dili",s:"Mba'éichapa",pk:"PYG",pa:"Paraguay Guaranisi",sm:"₲",sh:null,kom:[["ar","Arjantin"],["bo","Bolivya"],["br","Brezilya"]],ka:[]},
+cu:{n:11019931,a:109884,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CUP",pa:"Küba Pesosu",sm:"$",sh:null,kom:[],ka:[]},
+do:{n:11331265,a:48671,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"DOP",pa:"Dominik Pesosu",sm:"$",sh:null,kom:[["ht","Haiti"]],ka:[]},
+jm:{n:2839786,a:10991,dk:"jam",dl:"Jamaika Patoisi",s:"Wah gwaan",pk:"JMD",pa:"Jamaika Doları",sm:"$",sh:null,kom:[],ka:[]},
+cr:{n:5105525,a:51100,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CRC",pa:"Kosta Rika Kolonu",sm:"₡",sh:null,kom:[["ni","Nikaragua"],["pa","Panama"]],ka:[]},
+pa:{n:4458759,a:75417,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"PAB",pa:"Panama Balboası",sm:"B/.",sh:null,kom:[["co","Kolombiya"],["cr","Kosta Rika"]],ka:[]},
+gt:{n:18124838,a:108889,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"GTQ",pa:"Guatemala Ketzalı",sm:"Q",sh:null,kom:[["bz","Belize"],["sv","El Salvador"],["hn","Honduras"],["mx","Meksika"]],ka:[]},
+et:{n:128691692,a:1104300,dk:"amh",dl:"Amharca",s:"ሰላም",pk:"ETB",pa:"Etiyopya Birri",sm:"Br",sh:null,kom:[["dj","Cibuti"],["er","Eritre"],["ke","Kenya"],["so","Somali"],["ss","Güney Sudan"],["sd","Sudan"]],ka:["Eritrea"]},
+gh:{n:33787914,a:238533,dk:"eng",dl:"İngilizce",s:"Hello",pk:"GHS",pa:"Gana Cedisi",sm:"₵",sh:null,kom:[["bf","Burkina Faso"],["ci","Fildişi Sahili"],["tg","Togo"]],ka:[]},
+sn:{n:18077573,a:196722,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:null,kom:[["gm","Gambiya"],["gn","Gine"],["gw","Gine-Bissau"],["ml","Mali"],["mr","Moritanya"]],ka:[]},
+ci:{n:31165654,a:322463,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:"Abidjan",kom:[["bf","Burkina Faso"],["gh","Gana"],["gn","Gine"],["lr","Liberya"],["ml","Mali"]],ka:[]},
+cm:{n:28372687,a:475442,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XAF",pa:"Orta Afrika CFA Frangı",sm:"Fr",sh:"Douala",kom:[["cf","Orta Afrika Cumhuriyeti"],["td","Çad"],["cg","Kongo Cumhuriyeti"],["gq","Ekvator Ginesi"],["ga","Gabon"],["ng","Nijerya"]],ka:["Çad"]},
+tz:{n:66617606,a:945087,dk:"swa",dl:"Svahili",s:"Jambo",pk:"TZS",pa:"Tanzanya Şilini",sm:"Sh",sh:"Dar es Selam",kom:[["bi","Burundi"],["cd","Kongo Demokratik Cumhuriyeti"],["ke","Kenya"],["mw","Malavi"],["mz","Mozambik"],["rw","Ruanda"],["ug","Uganda"],["zm","Zambiya"]],ka:[]},
+ug:{n:48656601,a:241550,dk:"eng",dl:"İngilizce",s:"Hello",pk:"UGX",pa:"Uganda Şilini",sm:"Sh",sh:null,kom:[["cd","Kongo Demokratik Cumhuriyeti"],["ke","Kenya"],["rw","Ruanda"],["ss","Güney Sudan"],["tz","Tanzanya"]],ka:[]},
+zw:{n:16340822,a:390757,dk:"sna",dl:"Shona",s:"Mhoro",pk:"ZWG",pa:"Zimbabve Altını (ZiG)",sm:"ZiG",sh:null,kom:[["bw","Botsvana"],["mz","Mozambik"],["za","Güney Afrika"],["zm","Zambiya"]],ka:[]},
+ao:{n:36749906,a:1246700,dk:"por",dl:"Portekizce",s:"Olá",pk:"AOA",pa:"Angola Kvanzası",sm:"Kz",sh:null,kom:[["cg","Kongo Cumhuriyeti"],["cd","Kongo Demokratik Cumhuriyeti"],["zm","Zambiya"],["na","Namibya"]],ka:[]},
+mz:{n:33635160,a:801590,dk:"por",dl:"Portekizce",s:"Olá",pk:"MZN",pa:"Mozambik Metikali",sm:"MT",sh:null,kom:[["mw","Malavi"],["za","Güney Afrika"],["sz","Esvatini"],["tz","Tanzanya"],["zm","Zambiya"],["zw","Zimbabve"]],ka:["Svaziland"]},
+tn:{n:12200431,a:163610,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"TND",pa:"Tunus Dinarı",sm:"د.ت",sh:null,kom:[["dz","Cezayir"],["ly","Libya"]],ka:[]},
+ly:{n:7305659,a:1759540,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"LYD",pa:"Libya Dinarı",sm:"ل.د",sh:null,kom:[["dz","Cezayir"],["td","Çad"],["eg","Mısır"],["ne","Nijer"],["sd","Sudan"],["tn","Tunus"]],ka:["Çad"]},
+sd:{n:50042791,a:1886068,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SDG",pa:"Sudan Lirası",sm:"PT",sh:null,kom:[["cf","Orta Afrika Cumhuriyeti"],["td","Çad"],["eg","Mısır"],["er","Eritre"],["et","Etiyopya"],["ly","Libya"],["ss","Güney Sudan"]],ka:["Çad"]},
+ml:{n:23769127,a:1240192,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:null,kom:[["dz","Cezayir"],["bf","Burkina Faso"],["gn","Gine"],["ci","Fildişi Sahili"],["mr","Moritanya"],["ne","Nijer"],["sn","Senegal"]],ka:[]},
+is:{n:385663,a:103000,dk:"isl",dl:"İzlandaca",s:"Halló",pk:"ISK",pa:"İzlanda Kronu",sm:"kr",sh:null,kom:[],ka:[]},
+ee:{n:1370286,a:45227,dk:"est",dl:"Estonca",s:"Tere",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["lv","Letonya"],["ru","Rusya"]],ka:[]},
+lv:{n:1883710,a:64559,dk:"lav",dl:"Letonca",s:"Sveiki",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["by","Belarus"],["ee","Estonya"],["lt","Litvanya"],["ru","Rusya"]],ka:[]},
+lt:{n:2871585,a:65300,dk:"lit",dl:"Litvanca",s:"Labas",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["by","Belarus"],["lv","Letonya"],["pl","Polonya"],["ru","Rusya"]],ka:[]},
+by:{n:9178298,a:207600,dk:"bel",dl:"Belarusça",s:"Прывітанне",pk:"BYN",pa:"Belarus Rublesi",sm:"Br",sh:null,kom:[["lv","Letonya"],["lt","Litvanya"],["pl","Polonya"],["ru","Rusya"],["ua","Ukrayna"]],ka:[]},
+md:{n:2457783,a:33846,dk:"ron",dl:"Rumence",s:"Bună",pk:"MDL",pa:"Moldova Leyi",sm:"L",sh:null,kom:[["ro","Romanya"],["ua","Ukrayna"]],ka:[]},
+lu:{n:666430,a:2586,dk:"ltz",dl:"Lüksemburgca",s:"Moien",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["be","Belçika"],["fr","Fransa"],["de","Almanya"]],ka:[]},
+cy:{n:1344976,a:9251,dk:"ell",dl:"Yunanca",s:"Γεια σου",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[],ka:[]},
+mt:{n:552747,a:316,dk:"mlt",dl:"Maltaca",s:"Bonġu",pk:"EUR",pa:"Euro",sm:"€",sh:"St. Paul's Bay",kom:[],ka:[]},
+lk:{n:22037000,a:65610,dk:"sin",dl:"Sinhalaca",s:"ආයුබෝවන්",pk:"LKR",pa:"Sri Lanka Rupisi",sm:"Rs රු",sh:null,kom:[],ka:[]},
+mm:{n:54133798,a:676578,dk:"mya",dl:"Birmanca",s:"မင်္ဂလာပါ",pk:"MMK",pa:"Myanmar Kyatı",sm:"Ks",sh:"Yangon",kom:[["bd","Bangladeş"],["cn","Çin"],["in","Hindistan"],["la","Laos"],["th","Tayland"]],ka:[]},
+kh:{n:17423880,a:181035,dk:"khm",dl:"Kmerce",s:"សួស្តី",pk:"KHR",pa:"Kamboçya Rieli",sm:"៛",sh:null,kom:[["la","Laos"],["th","Tayland"],["vn","Vietnam"]],ka:[]},
+mn:{n:3481145,a:1564110,dk:"mon",dl:"Moğolca",s:"Сайн байна уу",pk:"MNT",pa:"Moğolistan Tugriki",sm:"₮",sh:null,kom:[["cn","Çin"],["ru","Rusya"]],ka:[]},
+nz:{n:5200000,a:270467,dk:"eng",dl:"İngilizce",s:"Hello",pk:"NZD",pa:"Yeni Zelanda Doları",sm:"$",sh:"Auckland",kom:[],ka:[]},
+};
+
 /* ===================== yardımcı ===================== */
 function norm(s){
   return (s||"").replace(/İ/g,"i").replace(/I/g,"ı").toLowerCase()
@@ -405,6 +617,7 @@ function metaBildir(){
 let tahminler = [];                          /* {kod, ad, dogru} */
 
 const $ = s=>document.querySelector(s);
+const $$ = s=>[...document.querySelectorAll(s)];
 const imgEl=$("#bayrak"), cvEl=$("#bayrakCv"), ctx=$("#bayrakCv").getContext("2d"),
       rozet=$("#rozet"), sayEl=$("#say"), noktaEl=$("#noktalar"),
       satirEl=$("#satirlar"), giris=$("#giris"), form=$("#form"), oneriEl=$("#oneriler"),
@@ -543,6 +756,7 @@ function bitir(kzn){
   }
   sonucCiz();
   kaydet();
+  if(mod==="gunluk") bonusBaslangicGoster();
 }
 function kareDizi(){
   return tahminler.map(t=>t.dogru?"🟩":"🟥").join("") + (kazandi?"":"⬛".repeat(MAKS-tahminler.length));
@@ -577,8 +791,9 @@ function sonucCiz(){
   else { $("#yeniRastgeleBtn").onclick=rastgeleBaslat; $("#gunlukeDonBtn").onclick=gunlukBaslat; }
 }
 function paylas(){
-  const metin = "Sancak #"+(oyunGun+1)+"  "+(kazandi?deneme+"/"+MAKS:"X/"+MAKS)+"\n"+
-                kareDizi()+"\nverandatools.com/sancak";
+  let metin = "Sancak #"+(oyunGun+1)+"  "+(kazandi?deneme+"/"+MAKS:"X/"+MAKS)+"\n"+kareDizi();
+  if(BN && BN.asama>=6) metin += "\nbonus "+bonusYildizSay()+"/6 ⭐";
+  metin += "\nverandatools.com/sancak";
   const btn=$("#payBtn");
   const ok=()=>{ btn.textContent="kopyalandı ✓"; setTimeout(()=>btn.textContent="sonucu paylaş",1600); };
   if(navigator.share && /Mobi|Android/i.test(navigator.userAgent)){
@@ -617,12 +832,367 @@ function geriYukle(){
   return true;
 }
 
+/* ===================== bonus tur: bayrağı bildikten sonra ülke hakkında 6 soru ===================== */
+/* Türkçe ünlü uyumuna göre iyelik ('nın/'nin/'nun/'nün) ve ayrılma ('dan/'den) ekleri */
+function sonSesli(kelime){
+  const V = 'aeıioöuü';
+  const k = kelime.toLocaleLowerCase('tr-TR');
+  for(let i=k.length-1;i>=0;i--) if(V.includes(k[i])) return k[i];
+  return 'e';
+}
+function ekIyelik(ad){
+  const v = sonSesli(ad), sonHarf = ad[ad.length-1];
+  const unluMu = 'aeıioöuüAEIİOÖUÜ'.includes(sonHarf);
+  const tablo = {a:'ın',ı:'ın',o:'un',u:'un',e:'in',i:'in',ö:'ün',ü:'ün'};
+  return "'" + (unluMu?'n':'') + (tablo[v]||'in');
+}
+function ekAyrilma(ad){
+  const v = sonSesli(ad), sonHarf = ad[ad.length-1].toLocaleLowerCase('tr-TR');
+  const sert = 'çfhkpsşt'.includes(sonHarf);
+  return "'" + (sert?'t':'d') + ('aıou'.includes(v)?'an':'en');
+}
+let BN = null;
+const BONUS_SIRA = ['komsu','nufus','alan','dil','para','sehir'];
+const BONUS_BASLIK = {komsu:'komşular', nufus:'nüfus', alan:'yüzölçümü', dil:'resmi dil', para:'para birimi', sehir:'en kalabalık şehir'};
+
+function bonusYeniDurum(){
+  return {
+    gun: oyunGun, kod: hedefKod, acik: false, asama: 0,
+    komsu: {bulunan: [], yildiz:false},
+    nufus: {basamak:[0,0,0,0,0,0,0,0,0,0], puan:0, gercek:0, yildiz:false},
+    alan: {refKod:null, yon:null, dogru:false, yildiz:false},
+    dil: {secim:null, dogru:false, yildiz:false},
+    para: {secim:null, dogru:false, yildiz:false},
+    sehir: {secim:null, dogru:false, yildiz:false},
+  };
+}
+function bonusAnahtari(){ return "sancak:bonus"; }
+function bonusKaydet(){
+  if(GOMULU || mod!=="gunluk" || !BN) return;
+  try{ localStorage.setItem(bonusAnahtari(), JSON.stringify(BN)); }catch(e){}
+}
+function bonusYukle(){
+  if(GOMULU) return null;
+  try{
+    const v = JSON.parse(localStorage.getItem(bonusAnahtari()));
+    if(v && v.gun===oyunGun && v.kod===hedefKod) return v;
+  }catch(e){}
+  return null;
+}
+function bonusYildizSay(){
+  if(!BN) return 0;
+  return BONUS_SIRA.reduce((t,k)=> t + (BN[k] && BN[k].yildiz ? 1 : 0), 0);
+}
+function bonusBaslangicGoster(){
+  if(mod!=="gunluk"){ BN=null; $("#bonusYuva").innerHTML=""; return; }
+  BN = bonusYukle() || bonusYeniDurum();
+  bonusCiz();
+}
+function bonusBaslat(){ BN.acik = true; bonusKaydet(); bonusCiz(); }
+
+function bonusCiz(){
+  const yuva = $("#bonusYuva");
+  if(!BN){ yuva.innerHTML=""; return; }
+  if(!BN.acik){
+    const tamam = BN.asama>=6;
+    yuva.innerHTML = tamam
+      ? '<button type="button" class="bonus-ozet-btn" id="bonusAcBtn"><span>🌍 bonus: '+bonusYildizSay()+'/6 ⭐</span><span>özeti gör →</span></button>'
+      : '<button type="button" class="bonus-baslat" id="bonusAcBtn">🌍 '+hedef[1]+' hakkında 6 soru daha →</button>';
+    $("#bonusAcBtn").onclick = bonusBaslat;
+    return;
+  }
+  let h = '';
+  for(let i=0;i<BN.asama && i<6;i++) h += bonusTamamSatiri(BONUS_SIRA[i]);
+  h += (BN.asama<6) ? bonusAdimCiz(BONUS_SIRA[BN.asama], BN.asama) : bonusOzetCiz();
+  yuva.innerHTML = h;
+  bonusOlayBagla(BN.asama<6 ? BONUS_SIRA[BN.asama] : null);
+}
+function bonusTamamSatiri(key){
+  const b = BN[key];
+  const im = b.yildiz ? '⭐' : '·';
+  let ozet = '';
+  if(key==='komsu') ozet = b.bulunan.length+' / '+EK[hedefKod].kom.length+' komşu bulundu';
+  if(key==='nufus') ozet = b.puan+'/100 yakınlık';
+  if(key==='alan') ozet = b.dogru ? 'doğru tahmin' : 'yanlış tahmin';
+  if(key==='dil') ozet = b.dogru ? 'doğru dil' : ('doğrusu: '+EK[hedefKod].dl);
+  if(key==='para') ozet = b.dogru ? 'doğru para birimi' : ('doğrusu: '+EK[hedefKod].pk);
+  if(key==='sehir') ozet = b.dogru ? 'doğru şehir' : ('doğrusu: '+(EK[hedefKod].sh||hedef[2]));
+  return '<div class="bonus-adim tamam"><div class="bonus-tamam-satir"><span class="im">'+im+'</span>'+
+    '<span>'+BONUS_BASLIK[key]+' — '+ozet+'</span></div></div>';
+}
+function bonusAdimCiz(key, idx){
+  const baslik = '<div class="bonus-baslik"><span class="no">'+(idx+1)+'</span><span>'+BONUS_BASLIK[key]+'</span></div>';
+  const fn = {komsu:bonusKomsuCiz, nufus:bonusNufusCiz, alan:bonusAlanCiz, dil:bonusDilCiz, para:bonusParaCiz, sehir:bonusSehirCiz}[key];
+  return '<div class="bonus-adim" id="bonusAktif">'+baslik+'<div class="bonus-govde">'+fn()+'</div></div>';
+}
+function bonusOzetCiz(){
+  const yildiz = bonusYildizSay();
+  return '<div class="bonus-ozet"><h3>bonus tamamlandı</h3>'+
+    '<div class="bonus-yildiz">'+'⭐'.repeat(yildiz)+'☆'.repeat(6-yildiz)+'</div>'+
+    '<div>'+yildiz+' / 6 doğru</div></div>';
+}
+function bonusIlerle(key){
+  if(key==='komsu'){
+    const toplam = EK[hedefKod].kom.length;
+    BN.komsu.yildiz = toplam===0 ? true : BN.komsu.bulunan.length >= Math.max(1, Math.ceil(toplam*0.5));
+  }
+  BN.asama++;
+  bonusKaydet();
+  bonusCiz();
+}
+function bonusSecenekVurgula(secim, dogruDeger){
+  const gov = $("#bonusAktif .bonus-govde");
+  gov.querySelectorAll('.secenekler button').forEach(btn=>{
+    btn.disabled = true;
+    if(btn.dataset.v===dogruDeger) btn.classList.add('dogru');
+    else if(btn.dataset.v===secim) btn.classList.add('yanlis');
+  });
+}
+function bonusMesajEkle(sinif, ic){
+  const gov = $("#bonusAktif .bonus-govde");
+  if(!gov) return;
+  const el = document.createElement('div');
+  el.className = 'bonus-mesaj'+(sinif?' '+sinif:'');
+  el.innerHTML = ic;
+  gov.appendChild(el);
+}
+
+/* ---- 1) komşular: yazarak, doğru bulunanlar bayrak rozeti oluyor ---- */
+function komsuAdaylar(k){ return (k[0] && HARITA[k[0]]) ? adlar(HARITA[k[0]]) : [norm(k[1])]; }
+function bonusKomsuCiz(){
+  const ek = EK[hedefKod];
+  if(ek.kom.length===0){
+    return '<p>Bu ülkenin kara sınırı yok — ada ya da yarımada.</p>'+
+      '<button type="button" class="hane-gonder" id="bonusKomsuGec">devam →</button>';
+  }
+  const b = BN.komsu;
+  const rozetler = b.bulunan.map(kod=>{
+    const item = ek.kom.find(k=>k[0]===kod);
+    return '<span class="komsu-rozet"><img src="'+FLAG_BASE+kod+'.svg" alt=""> '+item[1]+'</span>';
+  }).join('');
+  return '<div class="komsu-form">'+
+      '<input id="komsuGiris" type="text" placeholder="komşu ülke adı…" autocomplete="off" spellcheck="false">'+
+      '<button type="button" id="komsuEkleBtn">ekle</button>'+
+      '<div class="komsu-oneri" id="komsuOneri"></div>'+
+    '</div>'+
+    '<div class="komsu-say">'+b.bulunan.length+' / '+ek.kom.length+' komşu bulundu</div>'+
+    '<div class="komsu-cocuk">'+rozetler+'</div>'+
+    '<button type="button" class="komsu-gec" id="bonusKomsuGec">'+(b.bulunan.length?'yeter, sıradaki soru →':'bilmiyorum, geç →')+'</button>';
+}
+function komsuOneriGuncelle(){
+  const ek = EK[hedefKod]; const inp = $("#komsuGiris"); if(!inp) return;
+  const q = norm(inp.value); const oneriEl = $("#komsuOneri");
+  const bulunan = new Set(BN.komsu.bulunan);
+  if(!q){ oneriEl.classList.remove('acik'); oneriEl.innerHTML=''; return; }
+  const adaylar = ek.kom.filter(k=>!bulunan.has(k[0]) && norm(k[1]).includes(q)).slice(0,6);
+  if(!adaylar.length){ oneriEl.classList.remove('acik'); oneriEl.innerHTML=''; return; }
+  oneriEl.innerHTML = adaylar.map(k=>'<button type="button" data-kod="'+k[0]+'">'+k[1]+'</button>').join('');
+  oneriEl.classList.add('acik');
+}
+function komsuDenemeYap(deger){
+  const ek = EK[hedefKod]; const q = norm(deger); if(!q) return;
+  const bulunan = new Set(BN.komsu.bulunan);
+  let eslesme = ek.kom.find(k=>!bulunan.has(k[0]) && komsuAdaylar(k).includes(q));
+  if(!eslesme){
+    const adaylar = ek.kom.filter(k=>!bulunan.has(k[0]) && norm(k[1]).includes(q));
+    if(adaylar.length===1) eslesme = adaylar[0];
+  }
+  const inp = $("#komsuGiris");
+  if(eslesme){
+    BN.komsu.bulunan.push(eslesme[0]);
+    bonusKaydet(); bonusCiz();
+    setTimeout(()=>{ const i=$("#komsuGiris"); if(i) i.focus(); },50);
+  } else if(inp){
+    inp.classList.add('titre'); setTimeout(()=>inp.classList.remove('titre'),400);
+  }
+}
+
+/* ---- 2) nüfus: hane çarkı (müzayede fiyat tahmini ile aynı mantık, log ölçekli yakınlık puanı) ---- */
+function nufusOku(){ return parseInt(BN.nufus.basamak.join(''),10) || 0; }
+function bonusNufusCiz(){
+  const b = BN.nufus, n = b.basamak.length;
+  let hane = '';
+  for(let i=0;i<n;i++){
+    const vs = (i<n-1 && (n-1-i)%3===0) ? ' vs' : '';
+    hane += '<div class="hane-c'+vs+'"><button type="button" data-i="'+i+'" data-yon="1">▲</button>'+
+      '<b>'+b.basamak[i]+'</b><button type="button" data-i="'+i+'" data-yon="-1">▼</button></div>';
+  }
+  return '<p>Bu ülkenin nüfusu kaç, tahmin et:</p>'+
+    '<div class="hane-gosterim" id="nufusGosterim">'+nufusOku().toLocaleString('tr-TR')+'</div>'+
+    '<div class="hane-cark" id="nufusCark">'+hane+'</div>'+
+    '<button type="button" class="hane-gonder" id="nufusGonderBtn">tahmin et</button>';
+}
+function nufusPuanTepkisi(p){
+  if(p>=90) return {sinif:'dogru', metin:'TAM İSABET 🎯'};
+  if(p>=70) return {sinif:'dogru', metin:'ÇOK YAKIN'};
+  if(p>=40) return {sinif:'', metin:'FENA DEĞİL'};
+  return {sinif:'yanlis', metin:'ISKALADIN'};
+}
+function nufusGonder(){
+  const tahmin = nufusOku(); if(!(tahmin>0)) return;
+  const gercek = EK[hedefKod].n;
+  const fark = Math.abs(Math.log10(tahmin) - Math.log10(gercek));
+  const puan = Math.max(0, Math.round(100*(1-fark)));
+  BN.nufus.puan = puan; BN.nufus.gercek = gercek; BN.nufus.yildiz = puan>=70;
+  const tepki = nufusPuanTepkisi(puan);
+  $$('#bonusAktif button').forEach(x=>x.disabled=true);
+  bonusMesajEkle(tepki.sinif, '<b>'+tepki.metin+'</b><br>gerçek nüfus: '+gercek.toLocaleString('tr-TR')+' · puan '+puan+'/100');
+  bonusKaydet();
+  setTimeout(()=> bonusIlerle('nufus'), 1500);
+}
+
+/* ---- 3) yüzölçümü: "harita yalan söyler" — önce büyük/küçük tahmin, sonra gerçek oranlı kutular ---- */
+function bonusAlanCiz(){
+  const b = BN.alan;
+  if(!b.refKod){
+    const rng = skRng(skHash(hedefKod+':alanref'));
+    const digerler = SIRA.filter(k=>k!==hedefKod);
+    b.refKod = digerler[Math.floor(rng()*digerler.length)];
+  }
+  const ref = HARITA[b.refKod];
+  return '<p>'+hedef[1]+', '+ref[1]+ekAyrilma(ref[1])+' yüzölçümü olarak büyük mü küçük mü?</p>'+
+    '<div class="alan-vs">'+
+      '<div class="alan-kutu"><img class="bayrak" src="'+FLAG_BASE+hedefKod+'.svg" alt=""><span class="ad">'+hedef[1]+'</span></div>'+
+      '<div class="alan-vs-orta">?</div>'+
+      '<div class="alan-kutu"><img class="bayrak" src="'+FLAG_BASE+b.refKod+'.svg" alt=""><span class="ad">'+ref[1]+'</span></div>'+
+    '</div>'+
+    '<div class="alan-secim"><button type="button" data-yon="buyuk">daha büyük</button>'+
+      '<button type="button" data-yon="kucuk">daha küçük</button></div>';
+}
+function alanTahminYap(yon){
+  const b = BN.alan;
+  const hedefAlan = EK[hedefKod].a, refAlan = EK[b.refKod].a, ref = HARITA[b.refKod];
+  const gercekYon = hedefAlan > refAlan ? 'buyuk' : 'kucuk';
+  b.yon = yon; b.dogru = (yon===gercekYon); b.yildiz = b.dogru;
+  const maxKm = Math.max(hedefAlan, refAlan), oranMax = 110;
+  const w1 = Math.max(16, Math.round(Math.sqrt(hedefAlan/maxKm)*oranMax));
+  const w2 = Math.max(16, Math.round(Math.sqrt(refAlan/maxKm)*oranMax));
+  $$('#bonusAktif button').forEach(x=>x.disabled=true);
+  bonusMesajEkle(b.dogru?'dogru':'yanlis', '<b>'+(b.dogru?'DOĞRU TAHMİN':'YANLIŞ TAHMİN')+'</b>'+
+    '<div class="alan-oran">'+
+      '<div class="alan-blok"><div class="kutu" style="width:'+w1+'px;height:'+w1+'px"></div>'+
+        '<div class="km2">'+hedefAlan.toLocaleString('tr-TR')+' km²</div><div class="ad2">'+hedef[1]+'</div></div>'+
+      '<div class="alan-blok"><div class="kutu" style="width:'+w2+'px;height:'+w2+'px"></div>'+
+        '<div class="km2">'+refAlan.toLocaleString('tr-TR')+' km²</div><div class="ad2">'+ref[1]+'</div></div>'+
+    '</div>');
+  bonusKaydet();
+  setTimeout(()=> bonusIlerle('alan'), 2000);
+}
+
+/* ---- 4) dil: örnek ifade + 4 dil şıkkı ---- */
+function bonusDilSecenekleri(){
+  const kendi = EK[hedefKod].dl;
+  const havuz = [...new Set(SIRA.filter(k=>k!==hedefKod).map(k=>EK[k].dl))].filter(d=>d!==kendi);
+  const sira = skKaristir(havuz.length, skRng(skHash(hedefKod+':dil')));
+  const hepsi = [kendi, ...sira.slice(0,3).map(i=>havuz[i])];
+  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':dilsira')));
+  return sira2.map(i=>hepsi[i]);
+}
+function bonusDilCiz(){
+  return '<div class="bonus-soz">"'+EK[hedefKod].s+'"</div><p>Bu, hangi dilde bir selamlama?</p>'+
+    '<div class="secenekler">'+bonusDilSecenekleri().map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
+}
+function dilCevapVer(secim){
+  const dogruDil = EK[hedefKod].dl, dogru = secim===dogruDil;
+  BN.dil.secim=secim; BN.dil.dogru=dogru; BN.dil.yildiz=dogru;
+  bonusSecenekVurgula(secim, dogruDil);
+  bonusKaydet();
+  setTimeout(()=> bonusIlerle('dil'), 1300);
+}
+
+/* ---- 5) para birimi: sembol + kod-isim şıkkı ---- */
+function bonusParaSecenekleri(){
+  const kendi = EK[hedefKod].pk+' — '+EK[hedefKod].pa;
+  const gorulen = new Set([EK[hedefKod].pk]); const havuz = [];
+  SIRA.filter(k=>k!==hedefKod).forEach(k=>{
+    const e = EK[k];
+    if(!gorulen.has(e.pk)){ gorulen.add(e.pk); havuz.push(e.pk+' — '+e.pa); }
+  });
+  const sira = skKaristir(havuz.length, skRng(skHash(hedefKod+':para')));
+  const hepsi = [kendi, ...sira.slice(0,3).map(i=>havuz[i])];
+  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':parasira')));
+  return sira2.map(i=>hepsi[i]);
+}
+function bonusParaCiz(){
+  return '<div class="bonus-sembol">'+EK[hedefKod].sm+'</div><p>Bu sembol hangi para birimine ait?</p>'+
+    '<div class="secenekler">'+bonusParaSecenekleri().map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
+}
+function paraCevapVer(secim){
+  const dogruDeger = EK[hedefKod].pk+' — '+EK[hedefKod].pa, dogru = secim===dogruDeger;
+  BN.para.secim=secim; BN.para.dogru=dogru; BN.para.yildiz=dogru;
+  bonusSecenekVurgula(secim, dogruDeger);
+  bonusKaydet();
+  setTimeout(()=> bonusIlerle('para'), 1300);
+}
+
+/* ---- 6) en kalabalık şehir: başkent + 2 sahte şehirden seç ---- */
+function bonusSehirSecenekleri(){
+  const dogru = EK[hedefKod].sh || hedef[2];
+  const havuz = [...new Set(SIRA.filter(k=>k!==hedefKod).map(k=>HARITA[k][2]))].filter(c=>c!==dogru);
+  const sira = skKaristir(havuz.length, skRng(skHash(hedefKod+':sehir')));
+  const hepsi = [dogru, ...sira.slice(0,2).map(i=>havuz[i])];
+  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':sehirsira')));
+  return sira2.map(i=>hepsi[i]);
+}
+function bonusSehirCiz(){
+  return '<p>'+hedef[1]+ekIyelik(hedef[1])+' en kalabalık şehri hangisi?</p>'+
+    '<div class="secenekler">'+bonusSehirSecenekleri().map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
+}
+function sehirCevapVer(secim){
+  const dogruDeger = EK[hedefKod].sh || hedef[2], dogru = secim===dogruDeger;
+  BN.sehir.secim=secim; BN.sehir.dogru=dogru; BN.sehir.yildiz=dogru;
+  bonusSecenekVurgula(secim, dogruDeger);
+  const iyelik = ekIyelik(hedef[1]);
+  const not_ = EK[hedefKod].sh
+    ? 'biliyor muydun: '+hedef[1]+iyelik+' başkenti '+hedef[2]+', ama en kalabalık şehri '+EK[hedefKod].sh+'.'
+    : 'evet — '+hedef[1]+iyelik+' en kalabalık şehri zaten başkenti '+hedef[2]+'.';
+  bonusMesajEkle('', not_);
+  bonusKaydet();
+  setTimeout(()=> bonusIlerle('sehir'), 2000);
+}
+
+function bonusOlayBagla(key){
+  const gecBtn = $("#bonusKomsuGec");
+  if(gecBtn) gecBtn.onclick = ()=> bonusIlerle('komsu');
+  if(key==='komsu' && EK[hedefKod].kom.length>0){
+    const inp = $("#komsuGiris");
+    if(inp){
+      inp.addEventListener('input', komsuOneriGuncelle);
+      inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); komsuDenemeYap(inp.value); } });
+      setTimeout(()=>inp.focus(),50);
+    }
+    const ekleBtn = $("#komsuEkleBtn");
+    if(ekleBtn) ekleBtn.onclick = ()=> komsuDenemeYap($("#komsuGiris").value);
+    const oneriEl = $("#komsuOneri");
+    if(oneriEl) oneriEl.addEventListener('mousedown', e=>{
+      const b=e.target.closest('button'); if(!b) return; e.preventDefault(); komsuDenemeYap(b.textContent);
+    });
+  }
+  if(key==='nufus'){
+    $$('#nufusCark button').forEach(btn=>{
+      btn.onclick = ()=>{
+        const i=+btn.dataset.i, yon=+btn.dataset.yon;
+        BN.nufus.basamak[i] = (BN.nufus.basamak[i]+yon+10)%10;
+        $$('#nufusCark b')[i].textContent = BN.nufus.basamak[i];
+        $("#nufusGosterim").textContent = nufusOku().toLocaleString('tr-TR');
+        bonusKaydet();
+      };
+    });
+    const gonder = $("#nufusGonderBtn"); if(gonder) gonder.onclick = nufusGonder;
+  }
+  if(key==='alan') $$('.alan-secim button').forEach(b=> b.onclick = ()=> alanTahminYap(b.dataset.yon));
+  if(key==='dil') $$('#bonusAktif .secenekler button').forEach(b=> b.onclick = ()=> dilCevapVer(b.dataset.v));
+  if(key==='para') $$('#bonusAktif .secenekler button').forEach(b=> b.onclick = ()=> paraCevapVer(b.dataset.v));
+  if(key==='sehir') $$('#bonusAktif .secenekler button').forEach(b=> b.onclick = ()=> sehirCevapVer(b.dataset.v));
+}
+
 /* ===================== mod: günlük / rastgele ===================== */
 function govdeSifirla(){
   deneme=0; bitti=false; kazandi=false; tahminler=[];
   satirEl.innerHTML=""; sonucYuva.innerHTML=""; uyariEl.textContent="";
   kitaIp.textContent=""; kitaIp.classList.remove("acik");
   giris.value=""; oneriKapat(); form.style.display="";
+  BN=null; $("#bonusYuva").innerHTML="";
 }
 function rastgeleBaslat(){
   let k; do { k = SIRA[Math.floor(Math.random()*SIRA.length)]; } while(k===hedefKod && SIRA.length>1);
@@ -644,7 +1214,7 @@ function gunlukBaslat(){
   rastgeleBtn.textContent="🎲 rastgele bayrak";
   const vardi = geriYukle();
   satirCiz(); noktaGuncelle();
-  if(vardi && bitti){ bulaniklikGoster(); kitaIp.textContent=hedef[3]; kitaIp.classList.add("acik"); form.style.display="none"; sayEl.textContent=kazandi?"buldun!":"bugünlük bu kadar"; sonucCiz(); }
+  if(vardi && bitti){ bulaniklikGoster(); kitaIp.textContent=hedef[3]; kitaIp.classList.add("acik"); form.style.display="none"; sayEl.textContent=kazandi?"buldun!":"bugünlük bu kadar"; sonucCiz(); bonusBaslangicGoster(); }
   else { bulaniklikGoster(); sayGuncelle(); setTimeout(()=>giris.focus(),150); }
 }
 rastgeleBtn.onclick = rastgeleBaslat;
