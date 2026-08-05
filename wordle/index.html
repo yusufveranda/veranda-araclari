@@ -636,7 +636,7 @@ let oyunGun=0;                 // günü BAŞTA sabitle: gece yarısını geçin
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
 let araSure=0, araTimer=null, araIndeks=0, araGecmis=[];   // Aralık: kalan süre, sayaç interval'i, sıradaki kelime indeksi, biten kelimelerin geçmişi
-let araGecmisTahtalar=[], araBasladi=false, araBonusKalan=0;   // Aralık: yanda duran biten kelime kartları, başla-öncesi kapı, bonus kutusunda kalan (ana süreyle hiç karışmayan) saniye
+let araGecmisTahtalar=[], araBasladi=false, araBonusKalan=0, araBekleyenBonus=0;   // Aralık: yanda duran biten kelime kartları, başla-öncesi kapı, bonus kutusunda kalan saniye, çevirme animasyonu bitene kadar bekleyen bonus
 
 /* ===== ses (WebAudio, dosyasız) ===== */
 let actx=null;
@@ -704,7 +704,7 @@ function tahtalariKur(){
     const c=mod==='gun'?ks[oyunGun%ks.length]:ks[Math.floor(Math.random()*ks.length)];
     const t=yeniTahta(5,c); t.maxSatir=3; t.ipucu=ANLAM_CEVAP[c]; tahtalar=[t];
   } else if(oyun==='aralik'){
-    araIndeks=0; araGecmis=[]; araGecmisTahtalar=[]; araSure=ARA_BASLANGIC; araBasladi=false; araBonusKalan=0;
+    araIndeks=0; araGecmis=[]; araGecmisTahtalar=[]; araSure=ARA_BASLANGIC; araBasladi=false; araBonusKalan=0; araBekleyenBonus=0;
     tahtalar=[ aralikSonraki() ];
   } else tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false; sonucKapali=false;
@@ -798,6 +798,7 @@ function revealBitti(){
   // Aralık: bu kelimenin çevirme animasyonu bittikten SONRA sıradaki kelimeye geç (süre henüz bitmediyse), AMA SADECE kelime gerçekten bittiyse.
   // Hemen tahtalar[]'ı değiştirmek az önceki tahminin renk açılma animasyonunu keserdi.
   if(araKelimeBitti && !oyunBitti){ tahtalar=[aralikSonraki()]; aktif=0; }
+  if(araBekleyenBonus){ araBonusBaslat(araBekleyenBonus); araBekleyenBonus=0; }   // bonus kutusu ancak sıradaki kelime ekrana gelince açılsın
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
   // İskelime: ZORLA otomatik geçiş YOK (hayalet ipucu kısa kelimeyi erken çözünce "ışınlanma" oluyordu).
@@ -868,7 +869,7 @@ function durumDegerlendir(){
     if(!b.bitti) return;   // deneme hakkı kaldı, sıradaki kelimeye geçme, aynı kelimede devam
     araGecmis.push({uz:b.uz, cozuldu:b.kazandi, deneme:b.gecmis.length});
     araGecmisTahtalar.push(b);   // biten kart yana eklenip kalıcı kalsın (cevap dahil)
-    if(b.kazandi){ araBonusBaslat(ARA_BONUS[b.gecmis.length-1]); bekleyenSes=()=>sBitis(true); }
+    if(b.kazandi){ araBekleyenBonus+=ARA_BONUS[b.gecmis.length-1]; bekleyenSes=()=>sBitis(true); }   // kutu hemen açılmasın: çevirme animasyonu bitip sıradaki kelime gelene kadar bekle (revealBitti tetikler)
     else { bekleyenSes=()=>sBitis(false); bekleyenMesaj='cevap: '+b.cevap; }   // hak bitti: sıradaki kelimeye geçmeden önce cevap görünsün
     return;   // oyunBitti burada set edilmez, süre 0'a inince araTick() bitirir
   }
