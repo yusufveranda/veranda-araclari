@@ -7,6 +7,7 @@
 <body>
 <pre id="cikti">çalışıyor…</pre>
 <script src="../ortak/akrostis-kafiye.js"></script>
+<script src="../ortak/akrostis-uret.js"></script>
 <script>
 const sonuclar = [];
 function esit(ad, gercek, beklenen){
@@ -25,6 +26,46 @@ try {
   esit('sonKelime noktali', AkrostisKafiye.sonKelime('Al bir umut, karanlığı dağıt.'), 'dağıt');
   esit('sonKelime tek kelime unlem', AkrostisKafiye.sonKelime('Merhaba!'), 'Merhaba');
 } catch(e){ sonuclar.push('FAIL akrostis-kafiye.js hata: ' + e.message); }
+try {
+  // Kasıtlı olarak kucuk bir havuz: A/N iki aday, ikisi de 'kaldı' ile bitiyor;
+  // N'de biri 'saldı' (kaldı ile zengin kafiyeli), digeri 'esti' (kafiyesiz) ile bitiyor.
+  const FIXTURE = {
+    A: ['Akşam ışığı yavaşça kaldı', 'Ay parlak ama uzakta kaldı'],
+    N: ['Nice hayal orada saldı', 'Nazlı bir rüzgar sessizce esti'],
+    E: ['Eski defterler tozlanır köşede']
+  };
+
+  const siir1 = AkrostisUret.uretSiir('ANE', FIXTURE);
+  esit('uretSiir dize sayisi', siir1.dizeler.length, 3);
+  esit('pos0 harf A', siir1.dizeler[0].harf, 'A');
+  esit('pos1 harf N', siir1.dizeler[1].harf, 'N');
+  esit('pos2 harf E', siir1.dizeler[2].harf, 'E');
+  esit('pos0 esPos 1', siir1.dizeler[0].esPos, 1);
+  esit('pos1 esPos 0', siir1.dizeler[1].esPos, 0);
+  esit('pos2 esPos yok', siir1.dizeler[2].esPos, null);
+  esit('pos0 son kelime kaldi', AkrostisKafiye.sonKelime(siir1.dizeler[0].metin), 'kaldı');
+  esit('pos1 en iyi kafiye secildi (saldi)', AkrostisKafiye.sonKelime(siir1.dizeler[1].metin), 'saldı');
+  esit('pos2 tek aday', siir1.dizeler[2].metin, 'Eski defterler tozlanır köşede');
+
+  AkrostisUret.dizeyiDegistir(siir1, 1, FIXTURE);
+  esit('degistir sonrasi dize sayisi ayni', siir1.dizeler.length, 3);
+  esit('degistir sonrasi pos0 hala A', siir1.dizeler[0].harf, 'A');
+  esit('degistir sonrasi pos1 hala N', siir1.dizeler[1].harf, 'N');
+  esit('degistir sonrasi eslesme korunuyor (0->1)', siir1.dizeler[0].esPos, 1);
+  esit('degistir sonrasi eslesme korunuyor (1->0)', siir1.dizeler[1].esPos, 0);
+  esit('degistir sonrasi N tek kalan aday (esti)', AkrostisKafiye.sonKelime(siir1.dizeler[1].metin), 'esti');
+  esit('degistir sonrasi A tek kalan aday (kaldi)', AkrostisKafiye.sonKelime(siir1.dizeler[0].metin), 'kaldı');
+  esit('degistir pos2 dokunulmadi', siir1.dizeler[2].metin, 'Eski defterler tozlanır köşede');
+
+  const harfler = AkrostisUret.harfleriAyir('Ayşe İğde');
+  esit('harfleriAyir bosluk ve turkce harf', harfler, ['A','Y','Ş','E','İ','Ğ','D','E']);
+
+  const siir2 = AkrostisUret.uretSiir('AA', {A: FIXTURE.A});
+  esit('tekrarli harf farkli dize', siir2.dizeler[0].metin !== siir2.dizeler[1].metin, true);
+
+  const siir3 = AkrostisUret.uretSiir('W', {W: []});
+  esit('bos havuz null metin', siir3.dizeler[0].metin, null);
+} catch(e){ sonuclar.push('FAIL akrostis-uret.js hata: ' + e.message); }
 document.getElementById('cikti').textContent = sonuclar.join('\n');
 console.log(sonuclar.join('\n'));
 console.log('TOPLAM:', sonuclar.filter(s=>s.startsWith('FAIL')).length, 'FAIL /', sonuclar.length);
