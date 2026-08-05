@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>akrostiş — test</title>
+</head>
+<body>
+<pre id="cikti">çalışıyor…</pre>
+<script src="../ortak/akrostis-kafiye.js"></script>
+<script>
+const sonuclar = [];
+function esit(ad, gercek, beklenen){
+  const ok = JSON.stringify(gercek) === JSON.stringify(beklenen);
+  sonuclar.push((ok ? 'PASS ' : 'FAIL ') + ad + ' -> gercek:' + JSON.stringify(gercek) + ' beklenen:' + JSON.stringify(beklenen));
+}
+try {
+  esit('ayni kelime kafiyesiz', AkrostisKafiye.kafiyeGucu('kaldı','kaldı'), 0);
+  esit('kaldi/saldi zengin', AkrostisKafiye.kafiyeGucu('kaldı','saldı'), 3);
+  esit('dagit/kanit tam', AkrostisKafiye.kafiyeGucu('dağıt','kanıt'), 2);
+  esit('sende/bende zengin', AkrostisKafiye.kafiyeGucu('sende','bende'), 3);
+  esit('geliyor/guluyor zengin', AkrostisKafiye.kafiyeGucu('geliyor','gülüyor'), 3);
+  esit('aksam/yorgun kafiyesiz', AkrostisKafiye.kafiyeGucu('akşam','yorgun'), 0);
+  esit('yildiz/deniz yarim', AkrostisKafiye.kafiyeGucu('yıldız','deniz'), 1);
+  esit('umut/unut tam', AkrostisKafiye.kafiyeGucu('umut','unut'), 2);
+  esit('sonKelime noktali', AkrostisKafiye.sonKelime('Al bir umut, karanlığı dağıt.'), 'dağıt');
+  esit('sonKelime tek kelime unlem', AkrostisKafiye.sonKelime('Merhaba!'), 'Merhaba');
+} catch(e){ sonuclar.push('FAIL akrostis-kafiye.js hata: ' + e.message); }
+document.getElementById('cikti').textContent = sonuclar.join('\n');
+console.log(sonuclar.join('\n'));
+console.log('TOPLAM:', sonuclar.filter(s=>s.startsWith('FAIL')).length, 'FAIL /', sonuclar.length);
+</script>
+</body>
+</html>
