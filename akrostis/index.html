@@ -55,6 +55,7 @@
   #eylemler button{font-size:14px;padding:9px 16px;border-radius:20px;border:1.5px solid var(--line);
     background:var(--card);color:var(--ink);cursor:pointer}
   #eylemler button:hover{border-color:var(--acc);color:var(--acc)}
+  .kupa{position:absolute;left:-9999px}
 </style>
 </head>
 <body>
@@ -84,6 +85,8 @@
       <button type="button" id="kopyalaBtn">kopyala / paylaş</button>
     </div>
   </main>
+
+  <textarea class="kupa" id="kupa" aria-hidden="true"></textarea>
 </div>
 
 <script src="../ortak/akrostis-kafiye.js"></script>
@@ -127,8 +130,16 @@ function siirMetni(siir){
 
 function elleKopyala(metin, ok){
   if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(metin).then(ok).catch(()=>{});
+    navigator.clipboard.writeText(metin).then(ok).catch(() => elleYedek(metin, ok));
+  } else {
+    elleYedek(metin, ok);
   }
+}
+function elleYedek(metin, ok){
+  const k = document.getElementById('kupa');
+  k.value = metin;
+  k.select();
+  try{ document.execCommand('copy'); ok(); }catch(e){}
 }
 
 function paylas(metin, ok){
