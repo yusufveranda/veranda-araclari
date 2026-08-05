@@ -16,7 +16,7 @@ window.ADLAR = {
   "karine_rozet": "beş harf · üç deneme",
   "karine_aciklama": "İpuculu \nKısa",
   "aralik": "Aralık",
-  "aralik_rozet": "4-8 harf · zamana karşı",
+  "aralik_rozet": "4-6 harf · zamana karşı",
   "aralik_aciklama": "Süre bitmeden ne kadar çok kelime çözebilirsin?",
   "pedantle": "Parsel",
   "pedantle_rozet": "gizli madde · sınırsız tahmin",

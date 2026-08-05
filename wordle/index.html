@@ -489,7 +489,7 @@ body{transition:background .4s,color .4s}
         <p data-ad="karine_aciklama">İpuculu, kısa.</p>
       </button>
       <button class="okart" data-git="aralik">
-        <span class="okart-rozet" data-ad="aralik_rozet">4-8 harf · zamana karşı</span>
+        <span class="okart-rozet" data-ad="aralik_rozet">4-6 harf · zamana karşı</span>
         <h3 data-ad="aralik">Aralık</h3>
         <p data-ad="aralik_aciklama">Süre bitmeden ne kadar çok kelime çözebilirsin?</p>
       </button>
@@ -612,7 +612,7 @@ const trLower=s=>s.replace(/[İIŞĞÜÖÇ]/g,c=>TRMAP[c]).toLowerCase();
 const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
-const ARA_UZ=[4,5,6,7,8];
+const ARA_UZ=[4,5,6];
 const ARA_BASLANGIC=180, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi (3dk) + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
 const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
@@ -822,8 +822,8 @@ function araTimerYonet(){
   if(oyun==='aralik' && !oyunBitti && araBasladi) araTimer=setInterval(araTick,1000);
 }
 function araBonusBaslat(bonus){
-  // "+Nsn" rozeti yandan geriye sayar, ana süre o sırada donuk kalır (araTick'teki araBonusOynuyor koruması);
-  // her adımda rozet bir azalır, ana süre bir artar: bonus "akıp" ana sayaca geçmiş gibi görünsün.
+  // "+Nsn" rozeti yandan geriye sayar; ana süre bu sırada TAMAMEN DONUK kalır (araTick'teki araBonusOynuyor koruması),
+  // rakamı hiç değişmez. Rozet 0'a inince bonus TEK SEFERDE ana süreye eklenir, rozet kaybolur, normal geri sayım döner.
   // adım süresi bonus miktarından bağımsız ~1.1-1.8sn'de tamamlansın (küçük bonus da göz göre göre aksın, yanıp sönüp gitmesin).
   araBonusOynuyor=true;
   let kalan=bonus;
@@ -831,9 +831,10 @@ function araBonusBaslat(bonus){
   const bel=document.getElementById('araBonus');
   if(bel){ bel.classList.remove('gizli'); bel.textContent='+'+kalan+'sn'; }
   const adim=()=>{
-    kalan--; araSure++;
-    const sayac=document.getElementById('araSayac'); if(sayac) sayac.textContent='⏱ '+araSureMetni();
+    kalan--;
     if(kalan<=0){
+      araSure+=bonus;   // bonus burada TEK SEFERDE eklenir; ana süre bu ana kadar hiç kıpırdamadı
+      const sayac=document.getElementById('araSayac'); if(sayac) sayac.textContent='⏱ '+araSureMetni();
       araBonusOynuyor=false;
       if(bel) bel.classList.add('gizli');
       araTimerYonet();   // gerçek geri sayım kaldığı yerden devam etsin
@@ -1112,7 +1113,7 @@ function introIcerik(o){
     '<p><b style="color:var(--dogru)">Yeşil</b> doğru yerde, <b style="color:var(--varr)">sarı</b> var ama yeri yanlış, gri hiç yok.</p>'+
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
   if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
-    '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 8 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
+    '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 6 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
     '<p>Süre <b>3 dakikayla</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
     '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b>; amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
@@ -1356,7 +1357,7 @@ function ciz(){
   // başlık / altyazı / ipucu
   const _ay=document.getElementById('altYazi');
   if(oyun==='iskelime'){ const _a=altinUz(); _ay.innerHTML='üç’ten sekiz harfe · altı kelime'+(_a?' · <b class="altin-et">🌟 '+_a+' harf 2×</b>':', yedişer deneme'); }
-  else if(oyun==='aralik') _ay.textContent = '4-8 harf · altı deneme · zamana karşı';
+  else if(oyun==='aralik') _ay.textContent = '4-6 harf · altı deneme · zamana karşı';
   else _ay.textContent = oyun==='anlamca' ? 'beş harf · üç deneme · yakın anlam ipucuyla' : 'beş harf · altı deneme';
   document.getElementById('ipucu').textContent = oyunBitti ? '' : '';
 }
