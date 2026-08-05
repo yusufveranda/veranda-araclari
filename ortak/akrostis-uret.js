@@ -1,4 +1,4 @@
-// Akrostis uretim algoritmasi — harfleri 4'lu bloklara ayirir, blok-ici 1&3 / 2&4
+// Akrostis uretim algoritmasi: harfleri 4'lu bloklara ayirir, blok-ici 1&3 / 2&4
 // pozisyonlarini akrostis-kafiye.js ile kafiyeli eslestirmeye calisir (ABAB).
 (function(root){
   const K = (typeof module !== 'undefined' && module.exports) ? require('./akrostis-kafiye.js') : root.AkrostisKafiye;
