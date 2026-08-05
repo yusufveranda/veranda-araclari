@@ -131,7 +131,14 @@ function siirCiz(siir){
 }
 
 function siirMetni(siir){
-  return siir.dizeler.filter(d => d.metin).map(d => d.metin).join('\n');
+  const kitaSet = new Set(siir.kitaSinirlari || []);
+  const satirlar = [];
+  siir.dizeler.forEach(d => {
+    if(!d.metin) return;
+    if(kitaSet.has(d.pos) && satirlar.length) satirlar.push('');
+    satirlar.push(d.metin);
+  });
+  return satirlar.join('\n');
 }
 
 function elleKopyala(metin, ok){
