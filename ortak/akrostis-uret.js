@@ -1,5 +1,7 @@
 // Akrostis uretim algoritmasi: harfleri 4'lu bloklara ayirir, blok-ici 1&3 / 2&4
 // pozisyonlarini akrostis-kafiye.js ile kafiyeli eslestirmeye calisir (ABAB).
+// Havuzu bos olan harfler (orn. Turkcede hicbir kelimenin baslamadigi Ğ)
+// eslestirmeden muaf tutulur, kalan dolu-havuzlu harfler kendi aralarinda eslesir.
 (function(root){
   const K = (typeof module !== 'undefined' && module.exports) ? require('./akrostis-kafiye.js') : root.AkrostisKafiye;
 
