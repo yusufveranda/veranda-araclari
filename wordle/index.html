@@ -615,7 +615,7 @@ const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
 const ARA_UZ=[4,5,6];
-const ARA_BASLANGIC=180, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi (3dk) + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
+const ARA_BASLANGIC=90, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi (90sn) + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
 const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
 const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
@@ -636,7 +636,7 @@ let oyunGun=0;                 // günü BAŞTA sabitle: gece yarısını geçin
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
 let araSure=0, araTimer=null, araIndeks=0, araGecmis=[];   // Aralık: kalan süre, sayaç interval'i, sıradaki kelime indeksi, biten kelimelerin geçmişi
-let araGecmisTahtalar=[], araBasladi=false, araBonusOynuyor=false;   // Aralık: yanda duran biten kelime kartları, başla-öncesi kapı, bonus akış animasyonu kilidi
+let araGecmisTahtalar=[], araBasladi=false, araBonusKalan=0;   // Aralık: yanda duran biten kelime kartları, başla-öncesi kapı, bonus kutusunda kalan (ana süreyle hiç karışmayan) saniye
 
 /* ===== ses (WebAudio, dosyasız) ===== */
 let actx=null;
@@ -704,7 +704,7 @@ function tahtalariKur(){
     const c=mod==='gun'?ks[oyunGun%ks.length]:ks[Math.floor(Math.random()*ks.length)];
     const t=yeniTahta(5,c); t.maxSatir=3; t.ipucu=ANLAM_CEVAP[c]; tahtalar=[t];
   } else if(oyun==='aralik'){
-    araIndeks=0; araGecmis=[]; araGecmisTahtalar=[]; araSure=ARA_BASLANGIC; araBasladi=false; araBonusOynuyor=false;
+    araIndeks=0; araGecmis=[]; araGecmisTahtalar=[]; araSure=ARA_BASLANGIC; araBasladi=false; araBonusKalan=0;
     tahtalar=[ aralikSonraki() ];
   } else tahtalar=[ yeniTahta(5, mod==='gun'?gunlukCevap(5):rasgele(5)) ];
   aktif=0; oyunBitti=false; animHarf=null; animCevir=null; sonucHazir=false; sonucYeni=false; sonucKapali=false;
@@ -806,7 +806,13 @@ function revealBitti(){
 }
 function araTick(){
   if(oyun!=='aralik' || oyunBitti){ if(araTimer){ clearInterval(araTimer); araTimer=null; } return; }
-  if(araBonusOynuyor) return;   // bonus rozeti ana süreye akarken gerçek geri sayım durur
+  if(araBonusKalan>0){   // bonus kutusu varken ana süre TAMAMEN donuk kalır, hiç dokunulmaz; sadece kutu kendi gerçek saniyesinde azalır
+    araBonusKalan--;
+    const bel=document.getElementById('araBonus');
+    if(araBonusKalan<=0){ if(bel) bel.classList.add('gizli'); }   // kutu boşaldı: bir sonraki tikte ana süre kaldığı yerden devam eder
+    else if(bel) bel.textContent='+'+araBonusKalan+'sn';
+    return;
+  }
   araSure--;
   if(araSure<=0){
     araSure=0;
@@ -824,28 +830,11 @@ function araTimerYonet(){
   if(oyun==='aralik' && !oyunBitti && araBasladi) araTimer=setInterval(araTick,1000);
 }
 function araBonusBaslat(bonus){
-  // "+Nsn" rozeti yandan geriye sayar; ana süre bu sırada TAMAMEN DONUK kalır (araTick'teki araBonusOynuyor koruması),
-  // rakamı hiç değişmez. Rozet 0'a inince bonus TEK SEFERDE ana süreye eklenir, rozet kaybolur, normal geri sayım döner.
-  // adım süresi bonus miktarından bağımsız ~1.1-1.8sn'de tamamlansın (küçük bonus da göz göre göre aksın, yanıp sönüp gitmesin).
-  araBonusOynuyor=true;
-  let kalan=bonus;
-  const adimSuresi=Math.max(60,Math.min(250,Math.round(1300/bonus)));
+  // Bonus ana süreye hiç eklenmez, hiç dokunmaz. Kutudaki kalan miktara eklenir (üst üste kazanılırsa birikir);
+  // araTick kutu boşalana kadar SADECE kutuyu azaltır, ana süre o sırada donuk bekler, kutu bitince kaldığı yerden devam eder.
+  araBonusKalan=(araBonusKalan||0)+bonus;
   const bel=document.getElementById('araBonus');
-  if(bel){ bel.classList.remove('gizli'); bel.textContent='+'+kalan+'sn'; }
-  const adim=()=>{
-    kalan--;
-    if(kalan<=0){
-      araSure+=bonus;   // bonus burada TEK SEFERDE eklenir; ana süre bu ana kadar hiç kıpırdamadı
-      const sayac=document.getElementById('araSayac'); if(sayac) sayac.textContent='⏱ '+araSureMetni();
-      araBonusOynuyor=false;
-      if(bel) bel.classList.add('gizli');
-      araTimerYonet();   // gerçek geri sayım kaldığı yerden devam etsin
-      return;
-    }
-    if(bel) bel.textContent='+'+kalan+'sn';
-    setTimeout(adim,adimSuresi);
-  };
-  setTimeout(adim,adimSuresi);
+  if(bel){ bel.classList.remove('gizli'); bel.textContent='+'+araBonusKalan+'sn'; }
 }
 let _araGecmisSayisi=0;   // en son çizilen kart sayısı: yeni kart gelince paneli tepeye kaydır, elle kaydırılmışsa bozma
 function araGecmisCiz(){   // biten kelimeler yanda kart olarak kalıcı dursun: en yeni üstte
@@ -1116,7 +1105,7 @@ function introIcerik(o){
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
   if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
     '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 6 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
-    '<p>Süre <b>3 dakikayla</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
+    '<p>Süre <b>90 saniyeyle</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
     '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b>; amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
@@ -1250,8 +1239,8 @@ function yukle(){
     return true;
   }catch(e){ return false; }
 }
-function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti,sonucHazir,araSure,araGecmis,araIndeks,araGecmisTahtalar,araBasladi}; }
-function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; sonucHazir=!!d.sonucHazir; sonucYeni=false; araSure=d.araSure||0; araGecmis=d.araGecmis||[]; araIndeks=d.araIndeks||0; araGecmisTahtalar=d.araGecmisTahtalar||[]; araBasladi=!!d.araBasladi; return true; } return false; }
+function durumKaydetBellek(){ bellek[oyun+':'+mod]={tahtalar,aktif,oyunBitti,sonucHazir,araSure,araGecmis,araIndeks,araGecmisTahtalar,araBasladi,araBonusKalan}; }
+function durumYukleBellek(){ const d=bellek[oyun+':'+mod]; if(d){ tahtalar=d.tahtalar; aktif=d.aktif; oyunBitti=d.oyunBitti; sonucHazir=!!d.sonucHazir; sonucYeni=false; araSure=d.araSure||0; araGecmis=d.araGecmis||[]; araIndeks=d.araIndeks||0; araGecmisTahtalar=d.araGecmisTahtalar||[]; araBasladi=!!d.araBasladi; araBonusKalan=d.araBonusKalan||0; return true; } return false; }
 
 /* ===== çizim ===== */
 function mesaj(m){ document.getElementById('mesaj').textContent=m||''; }
@@ -1260,7 +1249,12 @@ function ciz(){
   const b=aktifTahta();
   const araEl=document.getElementById('araSayac'), araRow=document.getElementById('araSayacRow');
   araRow.classList.toggle('gizli', oyun!=='aralik');
-  if(oyun==='aralik'){ araEl.textContent='⏱ '+araSureMetni(); araEl.classList.toggle('dusuk', araSure<=10); }
+  if(oyun==='aralik'){
+    araEl.textContent='⏱ '+araSureMetni(); araEl.classList.toggle('dusuk', araSure<=10);
+    const bel=document.getElementById('araBonus');
+    bel.classList.toggle('gizli', araBonusKalan<=0);
+    if(araBonusKalan>0) bel.textContent='+'+araBonusKalan+'sn';
+  }
   // aralık: kaçıncı kelimedeyiz + "başla" kapısı (süre/tahmin başlamadan önce kelime ve klavye gizli) + geçmiş kart paneli
   const araNo=document.getElementById('araKelimeNo'), araKapi=document.getElementById('araBaslaKatman'),
         matEl=document.getElementById('mat'), agp=document.getElementById('araGecmisPanel');
