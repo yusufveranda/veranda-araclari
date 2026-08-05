@@ -2,6 +2,9 @@
 // pozisyonlarini akrostis-kafiye.js ile kafiyeli eslestirmeye calisir (ABAB).
 // Havuzu bos olan harfler (orn. Turkcede hicbir kelimenin baslamadigi Ğ)
 // eslestirmeden muaf tutulur, kalan dolu-havuzlu harfler kendi aralarinda eslesir.
+// Her pozisyonun 'genel'/'kapanis'/'gecis' turu vardir (bkz. pozisyonTuruBelirle);
+// veriKumesi artik {genel:{...}, kapanis:{...}, gecis:{...}} sekli, her katman
+// harf->dize dizisi. Bir katmanda o harf icin dize yoksa genel katmana dusulur.
 (function(root){
   const K = (typeof module !== 'undefined' && module.exports) ? require('./akrostis-kafiye.js') : root.AkrostisKafiye;
 
@@ -32,12 +35,13 @@
 
   // Bos havuzlu (orn. Ğ) pozisyonlar hep tek kalir; digerlerinin eslesmesini bozmaz.
   // grup icindeki dolu-havuzlu pozisyonlari once kendi aralarinda (ayni grupEslesmeleri
-  // mantigiyla) eslestirir, bos pozisyonlari her zaman teklere ekler.
-  function grupEslesmeleriUyumlu(grup, veriHavuzu){
+  // mantigiyla) eslestirir, bos pozisyonlari her zaman teklere ekler. Boslugu 'genel'
+  // katmana bakarak belirler (bir harfin hicbir dizesi yoksa hicbir katmanda yoktur).
+  function grupEslesmeleriUyumlu(grup, veriKumesi){
     const canli = [];
     const bos = [];
     grup.forEach((harf, i) => {
-      if(havuzGetir(veriHavuzu, harf).length) canli.push(i);
+      if(havuzGetir(veriKumesi, harf, 'genel').length) canli.push(i);
       else bos.push(i);
     });
     const {ciftler: canliCiftler, tekler: canliTekler} = grupEslesmeleri(canli.length);
@@ -46,8 +50,43 @@
     return {ciftler, tekler};
   }
 
-  function havuzGetir(veriHavuzu, harf){
-    return veriHavuzu[harf] || [];
+  // Siirin her pozisyonu icin hangi dize turunun kullanilacagini belirler: son 1-2
+  // pozisyon 'kapanis', TAM 4'lu bloklarin (en sondaki blok haric zaten kapanisla
+  // cakisir) son pozisyonu 'gecis', geri kalani 'genel'. Cakisirsa kapanis kazanir.
+  function pozisyonTuruBelirle(uzunluk){
+    const turler = new Array(uzunluk).fill('genel');
+    if(uzunluk >= 1){
+      const bitirisBaslangic = Math.max(0, uzunluk - (uzunluk === 1 ? 1 : 2));
+      for(let i = bitirisBaslangic; i < uzunluk; i++) turler[i] = 'kapanis';
+    }
+    for(let i = 3; i < uzunluk; i += 4){
+      if(turler[i] === 'genel') turler[i] = 'gecis';
+    }
+    return turler;
+  }
+
+  // Girdi bosluga gore kelimelere ayrilir; her kelimenin urettigi harf sayisi
+  // birikimli toplanip, ilk kelime haric her kelimenin baslangic pozisyonu
+  // dondurulur (UI bu pozisyonlardan once bir kita boslugu ekler). Hic harf
+  // uretmeyen kelimeler (orn. sadece rakam) yok sayilir.
+  function kelimeSinirlariBul(girdi){
+    const kelimeler = girdi.trim().split(/\s+/).filter(Boolean);
+    const uzunluklar = kelimeler.map(k => harfleriAyir(k).length).filter(n => n > 0);
+    const sinirlar = [];
+    let toplam = 0;
+    for(let i = 0; i < uzunluklar.length - 1; i++){
+      toplam += uzunluklar[i];
+      sinirlar.push(toplam);
+    }
+    return sinirlar;
+  }
+
+  // Once istenen turdeki havuza bakar, o harf icin bos ise 'genel' katmana duser.
+  function havuzGetir(veriKumesi, harf, tur){
+    const katman = veriKumesi[tur || 'genel'];
+    const tercih = (katman && katman[harf]) || [];
+    if(tercih.length) return tercih;
+    return (veriKumesi.genel && veriKumesi.genel[harf]) || [];
   }
 
   function tekSec(havuz, disiTutulacak, rastgele){
@@ -87,42 +126,43 @@
     return null;
   }
 
-  function tekDizeUret(pos, harf, veriHavuzu, disiTutulacak, rastgele){
-    const havuz = havuzGetir(veriHavuzu, harf);
+  function tekDizeUret(pos, harf, veriKumesi, tur, disiTutulacak, rastgele){
+    const havuz = havuzGetir(veriKumesi, harf, tur);
     const metin = tekSec(havuz, disiTutulacak, rastgele);
     return {pos, harf, metin, esPos: null, kafiye: 0};
   }
 
-  function uretSiir(girdi, veriHavuzu, opts){
+  function uretSiir(girdi, veriKumesi, opts){
     const rastgele = (opts && opts.rastgele) || Math.random;
     const harfler = harfleriAyir(girdi);
+    const turler = pozisyonTuruBelirle(harfler.length);
     const gruplar = harfleriGrupla(harfler);
     const dizeler = new Array(harfler.length).fill(null);
     const disiTutulacak = new Set();
     let ofset = 0;
     for(const grup of gruplar){
-      const {ciftler, tekler} = grupEslesmeleriUyumlu(grup, veriHavuzu);
+      const {ciftler, tekler} = grupEslesmeleriUyumlu(grup, veriKumesi);
       for(const [i, j] of ciftler){
         const posA = ofset+i, posB = ofset+j;
         const harfA = grup[i], harfB = grup[j];
-        const havuzA = havuzGetir(veriHavuzu, harfA);
-        const havuzB = havuzGetir(veriHavuzu, harfB);
+        const havuzA = havuzGetir(veriKumesi, harfA, turler[posA]);
+        const havuzB = havuzGetir(veriKumesi, harfB, turler[posB]);
         const sonuc = ciftSec(havuzA, havuzB, disiTutulacak, rastgele);
         if(sonuc){
           disiTutulacak.add(sonuc.a); disiTutulacak.add(sonuc.b);
           dizeler[posA] = {pos:posA, harf:harfA, metin:sonuc.a, esPos:posB, kafiye:sonuc.puan};
           dizeler[posB] = {pos:posB, harf:harfB, metin:sonuc.b, esPos:posA, kafiye:sonuc.puan};
         } else {
-          const dA = tekDizeUret(posA, harfA, veriHavuzu, disiTutulacak, rastgele);
+          const dA = tekDizeUret(posA, harfA, veriKumesi, turler[posA], disiTutulacak, rastgele);
           if(dA.metin) disiTutulacak.add(dA.metin);
-          const dB = tekDizeUret(posB, harfB, veriHavuzu, disiTutulacak, rastgele);
+          const dB = tekDizeUret(posB, harfB, veriKumesi, turler[posB], disiTutulacak, rastgele);
           if(dB.metin) disiTutulacak.add(dB.metin);
           dizeler[posA] = dA; dizeler[posB] = dB;
         }
       }
       for(const i of tekler){
         const pos = ofset+i, harf = grup[i];
-        const d = tekDizeUret(pos, harf, veriHavuzu, disiTutulacak, rastgele);
+        const d = tekDizeUret(pos, harf, veriKumesi, turler[pos], disiTutulacak, rastgele);
         if(d.metin) disiTutulacak.add(d.metin);
         dizeler[pos] = d;
       }
@@ -132,11 +172,13 @@
   }
 
   // Tek bir dizeyi (varsa kafiye partneriyle birlikte) yeniden uretir; siir nesnesini
-  // YERINDE gunceller ve dondurur.
-  function dizeyiDegistir(siir, pos, veriHavuzu, opts){
+  // YERINDE gunceller ve dondurur. Pozisyon turlerini siir.harfler.length'ten yeniden
+  // hesaplar (siir nesnesinde ayrica saklamaya gerek yok).
+  function dizeyiDegistir(siir, pos, veriKumesi, opts){
     const rastgele = (opts && opts.rastgele) || Math.random;
     const hedef = siir.dizeler[pos];
     if(!hedef) return siir;
+    const turler = pozisyonTuruBelirle(siir.harfler.length);
     const disiTutulacak = new Set(
       siir.dizeler.filter(d => d && d.pos !== pos && d.pos !== hedef.esPos).map(d => d.metin)
     );
@@ -144,22 +186,22 @@
     if(hedef.esPos !== null){
       const es = siir.dizeler[hedef.esPos];
       disiTutulacak.add(es.metin);
-      const havuzA = havuzGetir(veriHavuzu, hedef.harf);
-      const havuzB = havuzGetir(veriHavuzu, es.harf);
+      const havuzA = havuzGetir(veriKumesi, hedef.harf, turler[pos]);
+      const havuzB = havuzGetir(veriKumesi, es.harf, turler[es.pos]);
       const sonuc = ciftSec(havuzA, havuzB, disiTutulacak, rastgele);
       if(sonuc){
         siir.dizeler[pos] = {pos, harf:hedef.harf, metin:sonuc.a, esPos:es.pos, kafiye:sonuc.puan};
         siir.dizeler[es.pos] = {pos:es.pos, harf:es.harf, metin:sonuc.b, esPos:pos, kafiye:sonuc.puan};
       }
     } else {
-      const havuz = havuzGetir(veriHavuzu, hedef.harf);
+      const havuz = havuzGetir(veriKumesi, hedef.harf, turler[pos]);
       const yeni = tekSec(havuz, disiTutulacak, rastgele);
       if(yeni) siir.dizeler[pos] = {pos, harf:hedef.harf, metin:yeni, esPos:null, kafiye:0};
     }
     return siir;
   }
 
-  const API = { trBuyukHarf, harfleriAyir, harfleriGrupla, grupEslesmeleri, grupEslesmeleriUyumlu, uretSiir, dizeyiDegistir };
+  const API = { trBuyukHarf, harfleriAyir, harfleriGrupla, grupEslesmeleri, grupEslesmeleriUyumlu, pozisyonTuruBelirle, kelimeSinirlariBul, uretSiir, dizeyiDegistir };
   if(typeof module !== 'undefined' && module.exports) module.exports = API;
   else root.AkrostisUret = API;
 })(typeof window !== 'undefined' ? window : globalThis);
