@@ -809,8 +809,8 @@ function araTick(){
   if(araSure<=0){
     araSure=0;
     if(araTimer){ clearInterval(araTimer); araTimer=null; }
-    const b=aktifTahta();   // süre yarım kelimede biterse o kelime de yana kart olarak eklensin, cevabı görünsün
-    if(b && !b.bitti){ araGecmis.push({uz:b.uz, cozuldu:false, deneme:b.gecmis.length}); araGecmisTahtalar.push(b); }
+    const b=aktifTahta();   // süre yarım/hiç denenmemiş kelimede biterse o kelime de yana kart olarak eklensin, cevabı hemen göster
+    if(b && !b.bitti){ araGecmis.push({uz:b.uz, cozuldu:false, deneme:b.gecmis.length}); araGecmisTahtalar.push(b); mesaj('süre doldu · cevap: '+b.cevap); }
     if(!revealAnim){ oyunBitti=true; sonucHazir=true; sonucYeni=true; lbGonder(); ciz(); }
     else oyunBitti=true;   // reveal animasyonu bitince revealBitti() zaten sonucHazir'ı açacak
   } else {
@@ -824,8 +824,10 @@ function araTimerYonet(){
 function araBonusBaslat(bonus){
   // "+Nsn" rozeti yandan geriye sayar, ana süre o sırada donuk kalır (araTick'teki araBonusOynuyor koruması);
   // her adımda rozet bir azalır, ana süre bir artar: bonus "akıp" ana sayaca geçmiş gibi görünsün.
+  // adım süresi bonus miktarından bağımsız ~1.1-1.8sn'de tamamlansın (küçük bonus da göz göre göre aksın, yanıp sönüp gitmesin).
   araBonusOynuyor=true;
   let kalan=bonus;
+  const adimSuresi=Math.max(60,Math.min(250,Math.round(1300/bonus)));
   const bel=document.getElementById('araBonus');
   if(bel){ bel.classList.remove('gizli'); bel.textContent='+'+kalan+'sn'; }
   const adim=()=>{
@@ -838,21 +840,25 @@ function araBonusBaslat(bonus){
       return;
     }
     if(bel) bel.textContent='+'+kalan+'sn';
-    setTimeout(adim,55);
+    setTimeout(adim,adimSuresi);
   };
-  setTimeout(adim,55);
+  setTimeout(adim,adimSuresi);
 }
+let _araGecmisSayisi=0;   // en son çizilen kart sayısı: yeni kart gelince paneli tepeye kaydır, elle kaydırılmışsa bozma
 function araGecmisCiz(){   // biten kelimeler yanda kart olarak kalıcı dursun: en yeni üstte
   const p=document.getElementById('araGecmisPanel');
-  if(!araGecmisTahtalar.length){ p.classList.add('gizli'); return; }
+  if(!araGecmisTahtalar.length){ p.classList.add('gizli'); _araGecmisSayisi=0; return; }
   p.classList.remove('gizli');
   const liste=document.getElementById('araGecmisListe');
+  const yeniVar = araGecmisTahtalar.length>_araGecmisSayisi;
+  _araGecmisSayisi=araGecmisTahtalar.length;
   liste.innerHTML = araGecmisTahtalar.map((t,i)=>{
     const satirlar=t.gecmis.map(row=>'<div class="agk-satir">'+row.harfler.map((h,i2)=>'<span class="agk-h '+row.renkler[i2]+'">'+h+'</span>').join('')+'</div>').join('');
     const cevapEt = t.kazandi ? '' : '<div class="agk-cevap">cevap: <b>'+t.cevap+'</b></div>';
     return '<div class="agk-kart '+(t.kazandi?'ok':'yo')+'"><div class="agk-ust"><span>'+(i+1)+'. kelime · '+t.uz+' harf</span>'+
       '<span class="agk-sonuc">'+(t.kazandi?'✓ '+t.gecmis.length:'✗')+'</span></div>'+satirlar+cevapEt+'</div>';
   }).reverse().join('');
+  if(yeniVar) liste.scrollTop=0;   // yeni kart en yeni sırayla eklendiğinde otomatik en üste gel
 }
 function mobilGorunur(){   // mobilde aktif satırı sabit klavyenin üstünde tut
   if((window.innerWidth||999)>440) return;
@@ -871,7 +877,7 @@ function durumDegerlendir(){
     araGecmis.push({uz:b.uz, cozuldu:b.kazandi, deneme:b.gecmis.length});
     araGecmisTahtalar.push(b);   // biten kart yana eklenip kalıcı kalsın (cevap dahil)
     if(b.kazandi){ araBonusBaslat(ARA_BONUS[b.gecmis.length-1]); bekleyenSes=()=>sBitis(true); }
-    else bekleyenSes=()=>sBitis(false);
+    else { bekleyenSes=()=>sBitis(false); bekleyenMesaj='cevap: '+b.cevap; }   // hak bitti: sıradaki kelimeye geçmeden önce cevap görünsün
     return;   // oyunBitti burada set edilmez, süre 0'a inince araTick() bitirir
   }
   if(oyun!=='iskelime'){   // harfiyat + anlamca: tek tahta
@@ -1387,9 +1393,11 @@ function sonucCiz(){
     payBagla(el);
   } else if(oyun==='aralik'){   // zamana karşı: çözülen kelime sayısı asıl skor
     const s=araSkorHesapla();
+    const son=araGecmisTahtalar[araGecmisTahtalar.length-1];
+    const sonEt = (son && !son.kazandi) ? `<div class="alt2">son kelime: <b>${son.cevap}</b></div>` : '';
     el.innerHTML=kapatBtn+`<div class="baslik ok">${s.cozulen} kelime</div>
       <div class="skor" style="margin-top:9px">${s.toplamDeneme}<small> toplam deneme</small></div>
-      <div class="alt2">${s.oynanan} kelime denendi · süre doldu</div>`+payHTML+ileriBtn;
+      <div class="alt2">${s.oynanan} kelime denendi · süre doldu</div>`+sonEt+payHTML+ileriBtn;
     payBagla(el);
   } else {   // harfiyat + avlu — tek kelime + 100 puan + paylaş + tablo
     const b=tahtalar[0], s=skorHesapla();
