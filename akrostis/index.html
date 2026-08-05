@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="../manifest.json">
+<script src="../ortak/analitik.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akrostiş: bir kelimeden şiir</title>
+<meta name="description" content="Bir isim ya da kelime yaz, her harfiyle başlayan, kafiyeli bir akrostiş şiiri anında yazılsın.">
+<meta property="og:image" content="https://verandatools.com/gorsel/akrostis.jpg">
+<meta name="theme-color" content="#5F6B37">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23342A1C'/%3E%3Ccircle cx='19' cy='19' r='4' fill='%23F09A36'/%3E%3Crect x='27' y='16' width='22' height='6' rx='2' fill='%23F4EDDD'/%3E%3Ccircle cx='19' cy='31' r='4' fill='%23D7261D'/%3E%3Crect x='27' y='28' width='16' height='6' rx='2' fill='%23F4EDDD'/%3E%3Ccircle cx='19' cy='43' r='4' fill='%23F09A36'/%3E%3Crect x='27' y='40' width='22' height='6' rx='2' fill='%23F4EDDD'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../ortak/stil.css">
+<style>
+  body{font-family:'Libre Baskerville',Georgia,serif;transition:background .4s,color .4s}
+  .wrap{max-width:min(95vw,900px);padding:42px 30px 96px}
+
+  body.gece{
+    --bg:#15110d; --card:#1f1912; --ink:#efe3c6; --muted:#a6977a; --line:#3a2f22;
+    --acc:#4fa08c; --acc-soft:rgba(79,160,140,.14); --vurgu:#e0955a; --shadow:rgba(0,0,0,.4);
+  }
+
+  .ust-satir{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .gece-dug{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);
+    color:var(--ink);font-size:16px;display:inline-flex;align-items:center;justify-content:center;
+    box-shadow:2px 3px 0 var(--shadow);cursor:pointer}
+  .gece-dug:hover{transform:translateY(-1px)}
+
+  form.giris-form{display:flex;gap:10px;margin-top:28px}
+  form.giris-form input{flex:1;padding:13px 16px;border:1.5px solid var(--line);border-radius:11px;
+    background:var(--card);color:var(--ink);font-size:16px;font-family:inherit}
+  form.giris-form input:focus{outline:none;border-color:var(--acc)}
+  form.giris-form button{padding:0 22px;border:none;border-radius:11px;background:var(--acc);color:#F2E6CE;
+    font-size:15px;box-shadow:2px 3px 0 var(--shadow);cursor:pointer}
+  form.giris-form button:hover{transform:translateY(-1px)}
+
+  #siirYuva{margin-top:30px;display:flex;flex-direction:column;gap:9px}
+  .bos-durum{color:var(--muted);font-style:italic;padding:20px 4px}
+  .dize{display:flex;align-items:baseline;gap:12px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:12px 16px;animation:dizeGel .3s ease}
+  @keyframes dizeGel{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .dize.dize-bos{opacity:.6}
+  .dize .ilk-harf{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;color:var(--vurgu);flex:none}
+  .dize .metin{flex:1;font-size:16.5px;color:var(--ink)}
+  .dize .dize-yenile{flex:none;border:none;background:none;color:var(--muted);font-size:16px;
+    cursor:pointer;border-radius:6px;padding:2px 6px;opacity:0;transition:opacity .15s}
+  .dize:hover .dize-yenile{opacity:1}
+  .dize .dize-yenile:hover{color:var(--acc)}
+
+  #eylemler{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  #eylemler button{font-size:14px;padding:9px 16px;border-radius:20px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer}
+  #eylemler button:hover{border-color:var(--acc);color:var(--acc)}
+  .kupa{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="ust-satir">
+    <a class="eve-don" href="../">verandaya dön</a>
+    <button class="gece-dug" id="gece" title="gece / gündüz" type="button">🌙</button>
+  </div>
+
+  <header class="site" style="margin-top:16px">
+    <a href="./"><h1>Akrostiş</h1></a>
+    <div class="alt">Bir isim ya da kelime yaz; her harfiyle başlayan, kafiyeli bir şiir anında yazılsın.</div>
+  </header>
+
+  <main>
+    <form class="giris-form" id="uretForm" autocomplete="off">
+      <input id="girisKelime" type="text" placeholder="bir isim ya da kelime yaz…" aria-label="isim ya da kelime" autocomplete="off" spellcheck="false">
+      <button type="submit">şiiri yaz</button>
+    </form>
+
+    <div id="siirYuva">
+      <div class="bos-durum">bir isim ya da kelime yaz, akrostiş şiirini yazayım.</div>
+    </div>
+
+    <div id="eylemler" hidden>
+      <button type="button" id="yenidenBtn">↻ başka bir şiir dene</button>
+      <button type="button" id="kopyalaBtn">kopyala / paylaş</button>
+    </div>
+  </main>
+
+  <textarea class="kupa" id="kupa" aria-hidden="true"></textarea>
+</div>
+
+<script src="../ortak/akrostis-kafiye.js"></script>
+<script src="../ortak/akrostis-uret.js"></script>
+<script src="../ortak/akrostis-veri.js"></script>
+<script>
+let mevcutSiir = null;
+
+function esc(s){
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function dizeSatiri(d){
+  if(!d.metin){
+    return `<div class="dize dize-bos" data-pos="${d.pos}">` +
+      `<span class="ilk-harf">${esc(d.harf)}</span>` +
+      `<span class="metin">(bu harfle başlayan Türkçe kelime yok, bu dize atlanıyor)</span></div>`;
+  }
+  const ilk = d.metin.charAt(0);
+  const geri = d.metin.slice(1);
+  return `<div class="dize" data-pos="${d.pos}">` +
+    `<span class="ilk-harf">${esc(ilk)}</span><span class="metin">${esc(geri)}</span>` +
+    `<button class="dize-yenile" data-pos="${d.pos}" title="bu dizeyi yeniden üret" type="button">↻</button></div>`;
+}
+
+function siirCiz(siir){
+  const yuva = document.getElementById('siirYuva');
+  const eylemler = document.getElementById('eylemler');
+  if(!siir.dizeler.length){
+    yuva.innerHTML = '<div class="bos-durum">bir isim ya da kelime yaz, akrostiş şiirini yazayım.</div>';
+    eylemler.hidden = true;
+    return;
+  }
+  yuva.innerHTML = siir.dizeler.map(dizeSatiri).join('');
+  eylemler.hidden = false;
+}
+
+function siirMetni(siir){
+  return siir.dizeler.filter(d => d.metin).map(d => d.metin).join('\n');
+}
+
+function elleKopyala(metin, ok){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(metin).then(ok).catch(() => elleYedek(metin, ok));
+  } else {
+    elleYedek(metin, ok);
+  }
+}
+function elleYedek(metin, ok){
+  const k = document.getElementById('kupa');
+  k.value = metin;
+  k.select();
+  try{ document.execCommand('copy'); ok(); }catch(e){}
+}
+
+function paylas(metin, ok){
+  if(navigator.share && /Mobi|Android/i.test(navigator.userAgent)){
+    navigator.share({text: metin}).catch(() => elleKopyala(metin, ok));
+    return;
+  }
+  elleKopyala(metin, ok);
+}
+
+document.getElementById('uretForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const kelime = document.getElementById('girisKelime').value.trim();
+  if(!kelime) return;
+  mevcutSiir = AkrostisUret.uretSiir(kelime, AKROSTIS_DIZE);
+  siirCiz(mevcutSiir);
+});
+
+document.getElementById('yenidenBtn').addEventListener('click', () => {
+  if(!mevcutSiir) return;
+  mevcutSiir = AkrostisUret.uretSiir(mevcutSiir.girdi, AKROSTIS_DIZE);
+  siirCiz(mevcutSiir);
+});
+
+document.getElementById('siirYuva').addEventListener('click', e => {
+  const btn = e.target.closest('.dize-yenile');
+  if(!btn || !mevcutSiir) return;
+  const pos = Number(btn.dataset.pos);
+  AkrostisUret.dizeyiDegistir(mevcutSiir, pos, AKROSTIS_DIZE);
+  siirCiz(mevcutSiir);
+});
+
+document.getElementById('kopyalaBtn').addEventListener('click', () => {
+  if(!mevcutSiir) return;
+  const btn = document.getElementById('kopyalaBtn');
+  const eski = btn.textContent;
+  paylas(siirMetni(mevcutSiir), () => {
+    btn.textContent = 'kopyalandı ✓';
+    setTimeout(() => { btn.textContent = eski; }, 1600);
+  });
+});
+
+document.getElementById('gece').addEventListener('click', () => {
+  document.body.classList.toggle('gece');
+  const g = document.body.classList.contains('gece');
+  document.getElementById('gece').textContent = g ? '☀️' : '🌙';
+  try{ localStorage.setItem('akrostis:gece', g ? '1' : '0'); }catch(e){}
+});
+try{
+  if(localStorage.getItem('akrostis:gece') === '1'){
+    document.body.classList.add('gece');
+    document.getElementById('gece').textContent = '☀️';
+  }
+}catch(e){}
+</script>
+<script src="../ortak/nav-panel.js"></script>
+</body>
+</html>

@@ -31,6 +31,7 @@ window.ADLAR = {
   "siir": "Bitmeyen Şiir",
   "politika": "Siyaset Bilimi",
   "nota": "Veranda Band",
+  "akrostis": "Akrostiş",
   "sicak_tahmin": "tahmin"
 };
 /* [data-ad] taşıyan ögelere config'ten metni yazar. Bu blok düzenleme sayfasınca aynen korunur. */
