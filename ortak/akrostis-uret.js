@@ -28,6 +28,22 @@
     return {ciftler:[], tekler:[]};
   }
 
+  // Bos havuzlu (orn. Ğ) pozisyonlar hep tek kalir; digerlerinin eslesmesini bozmaz.
+  // grup icindeki dolu-havuzlu pozisyonlari once kendi aralarinda (ayni grupEslesmeleri
+  // mantigiyla) eslestirir, bos pozisyonlari her zaman teklere ekler.
+  function grupEslesmeleriUyumlu(grup, veriHavuzu){
+    const canli = [];
+    const bos = [];
+    grup.forEach((harf, i) => {
+      if(havuzGetir(veriHavuzu, harf).length) canli.push(i);
+      else bos.push(i);
+    });
+    const {ciftler: canliCiftler, tekler: canliTekler} = grupEslesmeleri(canli.length);
+    const ciftler = canliCiftler.map(([a, b]) => [canli[a], canli[b]]);
+    const tekler = [...canliTekler.map(t => canli[t]), ...bos];
+    return {ciftler, tekler};
+  }
+
   function havuzGetir(veriHavuzu, harf){
     return veriHavuzu[harf] || [];
   }
@@ -39,8 +55,10 @@
     return liste[Math.floor(rastgele()*liste.length)];
   }
 
-  // havuzA x havuzB arasinda en iyi kafiyeli cifti arar (en fazla 15 A adayi dener,
-  // zengin kafiye (puan>=3) bulununca erken durur).
+  // havuzA x havuzB arasinda kafiyeli bir cift arar. Once zengin/tam (>=2) esigini,
+  // bulunamazsa yarim (>=1), o da yoksa herhangi bir eslesmeyi (>=0) dener. Her
+  // esikte, o esigi karsilayan TUM adaylar arasindan rastgele secim yapar (cesitlilik
+  // icin), sadece en yuksek puanli cifti tekrar tekrar secmek yerine.
   function ciftSec(havuzA, havuzB, disiTutulacak, rastgele){
     const adaylarA = havuzA.filter(d => !disiTutulacak.has(d));
     const listeA = (adaylarA.length ? adaylarA : havuzA).slice();
@@ -50,18 +68,21 @@
       [listeA[i], listeA[j]] = [listeA[j], listeA[i]];
     }
     const denenecek = listeA.slice(0, Math.min(15, listeA.length));
-    let enIyi = null;
-    for(const a of denenecek){
-      const kelimeA = K.sonKelime(a);
-      const adaylarB = havuzB.filter(d => !disiTutulacak.has(d) && d !== a);
-      const listeB = adaylarB.length ? adaylarB : havuzB.filter(d => d !== a);
-      for(const b of listeB){
-        const puan = K.kafiyeGucu(kelimeA, K.sonKelime(b));
-        if(!enIyi || puan > enIyi.puan) enIyi = {a, b, puan};
+    for(const esik of [2, 1, 0]){
+      for(const a of denenecek){
+        const kelimeA = K.sonKelime(a);
+        const adaylarB = havuzB.filter(d => !disiTutulacak.has(d) && d !== a);
+        const listeB = adaylarB.length ? adaylarB : havuzB.filter(d => d !== a);
+        if(!listeB.length) continue;
+        const uygunB = listeB.filter(b => K.kafiyeGucu(kelimeA, K.sonKelime(b)) >= esik);
+        if(uygunB.length){
+          const b = uygunB[Math.floor(rastgele()*uygunB.length)];
+          const puan = K.kafiyeGucu(kelimeA, K.sonKelime(b));
+          return {a, b, puan};
+        }
       }
-      if(enIyi && enIyi.puan >= 3) break;
     }
-    return enIyi;
+    return null;
   }
 
   function tekDizeUret(pos, harf, veriHavuzu, disiTutulacak, rastgele){
@@ -78,7 +99,7 @@
     const disiTutulacak = new Set();
     let ofset = 0;
     for(const grup of gruplar){
-      const {ciftler, tekler} = grupEslesmeleri(grup.length);
+      const {ciftler, tekler} = grupEslesmeleriUyumlu(grup, veriHavuzu);
       for(const [i, j] of ciftler){
         const posA = ofset+i, posB = ofset+j;
         const harfA = grup[i], harfB = grup[j];
@@ -136,7 +157,7 @@
     return siir;
   }
 
-  const API = { trBuyukHarf, harfleriAyir, harfleriGrupla, grupEslesmeleri, uretSiir, dizeyiDegistir };
+  const API = { trBuyukHarf, harfleriAyir, harfleriGrupla, grupEslesmeleri, grupEslesmeleriUyumlu, uretSiir, dizeyiDegistir };
   if(typeof module !== 'undefined' && module.exports) module.exports = API;
   else root.AkrostisUret = API;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -103,7 +103,7 @@ function dizeSatiri(d){
   if(!d.metin){
     return `<div class="dize dize-bos" data-pos="${d.pos}">` +
       `<span class="ilk-harf">${esc(d.harf)}</span>` +
-      `<span class="metin">(bu harf için henüz dize yok)</span></div>`;
+      `<span class="metin">(bu harfle başlayan Türkçe kelime yok, bu dize atlanıyor)</span></div>`;
   }
   const ilk = d.metin.charAt(0);
   const geri = d.metin.slice(1);
@@ -125,7 +125,7 @@ function siirCiz(siir){
 }
 
 function siirMetni(siir){
-  return siir.dizeler.map(d => d.metin || '').join('\n');
+  return siir.dizeler.filter(d => d.metin).map(d => d.metin).join('\n');
 }
 
 function elleKopyala(metin, ok){
@@ -188,10 +188,13 @@ document.getElementById('gece').addEventListener('click', () => {
   document.getElementById('gece').textContent = g ? '☀️' : '🌙';
   try{ localStorage.setItem('akrostis:gece', g ? '1' : '0'); }catch(e){}
 });
-if(localStorage.getItem('akrostis:gece') === '1'){
-  document.body.classList.add('gece');
-  document.getElementById('gece').textContent = '☀️';
-}
+try{
+  if(localStorage.getItem('akrostis:gece') === '1'){
+    document.body.classList.add('gece');
+    document.getElementById('gece').textContent = '☀️';
+  }
+}catch(e){}
 </script>
+<script src="../ortak/nav-panel.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// nav-panel.js — site içi gezinme: soldan açılan panel, tüm araçlar + tüm oyunlar listeli.
+// nav-panel.js: site içi gezinme, soldan açılan panel, tüm araçlar + tüm oyunlar listeli.
 // Tek satır <script> ile her sayfaya eklenir, kendi CSS'ini ve DOM'unu enjekte eder.
 // Oyun sayfalarında (window.VF varsa) girişliyken her oyunun yanında "bugün oynadın mı" ✓'ü gösterir.
 (function(){
@@ -14,7 +14,8 @@
     {ad:'Bitki Bilimi',   href:B+'bitki/'},
     {ad:'Kuş Bilimi',     href:B+'kus/'},
     {ad:'Veranda Band',   href:B+'nota/'},
-    {ad:'Bitmeyen Şiir',  href:B+'siir-defteri/'}
+    {ad:'Bitmeyen Şiir',  href:B+'siir-defteri/'},
+    {ad:'Akrostiş',       href:B+'akrostis/'}
   ];
 
   const OYUNLAR = [
@@ -51,7 +52,7 @@
       background:#1C1510;color:#F2E6CE;border:1px solid #3a2f22;font-size:20px;cursor:pointer;
       box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
     #vfNavAc:hover{background:#2b2117}
-    /* mobilde oyunların ekran altına sabit klavyesiyle çakışıyordu — mobilde panele
+    /* mobilde oyunların ekran altına sabit klavyesiyle çakışıyordu, mobilde panele
        zaten gerek yok, düğmeyi tamamen gizle */
     @media(max-width:640px){
       #vfNavAc{display:none}
@@ -102,10 +103,10 @@
   perde.onclick = kapa;
   panel.querySelector('.vfnp-kapat').onclick = kapa;
 
-  /* girişliyse her oyunun yanına bugün oynadın mı ✓'ü koy — sadece bu sayfa zaten
+  /* girişliyse her oyunun yanına bugün oynadın mı ✓'ü koy, sadece bu sayfa zaten
      firebase.js yüklediyse (window.VF) çalışır, araç sayfalarında sessizce atlanır.
      Aynı taramada bugün bitirilen oyun sayısı da toplanır: 3'e ulaşınca streak günü
-     sayılır (VF.streakGuncelle) — eşik burada kontrol ediliyor çünkü zaten her oyun
+     sayılır (VF.streakGuncelle); eşik burada kontrol ediliyor çünkü zaten her oyun
      için "bugün oynadın mı" sorgusu bu fonksiyonda tek tek yapılıyor. */
   function tikleriDoldur(){
     if(!window.VF || !VF.kullanici) return;
