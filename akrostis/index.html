@@ -56,6 +56,7 @@
     background:var(--card);color:var(--ink);cursor:pointer}
   #eylemler button:hover{border-color:var(--acc);color:var(--acc)}
   .kupa{position:absolute;left:-9999px}
+  .dize.kita-basi{margin-top:26px}
 </style>
 </head>
 <body>
@@ -92,22 +93,26 @@
 <script src="../ortak/akrostis-kafiye.js"></script>
 <script src="../ortak/akrostis-uret.js"></script>
 <script src="../ortak/akrostis-veri.js"></script>
+<script src="../ortak/akrostis-veri-kapanis.js"></script>
+<script src="../ortak/akrostis-veri-gecis.js"></script>
 <script>
 let mevcutSiir = null;
+const VERI_KUMESI = {genel: AKROSTIS_DIZE, kapanis: AKROSTIS_KAPANIS, gecis: AKROSTIS_GECIS};
 
 function esc(s){
   return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function dizeSatiri(d){
+function dizeSatiri(d, kitaBasiMi){
+  const sinifEk = kitaBasiMi ? ' kita-basi' : '';
   if(!d.metin){
-    return `<div class="dize dize-bos" data-pos="${d.pos}">` +
+    return `<div class="dize dize-bos${sinifEk}" data-pos="${d.pos}">` +
       `<span class="ilk-harf">${esc(d.harf)}</span>` +
       `<span class="metin">(bu harfle başlayan Türkçe kelime yok, bu dize atlanıyor)</span></div>`;
   }
   const ilk = d.metin.charAt(0);
   const geri = d.metin.slice(1);
-  return `<div class="dize" data-pos="${d.pos}">` +
+  return `<div class="dize${sinifEk}" data-pos="${d.pos}">` +
     `<span class="ilk-harf">${esc(ilk)}</span><span class="metin">${esc(geri)}</span>` +
     `<button class="dize-yenile" data-pos="${d.pos}" title="bu dizeyi yeniden üret" type="button">↻</button></div>`;
 }
@@ -120,7 +125,8 @@ function siirCiz(siir){
     eylemler.hidden = true;
     return;
   }
-  yuva.innerHTML = siir.dizeler.map(dizeSatiri).join('');
+  const kitaSet = new Set(siir.kitaSinirlari || []);
+  yuva.innerHTML = siir.dizeler.map(d => dizeSatiri(d, kitaSet.has(d.pos))).join('');
   eylemler.hidden = false;
 }
 
@@ -154,13 +160,16 @@ document.getElementById('uretForm').addEventListener('submit', e => {
   e.preventDefault();
   const kelime = document.getElementById('girisKelime').value.trim();
   if(!kelime) return;
-  mevcutSiir = AkrostisUret.uretSiir(kelime, AKROSTIS_DIZE);
+  mevcutSiir = AkrostisUret.uretSiir(kelime, VERI_KUMESI);
+  mevcutSiir.kitaSinirlari = AkrostisUret.kelimeSinirlariBul(kelime);
   siirCiz(mevcutSiir);
 });
 
 document.getElementById('yenidenBtn').addEventListener('click', () => {
   if(!mevcutSiir) return;
-  mevcutSiir = AkrostisUret.uretSiir(mevcutSiir.girdi, AKROSTIS_DIZE);
+  const kelime = mevcutSiir.girdi;
+  mevcutSiir = AkrostisUret.uretSiir(kelime, VERI_KUMESI);
+  mevcutSiir.kitaSinirlari = AkrostisUret.kelimeSinirlariBul(kelime);
   siirCiz(mevcutSiir);
 });
 
@@ -168,7 +177,7 @@ document.getElementById('siirYuva').addEventListener('click', e => {
   const btn = e.target.closest('.dize-yenile');
   if(!btn || !mevcutSiir) return;
   const pos = Number(btn.dataset.pos);
-  AkrostisUret.dizeyiDegistir(mevcutSiir, pos, AKROSTIS_DIZE);
+  AkrostisUret.dizeyiDegistir(mevcutSiir, pos, VERI_KUMESI);
   siirCiz(mevcutSiir);
 });
 
