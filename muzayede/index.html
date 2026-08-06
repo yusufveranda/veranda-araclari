@@ -532,8 +532,7 @@ function oneriListesiKur(){
     }
     const eslesenler = isimler
       .filter(r => isimNormallestir(r.isim).includes(n))
-      .sort(karsilastir)
-      .slice(0, 25);
+      .sort(karsilastir);
     if(!eslesenler.length){ kapat(); return; }
     kutu.innerHTML = eslesenler.map(r =>
       '<div class="oneri-satir" data-isim="' + r.isim.replace(/"/g, '&quot;') + '">' + r.isim + '</div>'
