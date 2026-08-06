@@ -450,128 +450,140 @@ const SIRA = U.map(u=>u[0]);
 
 /* ===================== bonus veri: nüfus, alan, dil, para, komşu, en kalabalık şehir ===================== */
 /* n:nüfus a:alan(km²) dk/dl:dil kodu+adı s:o dilde "merhaba" pk/pa:para kodu+adı sm:sembol
-   sh:başkentten farklıysa en kalabalık şehir, kom:[[kod,ad],...] komşu ülkeler, ka:ekstra kabul edilen komşu adı */
+   sh:başkentten farklıysa en kalabalık şehir, s2:ülkenin diğer iki büyük şehri (şehir turu çeldiricisi;
+   sh varsa şıklar [sh, başkent, s2[0]], yoksa [başkent, s2[0], s2[1]]; sg şehir devleti, s2'si yok),
+   kom:[[kod,ad],...] komşu ülkeler, ka:ekstra kabul edilen komşu adı */
 const EK = {
-tr:{n:85325965,a:783562,dk:"tur",dl:"Türkçe",s:"Merhaba",pk:"TRY",pa:"Türk Lirası",sm:"₺",sh:"İstanbul",kom:[["am","Ermenistan"],["az","Azerbaycan"],["bg","Bulgaristan"],["ge","Gürcistan"],["gr","Yunanistan"],["ir","İran"],["iq","Irak"],["sy","Suriye"]],ka:[]},
-de:{n:83287273,a:357114,dk:"deu",dl:"Almanca",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["be","Belçika"],["cz","Çekya"],["dk","Danimarka"],["fr","Fransa"],["lu","Lüksemburg"],["nl","Hollanda"],["pl","Polonya"],["ch","İsviçre"]],ka:[]},
-fr:{n:68372286,a:551695,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["ad","Andorra"],["be","Belçika"],["de","Almanya"],["it","İtalya"],["lu","Lüksemburg"],["mc","Monako"],["es","İspanya"],["ch","İsviçre"]],ka:[]},
-it:{n:58984216,a:301336,dk:"ita",dl:"İtalyanca",s:"Ciao",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["fr","Fransa"],["sm","San Marino"],["si","Slovenya"],["ch","İsviçre"],["va","Vatikan"]],ka:[]},
-gb:{n:68526000,a:242900,dk:"eng",dl:"İngilizce",s:"Hello",pk:"GBP",pa:"İngiliz Sterlini",sm:"£",sh:null,kom:[["ie","İrlanda"]],ka:["ingiltere"]},
-us:{n:336755052,a:9372610,dk:"eng",dl:"İngilizce",s:"Hello",pk:"USD",pa:"ABD Doları",sm:"$",sh:"New York",kom:[["ca","Kanada"],["mx","Meksika"]],ka:[]},
-jp:{n:124516650,a:377930,dk:"jpn",dl:"Japonca",s:"こんにちは",pk:"JPY",pa:"Japon Yeni",sm:"¥",sh:null,kom:[],ka:[]},
-es:{n:48352528,a:505992,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["ad","Andorra"],["fr","Fransa"],["gi","Cebelitarık"],["pt","Portekiz"],["ma","Fas"]],ka:[]},
-br:{n:211140729,a:8515767,dk:"por",dl:"Portekizce",s:"Olá",pk:"BRL",pa:"Brezilya Reali",sm:"R$",sh:"São Paulo",kom:[["ar","Arjantin"],["bo","Bolivya"],["co","Kolombiya"],["gy","Guyana"],["py","Paraguay"],["pe","Peru"],["sr","Surinam"],["uy","Uruguay"],["ve","Venezuela"]],ka:[]},
-cn:{n:1410710000,a:9706961,dk:"zho",dl:"Çince",s:"你好",pk:"CNY",pa:"Çin Yuanı",sm:"¥",sh:"Şanghay",kom:[["af","Afganistan"],["bt","Butan"],["mm","Myanmar"],["in","Hindistan"],["kz","Kazakistan"],["np","Nepal"],["kp","Kuzey Kore"],["kg","Kırgızistan"],["la","Laos"],["mn","Moğolistan"],["pk","Pakistan"],["ru","Rusya"],["tj","Tacikistan"],["vn","Vietnam"]],ka:["birmanya"]},
-ru:{n:143826130,a:17098242,dk:"rus",dl:"Rusça",s:"Привет",pk:"RUB",pa:"Rus Rublesi",sm:"₽",sh:null,kom:[["az","Azerbaycan"],["by","Belarus"],["cn","Çin"],["ee","Estonya"],["fi","Finlandiya"],["ge","Gürcistan"],["kz","Kazakistan"],["kp","Kuzey Kore"],["lv","Letonya"],["lt","Litvanya"],["mn","Moğolistan"],["no","Norveç"],["pl","Polonya"],["ua","Ukrayna"]],ka:[]},
-ca:{n:40049088,a:9984670,dk:"eng",dl:"İngilizce",s:"Hello",pk:"CAD",pa:"Kanada Doları",sm:"$",sh:"Toronto",kom:[["us","ABD"]],ka:["ABD"]},
-gr:{n:10407351,a:131990,dk:"ell",dl:"Yunanca",s:"Γεια σου",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["al","Arnavutluk"],["bg","Bulgaristan"],["tr","Türkiye"],["mk","Kuzey Makedonya"]],ka:[]},
-nl:{n:17877117,a:41850,dk:"nld",dl:"Flemenkçe",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["be","Belçika"],["de","Almanya"]],ka:["felemenk"]},
-se:{n:10536632,a:450295,dk:"swe",dl:"İsveççe",s:"Hej",pk:"SEK",pa:"İsveç Kronu",sm:"kr",sh:null,kom:[["fi","Finlandiya"],["no","Norveç"]],ka:[]},
-no:{n:5519601,a:323802,dk:"nob",dl:"Norveççe",s:"Hei",pk:"NOK",pa:"Norveç Kronu",sm:"kr",sh:null,kom:[["fi","Finlandiya"],["se","İsveç"],["ru","Rusya"]],ka:[]},
-ch:{n:8888822,a:41284,dk:"gsw",dl:"İsviçre Almancası",s:"Grüezi",pk:"CHF",pa:"İsviçre Frangı",sm:"Fr.",sh:"Zürih",kom:[["at","Avusturya"],["fr","Fransa"],["it","İtalya"],["li","Lihtenştayn"],["de","Almanya"]],ka:[]},
-pt:{n:10578174,a:92090,dk:"por",dl:"Portekizce",s:"Olá",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["es","İspanya"]],ka:[]},
-ie:{n:5311538,a:70273,dk:"eng",dl:"İngilizce",s:"Hello",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["gb","Birleşik Krallık"]],ka:[]},
-in:{n:1438069596,a:3287590,dk:"hin",dl:"Hintçe",s:"नमस्ते",pk:"INR",pa:"Hindistan Rupisi",sm:"₹",sh:"Mumbai",kom:[["bd","Bangladeş"],["bt","Butan"],["mm","Myanmar"],["cn","Çin"],["np","Nepal"],["pk","Pakistan"]],ka:["birmanya"]},
-kr:{n:51712619,a:100210,dk:"kor",dl:"Korece",s:"안녕하세요",pk:"KRW",pa:"Güney Kore Wonu",sm:"₩",sh:null,kom:[["kp","Kuzey Kore"]],ka:[]},
-mx:{n:129739759,a:1964375,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"MXN",pa:"Meksika Pesosu",sm:"$",sh:null,kom:[["bz","Belize"],["gt","Guatemala"],["us","ABD"]],ka:["ABD"]},
-ar:{n:45538401,a:2780400,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"ARS",pa:"Arjantin Pesosu",sm:"$",sh:null,kom:[["bo","Bolivya"],["br","Brezilya"],["cl","Şili"],["py","Paraguay"],["uy","Uruguay"]],ka:[]},
-au:{n:26659922,a:7692024,dk:"eng",dl:"İngilizce",s:"Hello",pk:"AUD",pa:"Avustralya Doları",sm:"$",sh:"Sidney",kom:[],ka:[]},
-eg:{n:114535772,a:1002450,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"EGP",pa:"Mısır Lirası",sm:"£",sh:null,kom:[["il","İsrail"],["ly","Libya"],["ps","Filistin"],["sd","Sudan"]],ka:["Gazze"]},
-za:{n:63212384,a:1221037,dk:"zul",dl:"Zuluca",s:"Sawubona",pk:"ZAR",pa:"Güney Afrika Randı",sm:"R",sh:"Johannesburg",kom:[["bw","Botsvana"],["ls","Lesotho"],["mz","Mozambik"],["na","Namibya"],["sz","Esvatini"],["zw","Zimbabve"]],ka:["Svaziland"]},
-sa:{n:33702731,a:2149690,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SAR",pa:"Suudi Arabistan Riyali",sm:"ر.س",sh:null,kom:[["iq","Irak"],["jo","Ürdün"],["kw","Kuveyt"],["om","Umman"],["qa","Katar"],["ae","Birleşik Arap Emirlikleri"],["ye","Yemen"]],ka:["bae"]},
-pl:{n:36687353,a:312679,dk:"pol",dl:"Lehçe",s:"Cześć",pk:"PLN",pa:"Polonya Zlotisi",sm:"zł",sh:null,kom:[["by","Belarus"],["cz","Çekya"],["de","Almanya"],["lt","Litvanya"],["ru","Rusya"],["sk","Slovakya"],["ua","Ukrayna"]],ka:[]},
-ua:{n:37732836,a:603500,dk:"ukr",dl:"Ukraynaca",s:"Привіт",pk:"UAH",pa:"Ukrayna Grivnası",sm:"₴",sh:null,kom:[["by","Belarus"],["hu","Macaristan"],["md","Moldova"],["pl","Polonya"],["ro","Romanya"],["ru","Rusya"],["sk","Slovakya"]],ka:["kiyev"]},
-be:{n:11779946,a:30528,dk:"nld",dl:"Flamanca",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["fr","Fransa"],["de","Almanya"],["lu","Lüksemburg"],["nl","Hollanda"]],ka:[]},
-at:{n:9131761,a:83871,dk:"bar",dl:"Almanca",s:"Servus",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["cz","Çekya"],["de","Almanya"],["hu","Macaristan"],["it","İtalya"],["li","Lihtenştayn"],["sk","Slovakya"],["si","Slovenya"],["ch","İsviçre"]],ka:[]},
-fi:{n:5583911,a:338424,dk:"fin",dl:"Fince",s:"Hei",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["no","Norveç"],["se","İsveç"],["ru","Rusya"]],ka:[]},
-dk:{n:5946952,a:43094,dk:"dan",dl:"Danca",s:"Hej",pk:"DKK",pa:"Danimarka Kronu",sm:"kr",sh:null,kom:[["de","Almanya"]],ka:[]},
-ma:{n:37712505,a:446550,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"MAD",pa:"Fas Dirhemi",sm:"د.م.",sh:"Kazablanka",kom:[["dz","Cezayir"],["eh","Sahra Demokratik Arap Cumhuriyeti"],["es","İspanya"]],ka:["Batı Sahra"]},
-dz:{n:46164219,a:2381741,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"DZD",pa:"Cezayir Dinarı",sm:"د.ج",sh:null,kom:[["tn","Tunus"],["ly","Libya"],["ne","Nijer"],["eh","Sahra Demokratik Arap Cumhuriyeti"],["mr","Moritanya"],["ml","Mali"],["ma","Fas"]],ka:["Batı Sahra"]},
-ng:{n:227882945,a:923768,dk:"eng",dl:"İngilizce",s:"Hello",pk:"NGN",pa:"Nijerya Nairası",sm:"₦",sh:"Lagos",kom:[["bj","Benin"],["cm","Kamerun"],["td","Çad"],["ne","Nijer"]],ka:["Çad"]},
-ke:{n:55339003,a:580367,dk:"swa",dl:"Svahili",s:"Jambo",pk:"KES",pa:"Kenya Şilini",sm:"Sh",sh:null,kom:[["et","Etiyopya"],["so","Somali"],["ss","Güney Sudan"],["tz","Tanzanya"],["ug","Uganda"]],ka:[]},
-ir:{n:90608707,a:1648195,dk:"fas",dl:"Farsça",s:"سلام",pk:"IRR",pa:"İran Riyali",sm:"﷼",sh:null,kom:[["af","Afganistan"],["am","Ermenistan"],["az","Azerbaycan"],["iq","Irak"],["pk","Pakistan"],["tr","Türkiye"],["tm","Türkmenistan"]],ka:[]},
-iq:{n:45074049,a:438317,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"IQD",pa:"Irak Dinarı",sm:"ع.د",sh:null,kom:[["ir","İran"],["jo","Ürdün"],["kw","Kuveyt"],["sa","Suudi Arabistan"],["sy","Suriye"],["tr","Türkiye"]],ka:[]},
-il:{n:9849000,a:20770,dk:"heb",dl:"İbranice",s:"שלום",pk:"ILS",pa:"İsrail Yeni Şekeli",sm:"₪",sh:null,kom:[["eg","Mısır"],["jo","Ürdün"],["lb","Lübnan"],["ps","Filistin"],["sy","Suriye"]],ka:[]},
-th:{n:71702435,a:513120,dk:"tha",dl:"Tayca",s:"สวัสดี",pk:"THB",pa:"Tayland Bahtı",sm:"฿",sh:null,kom:[["mm","Myanmar"],["kh","Kamboçya"],["la","Laos"],["my","Malezya"]],ka:["birmanya","kambodya"]},
-vn:{n:100352192,a:331212,dk:"vie",dl:"Vietnamca",s:"Xin chào",pk:"VND",pa:"Vietnam Dongu",sm:"₫",sh:"Ho Chi Minh Kenti",kom:[["kh","Kamboçya"],["cn","Çin"],["la","Laos"]],ka:["kambodya"]},
-id:{n:281190067,a:1904569,dk:"ind",dl:"Endonezce",s:"Halo",pk:"IDR",pa:"Endonezya Rupisi",sm:"Rp",sh:null,kom:[["tl","Doğu Timor"],["my","Malezya"],["pg","Papua Yeni Gine"]],ka:["timor","png"]},
-my:{n:35126298,a:330803,dk:"msa",dl:"Malayca",s:"Salam",pk:"MYR",pa:"Malezya Ringgiti",sm:"RM",sh:null,kom:[["bn","Brunei"],["id","Endonezya"],["th","Tayland"]],ka:[]},
-ph:{n:114891199,a:342353,dk:"fil",dl:"Filipince",s:"Kumusta",pk:"PHP",pa:"Filipin Pesosu",sm:"₱",sh:"Quezon City",kom:[],ka:[]},
-pk:{n:247504495,a:881912,dk:"urd",dl:"Urduca",s:"السلام علیکم",pk:"PKR",pa:"Pakistan Rupisi",sm:"₨",sh:"Karaçi",kom:[["af","Afganistan"],["cn","Çin"],["in","Hindistan"],["ir","İran"]],ka:[]},
-bd:{n:171466990,a:147570,dk:"ben",dl:"Bengalce",s:"নমস্কার",pk:"BDT",pa:"Bangladeş Takası",sm:"৳",sh:null,kom:[["mm","Myanmar"],["in","Hindistan"]],ka:["birmanya"]},
+tr:{n:85325965,a:783562,dk:"tur",dl:"Türkçe",s:"Merhaba",pk:"TRY",pa:"Türk Lirası",sm:"₺",sh:"İstanbul",s2:["İzmir","Bursa"],kom:[["am","Ermenistan"],["az","Azerbaycan"],["bg","Bulgaristan"],["ge","Gürcistan"],["gr","Yunanistan"],["ir","İran"],["iq","Irak"],["sy","Suriye"]],ka:[]},
+de:{n:83287273,a:357114,dk:"deu",dl:"Almanca",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Hamburg","Münih"],kom:[["at","Avusturya"],["be","Belçika"],["cz","Çekya"],["dk","Danimarka"],["fr","Fransa"],["lu","Lüksemburg"],["nl","Hollanda"],["pl","Polonya"],["ch","İsviçre"]],ka:[]},
+fr:{n:68372286,a:551695,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Marsilya","Lyon"],kom:[["ad","Andorra"],["be","Belçika"],["de","Almanya"],["it","İtalya"],["lu","Lüksemburg"],["mc","Monako"],["es","İspanya"],["ch","İsviçre"]],ka:[]},
+it:{n:58984216,a:301336,dk:"ita",dl:"İtalyanca",s:"Ciao",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Milano","Napoli"],kom:[["at","Avusturya"],["fr","Fransa"],["sm","San Marino"],["si","Slovenya"],["ch","İsviçre"],["va","Vatikan"]],ka:[]},
+gb:{n:68526000,a:242900,dk:"eng",dl:"İngilizce",s:"Hello",pk:"GBP",pa:"İngiliz Sterlini",sm:"£",sh:null,s2:["Birmingham","Manchester"],kom:[["ie","İrlanda"]],ka:["ingiltere"]},
+us:{n:336755052,a:9372610,dk:"eng",dl:"İngilizce",s:"Hello",pk:"USD",pa:"ABD Doları",sm:"$",sh:"New York",s2:["Los Angeles","Chicago"],kom:[["ca","Kanada"],["mx","Meksika"]],ka:[]},
+jp:{n:124516650,a:377930,dk:"jpn",dl:"Japonca",s:"こんにちは",pk:"JPY",pa:"Japon Yeni",sm:"¥",sh:null,s2:["Yokohama","Osaka"],kom:[],ka:[]},
+es:{n:48352528,a:505992,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Barselona","Valensiya"],kom:[["ad","Andorra"],["fr","Fransa"],["gi","Cebelitarık"],["pt","Portekiz"],["ma","Fas"]],ka:[]},
+br:{n:211140729,a:8515767,dk:"por",dl:"Portekizce",s:"Olá",pk:"BRL",pa:"Brezilya Reali",sm:"R$",sh:"São Paulo",s2:["Rio de Janeiro","Salvador"],kom:[["ar","Arjantin"],["bo","Bolivya"],["co","Kolombiya"],["gy","Guyana"],["py","Paraguay"],["pe","Peru"],["sr","Surinam"],["uy","Uruguay"],["ve","Venezuela"]],ka:[]},
+cn:{n:1410710000,a:9706961,dk:"zho",dl:"Çince",s:"你好",pk:"CNY",pa:"Çin Yuanı",sm:"¥",sh:"Şanghay",s2:["Guangzhou","Shenzhen"],kom:[["af","Afganistan"],["bt","Butan"],["mm","Myanmar"],["in","Hindistan"],["kz","Kazakistan"],["np","Nepal"],["kp","Kuzey Kore"],["kg","Kırgızistan"],["la","Laos"],["mn","Moğolistan"],["pk","Pakistan"],["ru","Rusya"],["tj","Tacikistan"],["vn","Vietnam"]],ka:["birmanya"]},
+ru:{n:143826130,a:17098242,dk:"rus",dl:"Rusça",s:"Привет",pk:"RUB",pa:"Rus Rublesi",sm:"₽",sh:null,s2:["Sankt-Peterburg","Novosibirsk"],kom:[["az","Azerbaycan"],["by","Belarus"],["cn","Çin"],["ee","Estonya"],["fi","Finlandiya"],["ge","Gürcistan"],["kz","Kazakistan"],["kp","Kuzey Kore"],["lv","Letonya"],["lt","Litvanya"],["mn","Moğolistan"],["no","Norveç"],["pl","Polonya"],["ua","Ukrayna"]],ka:[]},
+ca:{n:40049088,a:9984670,dk:"eng",dl:"İngilizce",s:"Hello",pk:"CAD",pa:"Kanada Doları",sm:"$",sh:"Toronto",s2:["Montreal","Vancouver"],kom:[["us","ABD"]],ka:["ABD"]},
+gr:{n:10407351,a:131990,dk:"ell",dl:"Yunanca",s:"Γεια σου",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Selanik","Patra"],kom:[["al","Arnavutluk"],["bg","Bulgaristan"],["tr","Türkiye"],["mk","Kuzey Makedonya"]],ka:[]},
+nl:{n:17877117,a:41850,dk:"nld",dl:"Flemenkçe",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Rotterdam","Lahey"],kom:[["be","Belçika"],["de","Almanya"]],ka:["felemenk"]},
+se:{n:10536632,a:450295,dk:"swe",dl:"İsveççe",s:"Hej",pk:"SEK",pa:"İsveç Kronu",sm:"kr",sh:null,s2:["Göteborg","Malmö"],kom:[["fi","Finlandiya"],["no","Norveç"]],ka:[]},
+no:{n:5519601,a:323802,dk:"nob",dl:"Norveççe",s:"Hei",pk:"NOK",pa:"Norveç Kronu",sm:"kr",sh:null,s2:["Bergen","Trondheim"],kom:[["fi","Finlandiya"],["se","İsveç"],["ru","Rusya"]],ka:[]},
+ch:{n:8888822,a:41284,dk:"gsw",dl:"İsviçre Almancası",s:"Grüezi",pk:"CHF",pa:"İsviçre Frangı",sm:"Fr.",sh:"Zürih",s2:["Cenevre","Basel"],kom:[["at","Avusturya"],["fr","Fransa"],["it","İtalya"],["li","Lihtenştayn"],["de","Almanya"]],ka:[]},
+pt:{n:10578174,a:92090,dk:"por",dl:"Portekizce",s:"Olá",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Porto","Braga"],kom:[["es","İspanya"]],ka:[]},
+ie:{n:5311538,a:70273,dk:"eng",dl:"İngilizce",s:"Hello",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Cork","Limerick"],kom:[["gb","Birleşik Krallık"]],ka:[]},
+in:{n:1438069596,a:3287590,dk:"hin",dl:"Hintçe",s:"नमस्ते",pk:"INR",pa:"Hindistan Rupisi",sm:"₹",sh:"Mumbai",s2:["Kalküta","Bangalore"],kom:[["bd","Bangladeş"],["bt","Butan"],["mm","Myanmar"],["cn","Çin"],["np","Nepal"],["pk","Pakistan"]],ka:["birmanya"]},
+kr:{n:51712619,a:100210,dk:"kor",dl:"Korece",s:"안녕하세요",pk:"KRW",pa:"Güney Kore Wonu",sm:"₩",sh:null,s2:["Busan","Incheon"],kom:[["kp","Kuzey Kore"]],ka:[]},
+mx:{n:129739759,a:1964375,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"MXN",pa:"Meksika Pesosu",sm:"$",sh:null,s2:["Guadalajara","Monterrey"],kom:[["bz","Belize"],["gt","Guatemala"],["us","ABD"]],ka:["ABD"]},
+ar:{n:45538401,a:2780400,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"ARS",pa:"Arjantin Pesosu",sm:"$",sh:null,s2:["Córdoba","Rosario"],kom:[["bo","Bolivya"],["br","Brezilya"],["cl","Şili"],["py","Paraguay"],["uy","Uruguay"]],ka:[]},
+au:{n:26659922,a:7692024,dk:"eng",dl:"İngilizce",s:"Hello",pk:"AUD",pa:"Avustralya Doları",sm:"$",sh:"Sidney",s2:["Melbourne","Brisbane"],kom:[],ka:[]},
+eg:{n:114535772,a:1002450,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"EGP",pa:"Mısır Lirası",sm:"£",sh:null,s2:["İskenderiye","Giza"],kom:[["il","İsrail"],["ly","Libya"],["ps","Filistin"],["sd","Sudan"]],ka:["Gazze"]},
+za:{n:63212384,a:1221037,dk:"zul",dl:"Zuluca",s:"Sawubona",pk:"ZAR",pa:"Güney Afrika Randı",sm:"R",sh:"Johannesburg",s2:["Cape Town","Durban"],kom:[["bw","Botsvana"],["ls","Lesotho"],["mz","Mozambik"],["na","Namibya"],["sz","Esvatini"],["zw","Zimbabve"]],ka:["Svaziland"]},
+sa:{n:33702731,a:2149690,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SAR",pa:"Suudi Arabistan Riyali",sm:"ر.س",sh:null,s2:["Cidde","Mekke"],kom:[["iq","Irak"],["jo","Ürdün"],["kw","Kuveyt"],["om","Umman"],["qa","Katar"],["ae","Birleşik Arap Emirlikleri"],["ye","Yemen"]],ka:["bae"]},
+pl:{n:36687353,a:312679,dk:"pol",dl:"Lehçe",s:"Cześć",pk:"PLN",pa:"Polonya Zlotisi",sm:"zł",sh:null,s2:["Krakov","Lodz"],kom:[["by","Belarus"],["cz","Çekya"],["de","Almanya"],["lt","Litvanya"],["ru","Rusya"],["sk","Slovakya"],["ua","Ukrayna"]],ka:[]},
+ua:{n:37732836,a:603500,dk:"ukr",dl:"Ukraynaca",s:"Привіт",pk:"UAH",pa:"Ukrayna Grivnası",sm:"₴",sh:null,s2:["Harkiv","Odesa"],kom:[["by","Belarus"],["hu","Macaristan"],["md","Moldova"],["pl","Polonya"],["ro","Romanya"],["ru","Rusya"],["sk","Slovakya"]],ka:["kiyev"]},
+be:{n:11779946,a:30528,dk:"nld",dl:"Flamanca",s:"Hallo",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Anvers","Gent"],kom:[["fr","Fransa"],["de","Almanya"],["lu","Lüksemburg"],["nl","Hollanda"]],ka:[]},
+at:{n:9131761,a:83871,dk:"bar",dl:"Almanca",s:"Servus",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Graz","Linz"],kom:[["cz","Çekya"],["de","Almanya"],["hu","Macaristan"],["it","İtalya"],["li","Lihtenştayn"],["sk","Slovakya"],["si","Slovenya"],["ch","İsviçre"]],ka:[]},
+fi:{n:5583911,a:338424,dk:"fin",dl:"Fince",s:"Hei",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Espoo","Tampere"],kom:[["no","Norveç"],["se","İsveç"],["ru","Rusya"]],ka:[]},
+dk:{n:5946952,a:43094,dk:"dan",dl:"Danca",s:"Hej",pk:"DKK",pa:"Danimarka Kronu",sm:"kr",sh:null,s2:["Aarhus","Odense"],kom:[["de","Almanya"]],ka:[]},
+ma:{n:37712505,a:446550,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"MAD",pa:"Fas Dirhemi",sm:"د.م.",sh:"Kazablanka",s2:["Fes","Marakeş"],kom:[["dz","Cezayir"],["eh","Sahra Demokratik Arap Cumhuriyeti"],["es","İspanya"]],ka:["Batı Sahra"]},
+dz:{n:46164219,a:2381741,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"DZD",pa:"Cezayir Dinarı",sm:"د.ج",sh:null,s2:["Oran","Annaba"],kom:[["tn","Tunus"],["ly","Libya"],["ne","Nijer"],["eh","Sahra Demokratik Arap Cumhuriyeti"],["mr","Moritanya"],["ml","Mali"],["ma","Fas"]],ka:["Batı Sahra"]},
+ng:{n:227882945,a:923768,dk:"eng",dl:"İngilizce",s:"Hello",pk:"NGN",pa:"Nijerya Nairası",sm:"₦",sh:"Lagos",s2:["Kano","İbadan"],kom:[["bj","Benin"],["cm","Kamerun"],["td","Çad"],["ne","Nijer"]],ka:["Çad"]},
+ke:{n:55339003,a:580367,dk:"swa",dl:"Svahili",s:"Jambo",pk:"KES",pa:"Kenya Şilini",sm:"Sh",sh:null,s2:["Mombasa","Kisumu"],kom:[["et","Etiyopya"],["so","Somali"],["ss","Güney Sudan"],["tz","Tanzanya"],["ug","Uganda"]],ka:[]},
+ir:{n:90608707,a:1648195,dk:"fas",dl:"Farsça",s:"سلام",pk:"IRR",pa:"İran Riyali",sm:"﷼",sh:null,s2:["Meşhed","İsfahan"],kom:[["af","Afganistan"],["am","Ermenistan"],["az","Azerbaycan"],["iq","Irak"],["pk","Pakistan"],["tr","Türkiye"],["tm","Türkmenistan"]],ka:[]},
+iq:{n:45074049,a:438317,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"IQD",pa:"Irak Dinarı",sm:"ع.د",sh:null,s2:["Basra","Musul"],kom:[["ir","İran"],["jo","Ürdün"],["kw","Kuveyt"],["sa","Suudi Arabistan"],["sy","Suriye"],["tr","Türkiye"]],ka:[]},
+il:{n:9849000,a:20770,dk:"heb",dl:"İbranice",s:"שלום",pk:"ILS",pa:"İsrail Yeni Şekeli",sm:"₪",sh:null,s2:["Tel Aviv","Hayfa"],kom:[["eg","Mısır"],["jo","Ürdün"],["lb","Lübnan"],["ps","Filistin"],["sy","Suriye"]],ka:[]},
+th:{n:71702435,a:513120,dk:"tha",dl:"Tayca",s:"สวัสดี",pk:"THB",pa:"Tayland Bahtı",sm:"฿",sh:null,s2:["Chiang Mai","Pattaya"],kom:[["mm","Myanmar"],["kh","Kamboçya"],["la","Laos"],["my","Malezya"]],ka:["birmanya","kambodya"]},
+vn:{n:100352192,a:331212,dk:"vie",dl:"Vietnamca",s:"Xin chào",pk:"VND",pa:"Vietnam Dongu",sm:"₫",sh:"Ho Chi Minh Kenti",s2:["Da Nang","Hai Phong"],kom:[["kh","Kamboçya"],["cn","Çin"],["la","Laos"]],ka:["kambodya"]},
+id:{n:281190067,a:1904569,dk:"ind",dl:"Endonezce",s:"Halo",pk:"IDR",pa:"Endonezya Rupisi",sm:"Rp",sh:null,s2:["Surabaya","Bandung"],kom:[["tl","Doğu Timor"],["my","Malezya"],["pg","Papua Yeni Gine"]],ka:["timor","png"]},
+my:{n:35126298,a:330803,dk:"msa",dl:"Malayca",s:"Salam",pk:"MYR",pa:"Malezya Ringgiti",sm:"RM",sh:null,s2:["Johor Bahru","George Town"],kom:[["bn","Brunei"],["id","Endonezya"],["th","Tayland"]],ka:[]},
+ph:{n:114891199,a:342353,dk:"fil",dl:"Filipince",s:"Kumusta",pk:"PHP",pa:"Filipin Pesosu",sm:"₱",sh:"Quezon City",s2:["Davao","Cebu"],kom:[],ka:[]},
+pk:{n:247504495,a:881912,dk:"urd",dl:"Urduca",s:"السلام علیکم",pk:"PKR",pa:"Pakistan Rupisi",sm:"₨",sh:"Karaçi",s2:["Lahor","Faysalabad"],kom:[["af","Afganistan"],["cn","Çin"],["in","Hindistan"],["ir","İran"]],ka:[]},
+bd:{n:171466990,a:147570,dk:"ben",dl:"Bengalce",s:"নমস্কার",pk:"BDT",pa:"Bangladeş Takası",sm:"৳",sh:null,s2:["Chittagong","Khulna"],kom:[["mm","Myanmar"],["in","Hindistan"]],ka:["birmanya"]},
 sg:{n:5917648,a:710,dk:"eng",dl:"İngilizce",s:"Hello",pk:"SGD",pa:"Singapur Doları",sm:"$",sh:null,kom:[],ka:[]},
-ae:{n:10483751,a:83600,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"AED",pa:"BAE Dirhemi",sm:"د.إ",sh:"Dubai",kom:[["om","Umman"],["sa","Suudi Arabistan"]],ka:[]},
-qa:{n:2656032,a:11586,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"QAR",pa:"Katar Riyali",sm:"ر.ق",sh:null,kom:[["sa","Suudi Arabistan"]],ka:[]},
-cz:{n:10864042,a:78865,dk:"ces",dl:"Çekçe",s:"Ahoj",pk:"CZK",pa:"Çek Korunası",sm:"Kč",sh:null,kom:[["at","Avusturya"],["de","Almanya"],["pl","Polonya"],["sk","Slovakya"]],ka:["çek cumhuriyeti"]},
-hu:{n:9592186,a:93028,dk:"hun",dl:"Macarca",s:"Szia",pk:"HUF",pa:"Macar Forinti",sm:"Ft",sh:null,kom:[["at","Avusturya"],["hr","Hırvatistan"],["ro","Romanya"],["rs","Sırbistan"],["sk","Slovakya"],["si","Slovenya"],["ua","Ukrayna"]],ka:[]},
-ro:{n:19061062,a:238391,dk:"ron",dl:"Rumence",s:"Bună",pk:"RON",pa:"Rumen Leyi",sm:"lei",sh:null,kom:[["bg","Bulgaristan"],["hu","Macaristan"],["md","Moldova"],["rs","Sırbistan"],["ua","Ukrayna"]],ka:[]},
-rs:{n:6623183,a:88361,dk:"srp",dl:"Sırpça",s:"Здраво",pk:"RSD",pa:"Sırp Dinarı",sm:"дин.",sh:null,kom:[["ba","Bosna-Hersek"],["bg","Bulgaristan"],["hr","Hırvatistan"],["hu","Macaristan"],["xk","Kosova"],["mk","Kuzey Makedonya"],["me","Karadağ"],["ro","Romanya"]],ka:[]},
-hr:{n:3859686,a:56594,dk:"hrv",dl:"Hırvatça",s:"Bok",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["ba","Bosna-Hersek"],["hu","Macaristan"],["me","Karadağ"],["rs","Sırbistan"],["si","Slovenya"]],ka:[]},
-bg:{n:6446596,a:110879,dk:"bul",dl:"Bulgarca",s:"Здравей",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["gr","Yunanistan"],["mk","Kuzey Makedonya"],["ro","Romanya"],["rs","Sırbistan"],["tr","Türkiye"]],ka:[]},
-sk:{n:5426740,a:49037,dk:"slk",dl:"Slovakça",s:"Ahoj",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["cz","Çekya"],["hu","Macaristan"],["pl","Polonya"],["ua","Ukrayna"]],ka:[]},
-si:{n:2120461,a:20273,dk:"slv",dl:"Slovence",s:"Živjo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["at","Avusturya"],["hr","Hırvatistan"],["it","İtalya"],["hu","Macaristan"]],ka:[]},
-ba:{n:3185073,a:51209,dk:"bos",dl:"Boşnakça",s:"Zdravo",pk:"BAM",pa:"Bosna-Hersek Markı",sm:"KM",sh:null,kom:[["hr","Hırvatistan"],["me","Karadağ"],["rs","Sırbistan"]],ka:["bosna"]},
-al:{n:2411658,a:28748,dk:"sqi",dl:"Arnavutça",s:"Tungjatjeta",pk:"ALL",pa:"Arnavutluk Leki",sm:"L",sh:null,kom:[["me","Karadağ"],["gr","Yunanistan"],["mk","Kuzey Makedonya"],["xk","Kosova"]],ka:[]},
-mk:{n:1827816,a:25713,dk:"mkd",dl:"Makedonca",s:"Здраво",pk:"MKD",pa:"Makedon Dinarı",sm:"den",sh:null,kom:[["al","Arnavutluk"],["bg","Bulgaristan"],["gr","Yunanistan"],["xk","Kosova"],["rs","Sırbistan"]],ka:["makedonya"]},
-me:{n:623529,a:13812,dk:"cnr",dl:"Karadağca",s:"Zdravo",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["al","Arnavutluk"],["ba","Bosna-Hersek"],["hr","Hırvatistan"],["xk","Kosova"],["rs","Sırbistan"]],ka:[]},
-xk:{n:1682668,a:10908,dk:"sqi",dl:"Arnavutça",s:"Tungjatjeta",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["al","Arnavutluk"],["mk","Kuzey Makedonya"],["me","Karadağ"],["rs","Sırbistan"]],ka:[]},
-az:{n:10153958,a:86600,dk:"aze",dl:"Azerbaycan Türkçesi",s:"Salam",pk:"AZN",pa:"Azerbaycan Manatı",sm:"₼",sh:null,kom:[["am","Ermenistan"],["ge","Gürcistan"],["ir","İran"],["ru","Rusya"],["tr","Türkiye"]],ka:[]},
-ge:{n:3715483,a:69700,dk:"kat",dl:"Gürcüce",s:"გამარჯობა",pk:"GEL",pa:"Gürcistan Larisi",sm:"₾",sh:null,kom:[["am","Ermenistan"],["az","Azerbaycan"],["ru","Rusya"],["tr","Türkiye"]],ka:[]},
-am:{n:2964300,a:29743,dk:"hye",dl:"Ermenice",s:"Բարև",pk:"AMD",pa:"Ermenistan Dramı",sm:"֏",sh:null,kom:[["az","Azerbaycan"],["ge","Gürcistan"],["ir","İran"],["tr","Türkiye"]],ka:[]},
-kz:{n:20330104,a:2724900,dk:"kaz",dl:"Kazakça",s:"Сәлем",pk:"KZT",pa:"Kazakistan Tengesi",sm:"₸",sh:"Almatı",kom:[["cn","Çin"],["kg","Kırgızistan"],["ru","Rusya"],["tm","Türkmenistan"],["uz","Özbekistan"]],ka:[]},
-uz:{n:35652307,a:447400,dk:"uzb",dl:"Özbekçe",s:"Salom",pk:"UZS",pa:"Özbekistan Somu",sm:"so'm",sh:null,kom:[["af","Afganistan"],["kz","Kazakistan"],["kg","Kırgızistan"],["tj","Tacikistan"],["tm","Türkmenistan"]],ka:[]},
-tm:{n:7364438,a:488100,dk:"tuk",dl:"Türkmence",s:"Salam",pk:"TMT",pa:"Türkmenistan Manatı",sm:"m",sh:null,kom:[["af","Afganistan"],["ir","İran"],["kz","Kazakistan"],["uz","Özbekistan"]],ka:[]},
-kg:{n:7099750,a:199951,dk:"kir",dl:"Kırgızca",s:"Салам",pk:"KGS",pa:"Kırgızistan Somu",sm:"с",sh:null,kom:[["cn","Çin"],["kz","Kazakistan"],["tj","Tacikistan"],["uz","Özbekistan"]],ka:[]},
-af:{n:41454761,a:652230,dk:"prs",dl:"Dari Farsçası",s:"سلام",pk:"AFN",pa:"Afgan Afganisi",sm:"؋",sh:null,kom:[["ir","İran"],["pk","Pakistan"],["tm","Türkmenistan"],["uz","Özbekistan"],["tj","Tacikistan"],["cn","Çin"]],ka:[]},
-sy:{n:23594623,a:185180,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SYP",pa:"Suriye Lirası",sm:"£",sh:null,kom:[["iq","Irak"],["il","İsrail"],["jo","Ürdün"],["lb","Lübnan"],["tr","Türkiye"]],ka:[]},
-jo:{n:11439213,a:89342,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"JOD",pa:"Ürdün Dinarı",sm:"د.ا",sh:null,kom:[["iq","Irak"],["il","İsrail"],["ps","Filistin"],["sa","Suudi Arabistan"],["sy","Suriye"]],ka:[]},
-lb:{n:5773493,a:10452,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"LBP",pa:"Lübnan Lirası",sm:"ل.ل",sh:null,kom:[["il","İsrail"],["sy","Suriye"]],ka:[]},
-kw:{n:4853420,a:17818,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"KWD",pa:"Kuveyt Dinarı",sm:"د.ك",sh:null,kom:[["iq","Irak"],["sa","Suudi Arabistan"]],ka:[]},
-om:{n:5049269,a:309500,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"OMR",pa:"Umman Riyali",sm:"ر.ع.",sh:null,kom:[["sa","Suudi Arabistan"],["ae","Birleşik Arap Emirlikleri"],["ye","Yemen"]],ka:[]},
-ye:{n:39390799,a:527968,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"YER",pa:"Yemen Riyali",sm:"﷼",sh:null,kom:[["om","Umman"],["sa","Suudi Arabistan"]],ka:[]},
-cl:{n:19658835,a:756102,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CLP",pa:"Şili Pesosu",sm:"$",sh:null,kom:[["ar","Arjantin"],["bo","Bolivya"],["pe","Peru"]],ka:[]},
-co:{n:52321152,a:1141748,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"COP",pa:"Kolombiya Pesosu",sm:"$",sh:null,kom:[["br","Brezilya"],["ec","Ekvador"],["pa","Panama"],["pe","Peru"],["ve","Venezuela"]],ka:[]},
-pe:{n:33845617,a:1285216,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"PEN",pa:"Peru Solü",sm:"S/.",sh:null,kom:[["bo","Bolivya"],["br","Brezilya"],["cl","Şili"],["co","Kolombiya"],["ec","Ekvador"]],ka:[]},
-ve:{n:28300854,a:916445,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"VES",pa:"Venezuela Bolivarı",sm:"Bs.S.",sh:null,kom:[["br","Brezilya"],["co","Kolombiya"],["gy","Guyana"]],ka:[]},
-ec:{n:17980083,a:276841,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"USD",pa:"ABD Doları",sm:"$",sh:"Guayaquil",kom:[["co","Kolombiya"],["pe","Peru"]],ka:[]},
-bo:{n:12244159,a:1098581,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"BOB",pa:"Bolivya Bolivianosu",sm:"Bs.",sh:"Santa Cruz de la Sierra",kom:[["ar","Arjantin"],["br","Brezilya"],["cl","Şili"],["py","Paraguay"],["pe","Peru"]],ka:[]},
-uy:{n:3388081,a:181034,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"UYU",pa:"Uruguay Pesosu",sm:"$",sh:null,kom:[["ar","Arjantin"],["br","Brezilya"]],ka:[]},
-py:{n:6844146,a:406752,dk:"grn",dl:"Guarani dili",s:"Mba'éichapa",pk:"PYG",pa:"Paraguay Guaranisi",sm:"₲",sh:null,kom:[["ar","Arjantin"],["bo","Bolivya"],["br","Brezilya"]],ka:[]},
-cu:{n:11019931,a:109884,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CUP",pa:"Küba Pesosu",sm:"$",sh:null,kom:[],ka:[]},
-do:{n:11331265,a:48671,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"DOP",pa:"Dominik Pesosu",sm:"$",sh:null,kom:[["ht","Haiti"]],ka:[]},
-jm:{n:2839786,a:10991,dk:"jam",dl:"Jamaika Patoisi",s:"Wah gwaan",pk:"JMD",pa:"Jamaika Doları",sm:"$",sh:null,kom:[],ka:[]},
-cr:{n:5105525,a:51100,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CRC",pa:"Kosta Rika Kolonu",sm:"₡",sh:null,kom:[["ni","Nikaragua"],["pa","Panama"]],ka:[]},
-pa:{n:4458759,a:75417,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"PAB",pa:"Panama Balboası",sm:"B/.",sh:null,kom:[["co","Kolombiya"],["cr","Kosta Rika"]],ka:[]},
-gt:{n:18124838,a:108889,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"GTQ",pa:"Guatemala Ketzalı",sm:"Q",sh:null,kom:[["bz","Belize"],["sv","El Salvador"],["hn","Honduras"],["mx","Meksika"]],ka:[]},
-et:{n:128691692,a:1104300,dk:"amh",dl:"Amharca",s:"ሰላም",pk:"ETB",pa:"Etiyopya Birri",sm:"Br",sh:null,kom:[["dj","Cibuti"],["er","Eritre"],["ke","Kenya"],["so","Somali"],["ss","Güney Sudan"],["sd","Sudan"]],ka:["Eritrea"]},
-gh:{n:33787914,a:238533,dk:"eng",dl:"İngilizce",s:"Hello",pk:"GHS",pa:"Gana Cedisi",sm:"₵",sh:null,kom:[["bf","Burkina Faso"],["ci","Fildişi Sahili"],["tg","Togo"]],ka:[]},
-sn:{n:18077573,a:196722,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:null,kom:[["gm","Gambiya"],["gn","Gine"],["gw","Gine-Bissau"],["ml","Mali"],["mr","Moritanya"]],ka:[]},
-ci:{n:31165654,a:322463,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:"Abidjan",kom:[["bf","Burkina Faso"],["gh","Gana"],["gn","Gine"],["lr","Liberya"],["ml","Mali"]],ka:[]},
-cm:{n:28372687,a:475442,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XAF",pa:"Orta Afrika CFA Frangı",sm:"Fr",sh:"Douala",kom:[["cf","Orta Afrika Cumhuriyeti"],["td","Çad"],["cg","Kongo Cumhuriyeti"],["gq","Ekvator Ginesi"],["ga","Gabon"],["ng","Nijerya"]],ka:["Çad"]},
-tz:{n:66617606,a:945087,dk:"swa",dl:"Svahili",s:"Jambo",pk:"TZS",pa:"Tanzanya Şilini",sm:"Sh",sh:"Dar es Selam",kom:[["bi","Burundi"],["cd","Kongo Demokratik Cumhuriyeti"],["ke","Kenya"],["mw","Malavi"],["mz","Mozambik"],["rw","Ruanda"],["ug","Uganda"],["zm","Zambiya"]],ka:[]},
-ug:{n:48656601,a:241550,dk:"eng",dl:"İngilizce",s:"Hello",pk:"UGX",pa:"Uganda Şilini",sm:"Sh",sh:null,kom:[["cd","Kongo Demokratik Cumhuriyeti"],["ke","Kenya"],["rw","Ruanda"],["ss","Güney Sudan"],["tz","Tanzanya"]],ka:[]},
-zw:{n:16340822,a:390757,dk:"sna",dl:"Shona",s:"Mhoro",pk:"ZWG",pa:"Zimbabve Altını (ZiG)",sm:"ZiG",sh:null,kom:[["bw","Botsvana"],["mz","Mozambik"],["za","Güney Afrika"],["zm","Zambiya"]],ka:[]},
-ao:{n:36749906,a:1246700,dk:"por",dl:"Portekizce",s:"Olá",pk:"AOA",pa:"Angola Kvanzası",sm:"Kz",sh:null,kom:[["cg","Kongo Cumhuriyeti"],["cd","Kongo Demokratik Cumhuriyeti"],["zm","Zambiya"],["na","Namibya"]],ka:[]},
-mz:{n:33635160,a:801590,dk:"por",dl:"Portekizce",s:"Olá",pk:"MZN",pa:"Mozambik Metikali",sm:"MT",sh:null,kom:[["mw","Malavi"],["za","Güney Afrika"],["sz","Esvatini"],["tz","Tanzanya"],["zm","Zambiya"],["zw","Zimbabve"]],ka:["Svaziland"]},
-tn:{n:12200431,a:163610,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"TND",pa:"Tunus Dinarı",sm:"د.ت",sh:null,kom:[["dz","Cezayir"],["ly","Libya"]],ka:[]},
-ly:{n:7305659,a:1759540,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"LYD",pa:"Libya Dinarı",sm:"ل.د",sh:null,kom:[["dz","Cezayir"],["td","Çad"],["eg","Mısır"],["ne","Nijer"],["sd","Sudan"],["tn","Tunus"]],ka:["Çad"]},
-sd:{n:50042791,a:1886068,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SDG",pa:"Sudan Lirası",sm:"PT",sh:null,kom:[["cf","Orta Afrika Cumhuriyeti"],["td","Çad"],["eg","Mısır"],["er","Eritre"],["et","Etiyopya"],["ly","Libya"],["ss","Güney Sudan"]],ka:["Çad"]},
-ml:{n:23769127,a:1240192,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:null,kom:[["dz","Cezayir"],["bf","Burkina Faso"],["gn","Gine"],["ci","Fildişi Sahili"],["mr","Moritanya"],["ne","Nijer"],["sn","Senegal"]],ka:[]},
-is:{n:385663,a:103000,dk:"isl",dl:"İzlandaca",s:"Halló",pk:"ISK",pa:"İzlanda Kronu",sm:"kr",sh:null,kom:[],ka:[]},
-ee:{n:1370286,a:45227,dk:"est",dl:"Estonca",s:"Tere",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["lv","Letonya"],["ru","Rusya"]],ka:[]},
-lv:{n:1883710,a:64559,dk:"lav",dl:"Letonca",s:"Sveiki",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["by","Belarus"],["ee","Estonya"],["lt","Litvanya"],["ru","Rusya"]],ka:[]},
-lt:{n:2871585,a:65300,dk:"lit",dl:"Litvanca",s:"Labas",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["by","Belarus"],["lv","Letonya"],["pl","Polonya"],["ru","Rusya"]],ka:[]},
-by:{n:9178298,a:207600,dk:"bel",dl:"Belarusça",s:"Прывітанне",pk:"BYN",pa:"Belarus Rublesi",sm:"Br",sh:null,kom:[["lv","Letonya"],["lt","Litvanya"],["pl","Polonya"],["ru","Rusya"],["ua","Ukrayna"]],ka:[]},
-md:{n:2457783,a:33846,dk:"ron",dl:"Rumence",s:"Bună",pk:"MDL",pa:"Moldova Leyi",sm:"L",sh:null,kom:[["ro","Romanya"],["ua","Ukrayna"]],ka:[]},
-lu:{n:666430,a:2586,dk:"ltz",dl:"Lüksemburgca",s:"Moien",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[["be","Belçika"],["fr","Fransa"],["de","Almanya"]],ka:[]},
-cy:{n:1344976,a:9251,dk:"ell",dl:"Yunanca",s:"Γεια σου",pk:"EUR",pa:"Euro",sm:"€",sh:null,kom:[],ka:[]},
-mt:{n:552747,a:316,dk:"mlt",dl:"Maltaca",s:"Bonġu",pk:"EUR",pa:"Euro",sm:"€",sh:"St. Paul's Bay",kom:[],ka:[]},
-lk:{n:22037000,a:65610,dk:"sin",dl:"Sinhalaca",s:"ආයුබෝවන්",pk:"LKR",pa:"Sri Lanka Rupisi",sm:"Rs රු",sh:null,kom:[],ka:[]},
-mm:{n:54133798,a:676578,dk:"mya",dl:"Birmanca",s:"မင်္ဂလာပါ",pk:"MMK",pa:"Myanmar Kyatı",sm:"Ks",sh:"Yangon",kom:[["bd","Bangladeş"],["cn","Çin"],["in","Hindistan"],["la","Laos"],["th","Tayland"]],ka:[]},
-kh:{n:17423880,a:181035,dk:"khm",dl:"Kmerce",s:"សួស្តី",pk:"KHR",pa:"Kamboçya Rieli",sm:"៛",sh:null,kom:[["la","Laos"],["th","Tayland"],["vn","Vietnam"]],ka:[]},
-mn:{n:3481145,a:1564110,dk:"mon",dl:"Moğolca",s:"Сайн байна уу",pk:"MNT",pa:"Moğolistan Tugriki",sm:"₮",sh:null,kom:[["cn","Çin"],["ru","Rusya"]],ka:[]},
-nz:{n:5200000,a:270467,dk:"eng",dl:"İngilizce",s:"Hello",pk:"NZD",pa:"Yeni Zelanda Doları",sm:"$",sh:"Auckland",kom:[],ka:[]},
+ae:{n:10483751,a:83600,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"AED",pa:"BAE Dirhemi",sm:"د.إ",sh:"Dubai",s2:["Şarja","Al Ayn"],kom:[["om","Umman"],["sa","Suudi Arabistan"]],ka:[]},
+qa:{n:2656032,a:11586,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"QAR",pa:"Katar Riyali",sm:"ر.ق",sh:null,s2:["Al Rayyan","Al Wakrah"],kom:[["sa","Suudi Arabistan"]],ka:[]},
+cz:{n:10864042,a:78865,dk:"ces",dl:"Çekçe",s:"Ahoj",pk:"CZK",pa:"Çek Korunası",sm:"Kč",sh:null,s2:["Brno","Ostrava"],kom:[["at","Avusturya"],["de","Almanya"],["pl","Polonya"],["sk","Slovakya"]],ka:["çek cumhuriyeti"]},
+hu:{n:9592186,a:93028,dk:"hun",dl:"Macarca",s:"Szia",pk:"HUF",pa:"Macar Forinti",sm:"Ft",sh:null,s2:["Debrecen","Szeged"],kom:[["at","Avusturya"],["hr","Hırvatistan"],["ro","Romanya"],["rs","Sırbistan"],["sk","Slovakya"],["si","Slovenya"],["ua","Ukrayna"]],ka:[]},
+ro:{n:19061062,a:238391,dk:"ron",dl:"Rumence",s:"Bună",pk:"RON",pa:"Rumen Leyi",sm:"lei",sh:null,s2:["Cluj-Napoca","Timişoara"],kom:[["bg","Bulgaristan"],["hu","Macaristan"],["md","Moldova"],["rs","Sırbistan"],["ua","Ukrayna"]],ka:[]},
+rs:{n:6623183,a:88361,dk:"srp",dl:"Sırpça",s:"Здраво",pk:"RSD",pa:"Sırp Dinarı",sm:"дин.",sh:null,s2:["Novi Sad","Niş"],kom:[["ba","Bosna-Hersek"],["bg","Bulgaristan"],["hr","Hırvatistan"],["hu","Macaristan"],["xk","Kosova"],["mk","Kuzey Makedonya"],["me","Karadağ"],["ro","Romanya"]],ka:[]},
+hr:{n:3859686,a:56594,dk:"hrv",dl:"Hırvatça",s:"Bok",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Split","Rijeka"],kom:[["ba","Bosna-Hersek"],["hu","Macaristan"],["me","Karadağ"],["rs","Sırbistan"],["si","Slovenya"]],ka:[]},
+bg:{n:6446596,a:110879,dk:"bul",dl:"Bulgarca",s:"Здравей",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Filibe","Varna"],kom:[["gr","Yunanistan"],["mk","Kuzey Makedonya"],["ro","Romanya"],["rs","Sırbistan"],["tr","Türkiye"]],ka:[]},
+sk:{n:5426740,a:49037,dk:"slk",dl:"Slovakça",s:"Ahoj",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Košice","Prešov"],kom:[["at","Avusturya"],["cz","Çekya"],["hu","Macaristan"],["pl","Polonya"],["ua","Ukrayna"]],ka:[]},
+si:{n:2120461,a:20273,dk:"slv",dl:"Slovence",s:"Živjo",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Maribor","Celje"],kom:[["at","Avusturya"],["hr","Hırvatistan"],["it","İtalya"],["hu","Macaristan"]],ka:[]},
+ba:{n:3185073,a:51209,dk:"bos",dl:"Boşnakça",s:"Zdravo",pk:"BAM",pa:"Bosna-Hersek Markı",sm:"KM",sh:null,s2:["Banja Luka","Tuzla"],kom:[["hr","Hırvatistan"],["me","Karadağ"],["rs","Sırbistan"]],ka:["bosna"]},
+al:{n:2411658,a:28748,dk:"sqi",dl:"Arnavutça",s:"Tungjatjeta",pk:"ALL",pa:"Arnavutluk Leki",sm:"L",sh:null,s2:["Dıraç","İşkodra"],kom:[["me","Karadağ"],["gr","Yunanistan"],["mk","Kuzey Makedonya"],["xk","Kosova"]],ka:[]},
+mk:{n:1827816,a:25713,dk:"mkd",dl:"Makedonca",s:"Здраво",pk:"MKD",pa:"Makedon Dinarı",sm:"den",sh:null,s2:["Manastır","Kumanovo"],kom:[["al","Arnavutluk"],["bg","Bulgaristan"],["gr","Yunanistan"],["xk","Kosova"],["rs","Sırbistan"]],ka:["makedonya"]},
+me:{n:623529,a:13812,dk:"cnr",dl:"Karadağca",s:"Zdravo",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Nikšić","Bar"],kom:[["al","Arnavutluk"],["ba","Bosna-Hersek"],["hr","Hırvatistan"],["xk","Kosova"],["rs","Sırbistan"]],ka:[]},
+xk:{n:1682668,a:10908,dk:"sqi",dl:"Arnavutça",s:"Tungjatjeta",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Prizren","İpek"],kom:[["al","Arnavutluk"],["mk","Kuzey Makedonya"],["me","Karadağ"],["rs","Sırbistan"]],ka:[]},
+az:{n:10153958,a:86600,dk:"aze",dl:"Azerbaycan Türkçesi",s:"Salam",pk:"AZN",pa:"Azerbaycan Manatı",sm:"₼",sh:null,s2:["Gence","Sumgayıt"],kom:[["am","Ermenistan"],["ge","Gürcistan"],["ir","İran"],["ru","Rusya"],["tr","Türkiye"]],ka:[]},
+ge:{n:3715483,a:69700,dk:"kat",dl:"Gürcüce",s:"გამარჯობა",pk:"GEL",pa:"Gürcistan Larisi",sm:"₾",sh:null,s2:["Batum","Kutaisi"],kom:[["am","Ermenistan"],["az","Azerbaycan"],["ru","Rusya"],["tr","Türkiye"]],ka:[]},
+am:{n:2964300,a:29743,dk:"hye",dl:"Ermenice",s:"Բարև",pk:"AMD",pa:"Ermenistan Dramı",sm:"֏",sh:null,s2:["Gümrü","Vanadzor"],kom:[["az","Azerbaycan"],["ge","Gürcistan"],["ir","İran"],["tr","Türkiye"]],ka:[]},
+kz:{n:20330104,a:2724900,dk:"kaz",dl:"Kazakça",s:"Сәлем",pk:"KZT",pa:"Kazakistan Tengesi",sm:"₸",sh:"Almatı",s2:["Şımkent","Karaganda"],kom:[["cn","Çin"],["kg","Kırgızistan"],["ru","Rusya"],["tm","Türkmenistan"],["uz","Özbekistan"]],ka:[]},
+uz:{n:35652307,a:447400,dk:"uzb",dl:"Özbekçe",s:"Salom",pk:"UZS",pa:"Özbekistan Somu",sm:"so'm",sh:null,s2:["Semerkant","Namangan"],kom:[["af","Afganistan"],["kz","Kazakistan"],["kg","Kırgızistan"],["tj","Tacikistan"],["tm","Türkmenistan"]],ka:[]},
+tm:{n:7364438,a:488100,dk:"tuk",dl:"Türkmence",s:"Salam",pk:"TMT",pa:"Türkmenistan Manatı",sm:"m",sh:null,s2:["Türkmenabat","Daşoguz"],kom:[["af","Afganistan"],["ir","İran"],["kz","Kazakistan"],["uz","Özbekistan"]],ka:[]},
+kg:{n:7099750,a:199951,dk:"kir",dl:"Kırgızca",s:"Салам",pk:"KGS",pa:"Kırgızistan Somu",sm:"с",sh:null,s2:["Oş","Karakol"],kom:[["cn","Çin"],["kz","Kazakistan"],["tj","Tacikistan"],["uz","Özbekistan"]],ka:[]},
+af:{n:41454761,a:652230,dk:"prs",dl:"Dari Farsçası",s:"سلام",pk:"AFN",pa:"Afgan Afganisi",sm:"؋",sh:null,s2:["Kandahar","Herat"],kom:[["ir","İran"],["pk","Pakistan"],["tm","Türkmenistan"],["uz","Özbekistan"],["tj","Tacikistan"],["cn","Çin"]],ka:[]},
+sy:{n:23594623,a:185180,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SYP",pa:"Suriye Lirası",sm:"£",sh:null,s2:["Halep","Humus"],kom:[["iq","Irak"],["il","İsrail"],["jo","Ürdün"],["lb","Lübnan"],["tr","Türkiye"]],ka:[]},
+jo:{n:11439213,a:89342,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"JOD",pa:"Ürdün Dinarı",sm:"د.ا",sh:null,s2:["Zerka","İrbid"],kom:[["iq","Irak"],["il","İsrail"],["ps","Filistin"],["sa","Suudi Arabistan"],["sy","Suriye"]],ka:[]},
+lb:{n:5773493,a:10452,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"LBP",pa:"Lübnan Lirası",sm:"ل.ل",sh:null,s2:["Trablusşam","Sayda"],kom:[["il","İsrail"],["sy","Suriye"]],ka:[]},
+kw:{n:4853420,a:17818,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"KWD",pa:"Kuveyt Dinarı",sm:"د.ك",sh:null,s2:["Hawalli","Salmiya"],kom:[["iq","Irak"],["sa","Suudi Arabistan"]],ka:[]},
+om:{n:5049269,a:309500,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"OMR",pa:"Umman Riyali",sm:"ر.ع.",sh:null,s2:["Salala","Suhar"],kom:[["sa","Suudi Arabistan"],["ae","Birleşik Arap Emirlikleri"],["ye","Yemen"]],ka:[]},
+ye:{n:39390799,a:527968,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"YER",pa:"Yemen Riyali",sm:"﷼",sh:null,s2:["Aden","Taiz"],kom:[["om","Umman"],["sa","Suudi Arabistan"]],ka:[]},
+cl:{n:19658835,a:756102,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CLP",pa:"Şili Pesosu",sm:"$",sh:null,s2:["Valparaíso","Concepción"],kom:[["ar","Arjantin"],["bo","Bolivya"],["pe","Peru"]],ka:[]},
+co:{n:52321152,a:1141748,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"COP",pa:"Kolombiya Pesosu",sm:"$",sh:null,s2:["Medellín","Cali"],kom:[["br","Brezilya"],["ec","Ekvador"],["pa","Panama"],["pe","Peru"],["ve","Venezuela"]],ka:[]},
+pe:{n:33845617,a:1285216,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"PEN",pa:"Peru Solü",sm:"S/.",sh:null,s2:["Arequipa","Trujillo"],kom:[["bo","Bolivya"],["br","Brezilya"],["cl","Şili"],["co","Kolombiya"],["ec","Ekvador"]],ka:[]},
+ve:{n:28300854,a:916445,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"VES",pa:"Venezuela Bolivarı",sm:"Bs.S.",sh:null,s2:["Maracaibo","Valencia"],kom:[["br","Brezilya"],["co","Kolombiya"],["gy","Guyana"]],ka:[]},
+ec:{n:17980083,a:276841,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"USD",pa:"ABD Doları",sm:"$",sh:"Guayaquil",s2:["Cuenca","Machala"],kom:[["co","Kolombiya"],["pe","Peru"]],ka:[]},
+bo:{n:12244159,a:1098581,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"BOB",pa:"Bolivya Bolivianosu",sm:"Bs.",sh:"Santa Cruz de la Sierra",s2:["El Alto","Cochabamba"],kom:[["ar","Arjantin"],["br","Brezilya"],["cl","Şili"],["py","Paraguay"],["pe","Peru"]],ka:[]},
+uy:{n:3388081,a:181034,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"UYU",pa:"Uruguay Pesosu",sm:"$",sh:null,s2:["Salto","Paysandú"],kom:[["ar","Arjantin"],["br","Brezilya"]],ka:[]},
+py:{n:6844146,a:406752,dk:"grn",dl:"Guarani dili",s:"Mba'éichapa",pk:"PYG",pa:"Paraguay Guaranisi",sm:"₲",sh:null,s2:["Ciudad del Este","Encarnación"],kom:[["ar","Arjantin"],["bo","Bolivya"],["br","Brezilya"]],ka:[]},
+cu:{n:11019931,a:109884,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CUP",pa:"Küba Pesosu",sm:"$",sh:null,s2:["Santiago de Cuba","Camagüey"],kom:[],ka:[]},
+do:{n:11331265,a:48671,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"DOP",pa:"Dominik Pesosu",sm:"$",sh:null,s2:["Santiago de los Caballeros","La Romana"],kom:[["ht","Haiti"]],ka:[]},
+jm:{n:2839786,a:10991,dk:"jam",dl:"Jamaika Patoisi",s:"Wah gwaan",pk:"JMD",pa:"Jamaika Doları",sm:"$",sh:null,s2:["Montego Bay","Spanish Town"],kom:[],ka:[]},
+cr:{n:5105525,a:51100,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"CRC",pa:"Kosta Rika Kolonu",sm:"₡",sh:null,s2:["Alajuela","Cartago"],kom:[["ni","Nikaragua"],["pa","Panama"]],ka:[]},
+pa:{n:4458759,a:75417,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"PAB",pa:"Panama Balboası",sm:"B/.",sh:null,s2:["Colón","David"],kom:[["co","Kolombiya"],["cr","Kosta Rika"]],ka:[]},
+gt:{n:18124838,a:108889,dk:"spa",dl:"İspanyolca",s:"Hola",pk:"GTQ",pa:"Guatemala Ketzalı",sm:"Q",sh:null,s2:["Quetzaltenango","Escuintla"],kom:[["bz","Belize"],["sv","El Salvador"],["hn","Honduras"],["mx","Meksika"]],ka:[]},
+et:{n:128691692,a:1104300,dk:"amh",dl:"Amharca",s:"ሰላም",pk:"ETB",pa:"Etiyopya Birri",sm:"Br",sh:null,s2:["Dire Dawa","Mekelle"],kom:[["dj","Cibuti"],["er","Eritre"],["ke","Kenya"],["so","Somali"],["ss","Güney Sudan"],["sd","Sudan"]],ka:["Eritrea"]},
+gh:{n:33787914,a:238533,dk:"eng",dl:"İngilizce",s:"Hello",pk:"GHS",pa:"Gana Cedisi",sm:"₵",sh:null,s2:["Kumasi","Tamale"],kom:[["bf","Burkina Faso"],["ci","Fildişi Sahili"],["tg","Togo"]],ka:[]},
+sn:{n:18077573,a:196722,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:null,s2:["Touba","Thiès"],kom:[["gm","Gambiya"],["gn","Gine"],["gw","Gine-Bissau"],["ml","Mali"],["mr","Moritanya"]],ka:[]},
+ci:{n:31165654,a:322463,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:"Abidjan",s2:["Bouaké","Daloa"],kom:[["bf","Burkina Faso"],["gh","Gana"],["gn","Gine"],["lr","Liberya"],["ml","Mali"]],ka:[]},
+cm:{n:28372687,a:475442,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XAF",pa:"Orta Afrika CFA Frangı",sm:"Fr",sh:"Douala",s2:["Garoua","Bamenda"],kom:[["cf","Orta Afrika Cumhuriyeti"],["td","Çad"],["cg","Kongo Cumhuriyeti"],["gq","Ekvator Ginesi"],["ga","Gabon"],["ng","Nijerya"]],ka:["Çad"]},
+tz:{n:66617606,a:945087,dk:"swa",dl:"Svahili",s:"Jambo",pk:"TZS",pa:"Tanzanya Şilini",sm:"Sh",sh:"Dar es Selam",s2:["Mwanza","Arusha"],kom:[["bi","Burundi"],["cd","Kongo Demokratik Cumhuriyeti"],["ke","Kenya"],["mw","Malavi"],["mz","Mozambik"],["rw","Ruanda"],["ug","Uganda"],["zm","Zambiya"]],ka:[]},
+ug:{n:48656601,a:241550,dk:"eng",dl:"İngilizce",s:"Hello",pk:"UGX",pa:"Uganda Şilini",sm:"Sh",sh:null,s2:["Gulu","Jinja"],kom:[["cd","Kongo Demokratik Cumhuriyeti"],["ke","Kenya"],["rw","Ruanda"],["ss","Güney Sudan"],["tz","Tanzanya"]],ka:[]},
+zw:{n:16340822,a:390757,dk:"sna",dl:"Shona",s:"Mhoro",pk:"ZWG",pa:"Zimbabve Altını (ZiG)",sm:"ZiG",sh:null,s2:["Bulawayo","Mutare"],kom:[["bw","Botsvana"],["mz","Mozambik"],["za","Güney Afrika"],["zm","Zambiya"]],ka:[]},
+ao:{n:36749906,a:1246700,dk:"por",dl:"Portekizce",s:"Olá",pk:"AOA",pa:"Angola Kvanzası",sm:"Kz",sh:null,s2:["Huambo","Lobito"],kom:[["cg","Kongo Cumhuriyeti"],["cd","Kongo Demokratik Cumhuriyeti"],["zm","Zambiya"],["na","Namibya"]],ka:[]},
+mz:{n:33635160,a:801590,dk:"por",dl:"Portekizce",s:"Olá",pk:"MZN",pa:"Mozambik Metikali",sm:"MT",sh:null,s2:["Beira","Nampula"],kom:[["mw","Malavi"],["za","Güney Afrika"],["sz","Esvatini"],["tz","Tanzanya"],["zm","Zambiya"],["zw","Zimbabve"]],ka:["Svaziland"]},
+tn:{n:12200431,a:163610,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"TND",pa:"Tunus Dinarı",sm:"د.ت",sh:null,s2:["Sfax","Sousse"],kom:[["dz","Cezayir"],["ly","Libya"]],ka:[]},
+ly:{n:7305659,a:1759540,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"LYD",pa:"Libya Dinarı",sm:"ل.د",sh:null,s2:["Bingazi","Misrata"],kom:[["dz","Cezayir"],["td","Çad"],["eg","Mısır"],["ne","Nijer"],["sd","Sudan"],["tn","Tunus"]],ka:["Çad"]},
+sd:{n:50042791,a:1886068,dk:"ara",dl:"Arapça",s:"مرحبا",pk:"SDG",pa:"Sudan Lirası",sm:"PT",sh:null,s2:["Omdurman","Port Sudan"],kom:[["cf","Orta Afrika Cumhuriyeti"],["td","Çad"],["eg","Mısır"],["er","Eritre"],["et","Etiyopya"],["ly","Libya"],["ss","Güney Sudan"]],ka:["Çad"]},
+ml:{n:23769127,a:1240192,dk:"fra",dl:"Fransızca",s:"Bonjour",pk:"XOF",pa:"Batı Afrika CFA Frangı",sm:"Fr",sh:null,s2:["Sikasso","Ségou"],kom:[["dz","Cezayir"],["bf","Burkina Faso"],["gn","Gine"],["ci","Fildişi Sahili"],["mr","Moritanya"],["ne","Nijer"],["sn","Senegal"]],ka:[]},
+is:{n:385663,a:103000,dk:"isl",dl:"İzlandaca",s:"Halló",pk:"ISK",pa:"İzlanda Kronu",sm:"kr",sh:null,s2:["Kópavogur","Akureyri"],kom:[],ka:[]},
+ee:{n:1370286,a:45227,dk:"est",dl:"Estonca",s:"Tere",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Tartu","Narva"],kom:[["lv","Letonya"],["ru","Rusya"]],ka:[]},
+lv:{n:1883710,a:64559,dk:"lav",dl:"Letonca",s:"Sveiki",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Daugavpils","Liepāja"],kom:[["by","Belarus"],["ee","Estonya"],["lt","Litvanya"],["ru","Rusya"]],ka:[]},
+lt:{n:2871585,a:65300,dk:"lit",dl:"Litvanca",s:"Labas",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Kaunas","Klaipėda"],kom:[["by","Belarus"],["lv","Letonya"],["pl","Polonya"],["ru","Rusya"]],ka:[]},
+by:{n:9178298,a:207600,dk:"bel",dl:"Belarusça",s:"Прывітанне",pk:"BYN",pa:"Belarus Rublesi",sm:"Br",sh:null,s2:["Gomel","Vitebsk"],kom:[["lv","Letonya"],["lt","Litvanya"],["pl","Polonya"],["ru","Rusya"],["ua","Ukrayna"]],ka:[]},
+md:{n:2457783,a:33846,dk:"ron",dl:"Rumence",s:"Bună",pk:"MDL",pa:"Moldova Leyi",sm:"L",sh:null,s2:["Bălți","Tiraspol"],kom:[["ro","Romanya"],["ua","Ukrayna"]],ka:[]},
+lu:{n:666430,a:2586,dk:"ltz",dl:"Lüksemburgca",s:"Moien",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Esch-sur-Alzette","Differdange"],kom:[["be","Belçika"],["fr","Fransa"],["de","Almanya"]],ka:[]},
+cy:{n:1344976,a:9251,dk:"ell",dl:"Yunanca",s:"Γεια σου",pk:"EUR",pa:"Euro",sm:"€",sh:null,s2:["Limasol","Larnaka"],kom:[],ka:[]},
+mt:{n:552747,a:316,dk:"mlt",dl:"Maltaca",s:"Bonġu",pk:"EUR",pa:"Euro",sm:"€",sh:"St. Paul's Bay",s2:["Birkirkara","Mosta"],kom:[],ka:[]},
+lk:{n:22037000,a:65610,dk:"sin",dl:"Sinhalaca",s:"ආයුබෝවන්",pk:"LKR",pa:"Sri Lanka Rupisi",sm:"Rs රු",sh:null,s2:["Kandy","Galle"],kom:[],ka:[]},
+mm:{n:54133798,a:676578,dk:"mya",dl:"Birmanca",s:"မင်္ဂလာပါ",pk:"MMK",pa:"Myanmar Kyatı",sm:"Ks",sh:"Yangon",s2:["Mandalay","Bago"],kom:[["bd","Bangladeş"],["cn","Çin"],["in","Hindistan"],["la","Laos"],["th","Tayland"]],ka:[]},
+kh:{n:17423880,a:181035,dk:"khm",dl:"Kmerce",s:"សួស្តី",pk:"KHR",pa:"Kamboçya Rieli",sm:"៛",sh:null,s2:["Siem Reap","Battambang"],kom:[["la","Laos"],["th","Tayland"],["vn","Vietnam"]],ka:[]},
+mn:{n:3481145,a:1564110,dk:"mon",dl:"Moğolca",s:"Сайн байна уу",pk:"MNT",pa:"Moğolistan Tugriki",sm:"₮",sh:null,s2:["Erdenet","Darhan"],kom:[["cn","Çin"],["ru","Rusya"]],ka:[]},
+nz:{n:5200000,a:270467,dk:"eng",dl:"İngilizce",s:"Hello",pk:"NZD",pa:"Yeni Zelanda Doları",sm:"$",sh:"Auckland",s2:["Christchurch","Hamilton"],kom:[],ka:[]},
 };
+
+/* komşu tahmini için öneri havuzu: sadece hedefin doğru komşularını değil,
+   U'daki + tüm ülkelerin komşu listelerinde geçen her ülkeyi içerir — yoksa
+   açılır liste cevabı direkt sızdırır (sadece doğrular çıkar). */
+const KOMSU_HAVUZ = (()=>{
+  const m = new Map();
+  U.forEach(u=>m.set(u[0], u[1]));
+  Object.values(EK).forEach(ek=>(ek.kom||[]).forEach(k=>{ if(!m.has(k[0])) m.set(k[0], k[1]); }));
+  return [...m.entries()];
+})();
 
 /* ===================== yardımcı ===================== */
 function norm(s){
@@ -756,7 +768,7 @@ function bitir(kzn){
   }
   sonucCiz();
   kaydet();
-  if(mod==="gunluk") bonusBaslangicGoster();
+  bonusBaslangicGoster();
 }
 function kareDizi(){
   return tahminler.map(t=>t.dogru?"🟩":"🟥").join("") + (kazandi?"":"⬛".repeat(MAKS-tahminler.length));
@@ -841,6 +853,7 @@ function sonSesli(kelime){
   return 'e';
 }
 function ekIyelik(ad){
+  if(ad==='ABD') return "'nin"; /* kısaltma: okunuşu "abece-de" */
   const v = sonSesli(ad), sonHarf = ad[ad.length-1];
   const unluMu = 'aeıioöuüAEIİOÖUÜ'.includes(sonHarf);
   const tablo = {a:'ın',ı:'ın',o:'un',u:'un',e:'in',i:'in',ö:'ün',ü:'ün'};
@@ -853,7 +866,7 @@ function ekAyrilma(ad){
 }
 let BN = null;
 const BONUS_SIRA = ['komsu','nufus','alan','dil','para','sehir'];
-const BONUS_BASLIK = {komsu:'komşular', nufus:'nüfus', alan:'yüzölçümü', dil:'resmi dil', para:'para birimi', sehir:'en kalabalık şehir'};
+const BONUS_BASLIK = {komsu:'komşular', nufus:'nüfus', alan:'yüzölçümü', dil:'dil ailesi', para:'para birimi', sehir:'en kalabalık şehir'};
 
 function bonusYeniDurum(){
   return {
@@ -884,8 +897,7 @@ function bonusYildizSay(){
   return BONUS_SIRA.reduce((t,k)=> t + (BN[k] && BN[k].yildiz ? 1 : 0), 0);
 }
 function bonusBaslangicGoster(){
-  if(mod!=="gunluk"){ BN=null; $("#bonusYuva").innerHTML=""; return; }
-  BN = bonusYukle() || bonusYeniDurum();
+  BN = (mod==="gunluk" ? bonusYukle() : null) || bonusYeniDurum();
   bonusCiz();
 }
 function bonusBaslat(){ BN.acik = true; bonusKaydet(); bonusCiz(); }
@@ -914,9 +926,9 @@ function bonusTamamSatiri(key){
   if(key==='komsu') ozet = b.bulunan.length+' / '+EK[hedefKod].kom.length+' komşu bulundu';
   if(key==='nufus') ozet = b.puan+'/100 yakınlık';
   if(key==='alan') ozet = b.dogru ? 'doğru tahmin' : 'yanlış tahmin';
-  if(key==='dil') ozet = b.dogru ? 'doğru dil' : ('doğrusu: '+EK[hedefKod].dl);
-  if(key==='para') ozet = b.dogru ? 'doğru para birimi' : ('doğrusu: '+EK[hedefKod].pk);
-  if(key==='sehir') ozet = b.dogru ? 'doğru şehir' : ('doğrusu: '+(EK[hedefKod].sh||hedef[2]));
+  if(key==='dil') ozet = b.dogru ? 'doğru cevap' : ('doğrusu: '+dilSoru().dogru);
+  if(key==='para') ozet = b.dogru ? 'doğru para birimi' : ('doğrusu: '+paraKisa(hedefKod)+' ('+EK[hedefKod].pk+')');
+  if(key==='sehir') ozet = !EK[hedefKod].sh ? 'başkent = en kalabalık şehir' : (b.dogru ? 'doğru şehir' : ('doğrusu: '+EK[hedefKod].sh));
   return '<div class="bonus-adim tamam"><div class="bonus-tamam-satir"><span class="im">'+im+'</span>'+
     '<span>'+BONUS_BASLIK[key]+' — '+ozet+'</span></div></div>';
 }
@@ -980,11 +992,11 @@ function bonusKomsuCiz(){
     '<button type="button" class="komsu-gec" id="bonusKomsuGec">'+(b.bulunan.length?'yeter, sıradaki soru →':'bilmiyorum, geç →')+'</button>';
 }
 function komsuOneriGuncelle(){
-  const ek = EK[hedefKod]; const inp = $("#komsuGiris"); if(!inp) return;
+  const inp = $("#komsuGiris"); if(!inp) return;
   const q = norm(inp.value); const oneriEl = $("#komsuOneri");
   const bulunan = new Set(BN.komsu.bulunan);
   if(!q){ oneriEl.classList.remove('acik'); oneriEl.innerHTML=''; return; }
-  const adaylar = ek.kom.filter(k=>!bulunan.has(k[0]) && norm(k[1]).includes(q)).slice(0,6);
+  const adaylar = KOMSU_HAVUZ.filter(k=>!bulunan.has(k[0]) && norm(k[1]).includes(q)).slice(0,6);
   if(!adaylar.length){ oneriEl.classList.remove('acik'); oneriEl.innerHTML=''; return; }
   oneriEl.innerHTML = adaylar.map(k=>'<button type="button" data-kod="'+k[0]+'">'+k[1]+'</button>').join('');
   oneriEl.classList.add('acik');
@@ -1079,76 +1091,178 @@ function alanTahminYap(yon){
   setTimeout(()=> bonusIlerle('alan'), 2000);
 }
 
-/* ---- 4) dil: örnek ifade + 4 dil şıkkı ---- */
-function bonusDilSecenekleri(){
-  const kendi = EK[hedefKod].dl;
-  const havuz = [...new Set(SIRA.filter(k=>k!==hedefKod).map(k=>EK[k].dl))].filter(d=>d!==kendi);
-  const sira = skKaristir(havuz.length, skRng(skHash(hedefKod+':dil')));
-  const hepsi = [kendi, ...sira.slice(0,3).map(i=>havuz[i])];
-  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':dilsira')));
-  return sira2.map(i=>hepsi[i]);
+/* ---- 4) dil ailesi: "hangisiyle akraba?" — cevap alfabe tanımayla değil çıkarımla bulunur ---- */
+/* dk (ISO 639-3) → dil ailesi. 'ietek': Hint-Avrupa'nın tek başına dalları (havuzda yakın akrabası yok
+   ama IE akrabalığı var); 'tek': havuzdaki hiçbir dille akrabalığı olmayanlar; 'kreol': İngilizce temelli. */
+const DIL_AILE = {
+  tur:'turk',aze:'turk',kaz:'turk',uzb:'turk',tuk:'turk',kir:'turk',
+  deu:'cermen',bar:'cermen',gsw:'cermen',eng:'cermen',nld:'cermen',swe:'cermen',nob:'cermen',dan:'cermen',isl:'cermen',ltz:'cermen',
+  fra:'roman',ita:'roman',spa:'roman',por:'roman',ron:'roman',
+  rus:'slav',ukr:'slav',bel:'slav',pol:'slav',ces:'slav',slk:'slav',slv:'slav',hrv:'slav',srp:'slav',bos:'slav',cnr:'slav',bul:'slav',mkd:'slav',
+  lav:'balt',lit:'balt',
+  hin:'hintiran',urd:'hintiran',ben:'hintiran',fas:'hintiran',prs:'hintiran',sin:'hintiran',
+  ell:'ietek',hye:'ietek',sqi:'ietek',
+  ara:'sami',heb:'sami',amh:'sami',mlt:'sami',
+  fin:'ural',hun:'ural',est:'ural',
+  zul:'bantu',swa:'bantu',sna:'bantu',
+  zho:'cintibet',mya:'cintibet',
+  ind:'avustronez',msa:'avustronez',fil:'avustronez',
+  vie:'monkmer',khm:'monkmer',
+  jam:'kreol',
+  jpn:'tek',kor:'tek',tha:'tek',mon:'tek',kat:'tek',grn:'tek'
+};
+const IE_AILELER = new Set(['cermen','roman','slav','balt','hintiran','ietek','kreol']);
+const AILE_NOT = {
+  turk:'ikisi de Türk dil ailesinden.', cermen:'ikisi de Cermen ailesinden.',
+  roman:'ikisi de Latinceden doğan Roman dillerinden.', slav:'ikisi de Slav ailesinden.',
+  balt:'ikisi de Baltık ailesinden.', hintiran:'ikisi de Hint-İran ailesinden.',
+  sami:'ikisi de Sami ailesinden.', ural:'ikisi de Ural ailesinden.',
+  bantu:'ikisi de Bantu ailesinden.', cintibet:'ikisi de Çin-Tibet ailesinden.',
+  avustronez:'ikisi de Avustronezya ailesinden.', monkmer:'ikisi de Mon-Kmer ailesinden.'
+};
+/* havuzdan dil adı toplar: hedefin dilini ve tekrarları eler, filtre aile üstünden çalışır */
+function dilAdaylar(filtre){
+  const hedefDil = EK[hedefKod].dl, gorulen = new Set(); const sonuc = [];
+  SIRA.forEach(k=>{
+    if(k===hedefKod) return;
+    const e = EK[k];
+    if(e.dl===hedefDil || gorulen.has(e.dl)) return;
+    if(!filtre(DIL_AILE[e.dk])) return;
+    gorulen.add(e.dl); sonuc.push(e.dl);
+  });
+  return sonuc;
+}
+function dilSoru(){
+  const ek = EK[hedefKod], aile = DIL_AILE[ek.dk];
+  const rng = skRng(skHash(hedefKod+':dilv2'));
+  let soru, dogru, havuz, aciklama;
+  if(aile==='tek'){
+    soru = 'Ve yalnız bir dil: bu oyundaki başka hiçbir ülkenin diliyle akrabalığı yok. Şunlardan hangisi de öyle?';
+    const d = dilAdaylar(a=>a==='tek');
+    dogru = d[Math.floor(rng()*d.length)];
+    havuz = dilAdaylar(a=>a!=='tek' && a!=='ietek' && a!=='kreol');
+    aciklama = dogru+' da öyle: onun da bu havuzda akrabası yok.';
+  } else if(aile==='ietek'){
+    soru = 'Peki '+ek.dl+' şunlardan hangisiyle akraba?';
+    const d = dilAdaylar(a=>IE_AILELER.has(a) && a!=='kreol');
+    dogru = d[Math.floor(rng()*d.length)];
+    havuz = dilAdaylar(a=>!IE_AILELER.has(a));
+    aciklama = 'ikisi de Hint-Avrupa ailesinden.';
+  } else if(aile==='kreol'){
+    soru = 'Peki bu dil, hangi dilin üstüne kurulmuş bir kreol?';
+    dogru = 'İngilizce';
+    havuz = ['İspanyolca','Fransızca','Portekizce'];
+    aciklama = 'Jamaika Patoisi, İngilizce temelli bir kreol dilidir.';
+  } else {
+    soru = 'Peki '+ek.dl+' şunlardan hangisiyle aynı dil ailesinden?';
+    const d = dilAdaylar(a=>a===aile);
+    dogru = d[Math.floor(rng()*d.length)];
+    havuz = IE_AILELER.has(aile)
+      ? dilAdaylar(a=>!IE_AILELER.has(a))
+      : dilAdaylar(a=>a!==aile && a!=='kreol');
+    aciklama = AILE_NOT[aile];
+  }
+  const sira = skKaristir(havuz.length, rng);
+  const yanlis = [];
+  for(const i of sira){
+    const d2 = havuz[i];
+    if(d2!==dogru && !yanlis.includes(d2)){ yanlis.push(d2); if(yanlis.length===3) break; }
+  }
+  const hepsi = [dogru, ...yanlis];
+  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':dilsira2')));
+  return {soru:soru, dogru:dogru, aciklama:aciklama, secenekler:sira2.map(i=>hepsi[i])};
 }
 function bonusDilCiz(){
-  return '<div class="bonus-soz">"'+EK[hedefKod].s+'"</div><p>Bu, hangi dilde bir selamlama?</p>'+
-    '<div class="secenekler">'+bonusDilSecenekleri().map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
+  const q = dilSoru();
+  return '<p>'+hedef[1]+ekIyelik(hedef[1])+' resmi dili <b>'+EK[hedefKod].dl+'</b>. '+q.soru+'</p>'+
+    '<div class="secenekler">'+q.secenekler.map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
 }
 function dilCevapVer(secim){
-  const dogruDil = EK[hedefKod].dl, dogru = secim===dogruDil;
+  const q = dilSoru(), dogru = secim===q.dogru;
   BN.dil.secim=secim; BN.dil.dogru=dogru; BN.dil.yildiz=dogru;
-  bonusSecenekVurgula(secim, dogruDil);
+  bonusSecenekVurgula(secim, q.dogru);
+  bonusMesajEkle(dogru?'dogru':'yanlis', q.aciklama+'<br>bu dilde selam: <b>'+EK[hedefKod].s+'</b>');
   bonusKaydet();
-  setTimeout(()=> bonusIlerle('dil'), 1300);
+  setTimeout(()=> bonusIlerle('dil'), 2000);
 }
 
-/* ---- 5) para birimi: sembol + kod-isim şıkkı ---- */
+/* ---- 5) para birimi: sembol + YALIN para adı şıkkı ----
+   pa alanı "Ermenistan Dramı" gibi ülke adı taşıyor; şıkta gösterilirse cevap metin taramayla bulunur.
+   ISO kodu da (AMD, TRY...) ülke önekini sızdırır. Şıklarda yalnız para tipi ("Dram") kullanılır,
+   tam ad + kod cevaptan sonra açıklanır. Kısa adlar pk üstünden tekildir, aynı ada çöken
+   farklı birimler (Peso, Dolar, Kron...) şık havuzunda ada göre teklenir. */
+const PARA_KISA = {
+  TRY:'Lira', EUR:'Euro', GBP:'Sterlin', USD:'Dolar', JPY:'Yen', BRL:'Real', CNY:'Yuan', RUB:'Ruble',
+  CAD:'Dolar', SEK:'Kron', NOK:'Kron', CHF:'Frank', INR:'Rupi', KRW:'Won', MXN:'Peso', ARS:'Peso',
+  AUD:'Dolar', EGP:'Lira', ZAR:'Rand', SAR:'Riyal', PLN:'Zloti', UAH:'Grivna', DKK:'Kron', MAD:'Dirhem',
+  DZD:'Dinar', NGN:'Naira', KES:'Şilin', IRR:'Riyal', IQD:'Dinar', ILS:'Şekel', THB:'Baht', VND:'Dong',
+  IDR:'Rupi', MYR:'Ringgit', PHP:'Peso', PKR:'Rupi', BDT:'Taka', SGD:'Dolar', AED:'Dirhem', QAR:'Riyal',
+  CZK:'Koruna', HUF:'Forint', RON:'Ley', RSD:'Dinar', BAM:'Mark', ALL:'Lek', MKD:'Dinar', AZN:'Manat',
+  GEL:'Lari', AMD:'Dram', KZT:'Tenge', UZS:'Som', TMT:'Manat', KGS:'Som', AFN:'Afgani', SYP:'Lira',
+  JOD:'Dinar', LBP:'Lira', KWD:'Dinar', OMR:'Riyal', YER:'Riyal', CLP:'Peso', COP:'Peso', PEN:'Sol',
+  VES:'Bolivar', BOB:'Boliviano', UYU:'Peso', PYG:'Guarani', CUP:'Peso', DOP:'Peso', JMD:'Dolar',
+  CRC:'Kolon', PAB:'Balboa', GTQ:'Ketzal', ETB:'Birr', GHS:'Cedi', XOF:'CFA Frangı', XAF:'CFA Frangı',
+  TZS:'Şilin', UGX:'Şilin', ZWG:'ZiG', AOA:'Kvanza', MZN:'Metikal', TND:'Dinar', LYD:'Dinar',
+  SDG:'Lira', ISK:'Kron', BYN:'Ruble', MDL:'Ley', LKR:'Rupi', MMK:'Kyat', KHR:'Riel', MNT:'Tugrik', NZD:'Dolar'
+};
+function paraKisa(kod){ const e = EK[kod]; return PARA_KISA[e.pk] || e.pa; }
 function bonusParaSecenekleri(){
-  const kendi = EK[hedefKod].pk+' — '+EK[hedefKod].pa;
-  const gorulen = new Set([EK[hedefKod].pk]); const havuz = [];
+  const kendi = paraKisa(hedefKod);
+  const gorulen = new Set([kendi]); const havuz = [];
   SIRA.filter(k=>k!==hedefKod).forEach(k=>{
-    const e = EK[k];
-    if(!gorulen.has(e.pk)){ gorulen.add(e.pk); havuz.push(e.pk+' — '+e.pa); }
+    const ad = paraKisa(k);
+    if(!gorulen.has(ad)){ gorulen.add(ad); havuz.push(ad); }
   });
-  const sira = skKaristir(havuz.length, skRng(skHash(hedefKod+':para')));
+  const sira = skKaristir(havuz.length, skRng(skHash(hedefKod+':parav2')));
   const hepsi = [kendi, ...sira.slice(0,3).map(i=>havuz[i])];
-  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':parasira')));
+  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':parasira2')));
   return sira2.map(i=>hepsi[i]);
 }
 function bonusParaCiz(){
-  return '<div class="bonus-sembol">'+EK[hedefKod].sm+'</div><p>Bu sembol hangi para birimine ait?</p>'+
+  return '<div class="bonus-sembol">'+EK[hedefKod].sm+'</div>'+
+    '<p>Sembolü bu. '+hedef[1]+ekIyelik(hedef[1])+' para birimi hangisi?</p>'+
     '<div class="secenekler">'+bonusParaSecenekleri().map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
 }
 function paraCevapVer(secim){
-  const dogruDeger = EK[hedefKod].pk+' — '+EK[hedefKod].pa, dogru = secim===dogruDeger;
+  const ek = EK[hedefKod], dogruDeger = paraKisa(hedefKod), dogru = secim===dogruDeger;
   BN.para.secim=secim; BN.para.dogru=dogru; BN.para.yildiz=dogru;
   bonusSecenekVurgula(secim, dogruDeger);
+  bonusMesajEkle(dogru?'dogru':'yanlis', 'tam adı: <b>'+ek.pa+'</b> ('+ek.pk+')');
   bonusKaydet();
-  setTimeout(()=> bonusIlerle('para'), 1300);
+  setTimeout(()=> bonusIlerle('para'), 1800);
 }
 
-/* ---- 6) en kalabalık şehir: başkent + 2 sahte şehirden seç ---- */
-function bonusSehirSecenekleri(){
-  const dogru = EK[hedefKod].sh || hedef[2];
-  const havuz = [...new Set(SIRA.filter(k=>k!==hedefKod).map(k=>HARITA[k][2]))].filter(c=>c!==dogru);
-  const sira = skKaristir(havuz.length, skRng(skHash(hedefKod+':sehir')));
-  const hepsi = [dogru, ...sira.slice(0,2).map(i=>havuz[i])];
-  const sira2 = skKaristir(hepsi.length, skRng(skHash(hedefKod+':sehirsira')));
-  return sira2.map(i=>hepsi[i]);
-}
+/* ---- 6) en kalabalık şehir: başkent mi, değil mi ----
+   eski hali yanlış ülkelerin başkentlerini sahte şık olarak kullanıyordu (o ülkeyle
+   ilgisi yok). Artık sadece doğrulanmış iki gerçek şehir kullanılıyor: başkent (hedef[2])
+   ve EK[..].sh (varsa) — ikisi de gerçekten o ülkeden. sh yoksa (başkent zaten en
+   kalabalık şehirse) soracak ikinci bir gerçek şehrimiz yok; o zaman soru sormuyoruz,
+   doğrudan gerçeği söylüyoruz. */
 function bonusSehirCiz(){
+  const ek = EK[hedefKod];
+  if(!ek.sh){
+    return '<p>biliyor muydun: '+hedef[1]+ekIyelik(hedef[1])+' en kalabalık şehri zaten başkenti <b>'+hedef[2]+'</b>.</p>'+
+      '<button type="button" class="komsu-gec" id="bonusSehirDevam">devam →</button>';
+  }
+  const sira = skKaristir(2, skRng(skHash(hedefKod+':sehirsira')));
+  const secenekler = sira.map(i=> i===0 ? hedef[2] : ek.sh);
   return '<p>'+hedef[1]+ekIyelik(hedef[1])+' en kalabalık şehri hangisi?</p>'+
-    '<div class="secenekler">'+bonusSehirSecenekleri().map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
+    '<div class="secenekler">'+secenekler.map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
 }
 function sehirCevapVer(secim){
-  const dogruDeger = EK[hedefKod].sh || hedef[2], dogru = secim===dogruDeger;
+  const dogruDeger = EK[hedefKod].sh, dogru = secim===dogruDeger;
   BN.sehir.secim=secim; BN.sehir.dogru=dogru; BN.sehir.yildiz=dogru;
   bonusSecenekVurgula(secim, dogruDeger);
   const iyelik = ekIyelik(hedef[1]);
-  const not_ = EK[hedefKod].sh
-    ? 'biliyor muydun: '+hedef[1]+iyelik+' başkenti '+hedef[2]+', ama en kalabalık şehri '+EK[hedefKod].sh+'.'
-    : 'evet — '+hedef[1]+iyelik+' en kalabalık şehri zaten başkenti '+hedef[2]+'.';
-  bonusMesajEkle('', not_);
+  const not_ = 'biliyor muydun: '+hedef[1]+iyelik+' başkenti '+hedef[2]+', ama en kalabalık şehri '+EK[hedefKod].sh+'.';
+  bonusMesajEkle(dogru?'dogru':'yanlis', not_);
   bonusKaydet();
   setTimeout(()=> bonusIlerle('sehir'), 2000);
+}
+function sehirDevamVer(){
+  BN.sehir.dogru=true; BN.sehir.yildiz=true;
+  bonusKaydet();
+  bonusIlerle('sehir');
 }
 
 function bonusOlayBagla(key){
@@ -1183,7 +1297,10 @@ function bonusOlayBagla(key){
   if(key==='alan') $$('.alan-secim button').forEach(b=> b.onclick = ()=> alanTahminYap(b.dataset.yon));
   if(key==='dil') $$('#bonusAktif .secenekler button').forEach(b=> b.onclick = ()=> dilCevapVer(b.dataset.v));
   if(key==='para') $$('#bonusAktif .secenekler button').forEach(b=> b.onclick = ()=> paraCevapVer(b.dataset.v));
-  if(key==='sehir') $$('#bonusAktif .secenekler button').forEach(b=> b.onclick = ()=> sehirCevapVer(b.dataset.v));
+  if(key==='sehir'){
+    $$('#bonusAktif .secenekler button').forEach(b=> b.onclick = ()=> sehirCevapVer(b.dataset.v));
+    const devamBtn = $("#bonusSehirDevam"); if(devamBtn) devamBtn.onclick = sehirDevamVer;
+  }
 }
 
 /* ===================== mod: günlük / rastgele ===================== */
