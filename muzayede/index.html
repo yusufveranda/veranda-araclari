@@ -522,10 +522,18 @@ function oneriListesiKur(){
       if(soyadN.includes(n)) return 2;
       return 3;
     }
+    function karsilastir(a, b){
+      const oa = oncelik(a), ob = oncelik(b);
+      if(oa !== ob) return oa - ob;
+      // ayni oncelik grubunda (soyada gore eslesenler) soyadina gore sirala,
+      // yoksa (yalniz isme gore eslesenler) tam isme gore
+      if(oa === 0 || oa === 2) return soyadi(a.isim).localeCompare(soyadi(b.isim), 'tr');
+      return a.isim.localeCompare(b.isim, 'tr');
+    }
     const eslesenler = isimler
       .filter(r => isimNormallestir(r.isim).includes(n))
-      .sort((a, b) => oncelik(a) - oncelik(b))
-      .slice(0, 8);
+      .sort(karsilastir)
+      .slice(0, 25);
     if(!eslesenler.length){ kapat(); return; }
     kutu.innerHTML = eslesenler.map(r =>
       '<div class="oneri-satir" data-isim="' + r.isim.replace(/"/g, '&quot;') + '">' + r.isim + '</div>'
