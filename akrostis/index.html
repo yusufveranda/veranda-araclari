@@ -57,6 +57,10 @@
   #eylemler button:hover{border-color:var(--acc);color:var(--acc)}
   .kupa{position:absolute;left:-9999px}
   .dize.kita-basi{margin-top:26px}
+  .mod-sekme{display:flex;gap:8px;margin-top:20px}
+  .mod-btn{font-size:13.5px;padding:7px 14px;border-radius:20px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--muted);cursor:pointer}
+  .mod-btn.on{border-color:var(--acc);color:var(--acc);background:var(--acc-soft)}
 </style>
 </head>
 <body>
@@ -72,6 +76,10 @@
   </header>
 
   <main>
+    <div class="mod-sekme" id="modSekmesi" hidden>
+      <button type="button" class="mod-btn on" data-mod="genel">genel</button>
+      <button type="button" class="mod-btn" data-mod="kisisel">benim şiirlerimden</button>
+    </div>
     <form class="giris-form" id="uretForm" autocomplete="off">
       <input id="girisKelime" type="text" placeholder="bir isim ya da kelime yaz…" aria-label="isim ya da kelime" autocomplete="off" spellcheck="false">
       <button type="submit">şiiri yaz</button>
@@ -95,9 +103,38 @@
 <script src="../ortak/akrostis-veri.js"></script>
 <script src="../ortak/akrostis-veri-kapanis.js"></script>
 <script src="../ortak/akrostis-veri-gecis.js"></script>
+<script src="../ortak/akrostis-veri-kisisel.js"></script>
 <script>
 let mevcutSiir = null;
+let kisiselModAktif = false;
 const VERI_KUMESI = {genel: AKROSTIS_DIZE, kapanis: AKROSTIS_KAPANIS, gecis: AKROSTIS_GECIS};
+
+try{
+  const params = new URLSearchParams(location.search);
+  if(params.get('ozel') === '9JJveCVY8PtUMyF-XoLO5Q') localStorage.setItem('akrostis:kisisel', '1');
+}catch(e){}
+try{
+  if(localStorage.getItem('akrostis:kisisel') === '1'){
+    document.getElementById('modSekmesi').hidden = false;
+  }
+}catch(e){}
+
+function aktifOpts(){
+  return kisiselModAktif ? {kisiselHavuz: AKROSTIS_KISISEL} : undefined;
+}
+
+document.getElementById('modSekmesi').addEventListener('click', e => {
+  const btn = e.target.closest('.mod-btn');
+  if(!btn) return;
+  kisiselModAktif = btn.dataset.mod === 'kisisel';
+  document.querySelectorAll('.mod-btn').forEach(b => b.classList.toggle('on', b === btn));
+  if(mevcutSiir){
+    const kelime = mevcutSiir.girdi;
+    mevcutSiir = AkrostisUret.uretSiir(kelime, VERI_KUMESI, aktifOpts());
+    mevcutSiir.kitaSinirlari = AkrostisUret.kelimeSinirlariBul(kelime);
+    siirCiz(mevcutSiir);
+  }
+});
 
 function esc(s){
   return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -167,7 +204,7 @@ document.getElementById('uretForm').addEventListener('submit', e => {
   e.preventDefault();
   const kelime = document.getElementById('girisKelime').value.trim();
   if(!kelime) return;
-  mevcutSiir = AkrostisUret.uretSiir(kelime, VERI_KUMESI);
+  mevcutSiir = AkrostisUret.uretSiir(kelime, VERI_KUMESI, aktifOpts());
   mevcutSiir.kitaSinirlari = AkrostisUret.kelimeSinirlariBul(kelime);
   siirCiz(mevcutSiir);
 });
@@ -175,7 +212,7 @@ document.getElementById('uretForm').addEventListener('submit', e => {
 document.getElementById('yenidenBtn').addEventListener('click', () => {
   if(!mevcutSiir) return;
   const kelime = mevcutSiir.girdi;
-  mevcutSiir = AkrostisUret.uretSiir(kelime, VERI_KUMESI);
+  mevcutSiir = AkrostisUret.uretSiir(kelime, VERI_KUMESI, aktifOpts());
   mevcutSiir.kitaSinirlari = AkrostisUret.kelimeSinirlariBul(kelime);
   siirCiz(mevcutSiir);
 });
@@ -184,7 +221,7 @@ document.getElementById('siirYuva').addEventListener('click', e => {
   const btn = e.target.closest('.dize-yenile');
   if(!btn || !mevcutSiir) return;
   const pos = Number(btn.dataset.pos);
-  AkrostisUret.dizeyiDegistir(mevcutSiir, pos, VERI_KUMESI);
+  AkrostisUret.dizeyiDegistir(mevcutSiir, pos, VERI_KUMESI, aktifOpts());
   siirCiz(mevcutSiir);
 });
 
