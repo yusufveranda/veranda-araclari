@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>akrostiş test</title>
+</head>
+<body>
+<pre id="cikti">çalışıyor…</pre>
+<script src="../ortak/akrostis-kafiye.js"></script>
+<script src="../ortak/akrostis-uret.js"></script>
+<script>
+const sonuclar = [];
+function esit(ad, gercek, beklenen){
+  const ok = JSON.stringify(gercek) === JSON.stringify(beklenen);
+  sonuclar.push((ok ? 'PASS ' : 'FAIL ') + ad + ' -> gercek:' + JSON.stringify(gercek) + ' beklenen:' + JSON.stringify(beklenen));
+}
+function dogru(ad, kosul){
+  sonuclar.push((kosul ? 'PASS ' : 'FAIL ') + ad);
+}
+
+try {
+  const GENEL = {A: ['Akşam ışığı sessizce söner', 'Ay parlak ama uzakta kalır'], B: ['Bahar geldi yeniden bugün']};
+  const KUME = {genel: GENEL, kapanis: {}, gecis: {}};
+  const KISISEL = {A: ['Amaç beyaz, bu sefer beyaz, çünkü bu keşfimden önceki son sefer']};
+
+  // Kisisel havuz o harf icin dolu ise ONCE onu kullanmali (genel'i degil).
+  const siir1 = AkrostisUret.uretSiir('AA', KUME, {kisiselHavuz: KISISEL});
+  esit('kisisel dolu -> pos0 kisiselden', siir1.dizeler[0].metin, 'Amaç beyaz, bu sefer beyaz, çünkü bu keşfimden önceki son sefer');
+  dogru('kisisel tek satir -> pos1 genele dustu (farkli dize)', GENEL.A.includes(siir1.dizeler[1].metin));
+
+  // Kisisel havuzda o harf hic yoksa (B) mevcut tur->genel zincirine dusmeli.
+  const siir2 = AkrostisUret.uretSiir('B', KUME, {kisiselHavuz: KISISEL});
+  esit('kisisel bos -> genele dustu', siir2.dizeler[0].metin, 'Bahar geldi yeniden bugün');
+
+  // opts.kisiselHavuz hic verilmezse davranis eskisiyle AYNI olmali (geriye donuk uyumluluk).
+  const siir3 = AkrostisUret.uretSiir('A', KUME);
+  dogru('kisiselHavuz verilmeyince genel havuzdan geliyor', GENEL.A.includes(siir3.dizeler[0].metin));
+
+  // dizeyiDegistir de kisiselHavuz'u kabul etmeli.
+  const siir4 = AkrostisUret.uretSiir('B', KUME, {kisiselHavuz: KISISEL});
+  AkrostisUret.dizeyiDegistir(siir4, 0, KUME, {kisiselHavuz: KISISEL});
+  esit('dizeyiDegistir de kisisel-bos -> genele dusuyor', siir4.dizeler[0].metin, 'Bahar geldi yeniden bugün');
+} catch(e){ sonuclar.push('FAIL kisiselHavuz hata: ' + e.message); }
+
+document.getElementById('cikti').textContent = sonuclar.join('\n');
+console.log(sonuclar.join('\n'));
+console.log('TOPLAM:', sonuclar.filter(s=>s.startsWith('FAIL')).length, 'FAIL /', sonuclar.length);
+</script>
+</body>
+</html>

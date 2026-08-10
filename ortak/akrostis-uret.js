@@ -5,6 +5,10 @@
 // Her pozisyonun 'genel'/'kapanis'/'gecis' turu vardir (bkz. pozisyonTuruBelirle);
 // veriKumesi artik {genel:{...}, kapanis:{...}, gecis:{...}} sekli, her katman
 // harf->dize dizisi. Bir katmanda o harf icin dize yoksa genel katmana dusulur.
+// opts.kisiselHavuz (isteğe bagli, {HARF:[...]} sekli) verilirse her pozisyon
+// ONCE ona bakar: o harfte kullanilmamis kisisel dize varsa onu kullanir, hepsi
+// bu siirde zaten kullanildiysa (ya da o harf kisisel havuzda hic yoksa) normal
+// tur->genel zincirine duser.
 (function(root){
   const K = (typeof module !== 'undefined' && module.exports) ? require('./akrostis-kafiye.js') : root.AkrostisKafiye;
 
@@ -36,12 +40,12 @@
   // Bos havuzlu (orn. Ğ) pozisyonlar hep tek kalir; digerlerinin eslesmesini bozmaz.
   // grup icindeki dolu-havuzlu pozisyonlari once kendi aralarinda (ayni grupEslesmeleri
   // mantigiyla) eslestirir, bos pozisyonlari her zaman teklere ekler. Boslugu 'genel'
-  // katmana bakarak belirler (bir harfin hicbir dizesi yoksa hicbir katmanda yoktur).
-  function grupEslesmeleriUyumlu(grup, veriKumesi){
+  // katmana (kisiselHavuz dahil) bakarak belirler.
+  function grupEslesmeleriUyumlu(grup, veriKumesi, kisiselHavuz){
     const canli = [];
     const bos = [];
     grup.forEach((harf, i) => {
-      if(havuzGetir(veriKumesi, harf, 'genel').length) canli.push(i);
+      if(havuzGetir(veriKumesi, harf, 'genel', kisiselHavuz).length) canli.push(i);
       else bos.push(i);
     });
     const {ciftler: canliCiftler, tekler: canliTekler} = grupEslesmeleri(canli.length);
@@ -81,8 +85,18 @@
     return sinirlar;
   }
 
-  // Once istenen turdeki havuza bakar, o harf icin bos ise 'genel' katmana duser.
-  function havuzGetir(veriKumesi, harf, tur){
+  // Once (varsa) kisiselHavuz'a bakar. disiTutulacak verilmisse, o harfteki
+  // KULLANILMAMIS kisisel dizeleri doner (hepsi kullanildiysa alttaki genel
+  // zincirine duser); disiTutulacak verilmemisse (orn. sadece varlik kontrolu
+  // icin) kisisel havuzun tamamini doner. kisiselHavuz o harf icin bos/yoksa,
+  // ya da tukendiyse, istenen turdeki havuza bakar, o da bos ise 'genel' katmana
+  // duser.
+  function havuzGetir(veriKumesi, harf, tur, kisiselHavuz, disiTutulacak){
+    if(kisiselHavuz && kisiselHavuz[harf] && kisiselHavuz[harf].length){
+      if(!disiTutulacak) return kisiselHavuz[harf];
+      const kullanilmamis = kisiselHavuz[harf].filter(d => !disiTutulacak.has(d));
+      if(kullanilmamis.length) return kullanilmamis;
+    }
     const katman = veriKumesi[tur || 'genel'];
     const tercih = (katman && katman[harf]) || [];
     if(tercih.length) return tercih;
@@ -126,14 +140,15 @@
     return null;
   }
 
-  function tekDizeUret(pos, harf, veriKumesi, tur, disiTutulacak, rastgele){
-    const havuz = havuzGetir(veriKumesi, harf, tur);
+  function tekDizeUret(pos, harf, veriKumesi, tur, disiTutulacak, rastgele, kisiselHavuz){
+    const havuz = havuzGetir(veriKumesi, harf, tur, kisiselHavuz, disiTutulacak);
     const metin = tekSec(havuz, disiTutulacak, rastgele);
     return {pos, harf, metin, esPos: null, kafiye: 0};
   }
 
   function uretSiir(girdi, veriKumesi, opts){
     const rastgele = (opts && opts.rastgele) || Math.random;
+    const kisiselHavuz = opts && opts.kisiselHavuz;
     const harfler = harfleriAyir(girdi);
     const turler = pozisyonTuruBelirle(harfler.length);
     const gruplar = harfleriGrupla(harfler);
@@ -141,28 +156,28 @@
     const disiTutulacak = new Set();
     let ofset = 0;
     for(const grup of gruplar){
-      const {ciftler, tekler} = grupEslesmeleriUyumlu(grup, veriKumesi);
+      const {ciftler, tekler} = grupEslesmeleriUyumlu(grup, veriKumesi, kisiselHavuz);
       for(const [i, j] of ciftler){
         const posA = ofset+i, posB = ofset+j;
         const harfA = grup[i], harfB = grup[j];
-        const havuzA = havuzGetir(veriKumesi, harfA, turler[posA]);
-        const havuzB = havuzGetir(veriKumesi, harfB, turler[posB]);
+        const havuzA = havuzGetir(veriKumesi, harfA, turler[posA], kisiselHavuz, disiTutulacak);
+        const havuzB = havuzGetir(veriKumesi, harfB, turler[posB], kisiselHavuz, disiTutulacak);
         const sonuc = ciftSec(havuzA, havuzB, disiTutulacak, rastgele);
         if(sonuc){
           disiTutulacak.add(sonuc.a); disiTutulacak.add(sonuc.b);
           dizeler[posA] = {pos:posA, harf:harfA, metin:sonuc.a, esPos:posB, kafiye:sonuc.puan};
           dizeler[posB] = {pos:posB, harf:harfB, metin:sonuc.b, esPos:posA, kafiye:sonuc.puan};
         } else {
-          const dA = tekDizeUret(posA, harfA, veriKumesi, turler[posA], disiTutulacak, rastgele);
+          const dA = tekDizeUret(posA, harfA, veriKumesi, turler[posA], disiTutulacak, rastgele, kisiselHavuz);
           if(dA.metin) disiTutulacak.add(dA.metin);
-          const dB = tekDizeUret(posB, harfB, veriKumesi, turler[posB], disiTutulacak, rastgele);
+          const dB = tekDizeUret(posB, harfB, veriKumesi, turler[posB], disiTutulacak, rastgele, kisiselHavuz);
           if(dB.metin) disiTutulacak.add(dB.metin);
           dizeler[posA] = dA; dizeler[posB] = dB;
         }
       }
       for(const i of tekler){
         const pos = ofset+i, harf = grup[i];
-        const d = tekDizeUret(pos, harf, veriKumesi, turler[pos], disiTutulacak, rastgele);
+        const d = tekDizeUret(pos, harf, veriKumesi, turler[pos], disiTutulacak, rastgele, kisiselHavuz);
         if(d.metin) disiTutulacak.add(d.metin);
         dizeler[pos] = d;
       }
@@ -176,6 +191,7 @@
   // hesaplar (siir nesnesinde ayrica saklamaya gerek yok).
   function dizeyiDegistir(siir, pos, veriKumesi, opts){
     const rastgele = (opts && opts.rastgele) || Math.random;
+    const kisiselHavuz = opts && opts.kisiselHavuz;
     const hedef = siir.dizeler[pos];
     if(!hedef) return siir;
     const turler = pozisyonTuruBelirle(siir.harfler.length);
@@ -186,15 +202,15 @@
     if(hedef.esPos !== null){
       const es = siir.dizeler[hedef.esPos];
       disiTutulacak.add(es.metin);
-      const havuzA = havuzGetir(veriKumesi, hedef.harf, turler[pos]);
-      const havuzB = havuzGetir(veriKumesi, es.harf, turler[es.pos]);
+      const havuzA = havuzGetir(veriKumesi, hedef.harf, turler[pos], kisiselHavuz, disiTutulacak);
+      const havuzB = havuzGetir(veriKumesi, es.harf, turler[es.pos], kisiselHavuz, disiTutulacak);
       const sonuc = ciftSec(havuzA, havuzB, disiTutulacak, rastgele);
       if(sonuc){
         siir.dizeler[pos] = {pos, harf:hedef.harf, metin:sonuc.a, esPos:es.pos, kafiye:sonuc.puan};
         siir.dizeler[es.pos] = {pos:es.pos, harf:es.harf, metin:sonuc.b, esPos:pos, kafiye:sonuc.puan};
       }
     } else {
-      const havuz = havuzGetir(veriKumesi, hedef.harf, turler[pos]);
+      const havuz = havuzGetir(veriKumesi, hedef.harf, turler[pos], kisiselHavuz, disiTutulacak);
       const yeni = tekSec(havuz, disiTutulacak, rastgele);
       if(yeni) siir.dizeler[pos] = {pos, harf:hedef.harf, metin:yeni, esPos:null, kafiye:0};
     }
