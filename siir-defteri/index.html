@@ -169,7 +169,7 @@ body.kitap-acik .sirt{display:none}
 .kitap-ic{max-width:none;margin:0 auto}
 .k-baslik{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:14px;text-align:center;margin:0;color:#1a1611;letter-spacing:.3px}
 .k-dize{font-size:12px;line-height:1.42;padding-left:1.3em;text-indent:-1.3em;color:#1a1611}
-.k-bosluk{height:27px}.k-bosbas{height:54px}
+.k-bosluk{height:27px}.k-bosbas{height:216px}
 .k-sayfano{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:11px;color:#a99e86;font-family:'Times New Roman',serif}
 .kitap-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
 .knav{border:1px solid var(--kenar);background:var(--kagit);color:var(--murekkep);border-radius:18px;padding:6px 16px;font-size:14px;font-family:'Libre Baskerville',serif}
@@ -632,7 +632,7 @@ body.kitap-acik .sirt{display:none}
   function kitapSayfalar(){
     /* BUDGET bir sayfaya sığan "satır birimi" sayısı; gerçek sayfa gerçekten dolmasa da
        kitaplardaki gibi altta boşluk kalması NORMAL — o yüzden kapasitenin altında tutulur. */
-    var BUDGET=22, BASLIK_W=1.5, BOSBAS_W=3.2, BOSLUK_W=1.6;
+    var BUDGET=22, BASLIK_W=1.5, BOSBAS_W=12.7, BOSLUK_W=1.6;
     var sayfalar=[], cur=[], used=0;
     function bitir(){ if(cur.length){ sayfalar.push(cur); cur=[]; used=0; } }
     function ekle(b,c){ cur.push(b); used+=c; }
