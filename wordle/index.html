@@ -615,7 +615,7 @@ const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
 const ARA_UZ=[4,5,6];
-const ARA_BASLANGIC=90, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi (90sn) + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
+const ARA_BASLANGIC=90, ARA_BONUS=[40,35,30,25,20,15];   // Aralık: başlangıç süresi (90sn) + deneme sayısına göre bonus (1.=40sn … 6.=15sn)
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
 const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
 const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
@@ -1106,7 +1106,7 @@ function introIcerik(o){
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
   if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
     '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 6 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
-    '<p>Süre <b>90 saniyeyle</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
+    '<p>Süre <b>90 saniyeyle</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +40sn</b>, 2.de +35sn, 3.te +30sn, 4.te +25sn, 5.te +20sn, 6.da +15sn.</p>'+
     '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b>; amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
