@@ -631,19 +631,22 @@ body.kitap-acik .sirt{display:none}
   function stanzalar(metin){ return norm(metin).split(/\n[ \t]*\n+/).map(function(b){ return b.split('\n').map(function(l){return l.replace(/\s+$/,'');}).filter(function(l){return l.trim()!=='';}); }).filter(function(s){return s.length;}); }
   function kitapSayfalar(){
     /* BUDGET bir sayfaya sığan "satır birimi" sayısı; gerçek sayfa gerçekten dolmasa da
-       kitaplardaki gibi altta boşluk kalması NORMAL — o yüzden kapasitenin altında tutulur. */
-    var BUDGET=22, BASLIK_W=1.5, BOSBAS_W=12.7, BOSLUK_W=1.6;
-    var sayfalar=[], cur=[], used=0;
-    function bitir(){ if(cur.length){ sayfalar.push(cur); cur=[]; used=0; } }
+       kitaplardaki gibi altta boşluk kalması NORMAL — o yüzden kapasitenin altında tutulur.
+       şiirin ilk sayfası (başlık+üstteki büyük boşluk) ile devam sayfaları ayrı bütçe kullanır;
+       devam sayfaları çok daha erken kesilir, altta belirgin boşluk kalır. */
+    var BUDGET_ILK=22, BUDGET_DEVAM=13, BASLIK_W=1.5, BOSBAS_W=12.7, BOSLUK_W=1.6;
+    var sayfalar=[], cur=[], used=0, ilkSayfa=true;
+    function butce(){ return ilkSayfa?BUDGET_ILK:BUDGET_DEVAM; }
+    function bitir(){ if(cur.length){ sayfalar.push(cur); cur=[]; used=0; ilkSayfa=false; } }
     function ekle(b,c){ cur.push(b); used+=c; }
     durum.taslaklar.forEach(function(t){
       var st=stanzalar(calismaMetin(t)); if(!st.length) return;
-      bitir();
+      bitir(); ilkSayfa=true;
       ekle({tip:'baslik',metin:t.baslik||'başlıksız şiir'},BASLIK_W);
       ekle({tip:'bosbas'},BOSBAS_W);
       st.forEach(function(dz,si){
-        if(si>0){ if(used+BOSLUK_W+Math.min(2,dz.length)>BUDGET) bitir(); else ekle({tip:'bosluk'},BOSLUK_W); }
-        dz.forEach(function(line){ if(used>=BUDGET) bitir(); ekle({tip:'dize',metin:line},1); });
+        if(si>0){ if(used+BOSLUK_W+Math.min(2,dz.length)>butce()) bitir(); else ekle({tip:'bosluk'},BOSLUK_W); }
+        dz.forEach(function(line){ if(used>=butce()) bitir(); ekle({tip:'dize',metin:line},1); });
       });
     });
     bitir();
