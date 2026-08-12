@@ -158,22 +158,25 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
 
 /* ---- kitap önizlemesi ---- */
 .kagit-alan.onizleme::before{display:none}.kagit-alan.onizleme{padding-left:0}
+body.kitap-acik .wrap{max-width:1400px}
+body.kitap-acik .duzlem{grid-template-columns:1fr}
+body.kitap-acik .sirt{display:none}
 .kitap-spread{display:flex;justify-content:center}
-.kitap-sayfa{flex:1 1 0;min-width:0;width:50%;height:600px;box-sizing:border-box;background:#FCFBF6;padding:76px 42px 46px;position:relative;cursor:pointer;font-family:'Times New Roman',Times,Georgia,serif;color:#1a1611;overflow:hidden}
+.kitap-sayfa{flex:1 1 0;min-width:0;width:50%;height:640px;box-sizing:border-box;background:#FCFBF6;padding:92px 56px 50px;position:relative;cursor:pointer;font-family:'Times New Roman',Times,Georgia,serif;color:#1a1611;overflow:hidden}
 .kitap-sayfa:first-child{border-right:1px solid #e7dec9;border-radius:3px 0 0 3px;box-shadow:inset -16px 0 26px -20px rgba(42,32,24,.28)}
 .kitap-sayfa:last-child{border-radius:0 3px 3px 0;box-shadow:inset 16px 0 26px -20px rgba(42,32,24,.28)}
 .kitap-sayfa.bos{background:#F8F5EE;cursor:default}
-.kitap-ic{max-width:21em;margin:0 auto}
-.k-baslik{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:15px;text-align:center;margin:0 0 16px;color:#1a1611;letter-spacing:.3px}
-.k-dize{font-size:13px;line-height:1.62;padding-left:1.3em;text-indent:-1.3em;color:#1a1611}
-.k-bosluk{height:1.62em}.k-bosbas{height:.4em}
-.k-sayfano{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:11.5px;color:#a99e86;font-family:'Times New Roman',serif}
+.kitap-ic{max-width:340px;margin:0 auto}
+.k-baslik{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:14px;text-align:center;margin:0;color:#1a1611;letter-spacing:.3px}
+.k-dize{font-size:12px;line-height:1.7;padding-left:1.3em;text-indent:-1.3em;color:#1a1611}
+.k-bosluk{height:40px}.k-bosbas{height:66px}
+.k-sayfano{position:absolute;bottom:22px;left:0;right:0;text-align:center;font-size:11px;color:#a99e86;font-family:'Times New Roman',serif}
 .kitap-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
 .knav{border:1px solid var(--kenar);background:var(--kagit);color:var(--murekkep);border-radius:18px;padding:6px 16px;font-size:14px;font-family:'Libre Baskerville',serif}
 .knav:hover:not(:disabled){border-color:var(--kirmizi);color:var(--kirmizi)}
 .knav:disabled{opacity:.35}
 .knav-no{font-size:12.5px;color:var(--soluk);font-style:italic;min-width:56px;text-align:center}
-@media(max-width:600px){.kitap-sayfa{height:auto;min-height:440px;box-shadow:none!important;border:1px solid #e7dec9!important;border-radius:3px!important;padding:48px 24px 44px}.kitap-spread{flex-direction:column;gap:14px}.kitap-sayfa.bos{display:none}.kitap-ic{max-width:none}}
+@media(max-width:600px){.kitap-sayfa{flex:none;width:100%;height:auto;min-height:440px;box-shadow:none!important;border:1px solid #e7dec9!important;border-radius:3px!important;padding:48px 24px 44px}.kitap-spread{flex-direction:column;gap:14px}.kitap-sayfa.bos{display:none}.kitap-ic{max-width:none}}
 @media(max-width:560px){.sayfa{padding:22px 16px 30px}.dize-yazi,.baslik-giris{font-size:17px}.kagit-alan{padding-left:24px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -491,6 +494,7 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
     if(document.activeElement!==$('baslik')) $('baslik').value=tas().baslik;
     $('onizle').classList.toggle('aktif', ui.onizleme);
     $('kagitAlan').classList.toggle('onizleme', ui.onizleme);
+    document.body.classList.toggle('kitap-acik', ui.onizleme);
     durumYaz();
     $('ipuc').style.display = ui.onizleme?'none':'';
     if(ui.onizleme){ dizeEller=[]; kitapCizim(); } else yaziCiz();
@@ -626,16 +630,19 @@ body{background:#E9DFC6;color:var(--murekkep);font-family:'Libre Baskerville',Ge
   /* ---------- kitap önizlemesi ---------- */
   function stanzalar(metin){ return norm(metin).split(/\n[ \t]*\n+/).map(function(b){ return b.split('\n').map(function(l){return l.replace(/\s+$/,'');}).filter(function(l){return l.trim()!=='';}); }).filter(function(s){return s.length;}); }
   function kitapSayfalar(){
-    var BUDGET=17, sayfalar=[], cur=[], used=0;
+    /* BUDGET bir sayfaya sığan "satır birimi" sayısı; gerçek sayfa gerçekten dolmasa da
+       kitaplardaki gibi altta boşluk kalması NORMAL — o yüzden kapasitenin altında tutulur. */
+    var BUDGET=20, BASLIK_W=2, BOSBAS_W=3, BOSLUK_W=2;
+    var sayfalar=[], cur=[], used=0;
     function bitir(){ if(cur.length){ sayfalar.push(cur); cur=[]; used=0; } }
     function ekle(b,c){ cur.push(b); used+=c; }
     durum.taslaklar.forEach(function(t){
       var st=stanzalar(calismaMetin(t)); if(!st.length) return;
       bitir();
-      ekle({tip:'baslik',metin:t.baslik||'başlıksız şiir'},2);
-      ekle({tip:'bosbas'},1);
+      ekle({tip:'baslik',metin:t.baslik||'başlıksız şiir'},BASLIK_W);
+      ekle({tip:'bosbas'},BOSBAS_W);
       st.forEach(function(dz,si){
-        if(si>0){ if(used+1+Math.min(2,dz.length)>BUDGET) bitir(); else ekle({tip:'bosluk'},1); }
+        if(si>0){ if(used+BOSLUK_W+Math.min(2,dz.length)>BUDGET) bitir(); else ekle({tip:'bosluk'},BOSLUK_W); }
         dz.forEach(function(line){ if(used>=BUDGET) bitir(); ekle({tip:'dize',metin:line},1); });
       });
     });
