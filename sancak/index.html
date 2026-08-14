@@ -203,6 +203,8 @@ body.gomulu .eve-don,body.gomulu header.site,body.gomulu .mod-bar,body.gomulu .g
 @keyframes titreB{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .komsu-form button{padding:0 16px;border:none;border-radius:10px;background:var(--acc);color:#F2E6CE;font:inherit;font-size:14px}
 .komsu-say{font-size:13px;color:var(--muted);margin-top:9px}
+.komsu-baglam{font-size:13px;color:var(--ink);background:var(--acc-soft);border-left:3px solid var(--vurgu);
+  border-radius:6px;padding:9px 12px;margin-top:10px;line-height:1.5}
 .komsu-cocuk{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .komsu-rozet{display:inline-flex;align-items:center;gap:6px;background:var(--acc-soft);border:1px solid var(--acc-soft);
   border-radius:16px;padding:3px 10px 3px 3px;font-size:13px;color:var(--ink);animation:belB .25s ease}
@@ -989,13 +991,18 @@ function bonusKomsuCiz(){
     const item = ek.kom.find(k=>k[0]===kod);
     return '<span class="komsu-rozet"><img src="'+FLAG_BASE+kod+'.svg" alt=""> '+item[1]+'</span>';
   }).join('');
+  /* Filistin'in "komşusu" İsrail'i Mısır/Ürdün gibi sıradan bir sınır komşusu olarak
+     sunmak yanıltıcı: Filistin'in bütün sınır kapıları (Gazze-İsrail, Batı Şeria-İsrail,
+     hatta Batı Şeria-Ürdün geçişleri) İsrail'in kontrolünde — bu bir işgal ilişkisi. */
+  const baglamNot = (hedefKod==='ps' && b.bulunan.includes('il'))
+    ? '<div class="komsu-baglam">İsrail burada sıradan bir sınır komşusu değil: Filistin\'in bütün sınır kapılarını (Gazze dahil) İsrail kontrol ediyor — bu bir işgal ilişkisi.</div>' : '';
   return '<div class="komsu-form">'+
       '<input id="komsuGiris" type="text" placeholder="komşu ülke adı…" autocomplete="off" spellcheck="false">'+
       '<button type="button" id="komsuEkleBtn">ekle</button>'+
       '<div class="komsu-oneri" id="komsuOneri"></div>'+
     '</div>'+
     '<div class="komsu-say">'+b.bulunan.length+' / '+ek.kom.length+' komşu bulundu</div>'+
-    '<div class="komsu-cocuk">'+rozetler+'</div>'+
+    '<div class="komsu-cocuk">'+rozetler+'</div>'+baglamNot+
     '<button type="button" class="komsu-gec" id="bonusKomsuGec">'+(b.bulunan.length?'yeter, sıradaki soru →':'bilmiyorum, geç →')+'</button>';
 }
 function komsuOneriGuncelle(){
@@ -1182,13 +1189,22 @@ function bonusParaCiz(){
   return '<p>'+hedef[1]+ekIyelik(hedef[1])+' para birimi hangisi?</p>'+
     '<div class="secenekler">'+bonusParaSecenekleri().map(d=>'<button type="button" data-v="'+d.replace(/"/g,'&quot;')+'">'+d+'</button>').join('')+'</div>';
 }
+/* özel not: bazı ülkelerin para biriminin "neden bu" sorusu, bare bir gerçek olarak
+   bırakılırsa yanlış anlaşılır (ör. Filistin'in İsrail Şekeli kullanması bir tercih değil,
+   1994 Paris Protokolü'yle dayatılmış — Filistin'in kendi parasını çıkarma hakkı yok,
+   Protokol İsrail'e bunun üstünde veto yetkisi veriyor). key: hedefKod. */
+const PARA_BAGLAM = {
+  ps: 'Filistin\'in kendi para birimi yok: 1994 Paris Protokolü İsrail Şekeli\'ni dayattı ve İsrail\'e Filistin parası üstünde veto yetkisi tanıdı.'
+};
 function paraCevapVer(secim){
   const ek = EK[hedefKod], dogruDeger = paraEtiket(hedefKod), dogru = secim===dogruDeger;
   BN.para.secim=secim; BN.para.dogru=dogru; BN.para.yildiz=dogru;
   bonusSecenekVurgula(secim, dogruDeger);
-  bonusMesajEkle(dogru?'dogru':'yanlis', 'tam adı: <b>'+ek.pa+'</b> ('+ek.pk+')');
+  let not_ = 'tam adı: <b>'+ek.pa+'</b> ('+ek.pk+')';
+  if(PARA_BAGLAM[hedefKod]) not_ += '<br>'+PARA_BAGLAM[hedefKod];
+  bonusMesajEkle(dogru?'dogru':'yanlis', not_);
   bonusKaydet();
-  setTimeout(()=> bonusIlerle('para'), 1800);
+  setTimeout(()=> bonusIlerle('para'), PARA_BAGLAM[hedefKod] ? 3200 : 1800);
 }
 
 /* ---- 6) en kalabalık şehir: yazarak tahmin, 3 hak ----
