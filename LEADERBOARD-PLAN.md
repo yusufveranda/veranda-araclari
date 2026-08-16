@@ -128,7 +128,8 @@ service cloud.firestore {
     match /skorlar/{oyun}/{gun}/{uid} {
       allow read: if true;
       allow create: if request.auth != null && request.auth.uid == uid;
-      allow update, delete: if false;
+      allow update: if request.auth != null && request.auth.uid == uid && oyun == 'kervansaray';
+      allow delete: if false;
     }
     match /istatistik/{belge} {
       allow read: if true;
@@ -147,6 +148,10 @@ service cloud.firestore {
 ```
 
 Mantık: herkes okuyabilir (leaderboard herkese açık), ama sadece kendi uid'in altına yazabilirsin ve skorlar create-only (üzerine yazamazsın — bir gün/bir kullanıcı kilidi). İstatistik sayaçları sadece +1 artabilir, başka türlü değiştirilemez. **Bayraklar kasıtlı olarak `request.auth`'suz** (2026-07-10 güncellemesi, aşağıya bkz.) — girişli olmayanlar da bildirebilsin diye; kötüye kullanım riski düşük (sadece bir sayaç, kişisel veri yok).
+
+## Kervansaray skoru güncellenebilir (2026-08-16)
+
+Kervansaray (eski Takımyıldız) gün içinde altın topladıkça skorunu güncellemek ister; create-only kilit bunu engelliyordu. Yukarıdaki `skorlar` bloğuna eklenen `allow update: ... oyun == 'kervansaray'` satırı YALNIZ kervansaray anahtarına kendi dokümanını güncelleme izni verir; diğer oyunların bir-gün-bir-yazım kilidi aynen durur. **SENİN YAPMAN GEREKEN**: bloğu Firebase Console → Firestore → Rules'a yapıştırıp **Publish** et. Yayınlanana kadar Kervansaray bugünkü gibi davranır: skor ilk kazanma anındaki değerde donar (kod update denemesini sessizce yutar), oyun bozulmaz.
 
 ## Bayrak sistemi — girişten bağımsız tek depoya indirildi (2026-07-10)
 

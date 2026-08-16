@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr" data-tema="gunduz">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<script src="../ortak/analitik.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kervansaray · veranda</title>
+<meta name="description" content="Her gün handa 4 tezgah. Doğru cevaplar keseni altınla doldurur, yanlışlar su döker. 6 altınla yol parası çıkar, kervan gerçek bir Selçuklu kervansarayına varır.">
+<meta property="og:image" content="https://verandatools.com/gorsel/doku.jpg">
+<meta name="theme-color" content="#1c1510">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c1510'/%3E%3Cpath d='M14 46 C14 28 22 18 32 18 C42 18 50 28 50 46' fill='none' stroke='%23e7a33d' stroke-width='3'/%3E%3Cline x1='10' y1='46' x2='54' y2='46' stroke='%23e7a33d' stroke-width='3' stroke-linecap='round'/%3E%3Cline x1='32' y1='18' x2='32' y2='27' stroke='%23e7a33d' stroke-width='2'/%3E%3Cpath d='M32 28 L35.5 33 L32 40 L28.5 33 Z' fill='%23f0b64a'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="stil.css?v=1">
+<link rel="stylesheet" href="../ortak/leaderboard.css">
+</head>
+<body>
+
+<!-- === TANITIM (ilk girişte) === -->
+<div class="modal-perde" id="girisPerde" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Nasıl oynanır">
+    <button class="modal-kapat" id="girisKapat" aria-label="kapat">✕</button>
+    <div class="slayt-akis" id="slaytAkis"></div>
+    <div class="slayt-nokta" id="slaytNokta"></div>
+    <div class="slayt-alt">
+      <button class="baglanti" id="slaytAtla">atla</button>
+      <div class="slayt-yon">
+        <button class="dugme sade" id="slaytGeri" hidden>geri</button>
+        <button class="dugme" id="slaytIleri">ileri</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- === GÜN PANOSU (han avlusu) === -->
+<main class="pano" id="pano">
+  <div class="ust">
+    <a class="eve-don" href="../">veranda</a>
+    <div class="ust-sag">
+      <button class="ikonbtn" id="nasilBtn" type="button">nasıl oynanır</button>
+      <button class="ikonbtn" id="istatBtn" type="button">📜 defter</button>
+      <button class="ikonbtn" id="payBtn" type="button">📋 paylaş</button>
+      <button class="ikonbtn" id="temaBtn" type="button">gece</button>
+      <button class="ikonbtn" id="rastgeleBtn" type="button" title="rastgele gün · sadece debug" hidden>🎲 rastgele</button>
+      <button class="ikonbtn" id="lbBtn" type="button">🏆 kervanlar</button>
+      <button class="ikonbtn" id="girisBtn" type="button">Google ile giriş</button>
+    </div>
+  </div>
+
+  <header class="baslik">
+    <div class="baslik-yaz">
+      <h1>Kervansaray</h1>
+      <div class="tarih-satir"><span class="tarih" id="tarih"></span><span class="seri-rozet" id="seriRozet" hidden></span></div>
+    </div>
+    <div class="gun-olcer" id="gunOlcer" title="bugünün altınları"></div>
+  </header>
+
+  <div class="arsiv-banner" id="arsivBanner" hidden>Geçmiş bir konağı oynuyorsun; altınlar sefere sayılmaz. <a href="./">bugüne dön</a></div>
+  <div class="gun-banner" id="gunDegisti" hidden>🌅 Şafak söktü, kervan yeni konakta. <button class="dugme sade" id="gunDegistiBtn" type="button">yeni günü aç</button></div>
+
+  <p class="giris-not">Handa bugün <b>4 tezgah</b> açık. Doğru cevaplar keseni <b>altınla</b> doldurur, yanlışlar <b>su</b> döker. <b>6 altın</b> = yol parası; kervan yola koyulur.</p>
+
+  <nav class="rota-serit" id="rotaSerit" aria-label="sefer rotası"></nav>
+
+  <div class="kartlar" id="kartlar"></div>
+
+  <div class="kazandin" id="kazandin" hidden></div>
+  <div class="safak" id="safak" hidden></div>
+  <div class="arsiv" id="arsiv" hidden></div>
+
+  <footer class="pano-alt">
+    <div>Kervansaray · veranda</div>
+    <div class="ince">tezgahlar sitedeki oyunlardan kurulur; rota gerçek Selçuklu kervansaraylarından geçer</div>
+  </footer>
+</main>
+
+<!-- === OYUN EKRANI (tezgaha girince) === -->
+<section class="oyun-ekran" id="oyunEkran" hidden>
+  <div class="oyun-ust">
+    <button class="geri-btn" id="geriBtn">← han avlusu</button>
+    <div class="oyun-kimlik">
+      <span class="oyun-ad" id="oyunAd"></span>
+      <span class="oyun-alt" id="oyunAlt"></span>
+    </div>
+    <div class="oyun-durum">
+      <span class="olcer altin-olcer" id="oyunAltin"></span>
+      <span class="olcer su-olcer" id="oyunSu"></span>
+    </div>
+  </div>
+  <div class="oyun-kural" id="oyunKural"></div>
+  <div class="oyun-kapali" id="oyunKapali" hidden>💧 Su bitti, tezgah kapandı. Kazandığın altın kesende; istersen puansız devam et.</div>
+  <div class="oyun-kap" id="oyunKap"></div>
+</section>
+
+<!-- === VARIŞ / BEREKET bildirimi === -->
+<div class="modal-perde" id="kazanPerde" hidden>
+  <div class="modal kazan-modal" role="dialog" aria-modal="true" aria-label="Günü kazandın">
+    <div id="kazanIcerik"></div>
+  </div>
+</div>
+
+<!-- === KERVAN DEFTERİ (istatistik) === -->
+<div class="modal-perde" id="istatPerde" hidden>
+  <div class="modal ist-modal" role="dialog" aria-modal="true" aria-label="Kervan defteri">
+    <button class="modal-kapat" id="istatKapat" aria-label="kapat">✕</button>
+    <div id="istatIcerik"></div>
+  </div>
+</div>
+
+<!-- === HAN KARTI === -->
+<div class="modal-perde" id="hanPerde" hidden>
+  <div class="modal han-modal" role="dialog" aria-modal="true" aria-label="Konak">
+    <button class="modal-kapat" id="hanKapat" aria-label="kapat">✕</button>
+    <div id="hanIcerik"></div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<div class="lb-perde gizli" id="lbPerde">
+  <div class="lb-kutu">
+    <div class="lb-ust"><h3>🏆 bugünün kervanları</h3><button class="lb-kapat" id="lbKapat">✕</button></div>
+    <div class="lb-tablar" id="lbTablar">
+      <button type="button" data-k="gun" class="aktif">bugün</button>
+      <button type="button" data-k="hafta">hafta</button>
+    </div>
+    <div id="lbIcerik"><div class="lb-bos">yükleniyor…</div></div>
+  </div>
+</div>
+
+<script src="rota.js?v=1"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="../ortak/firebase.js"></script>
+<script src="motor.js?v=1"></script>
+<script>
+KERVANSARAY.baslat();
+
+/* ===================== giriş / leaderboard ===================== */
+(function(){
+  var $=function(s){ return document.querySelector(s); };
+  var girisBtn=$("#girisBtn"), lbBtn=$("#lbBtn"), lbPerde=$("#lbPerde"), lbIcerik=$("#lbIcerik"), lbKapat=$("#lbKapat");
+  var kapsam='gun';
+  girisBtn.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){ console.error(e); }); };
+  if(window.VF) VF.kullaniciDinle(function(u){
+    girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
+    if(VF.adminMi){ var rb=$("#rastgeleBtn"); if(rb){ rb.hidden=false; rb.onclick=KERVANSARAY.rastgeleGun; } }
+  });
+
+  function histogramHTML(ist){
+    var dag=(ist&&ist.dagilim)||{}, max=1, i;
+    for(i=0;i<=12;i++) max=Math.max(max,dag[String(i)]||0);
+    var toplam=(ist&&ist.toplamCozen)||0;
+    if(!toplam) return '';
+    var h='<div class="lb-histo-bas">bugünkü kese dağılımı · '+toplam+' kervan</div>';
+    for(i=0;i<=12;i++){
+      var n=dag[String(i)]||0; if(!n && i>0 && i<12) { /* boşları da çiz, hizalı dursun */ }
+      h+='<div class="lb-bar-satir"><span class="et">'+i+'</span><span class="cubuk"><i style="width:'+Math.round(n/max*100)+'%"></i></span><span class="say">'+(n||'')+'</span></div>';
+    }
+    return h;
+  }
+  function lbDoldur(){
+    var gun = KERVANSARAY.gun();
+    lbIcerik.innerHTML='<div class="lb-bos">yükleniyor…</div>';
+    if(kapsam==='gun'){
+      Promise.all([VF.leaderboardOku("kervansaray", gun), VF.istatistikOku("kervansaray", gun)]).then(function(r){
+        var liste=r[0]||[], ist=r[1];
+        var sirali = liste.slice().sort(function(a,b){ return (b.puan||0)-(a.puan||0); });
+        var benAd = VF.ad;
+        var h='';
+        h += sirali.length
+          ? sirali.map(function(x,i){ return '<div class="lb-satir'+(x.ad===benAd?' ben':'')+((x.kazandi===false)?' yolda-kaldi':'')+'">'+
+              '<span class="sira">'+(i+1)+'</span>'+
+              '<span class="ad">'+(x.ad||'isimsiz')+((x.streak|0)>=2?' <span class="lb-seri">🐪'+x.streak+'</span>':'')+'</span>'+
+              '<span class="puan">'+(x.puan||0)+' 🪙'+((x.kazandi===false)?' · yolda':'')+'</span></div>'; }).join("")
+          : '<div class="lb-bos">bugün henüz kimse yol parasını çıkaramadı.</div>';
+        h += histogramHTML(ist);
+        if(VF.kullanici) h += '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
+        lbIcerik.innerHTML = h;
+        var a=$("#lbAdDeg"); if(a) a.onclick=function(){ var yeni=prompt("yeni görünen adın:", VF.ad||""); if(yeni) VF.adDegistir(yeni).then(lbDoldur); };
+      }).catch(function(e){ console.error(e); lbIcerik.innerHTML='<div class="lb-bos">yüklenemedi.</div>'; });
+    } else {
+      var gunler=[]; for(var g=Math.max(0,gun-6); g<=gun; g++) gunler.push(g);
+      VF.leaderboardOkuAralik("kervansaray", gunler).then(function(liste){
+        var sirali=(liste||[]).slice().sort(function(a,b){ return (b.puan||0)-(a.puan||0); });
+        var benAd=VF.ad;
+        lbIcerik.innerHTML = sirali.length
+          ? '<div class="lb-histo-bas">son 7 gün · toplam altın</div>'+sirali.map(function(x,i){ return '<div class="lb-satir'+(x.ad===benAd?' ben':'')+'">'+
+              '<span class="sira">'+(i+1)+'</span>'+
+              '<span class="ad">'+(x.ad||'isimsiz')+((x.streak|0)>=2?' <span class="lb-seri">🐪'+x.streak+'</span>':'')+'</span>'+
+              '<span class="puan">'+(x.puan||0)+' 🪙 · '+(x.oyunSayisi||0)+' gün</span></div>'; }).join("")
+          : '<div class="lb-bos">bu hafta kayıt yok.</div>';
+      }).catch(function(e){ console.error(e); lbIcerik.innerHTML='<div class="lb-bos">yüklenemedi.</div>'; });
+    }
+  }
+  $("#lbTablar").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    kapsam=b.dataset.k;
+    document.querySelectorAll("#lbTablar button").forEach(function(x){ x.classList.toggle("aktif", x===b); });
+    lbDoldur();
+  });
+  lbBtn.onclick=function(){ lbPerde.classList.remove("gizli"); lbDoldur(); };
+  lbKapat.onclick=function(){ lbPerde.classList.add("gizli"); };
+  lbPerde.addEventListener("click", function(e){ if(e.target===lbPerde) lbPerde.classList.add("gizli"); });
+})();
+</script>
+<script src="../ortak/nav-panel.js"></script>
+</body>
+</html>

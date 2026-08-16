@@ -120,3 +120,6 @@ footer a{color:var(--soluk)}
 #toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);z-index:100;background:#244635;color:#f6efe0;padding:12px 24px;border-radius:24px;font-size:15.5px;font-family:'Playfair Display',serif;box-shadow:3px 5px 0 var(--golge-sert);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
 #toast.goster{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.kotu{background:#6d2a1c}
+
+/* Kervansaray gömme kipi (yalnız ?meta=1; kur ve asi) */
+body.gomulu .ust,body.gomulu footer,body.gomulu #baskaBtn{display:none}

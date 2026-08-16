@@ -1,147 +1,15 @@
 <!DOCTYPE html>
-<html lang="tr" data-tema="gunduz">
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
-<link rel="manifest" href="manifest.json">
-<script src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Takımyıldız — veranda</title>
-<meta name="description" content="Her gün 4 farklı bulmaca. Doğru cevaplar yıldız kazandırır, yanlışlar kalp götürür. Günde 6 yıldız topla.">
-<meta property="og:image" content="https://verandatools.com/gorsel/doku.jpg">
-<meta name="theme-color" content="#e7a33d">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d1712'/%3E%3Cg stroke='%23e7a33d' stroke-width='1.5' opacity='.55' stroke-linecap='round'%3E%3Cline x1='24' y1='27' x2='45' y2='18'/%3E%3Cline x1='24' y1='27' x2='42' y2='46'/%3E%3Cline x1='45' y1='18' x2='42' y2='46'/%3E%3C/g%3E%3Cpath d='M24 14 L27.2 22.6 L36.4 23 L29.1 28.7 L31.6 37.5 L24 32.4 L16.4 37.5 L18.9 28.7 L11.6 23 L20.8 22.6 Z' fill='%23e7a33d'/%3E%3Ccircle cx='45' cy='18' r='3.6' fill='%23e7a33d'/%3E%3Ccircle cx='42' cy='46' r='3.1' fill='%23e7a33d'/%3E%3C/svg%3E">
-<link rel="icon" type="image/png" sizes="32x32" href="gorsel/favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="gorsel/favicon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
-<link rel="stylesheet" href="stil.css?v=3">
-<link rel="stylesheet" href="../ortak/leaderboard.css">
+<title>Takımyıldız artık Kervansaray</title>
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url=../kervansaray/">
+<script>location.replace('../kervansaray/'+location.search);</script>
+<style>body{font-family:Georgia,serif;background:#ede1c6;color:#241a10;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:20px}a{color:#214048}</style>
 </head>
 <body>
-
-<!-- ————— TANITIM (ilk girişte) ————— -->
-<div class="modal-perde" id="girisPerde" hidden>
-  <div class="modal" role="dialog" aria-modal="true" aria-label="Nasıl oynanır">
-    <button class="modal-kapat" id="girisKapat" aria-label="kapat">✕</button>
-    <div class="slayt-akis" id="slaytAkis"></div>
-    <div class="slayt-nokta" id="slaytNokta"></div>
-    <div class="slayt-alt">
-      <button class="baglanti" id="slaytAtla">atla</button>
-      <div class="slayt-yon">
-        <button class="dugme sade" id="slaytGeri" hidden>geri</button>
-        <button class="dugme" id="slaytIleri">ileri</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ————— GÜN PANOSU ————— -->
-<main class="pano" id="pano">
-  <div class="ust">
-    <a class="eve-don" href="../">veranda</a>
-    <div class="ust-sag">
-      <button class="ikonbtn" id="nasilBtn" type="button">nasıl oynanır</button>
-      <button class="ikonbtn" id="temaBtn" type="button">gece</button>
-      <button class="ikonbtn" id="rastgeleBtn" type="button" title="rastgele gün — sadece debug" hidden>🎲 rastgele</button>
-      <button class="ikonbtn" id="lbBtn" type="button">🏆 leaderboard</button>
-      <button class="ikonbtn" id="girisBtn" type="button">Google ile giriş</button>
-    </div>
-  </div>
-
-  <header class="baslik">
-    <div class="baslik-yaz">
-      <h1>Takımyıldız</h1>
-      <div class="tarih" id="tarih"></div>
-    </div>
-    <div class="gun-olcer" id="gunOlcer" title="günlük yıldızların"></div>
-  </header>
-
-  <p class="giris-not">Her biri ayrı bir alandan. Doğru cevaplar <b>yıldız</b> doldurur, yanlışlar <b>kalp</b> götürür — <b>6 yıldız</b> topla, günü kazan.</p>
-
-  <div class="kartlar" id="kartlar"></div>
-
-  <div class="kazandin" id="kazandin" hidden></div>
-
-  <footer class="pano-alt">
-    <div>Takımyıldız · veranda</div>
-    <div class="ince">bulmacalar mevcut oyunlardan derlenir — her gün başka bir seçki</div>
-  </footer>
-</main>
-
-<!-- ————— OYUN EKRANI (bulmacaya girince) ————— -->
-<section class="oyun-ekran" id="oyunEkran" hidden>
-  <div class="oyun-ust">
-    <button class="geri-btn" id="geriBtn">← gün panosu</button>
-    <div class="oyun-kimlik">
-      <span class="oyun-ad" id="oyunAd"></span>
-      <span class="oyun-alt" id="oyunAlt"></span>
-    </div>
-    <div class="oyun-durum">
-      <span class="olcer yildiz-olcer" id="oyunYildiz"></span>
-      <span class="olcer kalp-olcer" id="oyunKalp"></span>
-    </div>
-  </div>
-  <div class="oyun-kural" id="oyunKural"></div>
-  <div class="oyun-kap" id="oyunKap"></div>
-</section>
-
-<!-- ————— KAZANDIN bildirimi ————— -->
-<div class="modal-perde" id="kazanPerde" hidden>
-  <div class="modal kazan-modal" role="dialog" aria-modal="true" aria-label="Günü kazandın">
-    <div id="kazanIcerik"></div>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<div class="lb-perde gizli" id="lbPerde">
-  <div class="lb-kutu">
-    <div class="lb-ust"><h3>🏆 bugünün tablosu</h3><button class="lb-kapat" id="lbKapat">✕</button></div>
-    <div id="lbIcerik"><div class="lb-bos">yükleniyor…</div></div>
-  </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="../ortak/firebase.js"></script>
-<script src="motor.js?v=16"></script>
-<script>
-YILDIZ.baslat();
-
-/* ===================== giriş / leaderboard ===================== */
-(function(){
-  var $=function(s){ return document.querySelector(s); };
-  var girisBtn=$("#girisBtn"), lbBtn=$("#lbBtn"), lbPerde=$("#lbPerde"), lbIcerik=$("#lbIcerik"), lbKapat=$("#lbKapat");
-  girisBtn.onclick=function(){ if(VF.kullanici) VF.cikisYap(); else VF.girisYap().catch(function(e){ console.error(e); }); };
-  if(window.VF) VF.kullaniciDinle(function(u){
-    girisBtn.textContent = u ? (u.ad+" · çıkış") : "Google ile giriş";
-    if(VF.adminMi){ var rb=$("#rastgeleBtn"); if(rb){ rb.hidden=false; rb.onclick=YILDIZ.rastgeleGun; } }
-  });
-
-  function lbDoldur(){
-    var gun = YILDIZ.gun();
-    lbIcerik.innerHTML='<div class="lb-bos">yükleniyor…</div>';
-    VF.leaderboardOku("yildiz", gun).then(function(liste){
-      var siralı = liste.slice().sort(function(a,b){ return b.puan-a.puan; });
-      var benAd = VF.ad;
-      var h = '<div style="font-size:13px;color:var(--soluk);margin-bottom:8px">bugün</div>';
-      h += siralı.length
-        ? siralı.map(function(r,i){ return '<div class="lb-satir'+(r.ad===benAd?' ben':'')+'"><span class="sira">'+(i+1)+'</span>'+
-            '<span class="ad">'+(r.ad||'isimsiz')+'</span><span class="puan">'+r.puan+' ⭐</span></div>'; }).join("")
-        : '<div class="lb-bos">bugün henüz kimse günü kazanmadı.</div>';
-      if(VF.kullanici) h += '<div class="lb-alt"><a id="lbAdDeg">görünen adını değiştir</a></div>';
-      lbIcerik.innerHTML = h;
-      var a=$("#lbAdDeg"); if(a) a.onclick=function(){ var yeni=prompt("yeni görünen adın:", VF.ad||""); if(yeni) VF.adDegistir(yeni).then(lbDoldur); };
-    }).catch(function(e){ console.error(e); lbIcerik.innerHTML='<div class="lb-bos">yüklenemedi.</div>'; });
-  }
-  lbBtn.onclick=function(){ lbPerde.classList.remove("gizli"); lbDoldur(); };
-  lbKapat.onclick=function(){ lbPerde.classList.add("gizli"); };
-  lbPerde.addEventListener("click", function(e){ if(e.target===lbPerde) lbPerde.classList.add("gizli"); });
-})();
-</script>
-<script src="../ortak/nav-panel.js"></script>
+<p>Takımyıldız yola çıktı, artık adı <b>Kervansaray</b>.<br>Yönlendirilmediysen: <a href="../kervansaray/">verandatools.com/kervansaray</a></p>
 </body>
 </html>

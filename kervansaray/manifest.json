@@ -1,0 +1,11 @@
+{
+  "name": "Kervansaray",
+  "short_name": "Kervansaray",
+  "description": "Her gün handa 4 tezgah; 6 altınla kervan yola koyulur.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#131722",
+  "theme_color": "#1c1510",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
