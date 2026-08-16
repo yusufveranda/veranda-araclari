@@ -143,7 +143,21 @@ let BULMACALAR=null, bulmacaNo=0, GUNUN_NO=null;
 const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
 if(GOMULU) document.body.classList.add("gomulu");
-function metaBildir(){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"kur",dogru:eslenen.length,toplam:8,hata:hata,bitti:bitti}, location.origin); }catch(e){} }
+function metaBildir(){ if(!GOMULU) return; metaKaydet(); try{ parent.postMessage({kaynak:"kur",dogru:eslenen.length,toplam:8,hata:hata,bitti:bitti}, location.origin); }catch(e){} }
+function metaKaydet(){ try{ localStorage.setItem("kur:meta:"+bulmacaNo, JSON.stringify({eslenen:eslenen,hata:hata,hataKayit:hataKayit,puansiz:puansiz,puanKilit:puanKilit,bitti:bitti})); }catch(e){} }
+function metaYukle(){
+  /* gömülü kaydı geri yükle: eşlenenler işaretlenir, bittiyse sonuç kurulur */
+  let v=null; try{ v=JSON.parse(localStorage.getItem("kur:meta:"+bulmacaNo)); }catch(e){}
+  if(!v||!Array.isArray(v.eslenen)) return;
+  eslenen=v.eslenen.filter(id=>IDS.includes(id));
+  hata=+v.hata||0; hataKayit=Array.isArray(v.hataKayit)?v.hataKayit:[];
+  puansiz=!!v.puansiz; puanKilit=(v.puanKilit==null)?null:v.puanKilit;
+  ciz();
+  if(v.bitti){
+    if(eslenen.length===8){ tamamlandi(); }
+    else{ if(puanKilit==null){ puansiz=true; puanKilit=eslenen.length; } pesEt(); }
+  }else if(eslenen.length===7){ setTimeout(sonEslesmeTelegraf,400); }
+}
 
 let secKus=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false, puansiz=false, puanKilit=null;
 const $=s=>document.querySelector(s);
@@ -168,7 +182,7 @@ Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulm
   .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp;
     GUNUN_NO = Math.floor(Date.now()/864e5)%pp.length;
     bulmacaNo = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length : GUNUN_NO;
-    yukle(); metaBildir(); }).catch(()=>{});
+    yukle(); if(GOMULU) metaYukle(); metaBildir(); }).catch(()=>{});
 
 function ciz(){
   $("#gunNo").textContent="#"+(bulmacaNo+1);
@@ -316,6 +330,12 @@ function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textConte
 temaUygula(localStorage.getItem("kur:tema")||localStorage.getItem("es-tema")||"gunduz");
 localStorage.removeItem("es-tema");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
+/* gömülü kipte tema dışarıdan gelir; kur:tema anahtarına yazılmaz */
+if(GOMULU){
+  const metaTema=t=>{ if(t!=="gece"&&t!=="gunduz") return; document.documentElement.dataset.tema=t; temaBtn.textContent=t==="gece"?"gündüz":"gece"; };
+  if(_MP.has("tema")) metaTema(_MP.get("tema"));
+  window.addEventListener("message",e=>{ if(e.origin===location.origin&&e.data&&e.data.tip==="tema") metaTema(e.data.tema); });
+}
 $("#tamamBtn").onclick=tamam; $("#paylasBtn").onclick=paylas; $("#baskaBtn").onclick=()=>baskaBulmaca(false);
 $("#rastBtn").onclick=()=>baskaBulmaca(true);
 ciz();

@@ -464,6 +464,16 @@ let bellek={};
 let oyunGun=0;
 let ses=localStorage.getItem('harfiyat:ses')!=='0';
 let tema=localStorage.getItem('harfiyat:tema')||'aydinlik';
+/* Takımyıldız tema alıcısı: kabuğun teması uygulanır, harfiyat:tema anahtarına yazılmaz */
+if(GOMULU){
+  const _tp=_MP.get('tema');
+  if(_tp==='gece'||_tp==='gunduz') tema = _tp==='gece'?'gece':'aydinlik';
+  window.addEventListener('message',e=>{
+    if(e.origin!==location.origin) return;
+    const v=e.data;
+    if(v&&v.tip==='tema'&&(v.tema==='gece'||v.tema==='gunduz')){ tema = v.tema==='gece'?'gece':'aydinlik'; temaUygula(); }
+  });
+}
 
 /* ===== ses ===== */
 let actx=null;
@@ -598,7 +608,7 @@ function temaDene(){
 }
 let _tkSon=null;   // son tema geri bildirimi — panel yeniden çizilse de görünsün
 function tkGeri(m,cls){ _tkSon={m,cls}; const el=document.getElementById('tkGeri'); if(el){ el.textContent=m; el.className='tk-geri '+(cls||''); } }
-function temaGec(){ temaVazgec=true; durumKaydetBellek(); sonucKontrol(); ciz(); metaBildir(); }
+function temaGec(){ temaVazgec=true; if(GOMULU) kaydet(); durumKaydetBellek(); sonucKontrol(); ciz(); metaBildir(); }   // gömülü: vazgeçiş de kalıcı
 
 /* ===== değerlendirme / giriş ===== */
 function degerlendir(tahmin,cevap){
@@ -696,7 +706,7 @@ function sonucKontrol(){   // sonuç kartı: kelimeler bitti + (tema bulundu | h
 function revealBitti(){
   revealAnim=false;
   if(bekleyenMesaj){ mesaj(bekleyenMesaj); bekleyenMesaj=''; }
-  if(sonBitenTahta>=0 && mod==='gun'){ kelimeIstatPopup(tahtalar[sonBitenTahta]); }
+  if(sonBitenTahta>=0 && mod==='gun' && !GOMULU){ kelimeIstatPopup(tahtalar[sonBitenTahta]); }
   sonBitenTahta=-1;
   ciz(); mobilGorunur();
   if(bekleyenSes){ bekleyenSes(); bekleyenSes=null; }
@@ -798,7 +808,7 @@ let lbGonderildi={}, lbKapsam='gun', lbTimer=null;
 function lbGonder(){
   // sonucHazir şart: kelimeler bitse de tema aşaması sürerken skor GÖNDERME —
   // sunucu ilk-yazım kilidi yüzünden tema puansız skor kalıcılaşır (40 puana kadar kayıp).
-  if(mod!=='gun' || !oyunBitti || !sonucHazir) return Promise.resolve(null);
+  if(GOMULU || mod!=='gun' || !oyunBitti || !sonucHazir) return Promise.resolve(null);   // gömülü kipte skor gönderilmez
   const s=skorHesapla();
   if(window.VF && VF.kullanici){
     const key='cati:'+oyunGun+':'+VF.kullanici.uid;
@@ -970,19 +980,26 @@ function istatGoster(){
 }
 
 /* ===== günlük ilerleme + bellek ===== */
+function metaAnahtar(){ return 'cati:meta:'+(_METAB!=null?_METAB:gunIdx(oyunGun)); }   // gömülü kip kayıt anahtarı
 function kaydet(){
-  if(GOMULU) return;
   if(mod!=='gun') return;
+  if(GOMULU){   // gömülü kip: standalone kaydına dokunma, meta anahtarına yaz
+    try{ localStorage.setItem(metaAnahtar(),JSON.stringify({tema:gunVeri.t,
+      t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi})),
+      tt:temaTahminler, ta:temaAsama, tv:temaVazgec})); }catch(e){}
+    return;
+  }
   try{ localStorage.setItem('cati:gun',JSON.stringify({gun:oyunGun, tema:gunVeri.t,
     t:tahtalar.map(b=>({k:b.gecmis.map(g=>g.harfler.join('')),b:b.bitti,w:b.kazandi})),
     tt:temaTahminler, ta:temaAsama, tv:temaVazgec})); }catch(e){}
 }
 function yukle(){
-  if(GOMULU) return false;
   if(mod!=='gun') return false;
   // gün numarası YETMEZ: veri güncellenip günün bulmacası değişirse eski kayıt
   // yeni cevapların üstüne giydirilmesin (hayalet "çözülmüş" oyun bug'ı)
-  try{ const v=JSON.parse(localStorage.getItem('cati:gun')); if(!v||v.gun!==oyunGun||v.tema!==gunVeri.t) return false;
+  // gömülü kipte meta anahtarı okunur; gün yerine yalnız tema alanı doğrulanır
+  try{ const v=JSON.parse(localStorage.getItem(GOMULU?metaAnahtar():'cati:gun'));
+    if(!v||v.tema!==gunVeri.t||(!GOMULU&&v.gun!==oyunGun)) return false;
     v.t.forEach((sv,i)=>{ const b=tahtalar[i]; if(!b) return;
       sv.k.forEach(kel=>b.gecmis.push({harfler:kel.split(''),renkler:degerlendir(kel,b.cevap)}));
       b.bitti=sv.b; b.kazandi=sv.w; });
@@ -1161,7 +1178,7 @@ function tus(h,ek){ const b=document.createElement('button'); b.className='tus'+
 /* ===== mod / tema / ses ===== */
 function oyunlaKur(){
   clearTimeout(revealTimer); revealTimer=null; revealAnim=false;
-  if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun') yukle(); durumKaydetBellek(); }
+  if(!durumYukleBellek()){ tahtalariKur(); if(mod==='gun'){ yukle(); metaBildir(); } durumKaydetBellek(); }   // gömülü: geri yükleme sonrası gerçek durum bildirilsin
   document.getElementById('yeniBtn').classList.toggle('gizli', mod!=='serbest');
   document.getElementById('modBar').classList.toggle('gizli', mod!=='serbest' && !(window.VF && VF.adminMi));   // günlükte mod çubuğu hiç görünmez — admin hariç
   document.getElementById('ftnot').textContent = mod==='gun'?'her gün yeni tema':'sonsuz oyun';

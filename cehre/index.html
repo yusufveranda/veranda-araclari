@@ -141,6 +141,9 @@
   .bayrak-menu button:disabled{opacity:.5; cursor:default;}
   .bayrak-menu .baslik{font-size:11px; color:var(--muted); letter-spacing:.5px; text-transform:uppercase;
     padding:6px 10px 4px;}
+
+  /* Gömülü (meta) kip: başlık, bayrak ve paylaş gizlenir (#shareBtn inline stille açıldığından !important şart) */
+  body.gomulu .ust, body.gomulu .bayrak-alan, body.gomulu #shareBtn{display:none !important;}
 </style>
 </head>
 <body>
@@ -203,7 +206,17 @@ const EPOCH = new Date("2026-07-21T00:00:00");
 const KISILER = window.CEHRE_KISILER || {};
 const LISTE = window.CEHRE_LISTE || [];
 
+// Gömülü (meta) kip: Kervansaray iframe'i ?meta=1&bulmaca=N ile açar,
+// bulmaca no günün bulmacasının yerine geçer.
+const _MP = new URLSearchParams(location.search);
+const GOMULU = _MP.get("meta") === "1";
+const _METAIDX = (GOMULU && _MP.has("bulmaca") && LISTE.length)
+  ? (((+_MP.get("bulmaca")) % LISTE.length) + LISTE.length) % LISTE.length
+  : null;
+if (GOMULU) document.body.classList.add("gomulu");
+
 function gunIndex(){
+  if (_METAIDX !== null) return _METAIDX;
   const gun = Math.floor((Date.now() - EPOCH.getTime()) / 86400000);
   const n = LISTE.length;
   return n ? ((gun % n) + n) % n : 0;
@@ -243,11 +256,27 @@ const LS = "cehre_v1";
 function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){ return {}; } }
 function persist(){
   if (rastgele) return;   // rastgele moddaki tahminler kalıcı olmaz
+  if (GOMULU){
+    // gömülü kip kendi anahtarına yazar, standalone cehre_v1 kaydına dokunmaz
+    try{ localStorage.setItem("cehre:meta:" + gunIndex(), JSON.stringify({...state, qid: gununKisisi().qid})); }catch(e){}
+    return;
+  }
   const save = loadSave();
   save[gunIndex()] = {...state, qid: gununKisisi().qid};
   try{ localStorage.setItem(LS, JSON.stringify(save)); }catch(e){}
 }
 function state_yukle(){
+  if (GOMULU){
+    // gömülü kip yalnız kendi anahtarından okur
+    try{
+      const kayit = JSON.parse(localStorage.getItem("cehre:meta:" + gunIndex()));
+      if (kayit && kayit.qid === gununKisisi().qid){
+        const {qid, ...durum} = kayit;
+        return durum;
+      }
+    }catch(e){}
+    return bosDurum();
+  }
   const save = loadSave();
   const kayit = save[gunIndex()];
   if (kayit && kayit.qid === gununKisisi().qid){
@@ -258,6 +287,16 @@ function state_yukle(){
 }
 let state = state_yukle();
 function bosDurum(){ return {wrong: 0, solved: false, score: null, over: false}; }
+
+// Gömülü kip: kabuğa kademe bildirimi. 1. tahminde 3, 2.de 2, 3.te 1, bilemedi 0
+// (doğru dalda wrong artmadığından bitişte 3 - wrong kazanılan kademedir).
+function metaKademe(w){ return Math.max(0, 3 - w); }
+function metaBildir(){
+  if (!GOMULU) return;
+  const s = aktifDurum();
+  const y = s.over ? (s.solved ? metaKademe(s.wrong) : 0) : metaKademe(s.wrong);
+  try{ parent.postMessage({kaynak:"cehre", yildiz:y, bitti:!!s.over}, location.origin); }catch(e){}
+}
 
 // Kaç bölge açık: 0 yanlış -> yalnız burun, 1 -> +gözler, 2 -> +ağız (hepsi)
 function bolgeSayisi(wrong){
@@ -476,6 +515,7 @@ function submit(){
   $("guessInput").value = "";
   $("guessBtn").disabled = true;
   persist();
+  metaBildir();
   shareGoster();
   renderPortre();
   if (s.solved){
@@ -510,6 +550,7 @@ function pesEt(){
   if (s.over) return;
   s.over = true;
   persist();
+  metaBildir();
   shareGoster();
   renderPortre();
 }
@@ -518,6 +559,7 @@ $("pesBtn").addEventListener("click", pesEt);
 $("randomBtn").addEventListener("click", pickRandom);
 
 renderPortre();
+metaBildir();   // açılışta geri yüklenen gerçek durum bildirilir
 
 /* ===================== admine özel: giriş + sonsuz mod ===================== */
 const girisDug = $("girisDug");

@@ -71,6 +71,9 @@ body::before{
 }
 .ikonbtn:hover{ border-color:var(--altin); color:var(--murekkep); }
 
+/* Kervansaray gömme kipi: üst krom gizlenir */
+body.gomulu .ust{ display:none; }
+
 .marka{ margin:22px 0 20px; display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; }
 .amblem{ width:44px; height:44px; flex:none; }
 .marka h1{
@@ -344,9 +347,13 @@ footer{
 <script src="./gunler.js"></script>
 <script>
 (function(){
+  const mq = new URLSearchParams(location.search);
+  // gömülü kipte tema kabuktan gelir; muzayede:tema anahtarına yazılmaz
+  const metaKip = mq.has('gomulu') || mq.get('meta') === '1';
   function temaKur(t){
     document.documentElement.setAttribute('data-tema', t);
     document.getElementById('temaBtn').textContent = t === 'gece' ? 'gündüz' : 'gece';
+    if(metaKip) return;
     try{ localStorage.setItem('muzayede:tema', t); }catch(e){}
   }
   let baslangicTema;
@@ -354,12 +361,21 @@ footer{
   temaKur(baslangicTema === 'gece' ? 'gece' : 'gunduz');
   document.getElementById('temaBtn').addEventListener('click', () =>
     temaKur(document.documentElement.getAttribute('data-tema') === 'gece' ? 'gunduz' : 'gece'));
+  if(metaKip){
+    const metaTema = t => { if(t === 'gece' || t === 'gunduz') temaKur(t); };
+    if(mq.has('tema')) metaTema(mq.get('tema'));
+    window.addEventListener('message', e => {
+      if(e.origin === location.origin && e.data && e.data.tip === 'tema') metaTema(e.data.tema);
+    });
+  }
 })();
 
 (function(){
   const q = new URLSearchParams(location.search);
-  const GOMULU = q.has('gomulu');
+  // Kervansaray gömme kipi: meta=1 de gömülü sayılır, üst krom gizlenir
+  const GOMULU = q.has('gomulu') || q.get('meta') === '1';
   const _METAB = q.has('meta') && q.has('bulmaca') ? parseInt(q.get('bulmaca'), 10) : null;
+  if(GOMULU) document.body.classList.add('gomulu');
 
   function gunNo(){
     const ep = Date.parse(MUZAYEDE_GUNLER.epoch + 'T00:00:00');
@@ -428,6 +444,7 @@ footer{
     }
 
     if(geriYuklendi) durumuUygula();
+    metaBildir();
   }
 
   function bulmacayaGit(i){
@@ -629,6 +646,7 @@ function fiyatGonder(){
   document.getElementById('fiyatGonderBtn').disabled = true;
   const ressamaGecilsinMi = window.MUZ.tablo.gercek && ressamUnluMu(window.MUZ.tablo.ressam_id);
   fiyatMesajCiz(st.fiyatPuan, gercekFiyat, ressamaGecilsinMi);
+  metaBildir();
 
   if(ressamaGecilsinMi){
     ressamAsamasiniAc();
@@ -710,6 +728,7 @@ function ressamGonder(){
       }
       ipucuButonlariniGuncelle();
       kaydet();
+      metaBildir();
     }
     msg.className = 'yanlis';
     msg.classList.remove('yanlis'); void msg.offsetWidth; msg.classList.add('yanlis');
@@ -863,6 +882,7 @@ function turuSonlandirErken(sebep){
   sayacAnimasyonu(document.getElementById('sayacToplam'), st.fiyatPuan);
   st.toplamPuan = st.fiyatPuan;
   kaydet();
+  metaBildir();
 }
 
 function turuSonlandir(){
@@ -894,24 +914,58 @@ function turuSonlandir(){
 
   st.toplamPuan = toplam;
   kaydet();
+  metaBildir();
+}
+
+// Kervansaray gömme kipi: kabuğa durum bildirimi. dogru ara durumda fiyat
+// puani, bitiste toplam puandir; toplam gunun max puanidir (100 veya 200)
+function metaBildir(){
+  if(!window.MUZ.GOMULU) return;
+  const st = window.MUZ.state;
+  const tablo = window.MUZ.tablo;
+  const bitti = st.toplamPuan !== undefined;
+  const toplamMax = st.fiyatsiz ? 100 : ((tablo.gercek && ressamUnluMu(tablo.ressam_id)) ? 200 : 100);
+  try{
+    parent.postMessage({
+      kaynak: 'muzayede',
+      dogru: bitti ? st.toplamPuan : (st.fiyatPuan || 0),
+      toplam: toplamMax,
+      hata: Math.min(3, (st.denenenler || []).length),
+      bitti: bitti
+    }, location.origin);
+  }catch(e){}
+}
+
+// gömülü kip kayıt anahtarı: bulmaca indeksi, yoksa günün indeksi
+function metaAnahtar(){
+  const sira = MUZAYEDE_GUNLER.sira;
+  const idx = (window.MUZ._METAB !== null) ? window.MUZ._METAB
+    : ((window.MUZ.GUN % sira.length) + sira.length) % sira.length;
+  return 'muzayede:meta:' + idx;
 }
 
 function kaydet(){
-  if(window.MUZ.GOMULU) return;
-  if(window.MUZ._METAB !== null) return;
+  const metaKip = window.MUZ.GOMULU || window.MUZ._METAB !== null;
   try{
-    localStorage.setItem('muzayede:gun', JSON.stringify({
-      gun: window.MUZ.GUN, tabloId: window.MUZ.tablo.id, state: window.MUZ.state
-    }));
+    if(metaKip){
+      // gömülü kip: standalone kaydına dokunmadan meta anahtarına yaz
+      localStorage.setItem(metaAnahtar(), JSON.stringify({
+        tabloId: window.MUZ.tablo.id, state: window.MUZ.state
+      }));
+    } else {
+      localStorage.setItem('muzayede:gun', JSON.stringify({
+        gun: window.MUZ.GUN, tabloId: window.MUZ.tablo.id, state: window.MUZ.state
+      }));
+    }
   }catch(e){}
 }
 
 function yukle(){
-  if(window.MUZ.GOMULU) return false;
-  if(window.MUZ._METAB !== null) return false;
+  const metaKip = window.MUZ.GOMULU || window.MUZ._METAB !== null;
   try{
-    const v = JSON.parse(localStorage.getItem('muzayede:gun'));
-    if(!v || v.gun !== window.MUZ.GUN || v.tabloId !== window.MUZ.tablo.id) return false;
+    const v = JSON.parse(localStorage.getItem(metaKip ? metaAnahtar() : 'muzayede:gun'));
+    if(!v || v.tabloId !== window.MUZ.tablo.id) return false;
+    if(!metaKip && v.gun !== window.MUZ.GUN) return false;
     const varsayilan = varsayilanDurum();
     window.MUZ.state = Object.assign(varsayilan, v.state);
     if(!Array.isArray(window.MUZ.state.fiyatBasamaklari) || window.MUZ.state.fiyatBasamaklari.length !== 9){

@@ -2,6 +2,8 @@
 // Tek satır <script> ile her sayfaya eklenir, kendi CSS'ini ve DOM'unu enjekte eder.
 // Oyun sayfalarında (window.VF varsa) girişliyken her oyunun yanında "bugün oynadın mı" ✓'ü gösterir.
 (function(){
+  // Kervansaray gömme kipi: iframe içindeki oyunda gezinme paneli kurulmaz
+  if(new URLSearchParams(location.search).get('meta')==='1') return;
   const derin = location.pathname !== '/' && location.pathname !== '/index.html';
   const B = derin ? '../' : '';
 

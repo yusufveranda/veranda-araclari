@@ -143,6 +143,9 @@
   .dotA{background:var(--g1);} .dotB{background:var(--g2);} .dotC{background:var(--g3);} .dotD{background:var(--g4);}
   .share-row{display:flex; gap:10px; margin-top:16px; align-items:center;}
 
+  /* gömülü kip: üst kontroller gizli */
+  body.gomulu .controls .mini-btn, body.gomulu .controls select{display:none!important;}
+
   @media(max-width:900px){
     .grid{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px;}
     .name-groups{grid-template-columns:1fr;}
@@ -210,6 +213,11 @@
   let day = Math.floor((Date.now() - EPOCH) / 864e5);
   if (day < 0) day = 0;
   if (params.has('gun')) day = parseInt(params.get('gun'), 10) || 0;
+  // kervansaray gömülü kipi
+  const GOMULU = params.get('meta') === '1';
+  const MAX_HATA = GOMULU ? 3 : Infinity; // gömülüde 3 yanlış hakkı, bağımsızda sınır yok
+  if (GOMULU) document.body.classList.add('gomulu');
+  if (GOMULU && params.has('bulmaca')) day = ((parseInt(params.get('bulmaca'), 10) || 0) % window.MONTAJ.length + window.MONTAJ.length) % window.MONTAJ.length;
   const idx = day % window.MONTAJ.length;
   const PZ = window.MONTAJ[idx];
   document.getElementById('diffBadge').innerHTML = 'ZORLUK <b>' + PZ.level + '/10</b>';
@@ -244,7 +252,7 @@
     applyAccess(!!VF.adminMi);
   });
 
-  const KEY = 'montaj_v2_' + idx;
+  const KEY = GOMULU ? 'montaj:meta:' + idx : 'montaj_v2_' + idx; // gömülü kayıt ayrı anahtarda
   // kareler: [filmIdx, sceneIdx]
   let tiles = [];
   PZ.films.forEach((f, fi) => f.sc.forEach((url, si) => tiles.push({f: fi, url})));
@@ -262,6 +270,12 @@
   const NFILM = PZ.films.length; // 4
 
   let sel = [], lockedFilms = [], tries = 0, attempts = [], nameAnswers = [null, null, null, null], done = false;
+
+  // gömülü kipte kabuğa durum raporu
+  function metaBildir(){
+    if (!GOMULU) return;
+    try { parent.postMessage({kaynak: 'montaj', dogru: lockedFilms.length, toplam: NFILM, hata: attempts.filter(a => a === -1).length, bitti: done}, location.origin); } catch(e){}
+  }
 
   tiles.forEach((t, i) => {
     const d = document.createElement('div');
@@ -317,24 +331,52 @@
         sel.forEach(i => grid.children[i].classList.remove('sel'));
         sel = []; mergeBtn.disabled = true;
       }, 500);
+      // gömülü kipte hak tavanı: 3. yanlışta oyun biter, kalan gruplar açılır
+      if (attempts.filter(a => a === -1).length >= MAX_HATA) {
+        autoLockLast();
+        hakDoldu();
+      }
     }
     save();
+    metaBildir();
   });
 
   function autoLockLast(){
-    const fi = PZ.films.map((_, i) => i).find(f => !lockedFilms.includes(f));
-    const li = lockedFilms.length;
-    lockedFilms.push(fi);
-    attempts.push(fi);
-    tiles.forEach((t, i) => {
-      if (t.f === fi && !grid.children[i].classList.contains('locked')) {
-        const el = grid.children[i];
-        el.classList.add('locked', LOCKS[li]);
-        const chip = document.createElement('span');
-        chip.className = 'lock-chip'; chip.textContent = 'FİLM ' + ROMAN[li];
-        el.appendChild(chip);
-      }
-    });
+    // kilitlenmemiş tüm filmleri açar; normalde tek film kalır,
+    // gömülü kipte hak dolunca birden fazla olabilir
+    while (lockedFilms.length < NFILM) {
+      const fi = PZ.films.map((_, i) => i).find(f => !lockedFilms.includes(f));
+      const li = lockedFilms.length;
+      lockedFilms.push(fi);
+      attempts.push(fi);
+      tiles.forEach((t, i) => {
+        if (t.f === fi && !grid.children[i].classList.contains('locked')) {
+          const el = grid.children[i];
+          el.classList.add('locked', LOCKS[li]);
+          const chip = document.createElement('span');
+          chip.className = 'lock-chip'; chip.textContent = 'FİLM ' + ROMAN[li];
+          el.appendChild(chip);
+        }
+      });
+    }
+  }
+
+  // gömülü kipte hak dolunca bitiş görünümü
+  function hakDoldu(){
+    done = true;
+    sel.forEach(i => grid.children[i].classList.remove('sel'));
+    sel = []; mergeBtn.disabled = true;
+    feedback.textContent = 'Hak doldu, kalan filmler açıldı.';
+    feedback.className = 'feedback bad';
+    const res = document.getElementById('result');
+    res.hidden = false;
+    document.getElementById('resultTitle').textContent = 'Hak doldu.';
+    const dots = ['dotA', 'dotB', 'dotC', 'dotD'];
+    document.getElementById('resultFilms').innerHTML = lockedFilms.map((fi, li) =>
+      '<span class="' + dots[li] + '"></span><b>' + PZ.films[fi].t + '</b> (' + PZ.films[fi].y + ')'
+    ).join('<br>');
+    document.querySelector('.share-row').hidden = true;
+    res.scrollIntoView({behavior: 'smooth', block: 'nearest'});
   }
 
   // ---- adlandırma ----
@@ -403,6 +445,7 @@
   function finish(){
     if (done) return;
     done = true;
+    metaBildir();
     let named = 0;
     document.querySelectorAll('.ngroup-slot').forEach((slot, li) => {
       const truth = PZ.films[lockedFilms[li]].t;
@@ -467,6 +510,8 @@
       });
     });
     if (lockedFilms.length === NFILM) {
+      // gömülü kipte hak dolarak bitmiş kayıt: adlandırma yerine bitiş görünümü
+      if (GOMULU && st.done && attempts.filter(a => a === -1).length >= MAX_HATA) { hakDoldu(); return; }
       startNaming();
       nameAnswers = st.nameAnswers || [null, null, null, null];
       nameAnswers.forEach((t, li) => {
@@ -480,6 +525,7 @@
     }
   }
   restore();
+  metaBildir(); // geri yükleme sonrası gerçek durum kabuğa bildirilir
 })();
 </script>
 </body>

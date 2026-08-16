@@ -120,7 +120,23 @@ const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
 const MAX_HATA = GOMULU ? 3 : 4;   /* gömülü kipte 3 kalp (meta modeline uyar) */
 if(GOMULU) document.body.classList.add("gomulu");
-function metaBildir(){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"dortdemet",dogru:cozulen.length,toplam:4,hata:hatalar,bitti:bitti}, location.origin); }catch(e){} }
+function metaBildir(){ if(!GOMULU) return; metaKaydet(); try{ parent.postMessage({kaynak:"dortdemet",dogru:cozulen.length,toplam:4,hata:hatalar,bitti:bitti}, location.origin); }catch(e){} }
+let _metaKazandi=null;
+/* gömülü kipte durum kalıcılığı; standalone kayıtlarına dokunmaz */
+function metaKaydet(){ if(!GOMULU) return; try{ localStorage.setItem("dortdemet:meta:"+bulmacaNo, JSON.stringify({cozulen,hatalar,gecmis,bitti,puansiz,kazandi:_metaKazandi,fotoSec})); }catch(e){} }
+function metaGeriYukle(){
+  if(!GOMULU) return;
+  let k=null; try{ k=JSON.parse(localStorage.getItem("dortdemet:meta:"+bulmacaNo)); }catch(e){}
+  if(!k || !Array.isArray(k.cozulen)) return;
+  cozulen=k.cozulen.filter(x=>Number.isInteger(x)&&x>=0&&x<4);
+  hatalar=+k.hatalar||0;
+  gecmis=Array.isArray(k.gecmis)?k.gecmis:[];
+  puansiz=!!k.puansiz || hatalar>=MAX_HATA;
+  _metaKazandi=(typeof k.kazandi==="boolean")?k.kazandi:null;
+  if(k.fotoSec) Object.keys(fotoSec).forEach(id=>{ const f=(BITKILER[id]&&BITKILER[id].fotolar)||[]; if(k.fotoSec[id]&&f.includes(k.fotoSec[id])) fotoSec[id]=k.fotoSec[id]; });
+  if(k.bitti) bitir(_metaKazandi===true);
+  else ciz();
+}
 const RENKLER=["var(--g-sari)","var(--g-yesil)","var(--g-mavi)","var(--g-mor)"];
 const EMOJI=["🟨","🟩","🟦","🟪"];
 
@@ -152,7 +168,7 @@ fetch("../bitki/data/oyun-bitkiler.json").then(r=>r.json())
   .then(pp=>{ BULMACALAR=pp;
     GUNUN_NO=Math.floor(Date.now()/864e5)%pp.length;
     bulmacaNo=(GOMULU&&_MP.has("bulmaca"))?((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length:GUNUN_NO;
-    yukle(); metaBildir(); })
+    yukle(); metaGeriYukle(); metaBildir(); })
   .catch(()=>{ $("#izgara").innerHTML='<p style="color:var(--soluk)">Bulmaca yüklenemedi.</p>'; });
 
 function ciz(){
@@ -223,6 +239,7 @@ function gonder(){
 }
 
 function bitir(kazandi){
+  if(GOMULU) _metaKazandi=kazandi;   /* meta kaydina kazanma bilgisi */
   bitti=true; metaBildir();
   if(kazandi){
     $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🌿" : "Hepsini yerleştirdin! 🌿";
@@ -264,6 +281,12 @@ function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textConte
 temaUygula(localStorage.getItem("dort-demet:tema")||localStorage.getItem("herbaryum-tema")||"gunduz");
 localStorage.removeItem("herbaryum-tema");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
+/* gömülü kipte tema kabuktan gelir (URL + mesaj); yerel tema anahtarına yazılmaz */
+if(GOMULU){
+  const metaTema=t=>{ if(t==="gece"||t==="gunduz") document.documentElement.dataset.tema=t; };
+  if(_MP.has("tema")) metaTema(_MP.get("tema"));
+  window.addEventListener("message",e=>{ if(e.origin===location.origin&&e.data&&e.data.tip==="tema") metaTema(e.data.tema); });
+}
 
 $("#gonderBtn").onclick=gonder;
 $("#karistirBtn").onclick=karistir;

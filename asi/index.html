@@ -131,7 +131,21 @@ const MAX_HAK=3;
 const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
 if(GOMULU) document.body.classList.add("gomulu");
-function metaBildir(){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"asi",dogru:eslenen.length,toplam:8,hata:hata,bitti:bitti}, location.origin); }catch(e){} }
+function metaBildir(){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"asi",dogru:eslenen.length,toplam:8,hata:hata,bitti:bitti}, location.origin); }catch(e){} metaKaydet(); }
+/* gömülü kipte durum kaydı: standalone kayıtlarına dokunmaz; fotoSec de kayda girer (rastFoto deterministik değil) */
+function metaKaydet(){ if(!GOMULU) return; try{ localStorage.setItem("asi:meta:"+bulmacaNo, JSON.stringify({eslenen,hata,hataKayit,puansiz,puanKilit,bitti,fotoSec})); }catch(e){} }
+function metaGeriYukle(){
+  if(!GOMULU) return;
+  let k=null; try{ k=JSON.parse(localStorage.getItem("asi:meta:"+bulmacaNo)); }catch(e){}
+  if(!k) return;
+  eslenen=(k.eslenen||[]).filter(id=>IDS.includes(id));
+  hata=k.hata||0; hataKayit=k.hataKayit||[];
+  puansiz=!!k.puansiz; puanKilit=(k.puanKilit==null)?null:k.puanKilit;
+  if(k.fotoSec) IDS.forEach(id=>{ if(k.fotoSec[id]) fotoSec[id]=k.fotoSec[id]; });
+  if(k.bitti && eslenen.length===8){ ciz(); tamamlandi(); }
+  else if(k.bitti){ pesEt(); }
+  else{ ciz(); if(eslenen.length===7) setTimeout(sonEslesmeTelegraf,400); }
+}
 let BITKILER={}, BULMACALAR=[], bulmacaNo=0, GUNUN_NO=null;
 let IDS=[], TUZAK=new Set(), bitkiSira=[], adSira=[], fotoSec={};
 let secBitki=null, secAd=null, eslenen=[], hata=0, hataKayit=[], bitti=false, mesgul=false, puansiz=false, puanKilit=null;
@@ -158,7 +172,7 @@ fetch("../bitki/data/oyun-bitkiler.json").then(r=>r.json())
   .then(pp=>{ BULMACALAR=pp;
     GUNUN_NO=Math.floor(Date.now()/864e5)%pp.length;
     bulmacaNo=(GOMULU&&_MP.has("bulmaca"))?((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length:GUNUN_NO;
-    yukle(); metaBildir(); })
+    yukle(); metaGeriYukle(); metaBildir(); })
   .catch(()=>{ $("#bitkiHavuz").innerHTML='<span class="bos-yan">Bulmaca yüklenemedi.</span>'; });
 
 function ciz(){
@@ -308,6 +322,12 @@ function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textConte
 temaUygula(localStorage.getItem("asi:tema")||localStorage.getItem("esbitki-tema")||"gunduz");
 localStorage.removeItem("esbitki-tema");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
+/* gömülü kipte tema alıcısı: URL parametresi + parent mesajı; asi:tema anahtarına yazmaz */
+if(GOMULU){
+  const metaTema=t=>{ if(t!=="gece"&&t!=="gunduz") return; document.documentElement.dataset.tema=t; temaBtn.textContent=t==="gece"?"gündüz":"gece"; };
+  if(_MP.has("tema")) metaTema(_MP.get("tema"));
+  window.addEventListener("message",e=>{ if(e.origin===location.origin && e.data && e.data.tip==="tema") metaTema(e.data.tema); });
+}
 $("#tamamBtn").onclick=tamam;
 $("#paylasBtn").onclick=paylas;
 $("#baskaBtn").onclick=()=>baskaBulmaca(false);

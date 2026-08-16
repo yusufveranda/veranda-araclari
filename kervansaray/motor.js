@@ -296,7 +296,7 @@ function seritCiz(){
   var sb=seferBilgi();
   e.hidden=false;
   e.innerHTML='<div class="serit-sol"><h2>🐪 Kervan yola koyuldu</h2>'+
-    '<p>Bugün <b>'+gunToplam()+' altın</b>'+(sb.son?' · <b>'+sb.son.ad+'</b>\'na varıldı':'')+
+    '<p>Bugün <b>'+gunToplam()+' altın</b>'+(sb.son?' · konak: <b>'+sb.son.ad+'</b>':'')+
     (gunToplam()>=GUN_TAVAN?' · <b>bereketli gün!</b>':(gunCozuldu()?'':' · tezgahlar hâlâ açık'))+'</p></div>'+
     '<div class="serit-sag"><button class="dugme" id="seritPay">📋 paylaş</button></div>';
   var b=$('#seritPay'); if(b) b.onclick=paylas;
@@ -473,7 +473,7 @@ function varisAc(seri){
     '<div class="varis-kandiller">'+kandiller+'</div>'+
     '<div class="varis-yol"><div class="varis-cizgi"></div>'+kervanSVG()+'</div>'+
     '<h3>Yol parası çıktı! 🪙</h3>'+
-    (sb.son?('<p class="varis-han">Kervan <b>'+sb.son.ad+'</b>\'na vardı.</p>'+
+    (sb.son?('<p class="varis-han">Kervan bugünkü konağına vardı: <b>'+sb.son.ad+'</b></p>'+
       '<p class="varis-not">'+sb.son.not+'</p>'):'<p class="varis-han">Kervan yola koyuldu.</p>')+
     (seri&&seri.sayi>=2?'<p class="varis-seri">🐪 '+seri.sayi+' gündür yolda</p>':'')+
     '<p class="varis-alt-not">Tezgahlar hâlâ açık; kese '+GUN_TAVAN+' altına kadar dolar.</p>'+
@@ -505,7 +505,7 @@ function paylas(){
   }).join('\n');
   var metin='Kervansaray #'+(GUN+1)+' · '+gunToplam()+'/'+GUN_TAVAN+' altın'+
     (s.sayi>=2&&s.sonGun>=GUN-1?'\n🐪 '+s.sayi+' gündür yolda':'')+
-    (sb.son&&DURUM.kazandi?'\n🏰 '+sb.son.ad+'\'na varıldı':'')+
+    (sb.son&&DURUM.kazandi?'\n🏰 varılan konak: '+sb.son.ad:'')+
     '\n'+satir+'\nverandatools.com/kervansaray';
   if(navigator.share){ navigator.share({text:metin}).catch(function(){}); return; }
   if(navigator.clipboard) navigator.clipboard.writeText(metin).then(function(){ toast('kopyalandı 📋','iyi'); },function(){ toast('kopyalanamadı'); });

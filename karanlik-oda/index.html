@@ -295,6 +295,8 @@ const GOMULU = _MP.get("meta") === "1";
 if (GOMULU) document.body.classList.add("gomulu");
 function metaKademe(step){ return step===0?3 : step<=2?2 : step<=4?1 : 0; }
 function metaGonder(y, bitti){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"karanlikoda", yildiz:y, bitti:bitti}, location.origin); }catch(e){} }
+/* gömülü kipte durumu bulmaca anahtarına yazar; standalone kaydına dokunmaz */
+function metaKaydet(won){ if(!GOMULU || !G || G.random) return; try{ localStorage.setItem("karanlikoda:meta:" + G.index, JSON.stringify({step:G.step, guesses:G.guesses, over:G.over, won:!!won})); }catch(e){} }
 
 let G = null;
 const $ = id => document.getElementById(id);
@@ -511,7 +513,8 @@ function endGame(won) {
   startPosterLoop(G.film.pp);   // poster pikseli döngüde açıl-kapan (gif gibi)
   G.over = true;
   metaGonder(won ? metaKademe(G.step) : 0, true);
-  if (!G.random) {
+  metaKaydet(won);
+  if (!G.random && !GOMULU) {
     const puan = won ? SCORES[G.step] : 0;
     const bucket = won ? String(G.step + 1) : "X";
     if (window.VF && VF.kullanici) VF.skorYaz("karanlikoda", G.index, { puan, banyo: G.step + 1, kazandi: won });
@@ -521,7 +524,7 @@ function endGame(won) {
 
 function advance() {
   if (G.over) return;
-  if (G.step < 4) { G.step++; renderStep(); metaGonder(metaKademe(G.step), false); }
+  if (G.step < 4) { G.step++; renderStep(); metaGonder(metaKademe(G.step), false); metaKaydet(); }
   else endGame(false);
 }
 
@@ -595,6 +598,7 @@ $("guessBtn").addEventListener("click", () => {
   const hint = yearHint(sel);
   G.guesses.push({ t: sel.t, y: sel.y, hint });                 // yıl yönü kalıcı listede
   renderGuessLog();
+  metaKaydet();
   let yeniOrtak = 0;                                             // ortak oyuncu/yönetmen
   sharedPeople(sel).forEach(p => {
     if (!G.shared.some(x => x.id === p.id)) { G.shared.push(p); yeniOrtak++; }
@@ -616,6 +620,18 @@ document.addEventListener("click", e => { if (!e.target.closest(".guess")) hideA
 function startGame(index, random = false) {
   const film = window.PUZZLES[index];
   G = { film, index, step: 0, selected: null, over: false, random, guesses: [], shared: [] };
+  // gömülü kip: kayıtlı meta durumunu geri yükle (standalone bu bloğa girmez)
+  let metaSon = null;
+  if (GOMULU && !random) {
+    try {
+      const s = JSON.parse(localStorage.getItem("karanlikoda:meta:" + index) || "null");
+      if (s && typeof s.step === "number") {
+        G.step = Math.max(0, Math.min(4, s.step | 0));
+        G.guesses = Array.isArray(s.guesses) ? s.guesses : [];
+        if (s.over) metaSon = { won: !!s.won };
+      }
+    } catch(e) {}
+  }
   stopPosterLoop();
   $("dayNo").textContent = random ? "Rastgele film" : `Gün #${index + 1}`;
   $("todayBtn").style.display = random ? "" : "none";
@@ -625,6 +641,8 @@ function startGame(index, random = false) {
   renderGuessLog();
   renderCast();
   renderStep();
+  // bitmiş kayıt: bitiş görünümünü kur, açılış bildirimi gerçek final durumu olsun
+  if (metaSon) { endGame(metaSon.won); return; }
   metaGonder(metaKademe(G.step), false);
 }
 

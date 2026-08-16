@@ -254,10 +254,17 @@ function todayIndex(){
 
 // ---- kalıcılık (yalnız günün oyuncusu) ----
 function loadSave(){ try{ return JSON.parse(localStorage.getItem(LS)) || {}; }catch(e){ return {}; } }
+// gömülü kipte ayrı anahtar: standalone kaydıyla iki yönlü karışmasın
+function metaAnahtar(i){ return "jenerik:meta:" + i; }
 function persist(){
   if (G.random) return;
+  const kayit = { found:[...G.foundSet], missed:G.missed, over:G.over };
+  if (GOMULU){
+    try{ localStorage.setItem(metaAnahtar(G.index), JSON.stringify(kayit)); }catch(e){}
+    return;
+  }
   const s = loadSave();
-  s[G.index] = { found:[...G.foundSet], missed:G.missed, over:G.over };
+  s[G.index] = kayit;
   try{ localStorage.setItem(LS, JSON.stringify(s)); }catch(e){}
 }
 
@@ -460,7 +467,7 @@ function finish(won, redisplay){
                 : `Kalan ${total - n} film aşağıda gri açıldı.`);
   renderGrid();
   persist(); metaBildir();
-  if (!G.random && !redisplay) {
+  if (!GOMULU && !G.random && !redisplay) {
     if (window.VF && VF.kullanici) VF.skorYaz("jenerik", G.index, { puan:n, toplam:total, kazandi:won || y > 0 });
     if (window.VF) VF.istatistikArttir("jenerik", G.index, String(n));
   }
@@ -473,9 +480,14 @@ function startGame(index, random=false){
         filmIds:new Set(actor.f), total:actor.f.length,
         esik:esikler(actor.f.length),
         foundSet:new Set(), found:[], missed:[], sel:null, over:false };
-  // günün oyuncusuysa kayıt yükle
+  // günün oyuncusuysa kayıt yükle (gömülüde meta anahtarı, standalone kaydı okunmaz)
   if (!random){
-    const s = loadSave()[index];
+    let s = null;
+    if (GOMULU){
+      try{ s = JSON.parse(localStorage.getItem(metaAnahtar(index))); }catch(e){ s = null; }
+    } else {
+      s = loadSave()[index];
+    }
     if (s){
       s.found.forEach(id => { if (G.filmIds.has(id) && !G.foundSet.has(id)){ G.foundSet.add(id); G.found.push(id); } });
       G.missed = s.missed || [];

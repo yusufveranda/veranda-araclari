@@ -121,7 +121,26 @@ const _MP=new URLSearchParams(location.search);
 const GOMULU=_MP.get("meta")==="1";
 const MAX_HATA = GOMULU ? 3 : 4;   /* gömülü kipte 3 kalp (meta modeline uyar) */
 if(GOMULU) document.body.classList.add("gomulu");
-function metaBildir(){ if(!GOMULU) return; try{ parent.postMessage({kaynak:"dortsuru",dogru:cozulen.length,toplam:4,hata:hatalar,bitti:bitti}, location.origin); }catch(e){} }
+function metaBildir(){ if(!GOMULU) return; metaKaydet(); try{ parent.postMessage({kaynak:"dortsuru",dogru:cozulen.length,toplam:4,hata:hatalar,bitti:bitti}, location.origin); }catch(e){} }
+/* meta kalıcılığı: gömülü kipte durum ayrı anahtarda saklanır, standalone kayıtlarına dokunulmaz */
+let metaKazandi=false;
+function metaKaydet(){
+  if(!GOMULU) return;
+  try{ localStorage.setItem("dortsuru:meta:"+bulmacaNo, JSON.stringify({
+    cozulen, hatalar, bitti, puansiz, kazandi:metaKazandi,
+    gecmis:gecmis.map(g=>({r:g.slice(), imza:g._imza||""}))
+  })); }catch(e){}
+}
+function metaYukle(){
+  if(!GOMULU) return;
+  let d=null; try{ d=JSON.parse(localStorage.getItem("dortsuru:meta:"+bulmacaNo)||"null"); }catch(e){}
+  if(!d) return;
+  cozulen=(d.cozulen||[]).slice(); hatalar=d.hatalar||0; puansiz=!!d.puansiz; metaKazandi=!!d.kazandi;
+  /* _imza JSON'da düşer; tekrar deneme koruması için geri kurulur */
+  gecmis=(d.gecmis||[]).map(g=>{ const k=(g.r||[]).slice(); k._imza=g.imza||""; return k; });
+  if(!d.bitti && !puansiz && hatalar>=MAX_HATA) puansiz=true;
+  if(d.bitti){ bitti=true; sonucGoster(metaKazandi); } else ciz();
+}
 const RENKLER=["var(--g-sari)","var(--g-yesil)","var(--g-mavi)","var(--g-mor)"];
 const EMOJI=["🟨","🟩","🟦","🟪"];
 
@@ -178,7 +197,7 @@ Promise.all([fetch("../kus/data/oyun-kuslar.json").then(r=>r.json()),fetch("bulm
   .then(([bb,pp])=>{ KUSLAR=bb; BULMACALAR=pp;
     GUNUN_NO = Math.floor(Date.now()/864e5)%pp.length;
     bulmacaNo = (GOMULU && _MP.has("bulmaca")) ? ((+_MP.get("bulmaca")%pp.length)+pp.length)%pp.length : GUNUN_NO;
-    yukle(); metaBildir(); }).catch(()=>{});
+    yukle(); metaYukle(); metaBildir(); }).catch(()=>{});
 
 function ciz(){
   $("#gunNo").textContent="#"+(bulmacaNo+1);
@@ -238,7 +257,7 @@ function gonder(){
     idler.forEach(id=>{const h=$(`.hucre[data-id="${id}"]`); if(h){h.classList.add("sars"); setTimeout(()=>h.classList.remove("sars"),500);}});
     const puansizOldu=(!puansiz && hatalar>=MAX_HATA);
     if(puansizOldu){
-      puansiz=true;
+      puansiz=true; metaKaydet();
       $("#canlar").innerHTML='<span class="puan-yok">puan yok</span> — istersen sonuna kadar çöz · <a href="#" id="pesBtn">cevapları gör</a>';
       $("#pesBtn").onclick=e=>{e.preventDefault(); pesEt();};
       setTimeout(()=>toast("hakların bitti ✕ — puansız çözmeye devam"),520);
@@ -248,8 +267,7 @@ function gonder(){
   }
 }
 
-function bitir(kazandi){
-  bitti=true; metaBildir();
+function sonucGoster(kazandi){
   if(kazandi){
     $("#sonucBas").textContent = puansiz ? "Tamamladın — puansız 🪶" : "Hepsini yerleştirdin! 🪶";
     $("#sonucOzet").textContent = puansiz
@@ -261,6 +279,10 @@ function bitir(kazandi){
   }
   ciz();
   $("#sonuc").classList.add("ac");
+}
+function bitir(kazandi){
+  metaKazandi=kazandi; bitti=true; metaBildir();
+  sonucGoster(kazandi);
   $("#sonuc").scrollIntoView({behavior:"smooth",block:"nearest"});
   if(bulmacaNo===GUNUN_NO && !GOMULU){
     const basarili = kazandi && !puansiz;
@@ -290,6 +312,12 @@ function temaUygula(t){document.documentElement.dataset.tema=t;temaBtn.textConte
 temaUygula(localStorage.getItem("dort-suru:tema")||localStorage.getItem("obek-tema")||"gunduz");
 localStorage.removeItem("obek-tema");
 temaBtn.onclick=()=>temaUygula(document.documentElement.dataset.tema==="gece"?"gunduz":"gece");
+/* tema alıcısı: gömülü kipte kabuğun teması uygulanır, localStorage'a yazılmaz */
+if(GOMULU){
+  const metaTema=t=>{ if(t!=="gece"&&t!=="gunduz") return; document.documentElement.dataset.tema=t; temaBtn.textContent=t==="gece"?"gündüz":"gece"; };
+  if(_MP.has("tema")) metaTema(_MP.get("tema"));
+  window.addEventListener("message", e=>{ if(e.origin===location.origin && e.data && e.data.tip==="tema") metaTema(e.data.tema); });
+}
 
 $("#gonderBtn").onclick=gonder;
 $("#karistirBtn").onclick=karistir;

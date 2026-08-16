@@ -176,6 +176,7 @@ footer a{color:var(--kiremit)}
 /* Takımyıldız — gömme kipi (yalnız ?meta=1) */
 body.gomulu .tepe{display:none}
 body.gomulu .sahne{padding-top:10px}
+body.gomulu #skor-gonder{display:none}
 </style>
 </head>
 <body>
@@ -299,6 +300,14 @@ function metaBildir(){
   const hata=Math.max(0,o.deneme-dolu);   // sınırsız tahminde yanlış sayısı = deneme - doğru
   try{ parent.postMessage({kaynak:"atlas",dogru:dolu,toplam:9,hata:hata,bitti:o.bitti}, location.origin); }catch(e){}
 }
+function metaTema(t){ document.body.classList.toggle('gece', t==='gece'); }   // atlas:gece anahtarına yazmaz
+if(GOMULU){
+  if(_MP.has('tema')) metaTema(_MP.get('tema'));
+  window.addEventListener('message',e=>{
+    if(e.origin!==location.origin) return;
+    const v=e.data; if(v&&v.tip==='tema') metaTema(v.tema);
+  });
+}
 
 /* ---------- durum ---------- */
 let mod='dunya';
@@ -340,7 +349,13 @@ function kurOyun(m,puz){
   return {p,enb,cells,deneme:0,kullanildi:new Set(),bitti:false,secili:null};
 }
 function yukleKayit(m){
-  if(GOMULU) return null;   // gömülü kipte Atlas kendi kaydını kullanmaz (çakışmasın)
+  if(GOMULU){   // gömülü kip: yalnız kendi meta anahtarından oku
+    try{
+      const s=JSON.parse(localStorage.getItem('atlas:meta:'+((_METAB!==null)?_METAB:GUN)));
+      if(s&&s.cells) return s;
+    }catch(e){}
+    return null;
+  }
   try{
     let raw=localStorage.getItem('atlas:'+m+':'+GUN);
     if(raw==null){
@@ -353,11 +368,14 @@ function yukleKayit(m){
   return null;
 }
 function kaydet(){
-  if(GOMULU) return;                  // gömülü kipte Atlas kendi kaydını yazmaz
   const o=g(); if(o.pratik) return;   // deneme oyunları kaydedilmez
   const kayit={g:GUN,deneme:o.deneme,bitti:o.bitti,
     cells:o.cells.map(row=>row.map(x=>x.ans?{ans:x.ans,puan:x.puan}:null)),
     kullanildi:[...o.kullanildi]};
+  if(GOMULU){   // gömülü kip: meta anahtarına yaz, standalone kaydına dokunma
+    try{localStorage.setItem('atlas:meta:'+((_METAB!==null)?_METAB:GUN),JSON.stringify(kayit));}catch(e){}
+    return;
+  }
   try{localStorage.setItem('atlas:'+mod+':'+GUN,JSON.stringify(kayit));}catch(e){}
 }
 
@@ -679,6 +697,7 @@ $('#gece').onclick=()=>{
   try{localStorage.setItem('atlas:gece',g?'1':'0');}catch(e){}
 };
 (function(){
+  if(GOMULU) return;   // gömülü kipte tema kabuktan gelir, yerel tercih uygulanmaz
   let v=localStorage.getItem('atlas:gece');
   if(v==null){ v=localStorage.getItem('vt_gece'); if(v!=null){ localStorage.setItem('atlas:gece', v); localStorage.removeItem('vt_gece'); } }
   if(v==='1'){document.body.classList.add('gece');$('#gece').textContent='☀️';}
