@@ -118,6 +118,8 @@ body.gece .kutu.gizharf::after{color:#EADAB6}
 body.gece .kutu.k1{background:#6E5A30;border-color:#7E6838}
 .kutu.odak{box-shadow:0 0 0 3px var(--kirmizi-yum),0 0 10px var(--sicak);animation:nabiz 1.1s ease}
 @keyframes nabiz{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+.kutu.vurgu{box-shadow:0 0 0 3px var(--kirmizi),0 0 14px var(--sicak);z-index:2;animation:nabiz .55s ease}
+.thsat{cursor:pointer}
 /* açılmış kelime — senin açtıkların altı çizili (ön-açık/sayılardan ayrılsın) */
 .acik{color:var(--yesil);font-weight:700}
 .govde .acik{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:2px;text-decoration-color:rgba(79,138,76,.55);cursor:pointer}
@@ -541,7 +543,7 @@ function uygula(gBase, gDisp){
       const sim=cos(gvi,t.vi); if(sim>s.best){ s.best=sim; s.bw=gDisp||gBase; if(boxBand(sim)) isi++; }
       if(sim>enSim){ enSim=sim; odak={tag,ix:i}; } } }); }
   if(acilan===0 && odak) S.sonOdak=odak;            // odak nabzı yalnız saf ısı tahmininde
-  return {acilan, sim: acilan?null:(enSim>-2?enSim:null), vekYok:(!vekVar && acilan===0), isi};
+  return {acilan, sim: acilan?null:(enSim>-2?enSim:null), vekYok:(!vekVar && acilan===0), isi, vi:gvi};
 }
 
 // ---- çizim ----
@@ -585,11 +587,21 @@ function thSat(t,ac){
   if(ac){ sag='<span class="ico">🟩</span>+'+t.ac; cls='tt-ac'; }
   else { const b=band(t.sim); sag='<span class="ico">'+(bandIco(b)||'·')+'</span>'+Math.round(t.sim*100); cls='tt-'+(b||'buz'); }
   const yeni=(t.no===S.tahminler.length && !S.bitti)?' yeni':'';
-  return '<div class="thsat'+(ac?' acan':'')+yeni+'"><span class="tk">'+escHTML(t.w)+'</span>'
+  return '<div class="thsat'+(ac?' acan':'')+yeni+'" data-no="'+t.no+'"><span class="tk">'+escHTML(t.w)+'</span>'
     +'<span class="ts '+cls+'">'+sag+'</span></div>';
 }
+function guncelSim(t){   // tahminin ŞU AN açılmamış+vektörlü kutulara en yakın ısısı (ısıttığı kutu açılınca düşer)
+  if(t.vi==null || t.vi<0) return t.sim;
+  let mx=-2;
+  const B=[[S.bSt,S.art.b.toks],[S.gSt,S.art.g.toks]];
+  for(const [st,toks] of B) for(let i=0;i<toks.length;i++){ const s=st[i]; if(s.rev||toks[i].vi<0||toks[i].o) continue;
+    const sm=cos(t.vi,toks[i].vi); if(sm>mx) mx=sm; }
+  return mx>-2?mx:null;
+}
 function thCiz(){
-  const isi=S.tahminler.filter(t=>t.ac===0 && t.sim!=null).sort((a,b)=>b.sim-a.sim);  // sıcaktan soğuğa
+  // ısı tablosu: her tahminin GÜNCEL sim'i (ısıttığı kutu açıldıysa soğur/düşer); soğuyanı gizle
+  const isi=S.tahminler.filter(t=>t.ac===0).map(t=>{ const gs=guncelSim(t); return gs!=null?Object.assign({},t,{sim:gs}):null; })
+              .filter(t=>t && band(t.sim)).sort((a,b)=>b.sim-a.sim);
   const acan=S.tahminler.filter(t=>t.ac>0).sort((a,b)=>b.ac-a.ac || a.no-b.no);
   $('thSay').textContent=isi.length||'';
   $('thListe').innerHTML=isi.length?isi.map(t=>thSat(t,false)).join(''):'<div class="th-bos">henüz yaklaşan tahmin yok</div>';
@@ -603,19 +615,33 @@ let mesajZaman;
 function mesajVer(t,sure){ const el=$('mesaj'); el.textContent=t; el.style.opacity=1; clearTimeout(mesajZaman);
   if(t) mesajZaman=setTimeout(()=>{el.style.opacity=0;},sure||2600); }
 
+// bir tahminin ışıttığı (açılmamış) kutuları metinde 3 sn vurgula — tabloda tıklayınca / tekrar yazınca
+let vurguZaman;
+function tahminVurgula(t){
+  document.querySelectorAll('.kutu.vurgu').forEach(e=>e.classList.remove('vurgu'));
+  if(!t || t.vi==null || t.vi<0) return 0;
+  let n=0;
+  for(const [tag,st,toks] of [['b',S.bSt,S.art.b.toks],['g',S.gSt,S.art.g.toks]])
+    for(let i=0;i<toks.length;i++){ const s=st[i]; if(s.rev||toks[i].vi<0||toks[i].o) continue;
+      if(boxBand(cos(t.vi,toks[i].vi))){ const el=document.querySelector('[data-k="'+tag+i+'"]'); if(el){ el.classList.add('vurgu'); n++; } } }
+  clearTimeout(vurguZaman); vurguZaman=setTimeout(()=>{ document.querySelectorAll('.kutu.vurgu').forEach(e=>e.classList.remove('vurgu')); },3000);
+  return n;
+}
+
 function tahminYap(ham, hint){
   if(S.bitti) return;
   const gBase=baseForm(ham);
   if(!gBase){ return; }
-  if(!hint && S.tahminler.find(t=>t.base===gBase)){ mesajVer('bunu zaten denedin'); return; }
   const gDisp=trLower(ham.trim());
+  if(!hint){ const onceki=S.tahminler.find(t=>t.base===gBase);
+    if(onceki){ mesajVer('"'+gDisp+'" zaten denedin'); tahminVurgula(onceki); return; } }
   const r=uygula(gBase, gDisp);
-  if(r.vekYok && r.acilan===0){ mesajVer('bu kelimeyi bilmiyorum 🤷',9000); kelimeBayrak(gDisp,'parsel',S.mod==='gun'?S.gunNo:''); return; }   // sayma, listeye ekleme
+  if(r.vekYok && r.acilan===0){ mesajVer('"'+gDisp+'" diye bir kelime bilmiyorum 🤷',9000); kelimeBayrak(gDisp,'parsel',S.mod==='gun'?S.gunNo:''); return; }   // sayma, listeye ekleme
   mesajVer('');
   // odak/yeni işaretle
   for(const grp of S.sonAcan){ const st=grp.tag==='b'?S.bSt:S.gSt; for(const i of grp.ix) st[i]._yeni=true; }
   if(S.sonOdak){ (S.sonOdak.tag==='b'?S.bSt:S.gSt)[S.sonOdak.ix]._odak=true; }
-  S.tahminler.push({w:gDisp, base:gBase, no:S.tahminler.length+1, ac:r.acilan, sim:(r.sim===1?null:r.sim), hint:!!hint});
+  S.tahminler.push({w:gDisp, base:gBase, no:S.tahminler.length+1, ac:r.acilan, sim:(r.sim===1?null:r.sim), hint:!!hint, vi:r.vi});
   ozetCiz(gDisp, r.acilan, r.isi);
   // kazanma: gerekli başlık kelimeleri açık mı?
   if(!S.bitti && basTamam()){ S.bitti=true; basligiTamamla(); }
@@ -931,6 +957,10 @@ $('skEkleBtn').addEventListener('click',skBeniEkle);
 // oynarken: kutuya tıkla → harf sayısı · oyun bitince: kelimeye tıkla → bu neydi & en yakın tahmin
 $('kGovde').addEventListener('click',kagitTik);
 $('kBaslik').addEventListener('click',kagitTik);
+function tabloTik(e){ const sat=e.target.closest('.thsat[data-no]'); if(!sat) return;
+  const t=S.tahminler.find(x=>x.no==sat.dataset.no); if(t) tahminVurgula(t); }
+$('thListe').addEventListener('click',tabloTik);
+$('acListe').addEventListener('click',tabloTik);
 document.addEventListener('click',e=>{ if(!e.target.closest('.kagit')) eliGizle(); });
 window.addEventListener('scroll',eliGizle,{passive:true});
 
