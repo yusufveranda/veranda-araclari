@@ -401,10 +401,14 @@ const SOFT = {'p':['b'],'ç':['c'],'t':['d'],'k':['ğ','g']};
 function suffixOK(r){ return r.length>0 && SUFFIX.has(r); }
 // b, a tabanına (olası sınır yumuşamasıyla) bir ek eklenerek elde edilir mi?
 function extend(a,b){
-  if(b.length>a.length && b.startsWith(a) && suffixOK(b.slice(a.length))) return true;
+  // kısa kök (≤3) + kısa ek (≤2) = BELİRSİZ: bal→balta, göz→gözde, kar→karma ayrı kelimeler, çekim değil → açma.
+  // (uzun ek göz→gözler ve uzun kök deniz→denize korunur)
+  if(b.length>a.length && b.startsWith(a) && suffixOK(b.slice(a.length)))
+    return !(a.length<=3 && b.length-a.length<=2);
   const last=a[a.length-1], alts=SOFT[last];
   if(alts) for(const s of alts){ const a2=a.slice(0,-1)+s;
-    if(b.length>a2.length && b.startsWith(a2) && suffixOK(b.slice(a2.length))) return true; }
+    if(b.length>a2.length && b.startsWith(a2) && suffixOK(b.slice(a2.length)))
+      return !(a2.length<=3 && b.length-a2.length<=2); }
   return false;
 }
 // aynı gövde, yalnız son ünsüz yumuşak/sert varyantı: mehmet=mehmed, mahmut=mahmud, ahmet=ahmed
