@@ -375,7 +375,7 @@ footer a{color:var(--soluk)}
 const $ = id => document.getElementById(id);
 const TRMAP = {'İ':'i','I':'ı','Ş':'ş','Ğ':'ğ','Ü':'ü','Ö':'ö','Ç':'ç','Â':'â','Î':'î','Û':'û'};
 function trLower(s){ return s.replace(/[İIŞĞÜÖÇÂÎÛ]/g,c=>TRMAP[c]||c).toLowerCase(); }
-const HARFLER = "abcçdefgğhıijklmnoöprsştuüvyzâîû0123456789";   // rakamlar da say → sayı kutusu doğru genişlik
+const HARFLER = "abcçdefgğhıijklmnoöprsştuüvyzâîûqwx0123456789";   // rakamlar + q/w/x (yabancı isimler: Netflix, Wikipedia) → kutu harf sayısı baseForm ile TUTARLI
 function harfSay(s){ let n=0; for(const c of trLower(s)) if(HARFLER.indexOf(c)>=0) n++; return n; }
 function escHTML(s){ return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 const FOLD={'á':'a','à':'a','ä':'a','ã':'a','å':'a','é':'e','è':'e','ê':'e','ë':'e','í':'i','ì':'i','ï':'i','ó':'o','ò':'o','ô':'o','õ':'o','ø':'o','ú':'u','ù':'u','ñ':'n','ý':'y','ž':'z','š':'s','č':'c','ć':'c','ß':'ss','æ':'e','ð':'d','đ':'d','ł':'l','ř':'r','ū':'u'};
