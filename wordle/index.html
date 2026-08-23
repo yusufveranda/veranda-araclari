@@ -615,7 +615,7 @@ const HARF=/^[abcçdefgğhıijklmnoöprsştuüvyz]$/;
 const SIRALAR=["ertyuıopğü","asdfghjklşi","zcvbnmöç"];
 const ISK_UZ=[3,4,5,6,7,8];
 const ARA_UZ=[4,5,6];
-const ARA_BASLANGIC=90, ARA_BONUS=[40,35,30,25,20,15];   // Aralık: başlangıç süresi (90sn) + deneme sayısına göre bonus (1.=40sn … 6.=15sn)
+const ARA_BASLANGIC=120, ARA_BONUS=[30,25,20,15,10,5];   // Aralık: başlangıç süresi (2dk) + deneme sayısına göre bonus (1.=30sn … 6.=5sn)
 const RENKAD={dogru:'dogru',varr:'varr',yok:'yok'};
 const CEVIR_SURE=0.78, CEVIR_GECIKME=0.21;   // flip süresi + sütun gecikmesi (saniye) — %25 daha yavaş
 const REVEAL_NOTA={yok:262, varr:330, dogru:392};  // gri=do4, sarı=mi4, yeşil=sol4
@@ -678,13 +678,23 @@ function altinUz(){ return (mod==='gun'&&oyun==='iskelime') ? ISK_UZ[((oyunGun*2
 /* ===== aralık: kelime akışı ===== */
 // gün modu: uzunluk + kelime, gün numarası + sıradaki indekse göre DETERMİNİSTİK üretilir (herkese aynı sıra).
 // sonsuz modu: tam rastgele. Liste sonsuza uzayabilir (zincirleme 1.-denemede bonuslar süreyi çok uzatabilir), formülün üst sınırı yok.
+// aralikKarma: tam karıştırma (MurmurHash3 fmix32 türevi): basit "a*sabit+b*sabit" toplamları küçük bir moda
+// (ör. %3) bölününce sabit kalabiliyor (40503 tam 3'e bölünüyordu, uzunluk hep aynı geliyordu); bu çift-tur
+// xor/çarpım karıştırması moddan bağımsız iyi dağılım verir.
+function aralikKarma(a,b){
+  let h=(a^Math.imul(b,0x9E3779B1))>>>0;
+  h=Math.imul(h^(h>>>16),0x85ebca6b)>>>0;
+  h=Math.imul(h^(h>>>13),0xc2b2ae35)>>>0;
+  return (h^(h>>>16))>>>0;
+}
 function aralikUzunluk(i){
-  return mod==='gun' ? ARA_UZ[((oyunGun*2654435761 + i*40503)>>>0)%ARA_UZ.length]
+  return mod==='gun' ? ARA_UZ[aralikKarma(oyunGun,i)%ARA_UZ.length]
                       : ARA_UZ[Math.floor(Math.random()*ARA_UZ.length)];
 }
 function aralikSonraki(){
   const L=aralikUzunluk(araIndeks);
-  const cevap = mod==='gun' ? gunlukCevap(L, araIndeks*97+1) : rasgele(L);
+  const havuz=HARF_CEVAP[L];
+  const cevap = mod==='gun' ? havuz[aralikKarma(oyunGun, araIndeks*97+L)%havuz.length] : rasgele(L);
   araIndeks++;
   return yeniTahta(L,cevap);
 }
@@ -1106,7 +1116,7 @@ function introIcerik(o){
     '<p>Her gün bir <b class="altin-et">⭐ altın kelime</b> 2× puan verir; 3·7·8 harfliler 1.5×.</p>'};
   if(o==='aralik') return {bas:'aralık nasıl oynanır?', html:
     '<p>Kelimeler <b>art arda</b> gelir, uzunlukları <b>4 ile 6 harf</b> arası değişir. Her kelimenin <b>6 deneme</b> hakkı var.</p>'+
-    '<p>Süre <b>90 saniyeyle</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +40sn</b>, 2.de +35sn, 3.te +30sn, 4.te +25sn, 5.te +20sn, 6.da +15sn.</p>'+
+    '<p>Süre <b>2 dakikayla</b> başlar. Bir kelimeyi ne kadar az denemede çözersen o kadar çok süre kazanırsın: <b>1. denemede +30sn</b>, 2.de +25sn, 3.te +20sn, 4.te +15sn, 5.te +10sn, 6.da +5sn.</p>'+
     '<p>Çözemezsen süreden bir şey eksilmez, sıradaki kelimeye geçilir. <b>Süre bitince oyun biter</b>; amaç, süre dolmadan en çok kelimeyi çözmek.</p>'};
   if(o==='anlamca') return {bas:'avlu nasıl oynanır?', html:
     '<p>Önce bir <b>çağrışım</b> kelimesi verilir (örn. <i>engin</i>); 2. tahminden sonra bir de <b>yakın anlam</b> eklenir (örn. <i>derya</i>).</p>'+
