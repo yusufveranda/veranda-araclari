@@ -699,7 +699,7 @@ function tekrarUygula(){
         const hi=parseInt(t.base.slice(4),10);
         if(S.bSt[hi]){ S.bSt[hi].rev=true; const kb=S.bSt[hi].base;
           for(let i=0;i<S.art.g.toks.length;i++){ const s=S.gSt[i]; if(!s.rev&&acmaEslesir(kb,s.base)) s.rev=true; } } }
-    } else uygula(t.base, t.w);
+    } else { const r=uygula(t.base, t.w); t.vi=r.vi; }   // rehydrate'te tahmin vi'sini geri kur (highlight/guncelSim için)
   }
   S.sonAcan=[]; S.sonOdak=null;
 }
