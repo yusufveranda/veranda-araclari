@@ -3,8 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <link rel="manifest" href="manifest.json">
-<script src="../ortak/analitik.js"></script>
+<script defer src="../ortak/analitik.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Dizin indirmesi burada başlar: app.js'in inip çalışmasını beklemez, üstelik
+     meta ile iki dizin sıraya girmeden aynı anda gelir. -->
+<script>
+window.__veri = {
+  meta: fetch('data/meta.json',       {cache:'no-cache'}).then(r=>r.json()),
+  en:   fetch('data/index.en.json',   {cache:'no-cache'}).then(r=>r.json()),
+  tr:   fetch('data/index.tr.json',   {cache:'no-cache'}).then(r=>r.json())
+};
+</script>
 <title>karşılık — ingilizce ↔ türkçe sözlük</title>
 <meta name="description" content="İngilizce–Türkçe, Türkçe–İngilizce sözlük. Her anlamı bağlamına göre; deyimler, öbek fiiller ve örnek cümlelerle. Hızlı, hatayı ve Türkçe ekleri affeden arama.">
 <meta property="og:image" content="https://verandatools.com/gorsel/karsilik.jpg">
@@ -75,7 +84,7 @@
   </footer>
 
 </div>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 <script src="../ortak/nav-panel.js"></script>
 </body>
 </html>

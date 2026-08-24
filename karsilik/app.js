@@ -246,13 +246,17 @@ function search(q, limit){
 /* ----------------------------------------------------------------- veri yükleme */
 let DV = '';                                  // veri sürüm etiketi (cache-bust)
 async function loadIndexes(){
-  // meta her zaman tazeden doğrulansın (küçük dosya) → build damgasını al
-  meta = await fetch('data/meta.json', {cache: 'no-cache'}).then(r => r.json());
-  DV = '?v=' + (meta.build || meta.version || '');
-  const [en, tr] = await Promise.all([
-    fetch('data/index.en.json' + DV).then(r => r.json()),
-    fetch('data/index.tr.json' + DV).then(r => r.json())
+  // İndirmeler index.html'in <head>'inde başlatılır; burada yalnız beklenir.
+  // Üçü de paralel: meta'yı bekleyip sonra dizinleri istemek bir gidiş-dönüş kaybettiriyordu.
+  // Dizinler ?v= yerine no-cache ile doğrulanır → değişmediyse 304, gövde yeniden inmez.
+  const v = window.__veri || {};
+  const [m, en, tr] = await Promise.all([
+    v.meta || fetch('data/meta.json',     {cache: 'no-cache'}).then(r => r.json()),
+    v.en   || fetch('data/index.en.json', {cache: 'no-cache'}).then(r => r.json()),
+    v.tr   || fetch('data/index.tr.json', {cache: 'no-cache'}).then(r => r.json())
   ]);
+  meta = m;
+  DV = '?v=' + (meta.build || meta.version || '');   // girdi kovaları için cache damgası
   records.en = en.words.map(w => toRec(w, 'en'));
   records.tr = tr.words.map(w => toRec(w, 'tr'));
   for(const dir of ['en', 'tr'])
