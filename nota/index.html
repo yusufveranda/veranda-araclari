@@ -432,6 +432,43 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .lane-blok.secili.oynuyor{box-shadow:0 0 0 2px var(--acc),0 10px 26px rgba(0,0,0,.6)}
 .lane-blok.secili .lb-ad{font-size:19px;margin-bottom:14px}
 .lane-blok.secili .lb-sure{top:4px;right:5px;font-size:12px;padding:0 7px;line-height:1.7;border-radius:7px}
+.tp-tap{padding:7px 13px;margin-left:-8px}
+.tp-tap:hover{color:var(--acc);border-color:var(--acc)}
+.tp-tap:active{background:var(--acc-soft)}
+.ll-yedek{display:flex;gap:6px;align-items:center}
+.ll-yedek button{border:1px solid var(--line);border-radius:14px;padding:7px 12px;font-size:12.5px;color:var(--muted);background:var(--bg);white-space:nowrap}
+.ll-yedek button:hover{color:var(--acc);border-color:var(--acc)}
+.lane-alt{display:flex;align-items:center;gap:3px}
+.lane-alt .lane-vol-sar{flex:1;min-width:0}
+.lane-ms{flex:0 0 auto;width:19px;height:18px;padding:0;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--muted);font-family:Georgia,serif;font-size:10.5px;font-weight:700;line-height:1}
+.lane-ms:hover{color:var(--ink);border-color:var(--acc)}
+.lane-ms.on{background:var(--vurgu);border-color:var(--vurgu);color:#f3e4c7}
+.lane-ms.solo.on{background:var(--acc);border-color:var(--acc);color:#150c08}
+.lane-perc-rozet{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.lane.susuk .lane-track{opacity:.38}
+.cetvel{height:44px}
+.cetvel-bas{flex-wrap:wrap;align-content:center;row-gap:3px;padding:2px 9px}
+.cetvel-bas button{height:18px;font-size:11px}
+.cv-bolum-ekle{flex:1 0 100%;height:16px!important;font-size:10px!important;letter-spacing:.02em}
+.cetvel-iz{background-position:0 22px,0 34px}
+.cv-olcu{top:24px}
+.cv-bolum{position:absolute;top:2px;z-index:2;display:inline-flex;align-items:center;gap:2px;height:18px;padding:0 3px 0 7px;border-radius:0 9px 9px 0;border-left:2px solid var(--acc);background:rgba(232,154,78,.16);color:var(--ink);font-size:11px;white-space:nowrap;cursor:pointer;user-select:none}
+.cv-bolum b{font-family:'Playfair Display',Georgia,serif;font-weight:600;padding-right:4px}
+.cv-bolum button{display:none;width:16px;height:16px;padding:0;border:none;border-radius:50%;background:rgba(0,0,0,.35);color:var(--ink);font-size:10px;line-height:1}
+.cv-bolum:hover{background:rgba(232,154,78,.3);z-index:3}
+.cv-bolum:hover button{display:inline-block}
+.cv-bolum button:hover{background:var(--acc);color:#150c08}
+.cv-bolge{display:none;position:absolute;top:22px;bottom:0;box-sizing:border-box;background:rgba(192,52,27,.28);border-left:2px solid var(--vurgu);border-right:2px solid var(--vurgu);pointer-events:none}
+.cv-bolge-sil{position:absolute;top:2px;right:2px;width:16px;height:16px;padding:0;border:none;border-radius:50%;background:var(--vurgu);color:#f3e4c7;font-size:10px;line-height:1;pointer-events:auto}
+.bolge-serit{display:none;position:absolute;top:44px;bottom:-8px;box-sizing:border-box;background:rgba(192,52,27,.07);border-left:1px solid rgba(192,52,27,.6);border-right:1px solid rgba(192,52,27,.6);pointer-events:none;z-index:1}
+.lane-blok.strumlu:not(.secili)::before{content:"↓↑";position:absolute;top:1px;left:3px;font-size:9px;font-weight:700;line-height:1;letter-spacing:-1px;color:var(--acc)}
+.ap-alt.ap-ilk{margin-top:2px}
+.ap-alt{display:flex;align-items:baseline}
+.ap-alt .ap-sifir{margin-left:auto;font-weight:400}
+.ap-strum,.ap-kalip{font-family:Georgia,serif;font-size:12px;padding:5px 9px;letter-spacing:.02em}
+.ap-strum.on{background:var(--acc);border-color:var(--acc);color:#150c08}
+.ap-kaliplar{margin-bottom:8px}
+.basla-im::before{content:"";top:21px;left:-7px;padding:0;border-radius:0;background:none;border:6px solid transparent;border-top:8px solid var(--acc)}
 .okuma,.panel,.enstruman,.looper-ust,.loop-lib,.lanes,.drum-panel{
   background-image:var(--ahsap-doku);background-size:300px 205px}
 
@@ -697,8 +734,10 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
         <button class="tp" id="lpPlay" type="button">▶ Çal</button>
         <button class="tp dur" id="lpStop" type="button">■ Dur</button>
         <label>BPM <input type="range" id="lpBpm" min="60" max="180" value="100" step="1"><span id="lpBpmVal">100</span></label>
+        <button class="tp-temizle tp-tap" id="lpTap" type="button" title="tempoyu vurarak gir (T tuşu)">Tap</button>
         <label class="sw"><input type="checkbox" id="lpLoop" checked> Döngü</label>
         <label class="sw"><input type="checkbox" id="lpDrum"> Ritim</label>
+        <label class="sw" title="çalmadan önce 1 ölçü sayar"><input type="checkbox" id="lpSayim"> Sayım</label>
         <div class="ab-grup">
           <span class="ab-lab">Anlık</span>
           <button class="ab-tus" id="abA" type="button">A</button>
@@ -711,7 +750,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
         <span class="havuz-bas">Havuz <small>(tıkla → seçili çıkış kanalına ekle + ön dinleme)</small></span>
         <div class="havuz" id="havuz"></div>
       </div>
-      <div class="lp-ipucu">Tıkla seç &amp; çal · <b>1–0</b> akor ekle (seçilinin sağına) · <b>WASD</b> gez · <b>←/→</b> taşı · <b>↑/↓</b> süre · <b>Q</b> arpej · <b>Ctrl/Cmd+C/V</b> kopyala/yapıştır · <b>Ctrl/Cmd+Z</b> geri al · <b>Backspace</b> sil · <b>Boşluk</b> çal/dur · <b>Shift+Boşluk</b> seçili bloktan çal · <b>cetvele tıkla</b> oradan başlat · <b>tekerlek</b> ya da <b>sürükle</b> kaydır</div>
+      <div class="lp-ipucu">Tıkla seç &amp; çal · <b>1–0</b> akor ekle (seçilinin sağına) · <b>WASD</b> gez · <b>←/→</b> taşı · <b>↑/↓</b> süre · <b>Q</b> arpej · <b>Ctrl/Cmd+C/V</b> kopyala/yapıştır · <b>Ctrl/Cmd+Z</b> geri al · <b>Backspace</b> sil · <b>Boşluk</b> çal/dur · <b>Shift+Boşluk</b> seçili bloktan çal · <b>cetvele tıkla</b> oradan başlat · <b>cetvelde sürükle</b> döngü bölgesi · <b>T</b> tap tempo · <b>tekerlek</b> ya da <b>sürükle</b> kaydır</div>
     </section>
     <div class="iz-arac">
       <button class="iz-ekle" id="izGitar" type="button">+ Gitar kanalı</button>
@@ -730,6 +769,11 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opa
         <div class="ll-kaydet">
           <input id="loopAd" type="text" placeholder="döngü adı…" maxlength="40" autocomplete="off">
           <button id="loopKaydetBtn" type="button">💾 Kaydet</button>
+        </div>
+        <div class="ll-yedek" title="döngüler ve kayıtlı akorlar yalnız bu tarayıcıda durur; yedek dosyası onları korur">
+          <button id="yedekIndir" type="button">⬇ Yedek indir</button>
+          <button id="yedekYukle" type="button">⬆ Yedek yükle</button>
+          <input id="yedekDosya" type="file" accept="application/json,.json" hidden>
         </div>
       </div>
       <div class="ll-list" id="loopList"></div>
@@ -829,7 +873,7 @@ const state = {
    tracks: [{ id, instrument:'gitar'|'piyano', vol:0..1, blocks:[ blok ] }]
    blok her zaman HEM gFrets HEM pMidis taşır → kanal enstrümanı hangisini çalacağını seçer.
    selId = seçili BLOK id'si (kanallar arası benzersiz) · activeTrackId = ekleme hedefi kanal */
-const looper = { tracks: [], bpm: 100, loop: true, drum: false, playing: false, selId: null, activeTrackId: null, calan: {}, startBeat: 0, takipDur: 0 };
+const looper = { tracks: [], bpm: 100, loop: true, drum: false, playing: false, selId: null, activeTrackId: null, calan: {}, startBeat: 0, takipDur: 0, bolge: null, sayim: false, bolumler: [] };
 let trackId = 0, blokId = 0, clip = null;     // clip = kopyalanan blok (Ctrl+C/V)
 const gecmis = [];               // geri al (Ctrl/Cmd+Z) yığını
 const DUR_BEATS = [0.5, 1, 2, 3, 4, 8, 16];                                    // ölçü: ⅛ ¼ ½ ¾ 1 2 4 (1 ölçü = 4 vuruş)
@@ -837,7 +881,7 @@ const DUR_AD = { 0.5: '⅛', 1: '¼', 2: '½', 3: '¾', 4: '1', 8: '2', 16: '4' 
 const ZOOMLAR = [14, 20, 28, 40, 60, 84];                                      // piksel/vuruş kademeleri (cetveldeki − / +)
 let PXB = 28;                                                                  // varsayılan: kompakt (şarkının tamamı görünsün)
 try { const z = +localStorage.getItem('nota:zoom'); if (ZOOMLAR.includes(z)) PXB = z; } catch {}
-const SEC_MIN_W = 136;                                                         // seçili blok en az bu kadar genişler (araçları sığsın)
+const SEC_MIN_W = 150;                                                         // seçili blok en az bu kadar genişler (araçları sığsın)
 const LABEL_W = 124;                                                 // piksel/vuruş + kanal başlığı (enstrüman+ses+sil) genişliği
 const escapeHtml = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function load(){ try { const v=localStorage.getItem('nota:favoriler'); if(v!=null) return JSON.parse(v)||[]; const eski=localStorage.getItem('nota-favoriler'); if(eski!=null){ localStorage.setItem('nota:favoriler', eski); localStorage.removeItem('nota-favoriler'); return JSON.parse(eski)||[]; } return []; } catch { return []; } }
@@ -1550,10 +1594,11 @@ function favVoicing(f){
 }
 /* ----- geri al (Ctrl/Cmd+Z) ----- */
 const dkopya = a => JSON.parse(JSON.stringify(a));
-function gecmisAl(){ gecmis.push({ tracks: dkopya(looper.tracks), sel: looper.selId, act: looper.activeTrackId }); if (gecmis.length > 80) gecmis.shift(); }
+function gecmisAl(){ gecmis.push({ tracks: dkopya(looper.tracks), sel: looper.selId, act: looper.activeTrackId, bol: dkopya(looper.bolumler) }); if (gecmis.length > 80) gecmis.shift(); }
 function geriAl(){
   const s = gecmis.pop(); if (!s) return;
   looper.tracks = dkopya(s.tracks); looper.selId = s.sel; looper.activeTrackId = s.act; idleriTazele();
+  if (s.bol) looper.bolumler = s.bol;
   if (looper.playing) looperBaslat();
   lanesCiz(); gamCiz(); blokGorunur();
 }
@@ -1611,6 +1656,26 @@ function trackTetikle(tr, midis, time){
   if (tr.instrument === 'gitar') ms.forEach((m, i) => pluk(m, time + i * 0.06, tr.vol, '2n'));           // strum (akustik Sampler)
   else ms.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '1n', time + i * 0.02, tr.vol));
 }
+/* ----- vuruş desenleri: sekizlik ızgarada D (aşağı) / U (yukarı) / - (boş); 4 vuruşluk ölçüde yinelenir ----- */
+const STRUMLAR = [
+  { id: '', ad: 'tek vuruş', d: null },
+  { id: 'd4', ad: '↓ ↓ ↓ ↓', d: 'D-D-D-D-' },
+  { id: 'du8', ad: '↓↑↓↑↓↑↓↑', d: 'DUDUDUDU' },
+  { id: 'pop', ad: '↓ ↓↑ ↑↓↑', d: 'D-DU-UDU' },
+  { id: 'balad', ad: '↓ ↓ ↓↑↓↑', d: 'D-D-DUDU' },
+  { id: 'ters', ad: '· ↓ · ↓', d: '--D---D-' },
+];
+function strumVur(tr, midis, time, yon){
+  const ms = [...midis].sort((a, b) => a - b); if (!ms.length) return;
+  const yukari = yon === 'U';
+  if (tr.instrument === 'gitar'){                            // yukarı vuruş: yalnız ince teller, tizden pese, daha hafif
+    const dizi = yukari ? ms.slice(-Math.min(4, ms.length)).reverse() : ms;
+    dizi.forEach((m, i) => pluk(m, time + i * 0.014, tr.vol * (yukari ? 0.68 : 1), '4n'));
+  } else {
+    const dizi = yukari ? ms.slice(-Math.min(3, ms.length)) : ms;
+    dizi.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '4n', time + i * 0.008, tr.vol * (yukari ? 0.62 : 1)));
+  }
+}
 /* bir bloğun KENDİ kanal enstrümanını anında çal (ön dinleme; es ise sessiz) */
 function blokSesCal(blk, tr){
   if (blk.rest) return;
@@ -1624,7 +1689,7 @@ function blokNesne(f, ref){
   const v = favVoicing(f);
   return { id: ++blokId, symbol: f.symbol || null, label: f.label, noteNames: f.noteNames || [],
     gFrets: v.gFrets.map(x => ({ ...x })), pMidis: v.pMidis.slice(), dur: ref ? ref.dur : 4,
-    arp: ref ? !!ref.arp : false, hits: ref && ref.hits ? ref.hits : 4 };
+    arp: ref ? !!ref.arp : false, hits: ref && ref.hits ? ref.hits : 4, strum: (ref && ref.strum) || '' };
 }
 /* ekleme hedefi DAİMA AKTİF KANAL (W/S ya da tıkla ile seçilen şerit):
    seçili blok aktif kanaldaysa onun SAĞINA, değilse aktif kanalın SONUNA */
@@ -1763,7 +1828,7 @@ function laneCiz(tr, host){
       el.querySelector('.lb-sil').onclick = e => { e.stopPropagation(); blokSil(tr, arr.indexOf(b)); };
       host.appendChild(el); return;
     }
-    el.className = ortak + (b.arp ? ' arpli' : '') + (b.rest ? ' rest' : '');
+    el.className = ortak + (b.arp ? ' arpli' : '') + (b.rest ? ' rest' : '') + (b.strum && !b.arp && !b.rest ? ' strumlu' : '');
     // akor adı + SÜRE rozeti (ölçü) + arpej vuruş seçici (1-16, yalnız arpejli blokta); düzenleme: arpej + ×. Es blokta yok.
     const arpBtn = b.rest ? '' : `<button class="lb-arp${b.arp ? ' on' : ''}" title="arpej (Q)">≈</button>`;
     const hits = Math.max(1, Math.min(16, b.hits || 4));
@@ -1771,7 +1836,7 @@ function laneCiz(tr, host){
       ? `<select class="lb-hit" title="arpej vuruş sayısı (1–16): blok boyunca eşit dağılır">${Array.from({ length: 16 }, (_, k) => `<option value="${k + 1}"${hits === k + 1 ? ' selected' : ''}>≈${k + 1}</option>`).join('')}</select>`
       : '';
     const sureRozet = b.rest ? '' : `<span class="lb-sure" title="süre: ${DUR_AD[b.dur]} ölçü (↑/↓ değiştir)">${DUR_AD[b.dur]}<i>ölçü</i></span>`;
-    const disliBtn = b.rest ? '' : `<button class="lb-disli" title="arpej sırası ve notaları">⚙</button>`;
+    const disliBtn = b.rest ? '' : `<button class="lb-disli" title="çalış biçimi: vuruş deseni, arpej sırası">⚙</button>`;
     const havuzBtn = (!b.rest && !akorHavuzdaMi(b)) ? `<button class="lb-havuz" title="bu akoru havuza ekle (↑)">↑</button>` : '';
     el.innerHTML = `<span class="lb-ad">${b.rest ? '·' : escapeHtml(b.label)}</span>${sureRozet}${hitSec}
       <div class="lb-eylem">${arpBtn}${disliBtn}${havuzBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div>`;
@@ -1802,30 +1867,55 @@ function lanesCiz(){
   }
   const sarkiT = Math.max(0, ...looper.tracks.map(t => t.blocks.reduce((s, b) => s + b.dur, 0)));
   if (looper.startBeat >= sarkiT) looper.startBeat = 0;
-  if (looper.tracks.length){                                   // ===== zaman cetveli (ölçü numaraları; tıkla/sürükle → başlangıç) =====
+  if (looper.bolge){                                           // şarkı kısaldıysa bölgeyi kırp
+    looper.bolge.b = Math.min(looper.bolge.b, maxT);
+    if (looper.bolge.a >= looper.bolge.b) looper.bolge = null;
+  }
+  if (looper.tracks.length){                                   // ===== zaman cetveli: bölümler (üst) + ölçüler (alt) =====
     const cet = document.createElement('div'); cet.className = 'cetvel';
     let olcu = '';
     for (let i = 0; i * 4 < maxT; i++) olcu += `<span class="cv-olcu" style="left:${i * 4 * PXB}px">${i + 1}</span>`;
+    const bolumHTML = looper.bolumler.map((bl, i) => bl.beat < maxT
+      ? `<span class="cv-bolum" data-i="${i}" style="left:${bl.beat * PXB}px" title="tıkla: buradan çal · çift tıkla: adını değiştir"><b>${escapeHtml(bl.ad)}</b><button type="button" data-is="cogalt" title="bu bölümü çoğalt">⧉</button><button type="button" data-is="sil" title="etiketi kaldır">×</button></span>` : '').join('');
     const zi = ZOOMLAR.indexOf(PXB);
     cet.innerHTML = `<div class="cetvel-bas"><button type="button" class="cv-basa" title="başlangıcı en başa al (Home)">⏮</button>
-        <span class="cv-zoom"><button type="button" data-z="-1" title="uzaklaş (Ctrl/Cmd + tekerlek)"${zi <= 0 ? ' disabled' : ''}>−</button><button type="button" data-z="1" title="yakınlaş (Ctrl/Cmd + tekerlek)"${zi >= ZOOMLAR.length - 1 ? ' disabled' : ''}>+</button></span></div>
-      <div class="cetvel-iz" title="tıkla ya da sürükle: çalmaya buradan başla" style="width:${trackW}px;background-size:${PXB * 4}px 100%,${PXB}px 100%">${olcu}</div>`;
+        <span class="cv-zoom"><button type="button" data-z="-1" title="uzaklaş (Ctrl/Cmd + tekerlek)"${zi <= 0 ? ' disabled' : ''}>−</button><button type="button" data-z="1" title="yakınlaş (Ctrl/Cmd + tekerlek)"${zi >= ZOOMLAR.length - 1 ? ' disabled' : ''}>+</button></span>
+        <button type="button" class="cv-bolum-ekle" title="başlangıç noktasının ölçüsüne bölüm etiketi koy (Giriş, Kıta, Nakarat)">+ bölüm</button></div>
+      <div class="cetvel-iz" title="tıkla: buradan başla · sürükle: döngü bölgesi" style="width:${trackW}px;background-size:${PXB * 4}px 100%,${PXB}px 100%">${olcu}${bolumHTML}<div class="cv-bolge" id="cvBolge"><button type="button" class="cv-bolge-sil" title="döngü bölgesini kaldır">×</button></div></div>`;
     cet.querySelector('.cv-basa').onclick = e => { e.currentTarget.blur(); baslaAyarla(0, true); };
     cet.querySelectorAll('.cv-zoom button').forEach(z => z.onclick = e => { e.currentTarget.blur(); zoomDegis(+z.dataset.z); });
+    cet.querySelector('.cv-bolum-ekle').onclick = e => { e.currentTarget.blur(); bolumEkle(); };
+    cet.querySelectorAll('.cv-bolum').forEach(el => {
+      const i = +el.dataset.i;
+      el.onclick = e => { const is = e.target.dataset && e.target.dataset.is; if (is === 'sil') bolumSil(i); else if (is === 'cogalt') bolumCogalt(i); else baslaAyarla(looper.bolumler[i].beat, true); };
+      el.ondblclick = e => { e.stopPropagation(); if (!e.target.dataset.is) bolumAd(i); };
+    });
     const iz = cet.querySelector('.cetvel-iz');
     const vurus = e => Math.round((e.clientX - iz.getBoundingClientRect().left) / PXB);
     iz.onpointerdown = e => {
       if (e.button) return;
+      if (e.target.closest('.cv-bolge-sil')){ looper.bolge = null; bolgeCiz(); if (looper.playing) looperBaslat(); return; }
+      if (e.target.closest('.cv-bolum')) return;               // etiket kendi tıklamasını işler
       e.preventDefault(); iz.setPointerCapture(e.pointerId);
-      baslaAyarla(vurus(e), false);
-      iz.onpointermove = ev => baslaAyarla(vurus(ev), false);
-      iz.onpointerup = iz.onpointercancel = () => { iz.onpointermove = iz.onpointerup = iz.onpointercancel = null; if (looper.playing) looperBaslat(true); };
+      const v0 = vurus(e); let surukle = false;
+      iz.onpointermove = ev => {                               // sürükleme = döngü bölgesi
+        const v = vurus(ev); if (!surukle && v === v0) return;
+        surukle = true;
+        const a = Math.max(0, Math.min(v0, v)), b = Math.min(maxT, Math.max(v0, v));
+        looper.bolge = b > a ? { a, b } : null; bolgeCiz();
+      };
+      iz.onpointerup = iz.onpointercancel = () => {
+        iz.onpointermove = iz.onpointerup = iz.onpointercancel = null;
+        if (!surukle) baslaAyarla(v0, false);                  // tek tık = başlangıç noktası
+        else if (looper.bolge){ looper.startBeat = looper.bolge.a; baslaCiz(); }
+        if (looper.playing) looperBaslat(true);
+      };
     };
     ic.appendChild(cet);
   }
   looper.tracks.forEach(tr => {
     const lane = document.createElement('div');
-    lane.className = 'lane' + (tr.id === looper.activeTrackId ? ' aktif' : '');
+    lane.className = 'lane' + (tr.id === looper.activeTrackId ? ' aktif' : '') + (duyulur(tr) ? '' : ' susuk');
     lane.dataset.k = tr.instrument;
     const bas = document.createElement('div'); bas.className = 'lane-bas';
     const ustIc = tr.instrument === 'perc'
@@ -1836,10 +1926,11 @@ function lanesCiz(){
        </div>`;
     bas.innerHTML =
       `<div class="lane-ust">${ustIc}<button class="lane-sil" title="kanalı sil">×</button></div>
-       <label class="lane-vol-sar" title="ses düzeyi"><span>🔉</span><input type="range" class="lane-vol" min="0" max="1" step="0.01" value="${tr.vol}"></label>`;
+       <div class="lane-alt"><label class="lane-vol-sar" title="ses düzeyi"><span>🔉</span><input type="range" class="lane-vol" min="0" max="1" step="0.01" value="${tr.vol}"></label><button class="lane-ms${tr.mute ? ' on' : ''}" data-ms="mute" title="sustur">M</button><button class="lane-ms solo${tr.solo ? ' on' : ''}" data-ms="solo" title="solo: yalnız bu kanal">S</button></div>`;
     bas.onclick = e => { if (e.target.closest('button') || e.target.closest('input')) return; looper.activeTrackId = tr.id; lanesCiz(); };
     bas.querySelectorAll('.lane-enst button').forEach(b => b.onclick = e => { e.stopPropagation(); b.blur(); trackEnstruman(tr.id, b.dataset.i); });
     bas.querySelector('.lane-sil').onclick = e => { e.stopPropagation(); e.currentTarget.blur(); trackSil(tr.id); };
+    bas.querySelectorAll('.lane-ms').forEach(m => m.onclick = e => { e.stopPropagation(); m.blur(); tr[m.dataset.ms] = !tr[m.dataset.ms]; lanesCiz(); });   // çalarken anında etkir (yeniden başlatma yok)
     const vol = bas.querySelector('.lane-vol'); vol.oninput = e => trackVol(tr.id, +e.target.value);
     lane.appendChild(bas);
     const trk = document.createElement('div'); trk.className = 'lane-track'; trk.dataset.tid = tr.id; trk.style.minWidth = trackW + 'px';
@@ -1848,7 +1939,66 @@ function lanesCiz(){
     ic.appendChild(lane);
   });
   if (ph) ic.appendChild(ph); else { const p = document.createElement('div'); p.className = 'playhead'; p.id = 'playhead'; ic.appendChild(p); }
-  if (looper.tracks.length){ const im = document.createElement('div'); im.className = 'basla-im'; im.id = 'baslaIm'; ic.appendChild(im); baslaCiz(); }
+  if (looper.tracks.length){
+    const im = document.createElement('div'); im.className = 'basla-im'; im.id = 'baslaIm'; ic.appendChild(im); baslaCiz();
+    const se = document.createElement('div'); se.className = 'bolge-serit'; se.id = 'bolgeSerit'; ic.appendChild(se); bolgeCiz();
+  }
+}
+/* kanal duyulur mu: susturulmamış VE (solo yoksa ya da kendisi solo) */
+function duyulur(tr){ return !tr.mute && (!looper.tracks.some(t => t.solo) || !!tr.solo); }
+/* ----- döngü bölgesi (cetvelde sürükle): Döngü açıkken yalnız bu aralık döner ----- */
+function bolgeCiz(){
+  const c = $('#cvBolge'), se = $('#bolgeSerit'), g = looper.bolge;
+  if (c){ c.style.display = g ? 'block' : 'none'; if (g){ c.style.left = (g.a * PXB) + 'px'; c.style.width = ((g.b - g.a) * PXB) + 'px'; } }
+  if (se){ se.style.display = g ? 'block' : 'none'; if (g){ se.style.left = (LABEL_W + g.a * PXB) + 'px'; se.style.width = ((g.b - g.a) * PXB) + 'px'; } }
+}
+/* ----- bölüm etiketleri (Giriş / Kıta / Nakarat): cetvelin üst satırı; döngüyle birlikte kaydedilir ----- */
+const BOLUM_ADLARI = ['Giriş', 'Kıta', 'Nakarat', 'Kıta', 'Nakarat', 'Köprü', 'Çıkış'];
+function bolumSirala(){ looper.bolumler.sort((x, y) => x.beat - y.beat); }
+function bolumEkle(){
+  const beat = Math.floor(looper.startBeat / 4) * 4;
+  const var_ = looper.bolumler.find(x => x.beat === beat);
+  const ad = prompt('Bölüm adı (' + (beat / 4 + 1) + '. ölçü):', var_ ? var_.ad : BOLUM_ADLARI[looper.bolumler.length % BOLUM_ADLARI.length]);
+  if (ad == null || !ad.trim()) return;
+  gecmisAl();
+  if (var_) var_.ad = ad.trim().slice(0, 24); else looper.bolumler.push({ beat, ad: ad.trim().slice(0, 24) });
+  bolumSirala(); lanesCiz();
+}
+function bolumAd(i){
+  const bl = looper.bolumler[i]; if (!bl) return;
+  const ad = prompt('Bölüm adı:', bl.ad);
+  if (ad == null || !ad.trim()) return;
+  gecmisAl(); bl.ad = ad.trim().slice(0, 24); lanesCiz();
+}
+function bolumSil(i){ gecmisAl(); looper.bolumler.splice(i, 1); lanesCiz(); }
+/* bölümü çoğalt: [bu etiket, sonraki etiket) aralığında BAŞLAYAN blokları her kanalda hemen ardına kopyalar;
+   o aralıkta bloğu olmayan ama devam eden kanala aynı uzunlukta es koyar; sonraki etiketler kayar */
+function bolumCogalt(i){
+  const bs = looper.bolumler, bl = bs[i]; if (!bl) return;
+  const son = sarkiVurus(), a = bl.beat, b = Math.min(bs[i + 1] ? bs[i + 1].beat : son, son), len = b - a;
+  if (len <= 0) return;
+  gecmisAl();
+  looper.tracks.forEach(tr => {
+    let t = 0, ilk = -1, sonI = -1, sonraki = -1;
+    tr.blocks.forEach((blk, k) => {
+      if (t >= a - 1e-9 && t < b - 1e-9){ if (ilk < 0) ilk = k; sonI = k; }
+      else if (t >= b - 1e-9 && sonraki < 0) sonraki = k;
+      t += blk.dur;
+    });
+    if (ilk >= 0){
+      const kop = tr.blocks.slice(ilk, sonI + 1).map(x => Object.assign(dkopya(x), { id: ++blokId }));
+      tr.blocks.splice(sonI + 1, 0, ...kop);
+    } else if (sonraki >= 0){                                  // aralıkta blok yok ama kanal sürüyor → hizayı es ile koru
+      const esler = []; let kalan = len;
+      [...DUR_BEATS].reverse().forEach(d => { while (kalan >= d - 1e-9){ esler.push({ id: ++blokId, rest: true, symbol: null, label: '·', noteNames: [], gFrets: [], pMidis: [], dur: d, arp: false }); kalan -= d; } });
+      tr.blocks.splice(sonraki, 0, ...esler);
+    }
+  });
+  bs.forEach((x, k) => { if (k > i) x.beat += len; });
+  bs.push({ beat: b, ad: bl.ad });
+  bolumSirala();
+  if (looper.playing) looperBaslat();
+  lanesCiz(); gamCiz();
 }
 /* ----- başlangıç noktası (cetvel): çalma buradan başlar; döngü yine şarkının başına sarar ----- */
 function sarkiVurus(){ return Math.max(0, ...looper.tracks.map(t => t.blocks.reduce((s, b) => s + b.dur, 0))); }
@@ -1883,19 +2033,48 @@ function loopKaydet(){
   if (!toplam){ inp.placeholder = 'önce diziye akor ekle…'; return; }
   let ad = (inp.value || '').trim() || ('Döngü ' + (loopsYukle().length + 1));
   const arr = loopsYukle();
-  arr.unshift({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ad, bpm: looper.bpm, tracks: dkopya(looper.tracks) });
+  arr.unshift({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ad, bpm: looper.bpm, tracks: dkopya(looper.tracks), bolumler: dkopya(looper.bolumler) });
   loopsKaydet(arr); inp.value = ''; loopLibCiz();
 }
 function loopAc(id, cal){
   const it = loopsYukle().find(x => x.id === id); if (!it) return;
   gecmisAl();
   looper.tracks = dkopya(it.tracks); looper.bpm = it.bpm; looper.selId = null;
+  looper.bolumler = dkopya(it.bolumler || []); looper.bolge = null; looper.startBeat = 0;
   looper.activeTrackId = looper.tracks[0] ? looper.tracks[0].id : null;
   idleriTazele();
   $('#lpBpm').value = it.bpm; $('#lpBpmVal').textContent = it.bpm; if (sesAcik) Tone.Transport.bpm.value = it.bpm;
   lanesCiz(); gamCiz();
   loopAkorlariHavuza();                  // loop'taki, havuzda olmayan akorları geri yükle
   if (cal || looper.playing) looperBaslat();
+}
+/* ----- yedek: döngüler + kayıtlı akorlar tek JSON dosyasında. Yükleme BİRLEŞTİRİR: mevcut kayıtlar aynen kalır ----- */
+function yedekIndir(){
+  const veri = { tur: 'veranda-band-yedek', surum: 1, tarih: new Date().toISOString(), loops: loopsYukle(), favoriler: state.favorites };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(veri)], { type: 'application/json' }));
+  a.download = 'veranda-band-yedek-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+async function yedekYukle(file){
+  let veri; try { veri = JSON.parse(await file.text()); } catch { alert('Bu dosya okunamadı.'); return; }
+  if (!veri || veri.tur !== 'veranda-band-yedek' || !Array.isArray(veri.loops)){ alert('Bu bir Veranda Band yedeği değil.'); return; }
+  const arr = loopsYukle(), ozet = l => JSON.stringify([l.ad, l.bpm, l.tracks]);
+  const idler = new Set(arr.map(x => x.id)), govde = new Set(arr.map(ozet));
+  let nL = 0, nF = 0;
+  veri.loops.forEach(l => {
+    if (!l || !Array.isArray(l.tracks) || idler.has(l.id) || govde.has(ozet(l))) return;   // sende zaten var → dokunma
+    arr.push(l); idler.add(l.id); govde.add(ozet(l)); nL++;
+  });
+  const fOzet = f => JSON.stringify([f.label, f.gFrets, f.pMidis]), fVar = new Set(state.favorites.map(fOzet));
+  (Array.isArray(veri.favoriler) ? veri.favoriler : []).forEach(f => {
+    if (!f || !f.label || fVar.has(fOzet(f))) return;
+    state.favorites.push(f); fVar.add(fOzet(f)); nF++;
+  });
+  if (nL) loopsKaydet(arr);
+  if (nF) persist();
+  loopLibCiz(); favCiz(); poolCiz();
+  alert(nL + ' döngü ve ' + nF + ' akor eklendi. Mevcut kayıtların değişmedi.');
 }
 function loopSil(id){ loopsKaydet(loopsYukle().filter(x => x.id !== id)); loopLibCiz(); }
 function loopLibCiz(){
@@ -1914,6 +2093,7 @@ function loopLibCiz(){
     host.appendChild(el);
   });
 }
+const key0 = e => (e.key || '').toLowerCase();
 const beatToTime = beat => { const bar = Math.floor(beat / 4), r = beat - bar * 4, b = Math.floor(r); return `${bar}:${b}:${Math.round((r - b) * 4)}`; };
 /* çalan blokları işaretle (looper.calan kanal id -> blok id; tam yeniden çizimden bağımsız) */
 function calanIsaretle(){
@@ -1956,6 +2136,7 @@ async function looperBaslat(bastan){
   if (looper.tracks.some(t => t.blocks.some(b => b.perc))) await percHazir();   // vurmalı synth'leri hazırla
   // çalarken yapılan düzenlemede KALDIĞI YERDEN sürer; yeni başlatmada cetveldeki başlangıç noktasından
   const devamVurus = (looper.playing && !bastan) ? Tone.Transport.ticks / Tone.Transport.PPQ : null;
+  const sayimVar = looper.sayim && !looper.playing;                                // sayım yalnız durmuşken başlatmada
   Tone.Transport.stop(); Tone.Transport.cancel(); Tone.Transport.position = 0;
   Tone.Transport.bpm.value = looper.bpm;
   let total = 4;
@@ -1964,7 +2145,8 @@ async function looperBaslat(bastan){
     let beat = 0;
     tr.blocks.forEach(b => {
       Tone.Transport.schedule(time => {
-        if (b.perc) percCal(tr, b, time);
+        if (!duyulur(tr)){ /* susturulmuş kanal: ses yok, yalnız görsel ilerler */ }
+        else if (b.perc) percCal(tr, b, time);
         else if (!b.rest){
           const baseM = tr.instrument === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis;
           if (b.arp){
@@ -1980,7 +2162,13 @@ async function looperBaslat(bastan){
               const blokSec = b.dur * 60 / looper.bpm, adim = blokSec / n;     // n nota blok boyunca eşit dağılır
               for (let k = 0; k < n; k++){ const m = arp[k % arp.length]; if (m != null) trackNota(tr, m, time + k * adim); }  // perdeleri döngüleyerek çal
             }
-          } else trackTetikle(tr, baseM, time);
+          } else {
+            const sd = b.strum && STRUMLAR.find(x => x.id === b.strum);
+            if (sd && sd.d){                                                  // vuruş deseni: sekizlik ızgara, her ölçüde yinelenir
+              const adim = 0.5 * 60 / looper.bpm;
+              for (let k = 0; k * 0.5 < b.dur - 1e-9; k++){ const c = sd.d[k % sd.d.length]; if (c !== '-') strumVur(tr, baseM, time + k * adim, c); }
+            } else trackTetikle(tr, baseM, time);
+          }
         }
         Tone.Draw.schedule(() => {
           looper.calan[tr.id] = b.id; calanIsaretle();
@@ -1991,16 +2179,22 @@ async function looperBaslat(bastan){
     });
     total = Math.max(total, beat);
   });
-  Tone.Transport.loopStart = 0; Tone.Transport.loopEnd = beatToTime(total); Tone.Transport.loop = looper.loop;
-  if (!looper.loop) Tone.Transport.scheduleOnce(time => Tone.Draw.schedule(() => looperDur(), time), beatToTime(total));
+  const bol = looper.bolge && looper.bolge.a < Math.min(looper.bolge.b, total) ? { a: looper.bolge.a, b: Math.min(looper.bolge.b, total) } : null;
+  const basB = bol ? bol.a : 0, sonB = bol ? bol.b : total;                         // döngü bölgesi varsa yalnız o aralık
+  Tone.Transport.loopStart = beatToTime(basB); Tone.Transport.loopEnd = beatToTime(sonB); Tone.Transport.loop = looper.loop;
+  if (!looper.loop) Tone.Transport.scheduleOnce(time => Tone.Draw.schedule(() => looperDur(), time), beatToTime(sonB));
   if (looper.drum) Tone.Transport.scheduleRepeat(time => {
     const inBar = Math.round(Tone.Transport.getTicksAtTime(time) / Tone.Transport.PPQ) % 4;
     kick.triggerAttackRelease(inBar === 0 ? 'C2' : 'C1', '8n', time);
     if (inBar === 1 || inBar === 3) snare.triggerAttackRelease('16n', time);
   }, '4n', 0);
   let basVurus = devamVurus != null ? devamVurus : looper.startBeat;
-  if (!(basVurus > 0) || basVurus >= total) basVurus = 0;
-  Tone.Transport.start(undefined, basVurus * 60 / looper.bpm);
+  if (!(basVurus >= basB) || basVurus >= sonB) basVurus = basB;
+  if (sayimVar){                                                                   // 1 ölçü sayım, sonra tam vuruşta başla
+    const vs = 60 / looper.bpm, t0 = Tone.now() + 0.06;
+    for (let k = 0; k < 4; k++) kick.triggerAttackRelease(k === 0 ? 'C3' : 'G2', '16n', t0 + k * vs);
+    Tone.Transport.start(t0 + 4 * vs, basVurus * vs);
+  } else Tone.Transport.start(undefined, basVurus * 60 / looper.bpm);
   looper.playing = true; $('#lpPlay').classList.add('aktif');
   playheadDongu(total);
 }
@@ -2195,6 +2389,21 @@ function notaYerleri(pc, tr){
 }
 const telAd = n => n.s == null ? '' : (6 - n.s) + '. tel, ' + (n.f === 0 ? 'açık' : n.f + '. perde');
 const ARP_MAX = 16;
+/* hazır arpej kalıpları: voicing'in pesten tize notalarından (n) bir sıra üretir */
+const ARP_KALIP = [
+  ['yukarı', n => n],
+  ['aşağı', n => n.slice().reverse()],
+  ['gidiş dönüş', n => n.concat(n.slice(1, -1).reverse())],
+  ['parmak stili', n => n.length < 4 ? n.concat(n.slice(1, -1).reverse()) : [0, n.length - 3, n.length - 2, n.length - 1, n.length - 2, n.length - 3].map(i => n[i])],
+  ['dönüşümlü bas', n => n.length < 4 ? n : [0, n.length - 2, 1, n.length - 1, 0, n.length - 2, 1, n.length - 1].map(i => n[i])],
+];
+async function strumDinle(b, tr){
+  if (!(await sesHazir())) return;
+  const sd = STRUMLAR.find(x => x.id === (b.strum || '')), m = tr.instrument === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis, t0 = Tone.now() + 0.05;
+  if (!sd || !sd.d){ trackTetikle(tr, m, t0); return; }
+  const adim = 0.5 * 60 / looper.bpm;
+  for (let k = 0; k < 8; k++){ const c = sd.d[k % sd.d.length]; if (c !== '-') strumVur(tr, m, t0 + k * adim, c); }
+}
 let arpPop = null;   // { b, tr, sel: seçili adım | null, pc: açık "başka nota" perde sınıfı | null }
 function arpPopAc(b, tr, anchorEl){
   const onceki = arpPop && arpPop.b.id === b.id ? arpPop : null;
@@ -2213,7 +2422,11 @@ function arpPopAc(b, tr, anchorEl){
   const yerler = arpPop.pc == null ? '' : `<div class="ap-notes ap-yerler">${notaYerleri(arpPop.pc, tr).map((n, i) =>
     `<button type="button" class="ap-nota ap-yer" data-yer="${i}">${escapeHtml(blokNotaAd(b, n.m))}${git ? `<small>${telAd(n)}</small>` : ''}</button>`).join('')}</div>`;
   pop.innerHTML =
-    `<div class="ap-bas">Arpej sırası<small>${escapeHtml(b.label || '')}</small>${b.arpSeq ? '<button type="button" class="ap-sifir" title="varsayılan sıraya dön (pesten tize)">sıfırla</button>' : ''}</div>` +
+    `<div class="ap-bas">Çalış biçimi<small>${escapeHtml(b.label || '')}</small></div>` +
+    `<div class="ap-alt ap-ilk">Vuruş deseni <span>${b.arp ? 'seçersen arpej kapanır' : 'ölçü boyunca yinelenir'}</span></div>` +
+    `<div class="ap-notes">${STRUMLAR.map(x => `<button type="button" class="ap-nota ap-strum${!b.arp && (b.strum || '') === x.id ? ' on' : ''}" data-strum="${x.id}">${x.ad}</button>`).join('')}</div>` +
+    `<div class="ap-alt">Arpej sırası <span>${b.arp ? 'açık' : 'kapalı; kalıp ya da nota seçince açılır'}</span>${b.arpSeq ? '<button type="button" class="ap-sifir" title="varsayılan sıraya dön (pesten tize)">sıfırla</button>' : ''}</div>` +
+    `<div class="ap-notes ap-kaliplar">${ARP_KALIP.map((k, i) => `<button type="button" class="ap-nota ap-kalip" data-kalip="${i}">${k[0]}</button>`).join('')}</div>` +
     `<div class="ap-sira">${adimlar}</div>` +
     `<div class="ap-arac"><button type="button" data-is="sol"${sel == null ? ' disabled' : ''} title="seçili adımı öne al (←)">‹</button>` +
       `<button type="button" data-is="sag"${sel == null ? ' disabled' : ''} title="seçili adımı sona doğru taşı (→)">›</button>` +
@@ -2237,6 +2450,15 @@ function arpPopAc(b, tr, anchorEl){
     const is = btn.dataset.is;
     if (is === 'sol') arpAdimTasi(-1); else if (is === 'sag') arpAdimTasi(1);
     else if (is === 'sil') arpAdimSil(); else if (is === 'es') arpAdimEkle({ r: 1 }); else arpDinle();
+  }));
+  pop.querySelectorAll('[data-strum]').forEach(btn => btn.onclick = dur(() => {
+    gecmisAl(); b.strum = btn.dataset.strum; b.arp = false;
+    if (looper.playing) looperBaslat(); else strumDinle(b, tr);
+    lanesCiz(); arpPopYenile();
+  }));
+  pop.querySelectorAll('[data-kalip]').forEach(btn => btn.onclick = dur(() => {
+    const seq = ARP_KALIP[+btn.dataset.kalip][1](blokNotalari(b, tr)).slice(0, ARP_MAX).map(x => ({ ...x }));
+    arpPop.sel = null; arpYaz(seq); if (!looper.playing) arpDinle();
   }));
   const sf = pop.querySelector('.ap-sifir'); if (sf) sf.onclick = dur(() => { arpPop.sel = null; arpYaz([]); });
   pop.classList.add('acik'); pop.setAttribute('aria-hidden', 'false');
@@ -2299,6 +2521,17 @@ async function arpDinle(){
 }
 function arpPopKapat(){ const pop = $('#arpPop'); if (pop){ pop.classList.remove('acik'); pop.setAttribute('aria-hidden', 'true'); } arpPop = null; }
 
+/* tap tempo: son vuruşların ortalama aralığından BPM (2 sn ara verilirse sıfırlanır) */
+let tapZaman = [];
+function tapTempo(){
+  const t = performance.now();
+  if (tapZaman.length && t - tapZaman[tapZaman.length - 1] > 2000) tapZaman = [];
+  tapZaman.push(t); if (tapZaman.length > 6) tapZaman.shift();
+  if (tapZaman.length < 2) return;
+  const ort = (tapZaman[tapZaman.length - 1] - tapZaman[0]) / (tapZaman.length - 1);
+  const bpm = Math.max(60, Math.min(180, Math.round(60000 / ort)));
+  looper.bpm = bpm; $('#lpBpm').value = bpm; $('#lpBpmVal').textContent = bpm; if (sesAcik) Tone.Transport.bpm.value = bpm;
+}
 function looperKur(){
   // sekme geçişi
   document.querySelectorAll('.tab-tus').forEach(t => t.onclick = () => {
@@ -2310,6 +2543,11 @@ function looperKur(){
   $('#lpBpm').oninput = e => { looper.bpm = +e.target.value; $('#lpBpmVal').textContent = looper.bpm; if (sesAcik) Tone.Transport.bpm.value = looper.bpm; };
   $('#lpLoop').onchange = e => { looper.loop = e.target.checked; if (looper.playing) looperBaslat(); };
   $('#lpDrum').onchange = e => { looper.drum = e.target.checked; if (looper.playing) looperBaslat(); };
+  $('#lpSayim').onchange = e => { looper.sayim = e.target.checked; e.target.blur(); };
+  $('#lpTap').onclick = e => { e.currentTarget.blur(); tapTempo(); };
+  $('#yedekIndir').onclick = e => { e.currentTarget.blur(); yedekIndir(); };
+  $('#yedekYukle').onclick = e => { e.currentTarget.blur(); $('#yedekDosya').click(); };
+  $('#yedekDosya').onchange = e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) yedekYukle(f); };
   // çıkış anahtarı: artık YALNIZ Çevirici sekmesinde (looper'da kanal başına enstrüman var)
   document.querySelectorAll('[data-cikis] button').forEach(b => b.onclick = () => { state.output = b.dataset.o; cikisCiz(); });
   $('#abA').onclick = () => abTik('A');
@@ -2404,6 +2642,7 @@ function looperKur(){
     }
     const looperAktif = $('#tab-looper') && $('#tab-looper').classList.contains('aktif');
     if (!looperAktif || yaziyor) return;
+    if (key0(e) === 't' && !e.ctrlKey && !e.metaKey){ e.preventDefault(); tapTempo(); return; }
     if (e.key === 'Home'){ e.preventDefault(); baslaAyarla(0, true); const l = $('#lanes'); if (l) l.scrollLeft = 0; return; }
     const key = e.key.toLowerCase();
     // sayı tuşları 1-9,0 → havuzdaki o akoru seçili bloğun sağına HEMEN enjekte et
