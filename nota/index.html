@@ -2081,6 +2081,7 @@ function laneCiz(tr, host){
   if (tr.instrument === 'melodi') melArti();
 }
 function lanesCiz(){
+  oturumSakla();
   const rozet = $('#lpRozet'); const n = looper.tracks.reduce((s, t) => s + t.blocks.length, 0);
   if (rozet) rozet.textContent = n ? String(n) : '';
   poolCiz();
@@ -2257,6 +2258,29 @@ function zoomDegis(yon){
 }
 
 /* ===================== döngü kütüphanesi (kalıcı; localStorage) ===================== */
+/* ----- oturum: çizelgenin o anki hali her değişiklikte tarayıcıya yazılır, sayfa yeniden açılınca geri gelir -----
+   (kayıtlı döngülerden AYRI bir anahtar; onlara dokunmaz) */
+let oturumT = 0, oturumHazir = false;
+function oturumSakla(){
+  if (!oturumHazir) return;                                   // açılışta geri yükleme bitmeden üzerine yazma
+  clearTimeout(oturumT);
+  oturumT = setTimeout(oturumYaz, 250);
+}
+function oturumYaz(){
+  if (!oturumHazir) return;
+  try { localStorage.setItem('nota:oturum', JSON.stringify({ tracks: looper.tracks, bpm: looper.bpm, bolumler: looper.bolumler, bolge: looper.bolge, startBeat: looper.startBeat, loop: looper.loop, zaman: Date.now() })); } catch {}
+}
+function oturumGeriYukle(){
+  try {
+    const o = JSON.parse(localStorage.getItem('nota:oturum') || 'null');
+    if (!o || !Array.isArray(o.tracks) || !o.tracks.length) return false;
+    looper.tracks = o.tracks; looper.bpm = o.bpm || 100; looper.bolumler = Array.isArray(o.bolumler) ? o.bolumler : [];
+    looper.bolge = o.bolge || null; looper.startBeat = o.startBeat || 0; looper.loop = o.loop !== false;
+    looper.activeTrackId = looper.tracks[0].id; idleriTazele();
+    $('#lpBpm').value = looper.bpm; $('#lpBpmVal').textContent = looper.bpm; $('#lpLoop').checked = looper.loop;
+    return true;
+  } catch { return false; }
+}
 function loopsYukle(){ try { const v=localStorage.getItem('nota:loops'); if(v!=null) return JSON.parse(v)||[]; const eski=localStorage.getItem('nota-loops'); if(eski!=null){ localStorage.setItem('nota:loops', eski); localStorage.removeItem('nota-loops'); return JSON.parse(eski)||[]; } return []; } catch { return []; } }
 function loopsKaydet(a){ try { localStorage.setItem('nota:loops', JSON.stringify(a)); } catch {} }
 function loopKaydet(){
@@ -2926,7 +2950,7 @@ function looperKur(){
   });
   $('#lpPlay').onclick = () => looperBaslat(true);
   $('#lpStop').onclick = () => looperDur();
-  $('#lpBpm').oninput = e => { looper.bpm = +e.target.value; $('#lpBpmVal').textContent = looper.bpm; if (sesAcik) Tone.Transport.bpm.value = looper.bpm; };
+  $('#lpBpm').oninput = e => { oturumSakla(); looper.bpm = +e.target.value; $('#lpBpmVal').textContent = looper.bpm; if (sesAcik) Tone.Transport.bpm.value = looper.bpm; };
   $('#lpLoop').onchange = e => { looper.loop = e.target.checked; if (looper.playing) looperBaslat(); };
   $('#lpDrum').onchange = e => { looper.drum = e.target.checked; if (looper.playing) looperBaslat(); };
   $('#lpSayim').onchange = e => { looper.sayim = e.target.checked; e.target.blur(); };
@@ -3138,7 +3162,11 @@ function looperKur(){
     else { gecmisAl(); const di = DUR_BEATS.indexOf(f.blk.dur); f.blk.dur = DUR_BEATS[e.key === 'ArrowUp' ? Math.min(DUR_BEATS.length - 1, di + 1) : Math.max(0, di - 1)]; if (looper.playing) looperBaslat(); lanesCiz(); }
   });
   // varsayılan kanallar: bir gitar + bir piyano (kullanıcı ekleyip silebilir)
+  oturumGeriYukle();                                           // yarım kalan çalışma varsa geri getir
+  oturumHazir = true;
   if (!looper.tracks.length){ looper.tracks.push(trackNesne('gitar'), trackNesne('piyano')); looper.activeTrackId = looper.tracks[0].id; }
+  window.addEventListener('pagehide', oturumYaz);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) oturumYaz(); });
   loopLibCiz();
   cikisCiz(); abCiz(); lanesCiz();
 }
