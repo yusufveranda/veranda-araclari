@@ -1897,7 +1897,7 @@ function orgHazir(){
     oscillator: { type: 'custom', partials: [1, 0.62, 0.38, 0.22, 0.06, 0.12, 0, 0.07] },   // çekme çubuklu org benzeri armonikler
     envelope: { attack: 0.09, decay: 0.25, sustain: 0.92, release: 0.9 },
   }).connect(tit);
-  orgSes.maxPolyphony = 24; orgSes.volume.value = -15;
+  orgSes.maxPolyphony = 24; orgSes.volume.value = -6;      // -15 çok kısık kalıyordu
 }
 /* org: notaları 'sure' saniye boyunca tut (sure yoksa kısa) */
 function orgCal(tr, midis, time, sure){
