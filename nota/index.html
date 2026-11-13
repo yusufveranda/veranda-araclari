@@ -583,6 +583,34 @@ body.surukleniyor *{cursor:grabbing!important}
 .tekrar-cizgi::after{top:58%}
 .tekrar-cizgi.son::before,.tekrar-cizgi.son::after{left:-9px}
 .tekrar-cizgi.bas::before,.tekrar-cizgi.bas::after{left:10px}
+/* ===== seçili blok şeridi; bloklar artık büyümez ===== */
+.sec-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:44px;box-sizing:border-box;margin-top:10px;padding:6px 10px 6px 12px;border:1px solid var(--line);border-left:5px solid var(--line);border-radius:12px;background:var(--card)}
+.sec-bar.bos{opacity:.35}
+.sec-bar.renkli{border-left-color:hsl(var(--bh) 45% 55%);background:hsl(var(--bh) 22% 15%)}
+.sb-ad{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:600;color:var(--ink);min-width:54px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:4px}
+.sec-bar.renkli .sb-ad{color:hsl(var(--bh) 62% 85%)}
+.sb-sure{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.sb-sure button{min-width:28px;height:28px;padding:0 6px;border:none;border-right:1px solid var(--line);background:var(--bg);color:var(--muted);font-family:Georgia,serif;font-size:13px}
+.sb-sure button:last-child{border-right:none}
+.sb-sure button:hover{color:var(--ink)}
+.sb-sure button.sec{background:var(--acc);color:#150c08;font-weight:700}
+.sb-d{height:30px;padding:0 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:12.5px;white-space:nowrap}
+.sb-d:hover{border-color:var(--acc);color:var(--acc)}
+.sb-d.on{background:var(--acc);border-color:var(--acc);color:#150c08;font-weight:700}
+.sb-d.sil:hover{border-color:#c0392b;color:#e0533c}
+.sb-hit{height:30px;padding:0 6px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:12.5px}
+.sb-bosluk{flex:1}
+.lanes{margin-top:8px}
+.lane-blok .lb-eylem,.lane-blok .lb-hit{display:none!important}
+.lane-blok.secili{margin-top:0;margin-bottom:0;z-index:auto}
+.lane-blok.secili .lb-ad{font-size:15px;margin-bottom:0}
+.lane-blok.secili .lb-sure{top:2px;right:3px;font-size:9.5px;padding:0 4px;line-height:1.5;border-radius:5px}
+.lane-blok.secili .lb-sure i{display:none}
+.lane-blok.renkli.secili,.lane-blok.mel.secili{box-shadow:0 0 0 2px hsl(var(--bh,200) 60% 74%)}
+.lane-blok.secili{box-shadow:0 0 0 2px var(--ink)}
+.lane-blok.mel.secili .lb-mel-mini{inset:16px 5px 6px}
+.lane-blok.arpli.secili::before{content:"≈";position:absolute;top:1px;left:4px;font-size:11px;font-weight:700;line-height:1;color:var(--vurgu)}
+.lane-blok.strumlu.secili::before{content:"↓↑";position:absolute;top:1px;left:3px;font-size:9px;font-weight:700;line-height:1;letter-spacing:-1px;color:var(--acc)}
 .okuma,.panel,.enstruman,.looper-ust,.loop-lib,.lanes,.drum-panel{
   background-image:var(--ahsap-doku);background-size:300px 205px}
 
@@ -892,6 +920,7 @@ body.surukleniyor *{cursor:grabbing!important}
       </div>
       <div class="havuz" id="havuz"></div>
     </section>
+    <div class="sec-bar bos" id="secBar"></div>
     <div class="lanes" id="lanes">
       <div class="lanes-ic" id="lanesIc">
         <div class="playhead" id="playhead"></div>
@@ -2041,12 +2070,7 @@ function laneCiz(tr, host){
   arr.forEach((b, i) => {
     const el = document.createElement('div');
     el.dataset.bid = b.id;
-    { const w = b.dur * PXB - 4;                               // 2+2 px kenar boşluğu düşülür → blok tam dur*PXB yer kaplar
-      el.style.width = w + 'px';
-      if (b.id === looper.selId && w < SEC_MIN_W){               // seçili blok komşuların ÜSTÜNE doğru genişler (dizilim kaymaz)
-        const sigan = Math.max(w, Math.min(SEC_MIN_W, ($('#lanes') ? $('#lanes').clientWidth : 800) - LABEL_W - 12));
-        el.style.width = sigan + 'px'; el.style.marginRight = (2 - (sigan - w)) + 'px';
-      } }
+    el.style.width = (b.dur * PXB - 4) + 'px';                   // blok hep kendi süresi kadar yer kaplar; araçlar üstteki şeritte
     const ortak = 'lane-blok' + (b.id === looper.selId ? ' secili' : '') + (looper.calan[tr.id] === b.id ? ' oynuyor' : '') + (cok.has(b.id) && b.id !== looper.selId ? ' cok' : '');
     if (b.mel){                                                  // ===== ezgi bloğu =====
       el.className = ortak + ' mel';
@@ -2086,6 +2110,7 @@ function laneCiz(tr, host){
       <div class="lb-eylem">${arpBtn}${disliBtn}${yerBtn}${havuzBtn}<button class="lb-sil" title="sil (Backspace)">×</button></div><span class="lb-kenar" title="çek: süre"></span>`;
     el.onclick = e => { if (e.target.closest('.lb-eylem') || e.target.closest('.lb-hit')) return; if (cokSec(e, b, tr, arr)) return; looper.selId = b.id; looper.activeTrackId = tr.id; lanesCiz(); blokGorunur(); liveSyncBlok(b); blokSesCal(b, tr); };  // seç + iki enstrümanı vurgula + anında çal
     if (!b.rest) el.querySelector('.lb-arp').onclick = e => { e.stopPropagation(); gecmisAl(); b.arp = !b.arp; looper.selId = b.id; if (looper.playing) looperBaslat(); lanesCiz(); };
+    if (!b.rest) el.ondblclick = e => { if (!e.target.closest('.lb-kenar')) arpPopAc(b, tr, el); };
     if (!b.rest) el.querySelector('.lb-yerinde').onclick = e => { e.stopPropagation(); blokDuzenle(b); };
     if (!b.rest) el.querySelector('.lb-disli').onclick = e => { e.stopPropagation(); arpPopAc(b, tr, el); };
     { const hv = el.querySelector('.lb-havuz'); if (hv) hv.onclick = e => { e.stopPropagation(); if (havuzaEkle(b)) lanesCiz(); }; }
@@ -2098,6 +2123,7 @@ function laneCiz(tr, host){
 }
 function lanesCiz(){
   oturumSakla();
+  secBarCiz();
   const rozet = $('#lpRozet'); const n = looper.tracks.reduce((s, t) => s + t.blocks.length, 0);
   if (rozet) rozet.textContent = n ? String(n) : '';
   poolCiz();
@@ -2227,6 +2253,42 @@ function tekrarEkle(tip){
   lanesCiz();
 }
 function tekrarSil(i){ gecmisAl(); looper.tekrar.splice(i, 1); if (looper.playing) looperBaslat(); lanesCiz(); }
+/* ----- seçili blok şeridi: bloğun araçları çizelgenin ÜSTÜNDE sabit bir satırda durur (blok büyümez, komşusunu örtmez) ----- */
+function secBarCiz(){
+  const bar = $('#secBar'); if (!bar) return;
+  const sc = secilenler(), f = looper.selId ? bulBlok(looper.selId) : null;
+  if (!f || !sc){ bar.className = 'sec-bar bos'; bar.innerHTML = ''; return; }
+  const b = f.blk, tr = f.track, cok = sc.bloklar.length > 1, tur = blokTur(b), akor = tur === 'akor' && !b.rest;
+  bar.className = 'sec-bar' + (akor ? ' renkli' : '');
+  if (akor) bar.style.setProperty('--bh', akorRenk(b.label));
+  const ad = cok ? sc.bloklar.length + ' blok' : b.rest ? 'es' : tur === 'perc' ? 'ritim' : tur === 'mel' ? 'ezgi' : b.label;
+  const sureHTML = DUR_BEATS.map(d => `<button type="button" data-d="${d}" class="${!cok && b.dur === d ? 'sec' : ''}" title="${DUR_AD[d]} ölçü">${DUR_AD[d]}</button>`).join('');
+  const hits = Math.max(1, Math.min(16, b.hits || 4));
+  let orta = '';
+  if (!cok && akor){
+    orta = (tr.instrument === 'bas' ? '' : `<button type="button" class="sb-d${b.arp ? ' on' : ''}" data-is="arp" title="arpej aç/kapa (Q)">≈ Arpej</button>` +
+        (b.arp ? `<select class="sb-hit" title="arpej vuruş sayısı">${Array.from({ length: 16 }, (_, k) => `<option value="${k + 1}"${hits === k + 1 ? ' selected' : ''}>${k + 1} vuruş</option>`).join('')}</select>` : '')) +
+      `<button type="button" class="sb-d lb-disli" data-is="calis" title="vuruş deseni, arpej sırası (çift tık)">⚙ Çalış biçimi</button>` +
+      `<button type="button" class="sb-d" data-is="basim" title="basımı Çevirici’de düzenle">✎ Basım</button>` +
+      (akorHavuzdaMi(b) ? '' : `<button type="button" class="sb-d" data-is="havuz" title="bu akoru havuza ekle">↑ Havuza</button>`);
+  } else if (!cok && (tur === 'perc' || tur === 'mel')) orta = `<button type="button" class="sb-d" data-is="duzen" title="düzenle (çift tık)">✎ Düzenle</button>`;
+  bar.innerHTML = `<span class="sb-ad">${escapeHtml(ad)}</span><span class="sb-sure" title="süre (ölçü)">${sureHTML}</span>${orta}<span class="sb-bosluk"></span>` +
+    (cok ? '' : `<button type="button" class="sb-d" data-is="cogalt" title="sağına çoğalt">⧉ Çoğalt</button>`) +
+    `<button type="button" class="sb-d sil" data-is="sil" title="sil (Backspace)">× Sil</button>`;
+  bar.querySelectorAll('[data-d]').forEach(x => x.onclick = () => { x.blur(); gecmisAl(); sc.bloklar.forEach(k => { k.dur = +x.dataset.d; }); if (looper.playing) looperBaslat(); lanesCiz(); });
+  const hs = bar.querySelector('.sb-hit'); if (hs) hs.onchange = e => { gecmisAl(); b.hits = +e.target.value; e.target.blur(); if (looper.playing) looperBaslat(); lanesCiz(); };
+  bar.querySelectorAll('[data-is]').forEach(x => x.onclick = e => {
+    e.stopPropagation(); x.blur();
+    const is = x.dataset.is;
+    if (is === 'arp'){ gecmisAl(); b.arp = !b.arp; if (looper.playing) looperBaslat(); lanesCiz(); }
+    else if (is === 'calis'){ const el = document.querySelector(`.lane-blok[data-bid="${b.id}"]`); if (arpPop && arpPop.b.id === b.id) arpPopKapat(); else if (el) arpPopAc(b, tr, el); }
+    else if (is === 'basim') blokDuzenle(b);
+    else if (is === 'havuz'){ if (havuzaEkle(b)) lanesCiz(); }
+    else if (is === 'duzen'){ tur === 'perc' ? drumAc(b.id) : melAc(b.id); }
+    else if (is === 'cogalt') blokKopyala(b, tr);
+    else if (is === 'sil') secilenleriSil();
+  });
+}
 /* kanal duyulur mu: susturulmamış VE (solo yoksa ya da kendisi solo) */
 function duyulur(tr){ return !tr.mute && (!looper.tracks.some(t => t.solo) || !!tr.solo); }
 /* ----- döngü bölgesi (cetvelde sürükle): Döngü açıkken yalnız bu aralık döner ----- */
