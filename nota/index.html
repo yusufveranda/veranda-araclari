@@ -1852,33 +1852,31 @@ function trackVol(id, v){
 /* kanalın enstrümanı + ses düzeyiyle (velocity) tek nota / akor tetikle */
 /* ----- clean elektro gitar: gerçek elektro gitar örnekleri + geniş yavaş chorus, hafif sıkıştırma, kısa gecikme, uzun çınlama -----
    kanal: instrument 'gitar' (gitar basımını kullanır) + ton 'elektro' */
-let eGitar = null, eLp = null, eCh = null, eEq = null;
-let eYumusak = 0.8;                                            // 0 = parlak/keskin … 1 = kemiksiz, yuvarlak (şeritteki sürgü)
-try { const v = parseFloat(localStorage.getItem('nota:eton')); if (v >= 0 && v <= 1) eYumusak = v; } catch {}
+let eGitar = null, eLp = null, eEq = null;
+let eYumusak = 0.5;                                            // 0 = parlak, pena gibi … 1 = yuvarlak, parmakla çalınmış gibi (şeritteki sürgü)
+try { const v = parseFloat(localStorage.getItem('nota:eton2')); if (v >= 0 && v <= 1) eYumusak = v; } catch {}
 function eTonUygula(){
   if (!eGitar) return;
   const y = eYumusak;
-  eGitar.attack = 0.004 + y * 0.075;                           // pena tıkını yut: nota "vurmaz", şişerek girer
-  eLp.frequency.value = 5200 - y * 4100;                       // 5200 Hz (parlak) → 1100 Hz (kadife)
-  eEq.high.value = -2 - y * 14; eEq.mid.value = -y * 2.5; eEq.low.value = 1 + y * 4;   // boyun manyetiği hissi: tiz az, alt dolu
-  eCh.wet.value = 0.38 + y * 0.3;
+  eGitar.attack = 0.003 + y * 0.045;                           // parmakla çalma hissi: vuruşun sivri ucu yumuşar
+  eLp.frequency.value = 6500 - y * 4300;                       // 6500 Hz (camsı) → 2200 Hz (yuvarlak)
+  eEq.high.value = -1 - y * 7; eEq.low.value = 1 + y * 2.5;
 }
+/* SADE zincir: tek manyetikli gitar + temiz amfi. Chorus, vibrato, gecikme YOK.
+   Yalnız: hafif ton düzeltme → sıkıştırma (notayı uzatır, "akan" his buradan) → tiz yumuşatma → çok az oda yankısı */
 function eGitarHazir(){
   if (eGitar || !reverb) return;
-  const comp = new Tone.Compressor({ threshold: -28, ratio: 4, attack: 0.02, release: 0.3 });
-  eEq = new Tone.EQ3({ low: 3, mid: -2, high: -12, lowFrequency: 280, highFrequency: 2200 });
-  eCh = new Tone.Chorus({ frequency: 0.45, delayTime: 5.5, depth: 0.8, spread: 180, wet: 0.6 }).start();
-  const vib = new Tone.Vibrato({ frequency: 4.2, depth: 0.045, wet: 0.5 });   // hafif dalgalanma: "akan" his
-  eLp = new Tone.Filter({ frequency: 1900, type: 'lowpass', rolloff: -24, Q: 0.4 });
-  const dl = new Tone.FeedbackDelay({ delayTime: 0.34, feedback: 0.26, wet: 0.2 });
-  const yanki = new Tone.Reverb({ decay: 4.5, wet: 0.5 }).toDestination();   // kendi uzun, ıslak salonu
+  eEq = new Tone.EQ3({ low: 2, mid: 0, high: -4, lowFrequency: 250, highFrequency: 2600 });
+  const comp = new Tone.Compressor({ threshold: -30, ratio: 5, attack: 0.008, release: 0.35 });
+  eLp = new Tone.Filter({ frequency: 4300, type: 'lowpass', rolloff: -12, Q: 0.3 });
+  const oda = new Tone.Reverb({ decay: 1.3, wet: 0.1 }).toDestination();      // amfinin durduğu oda kadar
   eGitar = new Tone.Sampler({
     urls: { 'C#2': 'Cs2.mp3', E2: 'E2.mp3', 'F#2': 'Fs2.mp3', A2: 'A2.mp3', C3: 'C3.mp3', 'D#3': 'Ds3.mp3', 'F#3': 'Fs3.mp3', A3: 'A3.mp3',
       C4: 'C4.mp3', 'D#4': 'Ds4.mp3', 'F#4': 'Fs4.mp3', A4: 'A4.mp3', C5: 'C5.mp3', 'D#5': 'Ds5.mp3', 'F#5': 'Fs5.mp3', A5: 'A5.mp3', C6: 'C6.mp3' },
-    baseUrl: 'https://nbrosowsky.github.io/tonejs-instruments/samples/guitar-electric/', release: 2.4, attack: 0.06,
+    baseUrl: 'https://nbrosowsky.github.io/tonejs-instruments/samples/guitar-electric/', release: 2.2, attack: 0.02,
   });
-  eGitar.chain(eEq, comp, eLp, eCh, vib, dl, yanki);
-  eGitar.volume.value = -2;
+  eGitar.chain(eEq, comp, eLp, oda);
+  eGitar.volume.value = 0;
   eTonUygula();
 }
 /* gitar kanalının tek notası: elektro tonu seçiliyse (ve örnekler yüklendiyse) onu, değilse akustiği çal */
@@ -1910,7 +1908,7 @@ function trackNota(tr, midi, time){ if (tr.instrument === 'synth'){ orgCal(tr, [
 function trackTetikle(tr, midis, time, sure){
   const ms = [...midis].sort((a, b) => a - b); if (!ms.length) return;
   if (tr.instrument === 'synth'){ orgCal(tr, ms, time, sure || 1.6); return; }               // org: blok süresince tutar
-  if (tr.instrument === 'gitar') ms.forEach((m, i) => gitarCal(tr, m, time + i * (tr.ton === 'elektro' ? 0.075 : 0.06), tr.vol, '2n'));           // strum (akustik Sampler)
+  if (tr.instrument === 'gitar') ms.forEach((m, i) => gitarCal(tr, m, time + i * (tr.ton === 'elektro' ? 0.05 : 0.06), tr.vol, '2n'));           // strum (akustik Sampler)
   else ms.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '1n', time + i * 0.02, tr.vol));
 }
 /* ----- vuruş desenleri: sekizlik ızgarada D (aşağı) / U (yukarı) / - (boş); 4 vuruşluk ölçüde yinelenir ----- */
@@ -2349,7 +2347,7 @@ function secBarCiz(){
     (cok ? '' : `<button type="button" class="sb-d" data-is="cogalt" title="sağına çoğalt">⧉ Çoğalt</button>`) +
     `<button type="button" class="sb-d sil" data-is="sil" title="sil (Backspace)">× Sil</button>`;
   bar.querySelectorAll('[data-d]').forEach(x => x.onclick = () => { x.blur(); gecmisAl(); sc.bloklar.forEach(k => { k.dur = +x.dataset.d; }); if (looper.playing) looperBaslat(); lanesCiz(); });
-  const tn = bar.querySelector('#sbTon'); if (tn){ tn.oninput = e => { eYumusak = +e.target.value; eTonUygula(); try { localStorage.setItem('nota:eton', String(eYumusak)); } catch {} }; tn.onchange = () => { tn.blur(); if (!looper.playing) blokSesCal(b, tr); }; }
+  const tn = bar.querySelector('#sbTon'); if (tn){ tn.oninput = e => { eYumusak = +e.target.value; eTonUygula(); try { localStorage.setItem('nota:eton2', String(eYumusak)); } catch {} }; tn.onchange = () => { tn.blur(); if (!looper.playing) blokSesCal(b, tr); }; }
   const hs = bar.querySelector('.sb-hit'); if (hs) hs.onchange = e => { gecmisAl(); b.hits = +e.target.value; e.target.blur(); if (looper.playing) looperBaslat(); lanesCiz(); };
   bar.querySelectorAll('[data-is]').forEach(x => x.onclick = e => {
     e.stopPropagation(); x.blur();
