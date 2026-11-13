@@ -568,6 +568,21 @@ body.surukleniyor *{cursor:grabbing!important}
 .ap-ozel-arac{display:inline-flex;gap:2px}
 .ap-ozel-arac button{height:22px;min-width:22px;padding:0 5px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--muted);font-size:10.5px}
 .ap-ozel-arac button:hover{color:var(--acc);border-color:var(--acc)}
+.cv-satir2{flex:1 0 100%;display:flex;gap:3px}
+.cv-satir2 .cv-bolum-ekle{flex:1 1 auto}
+.cv-tk{flex:0 0 auto;height:16px!important;min-width:24px!important;padding:0 3px!important;font-size:10px!important;font-weight:700;letter-spacing:-.5px}
+.cv-tekrar{position:absolute;top:23px;z-index:3;height:18px;padding:0 4px;border:none;border-radius:4px;background:#d9c9a3;color:#150c08;font-size:11px;font-weight:700;line-height:18px;letter-spacing:-.5px;cursor:pointer}
+.cv-tekrar.son{transform:translateX(-100%)}
+.cv-tekrar:hover{background:var(--vurgu);color:#f3e4c7}
+.tekrar-cizgi{position:absolute;top:44px;bottom:-8px;width:6px;z-index:2;pointer-events:none}
+.cetvel-bas button{white-space:nowrap}
+.cv-satir2 .cv-bolum-ekle{padding:0 2px;min-width:0}
+.tekrar-cizgi.bas{background:linear-gradient(90deg,#d9c9a3 0 3px,transparent 3px 5px,#d9c9a3 5px 6px)}
+.tekrar-cizgi.son{margin-left:-6px;background:linear-gradient(90deg,#d9c9a3 0 1px,transparent 1px 3px,#d9c9a3 3px 6px)}
+.tekrar-cizgi::before,.tekrar-cizgi::after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:#d9c9a3;top:36%}
+.tekrar-cizgi::after{top:58%}
+.tekrar-cizgi.son::before,.tekrar-cizgi.son::after{left:-9px}
+.tekrar-cizgi.bas::before,.tekrar-cizgi.bas::after{left:10px}
 .okuma,.panel,.enstruman,.looper-ust,.loop-lib,.lanes,.drum-panel{
   background-image:var(--ahsap-doku);background-size:300px 205px}
 
@@ -1012,7 +1027,7 @@ const state = {
    tracks: [{ id, instrument:'gitar'|'piyano', vol:0..1, blocks:[ blok ] }]
    blok her zaman HEM gFrets HEM pMidis taşır → kanal enstrümanı hangisini çalacağını seçer.
    selId = seçili BLOK id'si (kanallar arası benzersiz) · activeTrackId = ekleme hedefi kanal */
-const looper = { tracks: [], bpm: 100, loop: true, drum: false, playing: false, selId: null, activeTrackId: null, calan: {}, startBeat: 0, takipDur: 0, bolge: null, sayim: false, bolumler: [] };
+const looper = { tracks: [], bpm: 100, loop: true, drum: false, playing: false, selId: null, activeTrackId: null, calan: {}, startBeat: 0, takipDur: 0, bolge: null, sayim: false, bolumler: [], tekrar: [], harita: null };
 let trackId = 0, blokId = 0, clip = null;     // clip = kopyalanan blok (Ctrl+C/V)
 const gecmis = [];               // geri al (Ctrl/Cmd+Z) yığını
 const DUR_BEATS = [0.5, 1, 2, 3, 4, 8, 16];                                    // ölçü: ⅛ ¼ ½ ¾ 1 2 4 (1 ölçü = 4 vuruş)
@@ -1735,10 +1750,11 @@ function favVoicing(f){
 /* ----- geri al (Ctrl/Cmd+Z) ----- */
 const dkopya = a => JSON.parse(JSON.stringify(a));
 const gelecek = [];
-function anlikDurum(){ return { tracks: dkopya(looper.tracks), sel: looper.selId, act: looper.activeTrackId, bol: dkopya(looper.bolumler) }; }
+function anlikDurum(){ return { tracks: dkopya(looper.tracks), sel: looper.selId, act: looper.activeTrackId, bol: dkopya(looper.bolumler), tek: dkopya(looper.tekrar || []) }; }
 function durumUygula(s){
   looper.tracks = dkopya(s.tracks); looper.selId = s.sel; looper.activeTrackId = s.act; idleriTazele();
   if (s.bol) looper.bolumler = s.bol;
+  if (s.tek) looper.tekrar = s.tek;
   looper.selCok = [];
   if (looper.playing) looper.tracks.some(t => t.blocks.length) ? looperBaslat() : looperDur();
   lanesCiz(); gamCiz(); blokGorunur();
@@ -2111,11 +2127,13 @@ function lanesCiz(){
     const zi = ZOOMLAR.indexOf(PXB);
     cet.innerHTML = `<div class="cetvel-bas"><button type="button" class="cv-basa" title="başlangıcı en başa al (Home)">⏮</button>
         <span class="cv-zoom"><button type="button" data-z="-1" title="uzaklaş (Ctrl/Cmd + tekerlek)"${zi <= 0 ? ' disabled' : ''}>−</button><button type="button" data-z="1" title="yakınlaş (Ctrl/Cmd + tekerlek)"${zi >= ZOOMLAR.length - 1 ? ' disabled' : ''}>+</button></span>
-        <button type="button" class="cv-bolum-ekle" title="başlangıç noktasının ölçüsüne bölüm etiketi koy (Giriş, Kıta, Nakarat)">+ bölüm</button></div>
-      <div class="cetvel-iz" title="tıkla: buradan başla · sürükle: döngü bölgesi" style="width:${trackW}px;background-size:${PXB * 4}px 100%,${PXB}px 100%">${olcu}${bolumHTML}<div class="cv-bolge" id="cvBolge"><button type="button" class="cv-bolge-sil" title="döngü bölgesini kaldır">×</button></div></div>`;
+        <span class="cv-satir2"><button type="button" class="cv-bolum-ekle" title="başlangıç noktasının ölçüsüne bölüm etiketi koy (Giriş, Kıta, Nakarat)">+ bölüm</button><button type="button" class="cv-tk" data-tk="bas" title="tekrar başı: dönüş buraya olur (başlangıç noktasına koyar)">‖:</button><button type="button" class="cv-tk" data-tk="son" title="tekrar: buraya gelince bir kez geri dön, sonra devam et (başlangıç noktasına koyar)">:‖</button></span></div>
+      <div class="cetvel-iz" title="tıkla: buradan başla · sürükle: döngü bölgesi" style="width:${trackW}px;background-size:${PXB * 4}px 100%,${PXB}px 100%">${olcu}${bolumHTML}${(looper.tekrar || []).map((t, i) => t.beat <= maxT ? `<button type="button" class="cv-tekrar ${t.tip}" data-i="${i}" style="left:${t.beat * PXB}px" title="${t.tip === 'son' ? 'tekrar: bir kez geri dön' : 'tekrar başı'} (tıkla: kaldır)">${t.tip === 'son' ? ':‖' : '‖:'}</button>` : '').join('')}<div class="cv-bolge" id="cvBolge"><button type="button" class="cv-bolge-sil" title="döngü bölgesini kaldır">×</button></div></div>`;
     cet.querySelector('.cv-basa').onclick = e => { e.currentTarget.blur(); baslaAyarla(0, true); };
     cet.querySelectorAll('.cv-zoom button').forEach(z => z.onclick = e => { e.currentTarget.blur(); zoomDegis(+z.dataset.z); });
     cet.querySelector('.cv-bolum-ekle').onclick = e => { e.currentTarget.blur(); bolumEkle(); };
+    cet.querySelectorAll('.cv-tk').forEach(t => t.onclick = e => { e.currentTarget.blur(); tekrarEkle(t.dataset.tk); });
+    cet.querySelectorAll('.cv-tekrar').forEach(t => t.onclick = e => { e.stopPropagation(); tekrarSil(+t.dataset.i); });
     cet.querySelectorAll('.cv-bolum').forEach(el => {
       const i = +el.dataset.i;
       el.onclick = e => { const is = e.target.dataset && e.target.dataset.is; if (is === 'sil') bolumSil(i); else if (is === 'cogalt') bolumCogalt(i); else baslaAyarla(looper.bolumler[i].beat, true); };
@@ -2126,7 +2144,7 @@ function lanesCiz(){
     iz.onpointerdown = e => {
       if (e.button) return;
       if (e.target.closest('.cv-bolge-sil')){ looper.bolge = null; bolgeCiz(); if (looper.playing) looperBaslat(); return; }
-      if (e.target.closest('.cv-bolum')) return;               // etiket kendi tıklamasını işler
+      if (e.target.closest('.cv-bolum, .cv-tekrar')) return;   // etiket ve tekrar işareti kendi tıklamasını işler
       e.preventDefault(); iz.setPointerCapture(e.pointerId);
       const v0 = vurus(e); let surukle = false;
       iz.onpointermove = ev => {                               // sürükleme = döngü bölgesi
@@ -2175,8 +2193,40 @@ function lanesCiz(){
   if (looper.tracks.length){
     const im = document.createElement('div'); im.className = 'basla-im'; im.id = 'baslaIm'; ic.appendChild(im); baslaCiz();
     const se = document.createElement('div'); se.className = 'bolge-serit'; se.id = 'bolgeSerit'; ic.appendChild(se); bolgeCiz();
+    (looper.tekrar || []).forEach(t => { if (t.beat > maxT) return; const c = document.createElement('div'); c.className = 'tekrar-cizgi ' + t.tip; c.style.left = (LABEL_W + t.beat * PXB) + 'px'; ic.appendChild(c); });
   }
 }
+/* ----- tekrar işaretleri (nota yazısındaki ‖: :‖): ':‖' gelince BİR KEZ geri dönülür, sonra devam edilir.
+   Dönüş yeri en son '‖:' işaretidir; yoksa şarkının başı (ya da bir önceki ':‖').
+   harita = çalma sırası: [{ t0: transport vuruşu, a, b: şarkı vuruşu aralığı }] */
+function tekrarHarita(sarki){
+  const ims = (looper.tekrar || []).filter(x => x.beat >= 0 && x.beat <= sarki).slice().sort((x, y) => x.beat - y.beat || (x.tip === 'son' ? -1 : 1));
+  const h = []; let t0 = 0, pos = 0, bas = 0;
+  const ekle = (a, b) => { if (b > a + 1e-9){ h.push({ t0, a, b }); t0 += b - a; } };
+  ims.forEach(im => {
+    if (im.tip === 'bas'){ bas = im.beat; return; }
+    if (im.beat <= bas) return;
+    ekle(pos, im.beat); ekle(bas, im.beat); pos = im.beat; bas = im.beat;
+  });
+  ekle(pos, sarki);
+  return h.length ? h : [{ t0: 0, a: 0, b: sarki }];
+}
+function haritaZaman(h, s){ return h.filter(g => s >= g.a - 1e-9 && s < g.b - 1e-9).map(g => g.t0 + (s - g.a)); }
+function sarkiKonum(v){                                        // transport vuruşu → şarkıdaki vuruş (playhead için)
+  const h = looper.harita; if (!h || !h.length) return v;
+  for (const g of h){ if (v < g.t0 + (g.b - g.a)) return g.a + Math.max(0, v - g.t0); }
+  return h[h.length - 1].b;
+}
+function tekrarEkle(tip){
+  const beat = looper.startBeat;
+  if (tip === 'son' && beat <= 0) return;                      // başta "geri dön" anlamsız
+  gecmisAl();
+  looper.tekrar = (looper.tekrar || []).filter(x => !(x.tip === tip && x.beat === beat));
+  looper.tekrar.push({ tip, beat });
+  if (looper.playing) looperBaslat();
+  lanesCiz();
+}
+function tekrarSil(i){ gecmisAl(); looper.tekrar.splice(i, 1); if (looper.playing) looperBaslat(); lanesCiz(); }
 /* kanal duyulur mu: susturulmamış VE (solo yoksa ya da kendisi solo) */
 function duyulur(tr){ return !tr.mute && (!looper.tracks.some(t => t.solo) || !!tr.solo); }
 /* ----- döngü bölgesi (cetvelde sürükle): Döngü açıkken yalnız bu aralık döner ----- */
@@ -2228,6 +2278,7 @@ function bolumCogalt(i){
     }
   });
   bs.forEach((x, k) => { if (k > i) x.beat += len; });
+  (looper.tekrar || []).forEach(x => { if (x.beat > b || (x.beat === b && x.tip === 'bas')) x.beat += len; });
   bs.push({ beat: b, ad: bl.ad });
   bolumSirala();
   if (looper.playing) looperBaslat();
@@ -2268,13 +2319,14 @@ function oturumSakla(){
 }
 function oturumYaz(){
   if (!oturumHazir) return;
-  try { localStorage.setItem('nota:oturum', JSON.stringify({ tracks: looper.tracks, bpm: looper.bpm, bolumler: looper.bolumler, bolge: looper.bolge, startBeat: looper.startBeat, loop: looper.loop, zaman: Date.now() })); } catch {}
+  try { localStorage.setItem('nota:oturum', JSON.stringify({ tracks: looper.tracks, bpm: looper.bpm, bolumler: looper.bolumler, tekrar: looper.tekrar, bolge: looper.bolge, startBeat: looper.startBeat, loop: looper.loop, zaman: Date.now() })); } catch {}
 }
 function oturumGeriYukle(){
   try {
     const o = JSON.parse(localStorage.getItem('nota:oturum') || 'null');
     if (!o || !Array.isArray(o.tracks) || !o.tracks.length) return false;
     looper.tracks = o.tracks; looper.bpm = o.bpm || 100; looper.bolumler = Array.isArray(o.bolumler) ? o.bolumler : [];
+    looper.tekrar = Array.isArray(o.tekrar) ? o.tekrar : [];
     looper.bolge = o.bolge || null; looper.startBeat = o.startBeat || 0; looper.loop = o.loop !== false;
     looper.activeTrackId = looper.tracks[0].id; idleriTazele();
     $('#lpBpm').value = looper.bpm; $('#lpBpmVal').textContent = looper.bpm; $('#lpLoop').checked = looper.loop;
@@ -2289,14 +2341,14 @@ function loopKaydet(){
   if (!toplam){ inp.placeholder = 'önce diziye akor ekle…'; return; }
   let ad = (inp.value || '').trim() || ('Döngü ' + (loopsYukle().length + 1));
   const arr = loopsYukle();
-  arr.unshift({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ad, bpm: looper.bpm, tracks: dkopya(looper.tracks), bolumler: dkopya(looper.bolumler) });
+  arr.unshift({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ad, bpm: looper.bpm, tracks: dkopya(looper.tracks), bolumler: dkopya(looper.bolumler), tekrar: dkopya(looper.tekrar || []) });
   loopsKaydet(arr); inp.value = ''; loopLibCiz();
 }
 function loopAc(id, cal){
   const it = loopsYukle().find(x => x.id === id); if (!it) return;
   gecmisAl();
   looper.tracks = dkopya(it.tracks); looper.bpm = it.bpm; looper.selId = null;
-  looper.bolumler = dkopya(it.bolumler || []); looper.bolge = null; looper.startBeat = 0;
+  looper.bolumler = dkopya(it.bolumler || []); looper.tekrar = dkopya(it.tekrar || []); looper.bolge = null; looper.startBeat = 0;
   looper.activeTrackId = looper.tracks[0] ? looper.tracks[0].id : null;
   idleriTazele();
   $('#lpBpm').value = it.bpm; $('#lpBpmVal').textContent = it.bpm; if (sesAcik) Tone.Transport.bpm.value = it.bpm;
@@ -2377,7 +2429,7 @@ function playheadDongu(totalBeats){
   const tik = () => {
     if (!looper.playing || !ph){ if (ph) ph.style.opacity = '0'; return; }
     const vur = (Tone && Tone.Transport) ? Tone.Transport.ticks / Tone.Transport.PPQ : 0;
-    const x = LABEL_W + Math.min(vur, totalBeats) * PXB;
+    const x = LABEL_W + sarkiKonum(vur) * PXB;
     ph.style.left = x + 'px'; ph.style.opacity = '1';
     if (lanes && performance.now() > looper.takipDur){ const vw = lanes.clientWidth, sl = lanes.scrollLeft; if (x < sl + LABEL_W + 30 || x > sl + vw - 50) lanes.scrollLeft = Math.max(0, x - vw * 0.45); }
     playheadRAF = requestAnimationFrame(tik);
@@ -2398,11 +2450,15 @@ async function looperBaslat(bastan){
   Tone.Transport.bpm.value = looper.bpm;
   Tone.Draw.expiration = 1;                                                        // yavaş karede de çalan blok vurgusu düşmesin
   let total = 4;
+  const sarki = Math.max(4, sarkiVurus());
+  const bolgeVar = !!(looper.bolge && looper.bolge.a < Math.min(looper.bolge.b, sarki));
+  const harita = bolgeVar ? [{ t0: 0, a: 0, b: sarki }] : tekrarHarita(sarki);   // döngü bölgesi varken tekrar işaretleri devre dışı
+  looper.harita = harita;
   const tekLi = looper.tracks.filter(t => t.blocks.length).length === 1;        // tek dolu kanal → onu senkrla
   looper.tracks.forEach(tr => {
     let beat = 0;
     tr.blocks.forEach(b => {
-      Tone.Transport.schedule(time => {
+      const cal = time => {
         if (!duyulur(tr)){ /* susturulmuş kanal: ses yok, yalnız görsel ilerler */ }
         else if (b.mel) melCal(tr, b, time);
         else if (b.perc) percCal(tr, b, time);
@@ -2434,13 +2490,15 @@ async function looperBaslat(bastan){
           looper.calan[tr.id] = b.id; calanIsaretle();
           if (!b.rest && !state.duzenBlok && (tr.id === looper.activeTrackId || tekLi)) liveSyncBlok(b);   // Çevirici'de iki enstrümanı vurgula
         }, time);
-      }, beatToTime(beat));
+      };
+      haritaZaman(harita, beat).forEach(t => Tone.Transport.schedule(cal, beatToTime(t)));   // tekrar edilen bölümdeki blok iki kez zamanlanır
       beat += b.dur;
     });
     total = Math.max(total, beat);
   });
   const bol = looper.bolge && looper.bolge.a < Math.min(looper.bolge.b, total) ? { a: looper.bolge.a, b: Math.min(looper.bolge.b, total) } : null;
-  const basB = bol ? bol.a : 0, sonB = bol ? bol.b : total;                         // döngü bölgesi varsa yalnız o aralık
+  const uzunluk = harita[harita.length - 1].t0 + (harita[harita.length - 1].b - harita[harita.length - 1].a);
+  const basB = bol ? bol.a : 0, sonB = bol ? bol.b : uzunluk;                         // döngü bölgesi varsa yalnız o aralık
   Tone.Transport.loopStart = beatToTime(basB); Tone.Transport.loopEnd = beatToTime(sonB); Tone.Transport.loop = looper.loop;
   if (!looper.loop) Tone.Transport.scheduleOnce(time => Tone.Draw.schedule(() => looperDur(), time), beatToTime(sonB));
   if (looper.drum) Tone.Transport.scheduleRepeat(time => {
@@ -2448,7 +2506,7 @@ async function looperBaslat(bastan){
     kick.triggerAttackRelease(inBar === 0 ? 'C2' : 'C1', '8n', time);
     if (inBar === 1 || inBar === 3) snare.triggerAttackRelease('16n', time);
   }, '4n', 0);
-  let basVurus = devamVurus != null ? devamVurus : looper.startBeat;
+  let basVurus = devamVurus != null ? devamVurus : (haritaZaman(harita, looper.startBeat)[0] || 0);
   if (!(basVurus >= basB) || basVurus >= sonB) basVurus = basB;
   if (sayimVar){                                                                   // 1 ölçü sayım, sonra tam vuruşta başla
     const vs = 60 / looper.bpm, t0 = Tone.now() + 0.06;
