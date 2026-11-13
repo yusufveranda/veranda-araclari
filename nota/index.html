@@ -616,6 +616,9 @@ body.surukleniyor *{cursor:grabbing!important}
 .lane-enst button{font-size:12.5px;padding:4px 0;min-width:0}
 .lane-enst button[data-i=synth]{font-size:15px;font-weight:700;color:var(--ink)}
 .lane-enst button[data-i=synth].sec{color:#150c08}
+.ll-it.acik{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.ll-kaydet button.tamam{background:#5f6b37}
+.ll-kaydet button{max-width:280px;overflow:hidden;text-overflow:ellipsis}
 .okuma,.panel,.enstruman,.looper-ust,.loop-lib,.lanes,.drum-panel{
   background-image:var(--ahsap-doku);background-size:300px 205px}
 
@@ -2068,6 +2071,7 @@ function nav(key){
 function looperTemizle(){
   gecmisAl();
   looper.tracks.forEach(t => t.blocks = []); looper.selId = null;
+  looper.acikLoopId = null; loopLibCiz();                     // temizlenen çizelge artık o kayda bağlı değil: yanlışlıkla üzerine yazılmasın
   if (looper.playing) looperDur();
   lanesCiz(); gamCiz();
 }
@@ -2453,14 +2457,14 @@ function oturumSakla(){
 }
 function oturumYaz(){
   if (!oturumHazir) return;
-  try { localStorage.setItem('nota:oturum', JSON.stringify({ tracks: looper.tracks, bpm: looper.bpm, bolumler: looper.bolumler, tekrar: looper.tekrar, bolge: looper.bolge, startBeat: looper.startBeat, loop: looper.loop, zaman: Date.now() })); } catch {}
+  try { localStorage.setItem('nota:oturum', JSON.stringify({ tracks: looper.tracks, bpm: looper.bpm, bolumler: looper.bolumler, tekrar: looper.tekrar, bolge: looper.bolge, startBeat: looper.startBeat, loop: looper.loop, acikLoopId: looper.acikLoopId || null, zaman: Date.now() })); } catch {}
 }
 function oturumGeriYukle(){
   try {
     const o = JSON.parse(localStorage.getItem('nota:oturum') || 'null');
     if (!o || !Array.isArray(o.tracks) || !o.tracks.length) return false;
     looper.tracks = o.tracks; looper.bpm = o.bpm || 100; looper.bolumler = Array.isArray(o.bolumler) ? o.bolumler : [];
-    looper.tekrar = Array.isArray(o.tekrar) ? o.tekrar : [];
+    looper.tekrar = Array.isArray(o.tekrar) ? o.tekrar : []; looper.acikLoopId = o.acikLoopId || null;
     looper.bolge = o.bolge || null; looper.startBeat = o.startBeat || 0; looper.loop = o.loop !== false;
     looper.activeTrackId = looper.tracks[0].id; idleriTazele();
     $('#lpBpm').value = looper.bpm; $('#lpBpmVal').textContent = looper.bpm; $('#lpLoop').checked = looper.loop;
@@ -2469,19 +2473,38 @@ function oturumGeriYukle(){
 }
 function loopsYukle(){ try { const v=localStorage.getItem('nota:loops'); if(v!=null) return JSON.parse(v)||[]; const eski=localStorage.getItem('nota-loops'); if(eski!=null){ localStorage.setItem('nota:loops', eski); localStorage.removeItem('nota-loops'); return JSON.parse(eski)||[]; } return []; } catch { return []; } }
 function loopsKaydet(a){ try { localStorage.setItem('nota:loops', JSON.stringify(a)); } catch {} }
+/* Kaydet: ad boşsa ve açık bir kayıt varsa ONUN ÜZERİNE yazar; var olan bir adı yazarsan o kaydın üzerine yazar;
+   yeni bir ad yazarsan yeni kayıt açar. Böylece her kaydedişte yeni kayıt birikmez. */
+function loopHedef(){
+  const inp = $('#loopAd'), ad = inp ? (inp.value || '').trim() : '', arr = loopsYukle();
+  if (ad) return arr.find(x => x.ad.toLowerCase() === ad.toLowerCase()) || null;
+  return arr.find(x => x.id === looper.acikLoopId) || null;
+}
+function loopBtnCiz(){
+  const btn = $('#loopKaydetBtn'); if (!btn) return;
+  const h = loopHedef();
+  btn.textContent = h ? '💾 Üzerine kaydet: ' + h.ad : '💾 Yeni kaydet';
+  btn.title = h ? '“' + h.ad + '” kaydının üzerine yazar. Ayrı kayıt için yeni bir ad yaz.' : 'yeni kayıt açar';
+}
 function loopKaydet(){
   const inp = $('#loopAd'); if (!inp) return;
   const toplam = looper.tracks.reduce((s, t) => s + t.blocks.length, 0);
   if (!toplam){ inp.placeholder = 'önce diziye akor ekle…'; return; }
-  let ad = (inp.value || '').trim() || ('Döngü ' + (loopsYukle().length + 1));
-  const arr = loopsYukle();
-  arr.unshift({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ad, bpm: looper.bpm, tracks: dkopya(looper.tracks), bolumler: dkopya(looper.bolumler), tekrar: dkopya(looper.tekrar || []) });
-  loopsKaydet(arr); inp.value = ''; loopLibCiz();
+  const arr = loopsYukle(), hedef = loopHedef();
+  const govde = { bpm: looper.bpm, tracks: dkopya(looper.tracks), bolumler: dkopya(looper.bolumler), tekrar: dkopya(looper.tekrar || []) };
+  if (hedef){ Object.assign(arr.find(x => x.id === hedef.id), govde); looper.acikLoopId = hedef.id; }
+  else {
+    const ad = (inp.value || '').trim() || ('Döngü ' + (arr.length + 1));
+    const yeni = Object.assign({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ad }, govde);
+    arr.unshift(yeni); looper.acikLoopId = yeni.id;
+  }
+  loopsKaydet(arr); inp.value = ''; loopLibCiz(); oturumSakla();
+  const btn = $('#loopKaydetBtn'); if (btn){ btn.classList.add('tamam'); setTimeout(() => btn.classList.remove('tamam'), 900); }
 }
 function loopAc(id, cal){
   const it = loopsYukle().find(x => x.id === id); if (!it) return;
   gecmisAl();
-  looper.tracks = dkopya(it.tracks); looper.bpm = it.bpm; looper.selId = null;
+  looper.tracks = dkopya(it.tracks); looper.bpm = it.bpm; looper.selId = null; looper.acikLoopId = it.id;
   looper.bolumler = dkopya(it.bolumler || []); looper.tekrar = dkopya(it.tekrar || []); looper.bolge = null; looper.startBeat = 0;
   looper.activeTrackId = looper.tracks[0] ? looper.tracks[0].id : null;
   idleriTazele();
@@ -2518,15 +2541,16 @@ async function yedekYukle(file){
   loopLibCiz(); favCiz(); poolCiz();
   alert(nL + ' döngü ve ' + nF + ' akor eklendi. Mevcut kayıtların değişmedi.');
 }
-function loopSil(id){ loopsKaydet(loopsYukle().filter(x => x.id !== id)); loopLibCiz(); }
+function loopSil(id){ loopsKaydet(loopsYukle().filter(x => x.id !== id)); if (looper.acikLoopId === id) looper.acikLoopId = null; loopLibCiz(); }
 function loopLibCiz(){
   const host = $('#loopList'); if (!host) return;
+  loopBtnCiz();
   const arr = loopsYukle();
   if (!arr.length){ host.innerHTML = '<span class="ll-bos">Kayıtlı döngü yok.</span>'; return; }
   host.innerHTML = '';
   arr.forEach(it => {
     const ozet = it.tracks.map(t => (t.instrument === 'gitar' ? '🎸' : '🎹') + t.blocks.length).join(' ');
-    const el = document.createElement('div'); el.className = 'll-it';
+    const el = document.createElement('div'); el.className = 'll-it' + (it.id === looper.acikLoopId ? ' acik' : '');
     el.innerHTML = `<button class="ll-ac" title="yükle"><b>${escapeHtml(it.ad)}</b><small>${it.bpm} BPM · ${ozet}</small></button>` +
       `<button class="ll-cal" title="yükle ve çal">▶</button><button class="ll-sil" title="sil">×</button>`;
     el.querySelector('.ll-ac').onclick = () => loopAc(it.id, false);
@@ -3166,6 +3190,8 @@ function looperKur(){
   // kanal ekle (enstrümanı seçerek) + döngü kütüphanesi
   $('#izGitar') && ($('#izGitar').onclick = e => { e.currentTarget.blur(); trackEkle('gitar'); });
   $('#izPiyano') && ($('#izPiyano').onclick = e => { e.currentTarget.blur(); trackEkle('piyano'); });
+  $('#loopAd').addEventListener('input', loopBtnCiz);
+  $('#loopAd').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); loopKaydet(); e.target.blur(); } });
   $('#loopKaydetBtn') && ($('#loopKaydetBtn').onclick = e => { e.currentTarget.blur(); loopKaydet(); });
   $('#loopAd') && ($('#loopAd').onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); loopKaydet(); e.target.blur(); } });
   // ritim deseni düzenleyici (modal)
