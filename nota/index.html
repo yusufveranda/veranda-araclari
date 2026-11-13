@@ -611,6 +611,7 @@ body.surukleniyor *{cursor:grabbing!important}
 .lane-blok.mel.secili .lb-mel-mini{inset:16px 5px 6px}
 .lane-blok.arpli.secili::before{content:"≈";position:absolute;top:1px;left:4px;font-size:11px;font-weight:700;line-height:1;color:var(--vurgu)}
 .lane-blok.strumlu.secili::before{content:"↓↑";position:absolute;top:1px;left:3px;font-size:9px;font-weight:700;line-height:1;letter-spacing:-1px;color:var(--acc)}
+.lane-enst button{font-size:12.5px;padding:4px 0;min-width:0}
 .lane-enst button[data-i=synth]{font-size:15px;font-weight:700;color:var(--ink)}
 .lane-enst button[data-i=synth].sec{color:#150c08}
 .okuma,.panel,.enstruman,.looper-ust,.loop-lib,.lanes,.drum-panel{
@@ -930,6 +931,7 @@ body.surukleniyor *{cursor:grabbing!important}
     </div>
     <div class="iz-arac">
       <button class="iz-ekle" id="izGitar" type="button">+ Gitar</button>
+      <button class="iz-ekle" id="izEGitar" type="button">+ Elektro gitar</button>
       <button class="iz-ekle" id="izPiyano" type="button">+ Piyano</button>
       <button class="iz-ekle" id="izSynth" type="button">+ Synth</button>
       <button class="iz-ekle" id="izBas" type="button">+ Bas</button>
@@ -1831,9 +1833,11 @@ function trackSil(id){
   lanesCiz(); gamCiz();
 }
 function trackEnstruman(id, inst){
-  const tr = looper.tracks.find(t => t.id === id); if (!tr || tr.instrument === inst) return;
+  const ton = inst === 'egitar' ? 'elektro' : ''; if (inst === 'egitar') inst = 'gitar';
+  const tr = looper.tracks.find(t => t.id === id); if (!tr || (tr.instrument === inst && (tr.ton || '') === ton)) return;
   gecmisAl();
-  tr.instrument = inst;
+  tr.instrument = inst; tr.ton = ton;
+  if (ton) sesHazir().then(ok => { if (ok) eGitarHazir(); });   // örnekleri önden yükle
   looper.activeTrackId = id;
   if (looper.playing) looperBaslat();
   lanesCiz(); gamCiz();
@@ -1844,6 +1848,31 @@ function trackVol(id, v){
 }
 
 /* kanalın enstrümanı + ses düzeyiyle (velocity) tek nota / akor tetikle */
+/* ----- clean elektro gitar: gerçek elektro gitar örnekleri + geniş yavaş chorus, hafif sıkıştırma, kısa gecikme, uzun çınlama -----
+   kanal: instrument 'gitar' (gitar basımını kullanır) + ton 'elektro' */
+let eGitar = null;
+function eGitarHazir(){
+  if (eGitar || !reverb) return;
+  const comp = new Tone.Compressor({ threshold: -24, ratio: 3.2, attack: 0.012, release: 0.28 });
+  const ch = new Tone.Chorus({ frequency: 0.55, delayTime: 4.8, depth: 0.72, spread: 180, wet: 0.5 }).start();
+  const lp = new Tone.Filter(4800, 'lowpass');                 // tizlerin sertliğini al: cam gibi ama yumuşak
+  const dl = new Tone.FeedbackDelay({ delayTime: 0.32, feedback: 0.24, wet: 0.17 });
+  eGitar = new Tone.Sampler({
+    urls: { 'C#2': 'Cs2.mp3', E2: 'E2.mp3', 'F#2': 'Fs2.mp3', A2: 'A2.mp3', C3: 'C3.mp3', 'D#3': 'Ds3.mp3', 'F#3': 'Fs3.mp3', A3: 'A3.mp3',
+      C4: 'C4.mp3', 'D#4': 'Ds4.mp3', 'F#4': 'Fs4.mp3', A4: 'A4.mp3', C5: 'C5.mp3', 'D#5': 'Ds5.mp3', 'F#5': 'Fs5.mp3', A5: 'A5.mp3', C6: 'C6.mp3' },
+    baseUrl: 'https://nbrosowsky.github.io/tonejs-instruments/samples/guitar-electric/', release: 1.8,
+  });
+  eGitar.chain(comp, ch, lp, dl, reverb);
+  eGitar.volume.value = -5;
+}
+/* gitar kanalının tek notası: elektro tonu seçiliyse (ve örnekler yüklendiyse) onu, değilse akustiği çal */
+function gitarCal(tr, midi, time, vel, dur){
+  if (tr.ton === 'elektro' && eGitar && eGitar.loaded){
+    try { eGitar.triggerAttackRelease(Note.fromMidi(midi), dur === '8n' ? 2.0 : dur === '4n' ? 1.6 : 3.2, time, vel == null ? 0.85 : vel); } catch {}   // uzun bırak: notalar birbirine aksın
+  } else pluk(midi, time, vel, dur);
+}
+function enstHazir(tr){ if (!tr) return; if (tr.instrument === 'synth') orgHazir(); if (tr.instrument === 'bas') basHazir(); if (tr.ton === 'elektro') eGitarHazir(); }
+async function tekNotaDinle(tr, m){ if (!(await sesHazir())) return; enstHazir(tr); trackNota(tr, m, Tone.now() + 0.03); }
 /* ----- synth (org): yumuşak girişli, blok boyunca TUTAN akor sesi; akorlar birbirine akar ----- */
 let orgSes = null;
 function orgHazir(){
@@ -1861,11 +1890,11 @@ function orgCal(tr, midis, time, sure){
   if (!orgSes || !midis.length) return;
   try { orgSes.triggerAttackRelease(midis.map(m => Note.fromMidi(m)), Math.max(0.12, sure || 0.4), time, Math.min(1, tr.vol)); } catch {}
 }
-function trackNota(tr, midi, time){ if (tr.instrument === 'synth'){ orgCal(tr, [midi], time, 0.45); return; } if (tr.instrument === 'gitar') pluk(midi, time, tr.vol, '8n'); else piyanoSes.triggerAttackRelease(Note.fromMidi(midi), '8n', time, tr.vol); }
+function trackNota(tr, midi, time){ if (tr.instrument === 'synth'){ orgCal(tr, [midi], time, 0.45); return; } if (tr.instrument === 'gitar') gitarCal(tr, midi, time, tr.vol, '8n'); else piyanoSes.triggerAttackRelease(Note.fromMidi(midi), '8n', time, tr.vol); }
 function trackTetikle(tr, midis, time, sure){
   const ms = [...midis].sort((a, b) => a - b); if (!ms.length) return;
   if (tr.instrument === 'synth'){ orgCal(tr, ms, time, sure || 1.6); return; }               // org: blok süresince tutar
-  if (tr.instrument === 'gitar') ms.forEach((m, i) => pluk(m, time + i * 0.06, tr.vol, '2n'));           // strum (akustik Sampler)
+  if (tr.instrument === 'gitar') ms.forEach((m, i) => gitarCal(tr, m, time + i * (tr.ton === 'elektro' ? 0.045 : 0.06), tr.vol, '2n'));           // strum (akustik Sampler)
   else ms.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '1n', time + i * 0.02, tr.vol));
 }
 /* ----- vuruş desenleri: sekizlik ızgarada D (aşağı) / U (yukarı) / - (boş); 4 vuruşluk ölçüde yinelenir ----- */
@@ -1914,7 +1943,7 @@ function strumVur(tr, midis, time, yon, adimSn){
   if (tr.instrument === 'synth'){ orgCal(tr, yukari ? ms.slice(-Math.min(3, ms.length)) : ms, time, (adimSn || 0.3) * 0.92); return; }   // org: desen hücresi kadar tutar
   if (tr.instrument === 'gitar'){                            // yukarı vuruş: yalnız ince teller, tizden pese, daha hafif
     const dizi = yukari ? ms.slice(-Math.min(4, ms.length)).reverse() : ms;
-    dizi.forEach((m, i) => pluk(m, time + i * 0.014, tr.vol * (yukari ? 0.68 : 1), '4n'));
+    dizi.forEach((m, i) => gitarCal(tr, m, time + i * 0.014, tr.vol * (yukari ? 0.68 : 1), '4n'));
   } else {
     const dizi = yukari ? ms.slice(-Math.min(3, ms.length)) : ms;
     dizi.forEach((m, i) => piyanoSes.triggerAttackRelease(Note.fromMidi(m), '4n', time + i * 0.008, tr.vol * (yukari ? 0.62 : 1)));
@@ -1926,7 +1955,8 @@ function blokSesCal(blk, tr){
   if (blk.perc){ percOnizleBir(blk); return; }
   if (blk.mel){ melDinle(blk, tr); return; }
   if (tr.instrument === 'bas'){ basDinle(blk, tr); return; }                 // perc: deseni tek tur ön dinle
-  if (tr.instrument === 'gitar') calMidis(blk.gFrets.map(x => x.midi), 'gitar');
+  if (tr.ton === 'elektro'){ sesHazir().then(ok => { if (!ok) return; eGitarHazir(); trackTetikle(tr, blk.gFrets.map(x => x.midi), Tone.now() + 0.03); }); }
+  else if (tr.instrument === 'gitar') calMidis(blk.gFrets.map(x => x.midi), 'gitar');
   else if (tr.instrument === 'synth') orgDinle(blk, tr);
   else calMidis(blk.pMidis, 'piyano');
 }
@@ -2222,7 +2252,8 @@ function lanesCiz(){
       : tr.instrument === 'bas' ? `<span class="lane-perc-rozet bas" title="bas kanalı: akorun en pes notasını (ya da seçtiğin notayı) çalar">Bas</span>`
       : tr.instrument === 'melodi' ? `<span class="lane-perc-rozet ezgi" title="ezgi kanalı">♪ Ezgi</span>`
       : `<div class="lane-enst" role="group" aria-label="enstrüman">
-         <button data-i="gitar" class="${tr.instrument === 'gitar' ? 'sec' : ''}" title="gitar kanalı">🎸</button>
+         <button data-i="gitar" class="${tr.instrument === 'gitar' && tr.ton !== 'elektro' ? 'sec' : ''}" title="akustik gitar">🎸</button>
+         <button data-i="egitar" class="${tr.instrument === 'gitar' && tr.ton === 'elektro' ? 'sec' : ''}" title="clean elektro gitar">⚡</button>
          <button data-i="piyano" class="${tr.instrument === 'piyano' ? 'sec' : ''}" title="piyano kanalı">🎹</button>
          <button data-i="synth" class="${tr.instrument === 'synth' ? 'sec' : ''}" title="synth (org): akoru blok boyunca tutar">∿</button>
        </div>`;
@@ -2530,7 +2561,8 @@ async function looperBaslat(bastan){
   if (!(await sesHazir())) return;
   if (looper.tracks.some(t => t.blocks.some(b => b.perc))) await percHazir();
   if (looper.tracks.some(t => t.instrument === 'bas')) basHazir();
-  if (looper.tracks.some(t => t.instrument === 'synth')) orgHazir();   // vurmalı synth'leri hazırla
+  if (looper.tracks.some(t => t.instrument === 'synth')) orgHazir();
+  if (looper.tracks.some(t => t.ton === 'elektro')){ eGitarHazir(); if (eGitar && !eGitar.loaded) await Promise.race([Tone.loaded(), new Promise(r => setTimeout(r, 5000))]); }   // vurmalı synth'leri hazırla
   // çalarken yapılan düzenlemede KALDIĞI YERDEN sürer; yeni başlatmada cetveldeki başlangıç noktasından
   const devamVurus = (looper.playing && !bastan) ? Tone.Transport.ticks / Tone.Transport.PPQ : null;
   const sayimVar = looper.sayim && !looper.playing;                                // sayım yalnız durmuşken başlatmada
@@ -2605,7 +2637,7 @@ async function looperBaslat(bastan){
   playheadDongu(total);
 }
 function looperDur(){
-  if (sesAcik){ Tone.Transport.stop(); Tone.Transport.cancel(); Tone.Transport.position = 0; sesKes(); if (basSes) basSes.triggerRelease(); if (orgSes) orgSes.releaseAll(); }   // SERT DUR: kuyrukları kes
+  if (sesAcik){ Tone.Transport.stop(); Tone.Transport.cancel(); Tone.Transport.position = 0; sesKes(); if (basSes) basSes.triggerRelease(); if (orgSes) orgSes.releaseAll(); if (eGitar) eGitar.releaseAll(); }   // SERT DUR: kuyrukları kes
   looper.playing = false; looper.calan = {};
   $('#lpPlay').classList.remove('aktif');
   cancelAnimationFrame(playheadRAF);
@@ -2807,7 +2839,7 @@ function ozelAl(b){ return b.strumOzel && b.strumOzel.d ? { d: b.strumOzel.d, ad
 async function strumDinle(b, tr){
   if (tr.instrument === 'bas'){ if (!(await sesHazir())) return; basHazir(); basCal(tr, Object.assign({}, b, { dur: Math.min(b.dur, 4) }), Tone.now() + 0.05); return; }
   if (!(await sesHazir())) return;
-  if (tr.instrument === 'synth') orgHazir();
+  enstHazir(tr);
   const sd = strumDesen(b), m = tr.instrument === 'gitar' ? b.gFrets.map(x => x.midi) : b.pMidis, t0 = Tone.now() + 0.05;
   if (!sd){ trackTetikle(tr, m, t0); return; }
   const adim = sd.adim * 60 / looper.bpm, n = Math.min(32, Math.max(sd.d.length, Math.round(4 / sd.adim)));
@@ -2855,7 +2887,7 @@ function arpPopAc(b, tr, anchorEl){
   pop.querySelectorAll('.ap-adim').forEach(btn => btn.onclick = dur(() => {
     const i = +btn.dataset.i, n = sira[i];
     arpPop.sel = arpPop.sel === i ? null : i;
-    if (!n.r) calNota(n.m, git ? 'gitar' : 'piyano');
+    if (!n.r) tekNotaDinle(tr, n.m);
     arpPopYenile();
   }));
   pop.querySelectorAll('.ap-adim').forEach(btn => {           // sürükle bırak ile sırala
@@ -2943,7 +2975,7 @@ function arpAdimEkle(n){
   const i = arpPop.sel != null ? arpPop.sel + 1 : seq.length;
   seq.splice(i, 0, { ...n });
   arpPop.sel = i;                                   // art arda eklenenler sırayla dizilsin
-  if (!n.r) calNota(n.m, arpPop.tr.instrument === 'gitar' ? 'gitar' : 'piyano');
+  if (!n.r) tekNotaDinle(arpPop.tr, n.m);
   arpYaz(seq);
 }
 function arpAdimTasi(yon){
@@ -2964,7 +2996,7 @@ function arpAdimSil(){
 }
 async function arpDinle(){
   if (!arpPop || !(await sesHazir())) return;
-  if (arpPop.tr.instrument === 'synth') orgHazir();
+  enstHazir(arpPop.tr);
   const { b, tr } = arpPop, sira = arpSira(b, tr);
   const adim = Math.min(0.45, b.dur * 60 / looper.bpm / sira.length), t0 = Tone.now() + 0.05;
   sira.forEach((n, i) => { if (!n.r) trackNota(tr, n.m, t0 + i * adim); });
@@ -3121,6 +3153,7 @@ function looperKur(){
   $('#loopKaydetBtn') && ($('#loopKaydetBtn').onclick = e => { e.currentTarget.blur(); loopKaydet(); });
   $('#loopAd') && ($('#loopAd').onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); loopKaydet(); e.target.blur(); } });
   // ritim deseni düzenleyici (modal)
+  $('#izEGitar').onclick = e => { e.currentTarget.blur(); trackEkle('gitar'); const tr = aktifTrack(); tr.ton = 'elektro'; sesHazir().then(ok => { if (ok) eGitarHazir(); }); lanesCiz(); };
   $('#izSynth').onclick = e => { e.currentTarget.blur(); trackEkle('synth'); };
   $('#izBas').onclick = e => { e.currentTarget.blur(); trackEkle('bas'); };
   $('#izMelodi').onclick = e => { e.currentTarget.blur(); trackEkle('melodi'); };
